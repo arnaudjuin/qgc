@@ -6,6 +6,8 @@ on:
       - 'master'
       - 'Stable*'
       - 'main'
+      - 'QGCustomAPM'
+
     tags:
       - 'v*'
   pull_request:
@@ -101,18 +103,22 @@ jobs:
           name: ${{ env.ARTIFACT }}
           path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
 
-      - name: Upload build to S3 Bucket
-        if: github.event_name == 'push'
-        working-directory: ${{ runner.temp }}/shadow_build_dir/package
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws s3 cp ${ARTIFACT} s3://qgroundcontrol/builds/${{ github.ref_name }}/${ARTIFACT} --region us-west-2 --acl public-read
-
-      - name: Upload tagged stable build to S3 latest Bucket
-        if: github.event_name == 'push' && github.ref_type == 'tag'
-        working-directory: ${{ runner.temp }}/shadow_build_dir/package
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws s3 cp ${ARTIFACT} s3://qgroundcontrol/latest/${ARTIFACT} --region us-west-2 --acl public-read
+#      - name: Upload build to S3 Bucket
+#        if: github.event_name == 'push'
+#        working-directory: ${{ runner.temp }}/shadow_build_dir/package
+#        run: |
+#          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws s3 cp ${ARTIFACT} s3://qgroundcontrol/builds/${{ github.ref_name }}/${ARTIFACT} --region us-west-2 --acl public-read
+#
+#      - name: Upload tagged stable build to S3 latest Bucket
+#        if: github.event_name == 'push' && github.ref_type == 'tag'
+#        working-directory: ${{ runner.temp }}/shadow_build_dir/package
+#        run: |
+#          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws s3 cp ${ARTIFACT} s3://qgroundcontrol/latest/${ARTIFACT} --region us-west-2 --acl public-read
+      - name: Download artifact
+        uses: actions/download-artifact@master
+        with:
+          name: QGroundControl32  # Replace with the actual artifact name

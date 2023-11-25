@@ -5,6 +5,7 @@ on:
     branches:
       - 'master'
       - 'main'
+      - 'QGCustomAPM'
 
   pull_request:
     branches:
@@ -96,3 +97,8 @@ jobs:
       - name: Run unit tests
         working-directory: ${{ runner.temp }}/shadow_build_dir
         run: xvfb-run -a ./staging/qgroundcontrol-start.sh --unittest
+
+      - name: Download artifact
+        uses: actions/download-artifact@master
+        with:
+          name: QGroundControl32  # Replace with the actual artifact name
