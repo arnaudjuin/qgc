@@ -27,7 +27,6 @@ env:
 jobs:
   build:
     runs-on: windows-2019
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3

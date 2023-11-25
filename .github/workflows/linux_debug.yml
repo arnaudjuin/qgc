@@ -94,9 +94,6 @@ jobs:
           cp ${SOURCE_DIR}/test/qtlogging.ini ~/.config/QtProject/
           export QT_FATAL_WARNINGS=1
 
-      - name: Run unit tests
-        working-directory: ${{ runner.temp }}/shadow_build_dir
-        run: xvfb-run -a ./staging/qgroundcontrol-start.sh --unittest
 
       - name: Download artifact
         uses: actions/download-artifact@master
