@@ -95,7 +95,10 @@ linux {
         #QMAKE_MAC_SDK = macosx10.12
         QMAKE_CXXFLAGS += -fvisibility=hidden
         #-- Disable annoying warnings comming from mavlink.h
-        QMAKE_CXXFLAGS += -Wno-address-of-packed-member
+        QMAKE_CXXFLAGS += -Wno-address-of-packed-member \
+                    -Wno-unused-parameter \         # gst-plugins-good
+                    -Wno-unused-but-set-variable \ # eigen & QGCTileCacheWorker.cpp
+                    -Wno-deprecated-declarations    # eigen
     } else {
         error("Unsupported Mac toolchain, only 64-bit LLVM+clang is supported")
     }
