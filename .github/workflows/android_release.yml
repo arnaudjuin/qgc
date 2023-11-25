@@ -1,4 +1,5 @@
-name: MacOS Release
+# The 32 and 64 bit version of these actions should be kept in sync
+name: Android 32/64-bit Release
 
 on:
   push:
@@ -19,12 +20,21 @@ defaults:
 env:
   SOURCE_DIR: ${{ github.workspace }}
   QT_VERSION: 5.15.2
-  ARTIFACT: QGroundControl.dmg
   BUILD_TYPE: ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        include:
+          - architecture: 32bits
+            eabi: armeabi-v7a
+            ARTIFACT: QGroundControl32.apk
+          - architecture: 64bits
+            eabi: arm64-v8a
+            ARTIFACT: QGroundControl64.apk
 
     steps:
       - name: Checkout repo
@@ -41,22 +51,28 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           version: ${{ env.QT_VERSION }}
-          host: mac
-          target: desktop
+          host: linux
+          target: android
           dir: ${{ runner.temp }}
           modules: qtcharts
-          setup-python: false
+          setup-python: true
 
-      - name: Install Gstreamer
+      - name: Install Android NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          add-to-path: false
+
+      - name: Remove Android SDKs to force usage of android-33 only
         run: |
-          wget https://gstreamer.freedesktop.org/data/pkg/osx/1.18.6/gstreamer-1.0-devel-1.18.6-x86_64.pkg
-          wget https://gstreamer.freedesktop.org/data/pkg/osx/1.18.6/gstreamer-1.0-1.18.6-x86_64.pkg
-          for package in *.pkg ;
-            do sudo installer -verbose -pkg "$package" -target /
-          done
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext5"
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext4"
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34"
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34-ext8"
 
       - name: Install ccache
-        run: brew install ccache
+        run: sudo apt-get install ccache
 
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
@@ -81,12 +97,29 @@ jobs:
       - name: Create build directory
         run: mkdir ${{ runner.temp }}/shadow_build_dir
 
+      - name: Install gstreamer
+        working-directory: ${{ github.workspace }}
+        run: |
+          wget --quiet https://gstreamer.freedesktop.org/data/pkg/android/1.18.5/gstreamer-1.0-android-universal-1.18.5.tar.xz
+          mkdir gstreamer-1.0-android-universal-1.18.5
+          tar xf gstreamer-1.0-android-universal-1.18.5.tar.xz -C gstreamer-1.0-android-universal-1.18.5
+
+      - name: Update android manifest
+        if: github.ref_name != 'Stable'
+        run: |
+          ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${{ github.ref_name }}
+
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_LATEST_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
-          export JOBS=$((`sysctl -n hw.ncpu`+1))
-          qmake -r ${SOURCE_DIR}/qgroundcontrol.pro CONFIG+=installer CONFIG+=${BUILD_TYPE}
-          make -j$JOBS
+          qmake -r ${SOURCE_DIR}/qgroundcontrol.pro -spec android-clang CONFIG+=${BUILD_TYPE} CONFIG+=installer ANDROID_ABIS="${{ matrix.eabi }}" "DEFINES+=ENABLE_PRECOMPILED_HEADERS=OFF"
+          make -j2
 
       - name: ccache post-run
         run: ccache -s
@@ -94,8 +127,8 @@ jobs:
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
-          name: ${{ env.ARTIFACT }}
-          path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
+          name: ${{ matrix.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir/package/${{ matrix.ARTIFACT }}
 
       #      - name: Upload build to S3 Bucket
       #        if:                 github.event_name == 'push'
@@ -103,7 +136,7 @@ jobs:
       #        run: |
       #              aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
       #              aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #              aws s3 cp ${ARTIFACT} s3://qgroundcontrol/builds/${{ github.ref_name }}/${ARTIFACT} --region us-west-2 --acl public-read
+      #              aws s3 cp ${{ matrix.ARTIFACT }} s3://qgroundcontrol/builds/${{ github.ref_name }}/${{ matrix.ARTIFACT }} --region us-west-2 --acl public-read
       #
       #      - name: Upload tagged stable build to S3 latest Bucket
       #        if:                 github.event_name == 'push' && github.ref_type == 'tag'
@@ -111,8 +144,10 @@ jobs:
       #        run: |
       #              aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
       #              aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #              aws s3 cp ${ARTIFACT} s3://qgroundcontrol/latest/${ARTIFACT} --region us-west-2 --acl public-read
+      #              aws s3 cp ${{ matrix.ARTIFACT }} s3://qgroundcontrol/latest/${{ matrix.ARTIFACT }} --region us-west-2 --acl public-read
+
       - name: Download artifact
         uses: actions/download-artifact@master
         with:
-          name: QGroundControl32  # Replace with the actual artifact name
+          name: QGroundControl32.apk  # Replace with the actual artifact name
+
