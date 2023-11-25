@@ -22,3 +22,6 @@
 [submodule "libs/qmdnsengine"]
 	path = libs/qmdnsengine
 	url = https://github.com/patrickelectric/qmdnsengine
+[submodule "libs/gst-plugins-good"]
+	path = libs/gst-plugins-good
+	url = https://github.com/mavlink/gst-plugins-good.git
