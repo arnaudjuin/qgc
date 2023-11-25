@@ -94,6 +94,11 @@ jobs:
           cp ${SOURCE_DIR}/test/qtlogging.ini ~/.config/QtProject/
           export QT_FATAL_WARNINGS=1
 
+      - name: Save artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
 
       - name: Download artifact
         uses: actions/download-artifact@master
