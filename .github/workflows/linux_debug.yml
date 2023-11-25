@@ -103,4 +103,4 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@master
         with:
-          name: QGroundControl32  # Replace with the actual artifact name
+          name: ${{ env.ARTIFACT }}
