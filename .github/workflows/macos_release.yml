@@ -48,6 +48,12 @@ jobs:
           modules: qtcharts
           setup-python: false
 
+      - name: Download gst-plugins-good tarball
+        run: |
+          wget --quiet https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.18.5.tar.xz
+          tar xf gst-plugins-good-1.18.5.tar.xz
+        working-directory: ${{ github.workspace }}
+
       - name: Install Gstreamer
         run: |
           wget https://gstreamer.freedesktop.org/data/pkg/osx/1.18.6/gstreamer-1.0-devel-1.18.6-x86_64.pkg
