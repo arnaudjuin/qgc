@@ -87,12 +87,11 @@ jobs:
       - name: ccache post-run
         run: ccache -s
 
-      - name: Setup for unit tests
+
+      - name: Create AppImage
         working-directory: ${{ runner.temp }}/shadow_build_dir
-        run: |
-          mkdir -p ~/.config/QtProject/
-          cp ${SOURCE_DIR}/test/qtlogging.ini ~/.config/QtProject/§§
-          export QT_FATAL_WARNINGS=1
+        run: ${SOURCE_DIR}/deploy/create_linux_appimage.sh ${SOURCE_DIR} ./staging ./package;
+
 
       - name: Save artifact
         uses: actions/upload-artifact@master
@@ -103,4 +102,4 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@master
         with:
-          name: QGroundControl32
+          name: QGroundControl32Linux

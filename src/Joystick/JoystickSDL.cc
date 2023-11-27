@@ -95,7 +95,7 @@ QMap<QString, Joystick*> JoystickSDL::discover(MultiVehicleManager* _multiVehicl
 //
 //    ret = newRet;
 //    return ret;
-return null;
+return nullptr;
 }
 
 void JoystickSDL::_loadGameControllerMappings(void) {
