@@ -83,8 +83,11 @@ endif()
 #=============================================================================
 # GStreamer
 #
+message( "Test")
+
 find_package(PkgConfig)
 pkg_check_modules(GST
+		REQUIRED
     gstreamer-1.0>=1.14
     gstreamer-video-1.0>=1.14
     gstreamer-gl-1.0>=1.14
@@ -92,7 +95,8 @@ pkg_check_modules(GST
 )
 
 if (GST_FOUND)
-    include_directories(
+	message(STATUS "GST FOUND")
+	include_directories(
         ${GST_INCLUDE_DIRS}
         src/Taisync
         src/Microhard

@@ -25,7 +25,7 @@ return false;
 }
 
 QMap<QString, Joystick*> JoystickSDL::discover(MultiVehicleManager* _multiVehicleManager) {
- //   static QMap<QString, Joystick*> ret;
+    static QMap<QString, Joystick*> ret;
 
  //   QMap<QString,Joystick*> newRet;
 
@@ -95,7 +95,7 @@ QMap<QString, Joystick*> JoystickSDL::discover(MultiVehicleManager* _multiVehicl
 //
 //    ret = newRet;
 //    return ret;
-return nullptr;
+return ret;
 }
 
 void JoystickSDL::_loadGameControllerMappings(void) {

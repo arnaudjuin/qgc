@@ -80,27 +80,27 @@ Item {
 
     function getVerticalSpeed(){
         var _temp="0.0"
-        var  _speed
-        if (activeVehicle){
-            if (activeVehicle.climbRate.value >=0 ){
-                _temp= " +" + activeVehicle.climbRate.value.toFixed(1) + ' ' +activeVehicle.climbRate.units;
-                //_temp= activeVehicle.climbRate.value.toFixed(1) + ' ' +activeVehicle.climbRate.units;
-
-            }else{
-
-                //_speed= activeVehicle.climbRate.value * -1.0;
-                if (true/*_speed < 0.1*/){
-                    _temp=" -" + activeVehicle.climbRate.value.toFixed(1)  + ' ' +activeVehicle.climbRate.units;
-                    //_temp=_speed  + ' ' +activeVehicle.climbRate.units;
-
-                }else{
-                    //_temp= " +" + activeVehicle.climbRate.value.toFixed(1) + ' ' +activeVehicle.climbRate.units;
-                   // _temp= activeVehicle.climbRate.value.toFixed(1) + ' ' +activeVehicle.climbRate.units;
-                }
-
-
-            }
-        }
+//        var  _speed
+//        if (activeVehicle){
+//            if (activeVehicle.climbRate.value >=0 ){
+//                _temp= " +" + activeVehicle.climbRate.value.toFixed(1) + ' ' +activeVehicle.climbRate.units;
+//                //_temp= activeVehicle.climbRate.value.toFixed(1) + ' ' +activeVehicle.climbRate.units;
+//
+//            }else{
+//
+//                //_speed= activeVehicle.climbRate.value * -1.0;
+//                if (true/*_speed < 0.1*/){
+//                    _temp="" + activeVehicle.climbRate.value.toFixed(1)  + ' ' +activeVehicle.climbRate.units;
+//                    //_temp=_speed  + ' ' +activeVehicle.climbRate.units;
+//
+//                }else{
+//                    //_temp= " +" + activeVehicle.climbRate.value.toFixed(1) + ' ' +activeVehicle.climbRate.units;
+//                   // _temp= activeVehicle.climbRate.value.toFixed(1) + ' ' +activeVehicle.climbRate.units;
+//                }
+//
+//
+//            }
+//        }
         return _temp
     }
 
@@ -356,7 +356,7 @@ Item {
                 text:                   getVerticalSpeed()//activeVehicle ? activeVehicle.climbRate.value.toFixed(1) + ' ' + activeVehicle.climbRate.units : " 0.0"
                 color:                  _indicatorsColor
                 font.pointSize:         ScreenTools.mediumFontPointSize
-                Layout.fillWidth:       false //true
+                Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
                 horizontalAlignment:    firstLabel.horizontalAlignment
             }
@@ -409,7 +409,7 @@ Item {
                 font.pointSize:         ScreenTools.mediumFontPointSize
                 color:                  qgcPal.text
                 text:                   "C:"
-                visible:                false
+                visible:                true
             }
 
             QGCLabel {
@@ -418,8 +418,7 @@ Item {
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
                 horizontalAlignment:    firstLabel.horizontalAlignment
-                visible:                false
-
+                visible:                true
             }
 
 
@@ -432,7 +431,7 @@ Item {
                 sourceSize.height:      height
                 Layout.alignment:       Qt.AlignVCenter | Qt.AlignHCenter
                 color:                  qgcPal.text
-                visible:                false
+                visible:                true
             }
             QGCLabel {
                 text: (battery1 && battery1.voltage.value !== -1) ? (battery1.voltage.valueString + " " + battery1.voltage.units) : "N/A"
@@ -440,8 +439,7 @@ Item {
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
                 horizontalAlignment:    firstLabel.horizontalAlignment
-                visible:                false
-
+                visible:                true
             }
 
             //-- Latitude
@@ -452,7 +450,7 @@ Item {
                 font.pointSize:         ScreenTools.mediumFontPointSize
                 color:                  qgcPal.text
                 text:                   "Lat:"
-                visible:                false
+                visible:                true
             }
             QGCLabel {
                 id:                     firstLabel
@@ -462,7 +460,7 @@ Item {
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
                 horizontalAlignment:    Text.AlignLeft
-                visible:                false
+                visible:                true
             }
             //-- Longitude
             QGCLabel {
@@ -472,7 +470,7 @@ Item {
                 font.pointSize:         ScreenTools.mediumFontPointSize
                 color:                  qgcPal.text
                 text:                   "Lon:"
-                visible:                false
+                visible:                true
             }
             QGCLabel {
                 text:                   activeVehicle ? activeVehicle.gps.lon.value.toFixed(activeVehicle.gps.lon.decimalPlaces) : "-"
@@ -481,7 +479,7 @@ Item {
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
                 horizontalAlignment:    firstLabel.horizontalAlignment
-                visible:                false
+                visible:                true
             }
             //-- HDOP
             QGCLabel {
@@ -491,7 +489,7 @@ Item {
                 font.pointSize:         ScreenTools.mediumFontPointSize
                 color:                  qgcPal.text
                 text:                   "HDOP:"
-                visible:                false
+                visible:                true
             }
             QGCLabel {
                 text:                   activeVehicle ? activeVehicle.gps.hdop.value.toFixed(activeVehicle.gps.hdop.decimalPlaces) : "-"
@@ -500,7 +498,7 @@ Item {
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
                 horizontalAlignment:    firstLabel.horizontalAlignment
-                visible:                false
+                visible:                true
             }
 
 

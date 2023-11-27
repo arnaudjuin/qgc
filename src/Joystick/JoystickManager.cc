@@ -190,24 +190,24 @@ void JoystickManager::setActiveJoystickName(const QString& name)
 void JoystickManager::_updateAvailableJoysticks()
 {
 #ifdef __sdljoystick__
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch(event.type) {
-        case SDL_QUIT:
-            qCDebug(JoystickManagerLog) << "SDL ERROR:" << SDL_GetError();
-            break;
-        case SDL_JOYDEVICEADDED:
-            qCDebug(JoystickManagerLog) << "Joystick added:" << event.jdevice.which;
-            _setActiveJoystickFromSettings();
-            break;
-        case SDL_JOYDEVICEREMOVED:
-            qCDebug(JoystickManagerLog) << "Joystick removed:" << event.jdevice.which;
-            _setActiveJoystickFromSettings();
-            break;
-        default:
-            break;
-        }
-    }
+//    SDL_Event event;
+//    while (SDL_PollEvent(&event)) {
+//        switch(event.type) {
+//        case SDL_QUIT:
+//            qCDebug(JoystickManagerLog) << "SDL ERROR:" << SDL_GetError();
+//            break;
+//        case SDL_JOYDEVICEADDED:
+//            qCDebug(JoystickManagerLog) << "Joystick added:" << event.jdevice.which;
+//            _setActiveJoystickFromSettings();
+//            break;
+//        case SDL_JOYDEVICEREMOVED:
+//            qCDebug(JoystickManagerLog) << "Joystick removed:" << event.jdevice.which;
+//            _setActiveJoystickFromSettings();
+//            break;
+//        default:
+//            break;
+//        }
+//    }
 #elif defined(__android__)
     _joystickCheckTimerCounter--;
     _setActiveJoystickFromSettings();
