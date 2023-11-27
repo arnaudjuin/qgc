@@ -101,7 +101,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: ${{ env.ARTIFACT }}
-          path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir/${{ env.ARTIFACT }}
 
 #      - name: Upload build to S3 Bucket
 #        if: github.event_name == 'push'
