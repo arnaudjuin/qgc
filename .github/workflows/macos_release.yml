@@ -53,6 +53,10 @@ jobs:
           wget --quiet https://qgroundcontrol.s3-us-west-2.amazonaws.com/dependencies/gstreamer-osx-1.18.1.tar.bz2 &&
           sudo tar zxf gstreamer-osx-1.18.1.tar.bz2 -C /Library/Frameworks
 
+
+      - name: Install ccache
+        run: brew install ccache
+
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
         run: echo "name=timestamp::$(date --utc +'%Y-%m-%d-%H\;%M\;%S')" >> $GITHUB_OUTPUT
