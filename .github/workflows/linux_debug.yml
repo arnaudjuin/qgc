@@ -98,7 +98,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: ${{ env.ARTIFACT }}
-          path: ${{ runner.temp }}/shadow_build_dir/${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir/
 
       - name: Download artifact
         uses: actions/download-artifact@master
