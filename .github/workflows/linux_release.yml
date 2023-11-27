@@ -107,7 +107,7 @@ jobs:
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
-          name: QGroundControl32L
+          name: QGroundControl32
           path: ${{ runner.temp }}/shadow_build_dir
 
 #      - name: Upload build to S3 Bucket
@@ -128,4 +128,4 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@master
         with:
-          name: QGroundControl32L  # Replace with the actual artifact name
+          name: QGroundControl32  # Replace with the actual artifact name
