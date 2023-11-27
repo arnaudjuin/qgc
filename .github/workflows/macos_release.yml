@@ -48,13 +48,10 @@ jobs:
           modules: qtcharts
           setup-python: false
 
-    - name: Install Gstreamer
-        run:  |
+      - name: Install Gstreamer
+        run: |
           wget --quiet https://qgroundcontrol.s3-us-west-2.amazonaws.com/dependencies/gstreamer-osx-1.18.1.tar.bz2 &&
           sudo tar zxf gstreamer-osx-1.18.1.tar.bz2 -C /Library/Frameworks
-
-      - name: Install ccache
-        run: brew install ccache
 
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
@@ -92,8 +89,8 @@ jobs:
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
-          name: ${{ env.ARTIFACT }}
-          path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
+          name: QGroundControl32
+          path: ${{ runner.temp }}/shadow_build_dir
 
       #      - name: Upload build to S3 Bucket
       #        if:                 github.event_name == 'push'

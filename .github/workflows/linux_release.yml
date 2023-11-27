@@ -100,7 +100,7 @@ jobs:
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
-          name: ${{ env.ARTIFACT }}
+          name: QGroundControl32
           path: ${{ runner.temp }}/shadow_build_dir/${{ env.ARTIFACT }}
 
 #      - name: Upload build to S3 Bucket
