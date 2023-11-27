@@ -97,10 +97,10 @@ jobs:
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
-          name: ${{ env.ARTIFACT }}
+          name: QGroundControl32
           path: ${{ runner.temp }}/shadow_build_dir/
 
       - name: Download artifact
         uses: actions/download-artifact@master
         with:
-          name: ${{ env.ARTIFACT }}
+          name: QGroundControl32
