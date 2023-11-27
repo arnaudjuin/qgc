@@ -5,9 +5,7 @@ on:
     branches:
       - 'master'
       - 'Stable*'
-      - 'main'
       - 'QGCustomAPM'
-
     tags:
       - 'v*'
   pull_request:
@@ -19,57 +17,60 @@ defaults:
     shell: bash
 
 env:
-  SOURCE_DIR: ${{ github.workspace }}
-  QT_VERSION: 5.15.2
-  ARTIFACT: QGroundControl.AppImage
-  BUILD_TYPE: ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
+  SOURCE_DIR:   ${{ github.workspace }}
+  QT_VERSION:   5.15.2
+  ARTIFACT:     QGroundControl.AppImage
+  BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on:  ubuntu-18.04
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           submodules: recursive
 
       - name: Get all tags for correct version determination
-        working-directory: ${{ github.workspace }}
+        working-directory:  ${{ github.workspace }}
         run: |
-          git fetch --all --tags -f --depth 1
+          git fetch --all --tags -f
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v2
         with:
-          version: ${{ env.QT_VERSION }}
-          host: linux
-          target: desktop
-          dir: ${{ runner.temp }}
-          modules: qtcharts
+          version:      ${{ env.QT_VERSION }}
+          host:         linux
+          target:       desktop
+          dir:          ${{ runner.temp }}
+          modules:      qtcharts
           setup-python: true
 
       - name: Install QGC source dependencies
-        run: sudo apt-get install -y libsdl2-dev
+        run:  sudo apt-get install -y libsdl2-dev
 
       - name: Install Gstreamer
-        run: sudo apt-get install -y libgstreamer-plugins-base1.0-dev libgstreamer1.0-0:amd64 libgstreamer1.0-dev
+        run:  sudo apt-get install -y libgstreamer-plugins-base1.0-dev libgstreamer1.0-0:amd64 libgstreamer1.0-dev
 
       - name: Install ccache
-        run: sudo apt-get install ccache
+        run:  sudo apt-get install ccache
 
       - name: Install post-link dependencies
-        run: sudo apt-get install -y binutils patchelf
+        run:  sudo apt-get install -y binutils patchelf
 
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
-        run: echo "name=timestamp::$(date --utc +'%Y-%m-%d-%H\;%M\;%S')" >> $GITHUB_OUTPUT
+        shell: cmake -P {0}
+        run: |
+          string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
+          message("::set-output name=timestamp::${current_date}")
 
       - name: ccache cache files
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
-          path: ~/.ccache
-          key: ${{ runner.os }}-ccache-${{steps.ccache_cache_timestamp.outputs.timestamp}}
+          path:         ~/.ccache
+          key:          ${{ runner.os }}-ccache-${{steps.ccache_cache_timestamp.outputs.timestamp}}
           restore-keys: ${{ runner.os }}-ccache-
 
       - name: Setup ccache
@@ -82,26 +83,32 @@ jobs:
           ccache -z
 
       - name: Create build directory
-        run: mkdir ${{ runner.temp }}/shadow_build_dir
+        run:  mkdir ${{ runner.temp }}/shadow_build_dir
 
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
-        run: |
+        run:  |
           qmake -r ${SOURCE_DIR}/qgroundcontrol.pro CONFIG+=installer CONFIG+=${BUILD_TYPE}
           make -j2
 
       - name: ccache post-run
-        run: ccache -s
+        run:  ccache -s
 
       - name: Create AppImage
-        working-directory: ${{ runner.temp }}/shadow_build_dir
-        run: ${SOURCE_DIR}/deploy/create_linux_appimage.sh ${SOURCE_DIR} ./staging ./package;
+        working-directory:  ${{ runner.temp }}/shadow_build_dir
+        run:                ${SOURCE_DIR}/deploy/create_linux_appimage.sh ${SOURCE_DIR} ./staging ./package;
+
+
+      # This will set GIT_BRANCH_NAME environment variable
+      - name: Git branch name
+        id:   git-branch-name
+        uses: EthanSK/git-branch-name-action@v1
 
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
           name: QGroundControl32
-          path: ${{ runner.temp }}/shadow_build_dir/${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir
 
 #      - name: Upload build to S3 Bucket
 #        if: github.event_name == 'push'
