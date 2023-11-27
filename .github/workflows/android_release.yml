@@ -1,14 +1,12 @@
 # The 32 and 64 bit version of these actions should be kept in sync
-name: Android 32/64-bit Release
+name: Android 32-bit Release
 
 on:
   push:
     branches:
       - 'master'
       - 'Stable*'
-      - 'main'
       - 'QGCustomAPM'
-
     tags:
       - 'v*'
   pull_request:
@@ -20,71 +18,51 @@ defaults:
     shell: bash
 
 env:
-  SOURCE_DIR: ${{ github.workspace }}
-  QT_VERSION: 5.15.2
-  BUILD_TYPE: ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
+  SOURCE_DIR:   ${{ github.workspace }}
+  QT_VERSION:   5.15.2
+  ARTIFACT:     QGroundControl32.apk
+  BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
-
-    strategy:
-      matrix:
-        include:
-          - architecture: 32bits
-            eabi: armeabi-v7a
-            ARTIFACT: QGroundControl32.apk
-          - architecture: 64bits
-            eabi: arm64-v8a
-            ARTIFACT: QGroundControl64.apk
+    runs-on:  ubuntu-20.04
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           submodules: recursive
 
       - name: Get all tags for correct version determination
-        working-directory: ${{ github.workspace }}
+        working-directory:  ${{ github.workspace }}
         run: |
-          git fetch --all --tags -f --depth 1
+          git fetch --all --tags -f
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v2
         with:
-          version: ${{ env.QT_VERSION }}
-          host: linux
-          target: android
-          dir: ${{ runner.temp }}
-          modules: qtcharts
+          version:      ${{ env.QT_VERSION }}
+          host:         linux
+          target:       android
+          dir:          ${{ runner.temp }}
+          modules:      qtcharts
           setup-python: true
 
-      - name: Install Android NDK
-        uses: nttld/setup-ndk@v1
-        id: setup-ndk
-        with:
-          ndk-version: r21e
-          add-to-path: false
-
-      - name: Remove Android SDKs to force usage of android-33 only
-        run: |
-          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext5"
-          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext4"
-          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34"
-          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34-ext8"
-
       - name: Install ccache
-        run: sudo apt-get install ccache
+        run:  sudo apt-get install ccache
 
       - name: Prepare ccache timestamp
         id: ccache_cache_timestamp
-        run: echo "name=timestamp::$(date --utc +'%Y-%m-%d-%H\;%M\;%S')" >> $GITHUB_OUTPUT
+        shell: cmake -P {0}
+        run: |
+          string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
+          message("::set-output name=timestamp::${current_date}")
 
       - name: ccache cache files
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
-          path: ~/.ccache
-          key: ${{ runner.os }}-ccache-${{steps.ccache_cache_timestamp.outputs.timestamp}}
+          path:         ~/.ccache
+          key:          ${{ runner.os }}-ccache-${{steps.ccache_cache_timestamp.outputs.timestamp}}
           restore-keys: ${{ runner.os }}-ccache-
 
       - name: Setup ccache
@@ -97,40 +75,42 @@ jobs:
           ccache -z
 
       - name: Create build directory
-        run: mkdir ${{ runner.temp }}/shadow_build_dir
+        run:  mkdir ${{ runner.temp }}/shadow_build_dir
 
-      - name: Install gstreamer
-        working-directory: ${{ github.workspace }}
+      - name:               Install gstreamer
+        working-directory:  ${{ github.workspace }}
         run: |
           wget --quiet https://gstreamer.freedesktop.org/data/pkg/android/1.18.5/gstreamer-1.0-android-universal-1.18.5.tar.xz
           mkdir gstreamer-1.0-android-universal-1.18.5
           tar xf gstreamer-1.0-android-universal-1.18.5.tar.xz -C gstreamer-1.0-android-universal-1.18.5
 
+      # This will set GIT_BRANCH_NAME environment variable
+      - name: Git branch name
+        id:   git-branch-name
+        uses: EthanSK/git-branch-name-action@v1
+
       - name: Update android manifest
-        if: github.ref_name != 'Stable'
         run: |
-          ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${{ github.ref_name }}
+          if [ $GIT_BRANCH_NAME != "Stable*" ]; then
+            ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${GIT_BRANCH_NAME}
+          fi
 
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          ANDROID_NDK_LATEST_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          ANDROID_NDK: ${{ steps.setup-ndk.outputs.ndk-path }}
-        run: |
-          qmake -r ${SOURCE_DIR}/qgroundcontrol.pro -spec android-clang CONFIG+=${BUILD_TYPE} CONFIG+=installer ANDROID_ABIS="${{ matrix.eabi }}" "DEFINES+=ENABLE_PRECOMPILED_HEADERS=OFF"          
+        run:  |
+          qmake -r ${SOURCE_DIR}/qgroundcontrol.pro -spec android-clang CONFIG+=${BUILD_TYPE} CONFIG+=installer ANDROID_ABIS="armeabi-v7a"
           make -j2
 
       - name: ccache post-run
-        run: ccache -s
+        run:  ccache -s
 
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
-          name: ${{ matrix.ARTIFACT }}
-          path: ${{ runner.temp }}/shadow_build_dir/package/${{ matrix.ARTIFACT }}
+          name: ${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
 
       #      - name: Upload build to S3 Bucket
       #        if:                 github.event_name == 'push'

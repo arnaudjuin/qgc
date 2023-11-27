@@ -122,4 +122,4 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@master
         with:
-          name: QGroundControlWindows  # Replace with the actual artifact name
+          name: qgroundcontrol.pdb  # Replace with the actual artifact name
