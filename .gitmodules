@@ -25,3 +25,6 @@
 [submodule "libs/gst-plugins-good"]
 	path = libs/gst-plugins-good
 	url = https://github.com/mavlink/gst-plugins-good.git
+[submodule "resources/SDL_GameControllerDB"]
+	path = resources/SDL_GameControllerDB
+	url = https://github.com/gabomdq/SDL_GameControllerDB.git

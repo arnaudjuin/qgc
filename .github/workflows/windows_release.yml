@@ -94,14 +94,14 @@ jobs:
       - name: Save installer artifact
         uses: actions/upload-artifact@master
         with:
-          name: ${{ env.ARTIFACT }}
-          path: ${{ runner.temp }}\shadow_build_dir\staging\${{ env.ARTIFACT }}
+          name: qgroundcontrol.pdb
+          path: ${{ runner.temp }}/shadow_build_dir/
 
       - name: Save PDB artifact
         uses: actions/upload-artifact@master
         with:
           name: qgroundcontrol.pdb
-          path: ${{ runner.temp }}\shadow_build_dir\staging\qgroundcontrol.pdb
+          path: ${{ runner.temp }}/shadow_build_dir/
 
       #      - name: Upload build to S3 Bucket
       #        if:                 github.event_name == 'push'
@@ -123,3 +123,5 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: qgroundcontrol.pdb  # Replace with the actual artifact name
+          path: ${{ runner.temp }}/shadow_build_dir/
+
