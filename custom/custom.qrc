@@ -65,4 +65,8 @@
         <file alias="Custom/Camera/qmldir">res/Custom/Camera/qmldir</file>
         <file alias="Custom/Camera/ZoomControl.qml">res/Custom/Camera/ZoomControl.qml</file>
     </qresource>
+    <qresource prefix="/qml">
+        <file alias="PasswordSettings.qml">res/Custom/PasswordSettings.qml</file>
+    </qresource>
+
 </RCC>

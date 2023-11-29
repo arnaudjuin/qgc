@@ -40,9 +40,10 @@ CustomFirmwarePlugin::toolBarIndicators(const Vehicle* vehicle)
 #if defined(QGC_ENABLE_PAIRING)
         _toolBarIndicatorList.append(QVariant::fromValue(QUrl::fromUserInput("qrc:/custom/PairingIndicator.qml")));
 #endif
+        // TODO SUIND
         _toolBarIndicatorList.append(QVariant::fromValue(QUrl::fromUserInput("qrc:/custom/CustomGPSIndicator.qml")));
-        _toolBarIndicatorList.append(QVariant::fromValue(QUrl::fromUserInput("qrc:/toolbar/RCRSSIIndicator.qml")));
-       //_toolBarIndicatorList.append(QVariant::fromValue(QUrl::fromUserInput("qrc:/custom/RCRSSIIndicator.qml")));
+   //     _toolBarIndicatorList.append(QVariant::fromValue(QUrl::fromUserInput("qrc:/toolbar/RCRSSIIndicator.qml")));
+   //    _toolBarIndicatorList.append(QVariant::fromValue(QUrl::fromUserInput("qrc:/custom/RCRSSIIndicator.qml")));
 
         _toolBarIndicatorList.append(QVariant::fromValue(QUrl::fromUserInput("qrc:/toolbar/TelemetryRSSIIndicator.qml")));
         _toolBarIndicatorList.append(QVariant::fromValue(QUrl::fromUserInput("qrc:/custom/CustomBatteryIndicator.qml")));

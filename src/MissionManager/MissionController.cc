@@ -2322,7 +2322,6 @@ void MissionController::setCurrentPlanViewSeqNum(int sequenceNumber, bool force)
                     _isInsertTakeoffValid = false;
                 }
             }
-
             if (qobject_cast<TakeoffMissionItem*>(pVI)) {
                 takeoffSeqNum = currentSeqNumber;
                 _isInsertTakeoffValid = false;

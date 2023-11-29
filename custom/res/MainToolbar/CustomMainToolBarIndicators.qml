@@ -97,9 +97,8 @@ Item {
         id:                         indicatorRow
         anchors.top:                parent.top
         anchors.bottom:             parent.bottom
-        anchors.right:              parent.right
         anchors.rightMargin:        ScreenTools.defaultFontPixelWidth * 2
-        spacing:                    ScreenTools.defaultFontPixelWidth * 1
+        spacing:                    ScreenTools.defaultFontPixelWidth * 2
         visible:                    activeVehicle && !communicationLost
         Repeater {
             model:                  activeVehicle ? activeVehicle.toolBarIndicators : []

@@ -239,5 +239,16 @@ DISTFILES += \
     $$QGCROOT/custom/src/FirmwarePlugin/APM/Rover3.5.OfflineEditing.params
 
 
+# Our own, custom sources
+SOURCES += \
+    $$PWD/src/AccessType.cpp \
+    $$PWD/src/AccessTypeConfig.cpp \
+    $$PWD/src/PasscodeMenu/PasscodeManager.cc
+
+
+HEADERS += \
+    $$PWD/src/AccessType.h \
+    $$PWD/src/AccessTypeConfig.h \
+    $$PWD/src/PasscodeMenu/PasscodeManager.h
 
 

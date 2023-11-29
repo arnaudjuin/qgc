@@ -76,13 +76,13 @@ Rectangle {
                     QGCLabel {
                         id:         unitsSectionLabel
                         text:       qsTr("Units")
-                        visible:    QGroundControl.settingsManager.unitsSettings.visible
+                        visible:    QGroundControl.settingsManager.unitsSettings.visible &&  QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredHeight: unitsGrid.height + (_margins * 2)
                         Layout.preferredWidth:  unitsGrid.width + (_margins * 2)
                         color:                  qgcPal.windowShade
-                        visible:                miscSectionLabel.visible
+                        visible:                miscSectionLabel.visible &&  QGroundControl.corePlugin.showAdvancedUI
                         Layout.fillWidth:       true
 
                         GridLayout {
@@ -416,7 +416,7 @@ Rectangle {
                     Item { width: 1; height: _margins }
                     QGCLabel {
                         text:       qsTr("Telemetry Logs from Vehicle")
-                        visible:    telemetryRect.visible
+                        visible:    telemetryRect.visible && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         id:                     telemetryRect
@@ -424,7 +424,7 @@ Rectangle {
                         Layout.preferredWidth:  loggingCol.width + (_margins * 2)
                         color:                  qgcPal.windowShade
                         Layout.fillWidth:       true
-                        visible:                promptSaveLog._telemetrySave.visible || logIfNotArmed._telemetrySaveNotArmed.visible || promptSaveCsv._saveCsvTelemetry.visible
+                        visible:                (promptSaveLog._telemetrySave.visible || logIfNotArmed._telemetrySaveNotArmed.visible || promptSaveCsv._saveCsvTelemetry.visible) && QGroundControl.corePlugin.showAdvancedUI
                         ColumnLayout {
                             id:                         loggingCol
                             anchors.margins:            _margins
@@ -462,13 +462,13 @@ Rectangle {
                     QGCLabel {
                         id:         flyViewSectionLabel
                         text:       qsTr("Fly View")
-                        visible:    QGroundControl.settingsManager.flyViewSettings.visible
+                        visible:    QGroundControl.settingsManager.flyViewSettings.visible &&  QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredHeight: flyViewCol.height + (_margins * 2)
                         Layout.preferredWidth:  flyViewCol.width + (_margins * 2)
                         color:                  qgcPal.windowShade
-                        visible:                flyViewSectionLabel.visible
+                        visible:                flyViewSectionLabel.visible  &&  QGroundControl.corePlugin.showAdvancedUI
                         Layout.fillWidth:       true
 
                         ColumnLayout {
@@ -591,18 +591,18 @@ Rectangle {
                         }
                     }
 
-                    Item { width: 1; height: _margins }
+                    Item { width: 1; height: _margins  &&  QGroundControl.corePlugin.showAdvancedUI}
 
                     QGCLabel {
                         id:         planViewSectionLabel
                         text:       qsTr("Plan View")
-                        visible:    _planViewSettings.visible
+                        visible:    _planViewSettings.visible &&  QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredHeight: planViewCol.height + (_margins * 2)
                         Layout.preferredWidth:  planViewCol.width + (_margins * 2)
                         color:                  qgcPal.windowShade
-                        visible:                planViewSectionLabel.visible
+                        visible:                planViewSectionLabel.visible &&  QGroundControl.corePlugin.showAdvancedUI
                         Layout.fillWidth:       true
 
                         ColumnLayout {
@@ -636,13 +636,13 @@ Rectangle {
                     QGCLabel {
                         id:         autoConnectSectionLabel
                         text:       qsTr("AutoConnect to the following devices")
-                        visible:    QGroundControl.settingsManager.autoConnectSettings.visible
+                        visible:    QGroundControl.settingsManager.autoConnectSettings.visible && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredWidth:  autoConnectCol.width + (_margins * 2)
                         Layout.preferredHeight: autoConnectCol.height + (_margins * 2)
                         color:                  qgcPal.windowShade
-                        visible:                autoConnectSectionLabel.visible
+                        visible:                autoConnectSectionLabel.visible && QGroundControl.corePlugin.showAdvancedUI
                         Layout.fillWidth:       true
 
                         ColumnLayout {
@@ -752,13 +752,13 @@ Rectangle {
                     QGCLabel {
                         id:         rtkSectionLabel
                         text:       qsTr("RTK GPS")
-                        visible:    QGroundControl.settingsManager.rtkSettings.visible
+                        visible:    QGroundControl.settingsManager.rtkSettings.visible && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredHeight: rtkGrid.height + (_margins * 2)
                         Layout.preferredWidth:  rtkGrid.width + (_margins * 2)
                         color:                  qgcPal.windowShade
-                        visible:                rtkSectionLabel.visible
+                        visible:                rtkSectionLabel.visible && QGroundControl.corePlugin.showAdvancedUI
                         Layout.fillWidth:       true
 
                         GridLayout {
@@ -887,13 +887,13 @@ Rectangle {
                     QGCLabel {
                         id:         adsbSectionLabel
                         text:       qsTr("ADSB Server")
-                        visible:    QGroundControl.settingsManager.adsbVehicleManagerSettings.visible
+                        visible:    QGroundControl.settingsManager.adsbVehicleManagerSettings.visible && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredHeight: adsbGrid.y + adsbGrid.height + _margins
                         Layout.preferredWidth:  adsbGrid.width + (_margins * 2)
                         color:                  qgcPal.windowShade
-                        visible:                adsbSectionLabel.visible
+                        visible:                adsbSectionLabel.visible && QGroundControl.corePlugin.showAdvancedUI
                         Layout.fillWidth:       true
 
                         QGCLabel {
@@ -951,14 +951,14 @@ Rectangle {
                     QGCLabel {
                         id:         videoSectionLabel
                         text:       qsTr("Video")
-                        visible:    QGroundControl.settingsManager.videoSettings.visible && !QGroundControl.videoManager.autoStreamConfigured
+                        visible:    QGroundControl.settingsManager.videoSettings.visible && !QGroundControl.videoManager.autoStreamConfigured && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredWidth:  videoGrid.width + (_margins * 2)
                         Layout.preferredHeight: videoGrid.height + (_margins * 2)
                         Layout.fillWidth:       true
                         color:                  qgcPal.windowShade
-                        visible:                videoSectionLabel.visible
+                        visible:                videoSectionLabel.visible && QGroundControl.corePlugin.showAdvancedUI
 
                         GridLayout {
                             id:                         videoGrid
@@ -1100,14 +1100,14 @@ Rectangle {
                     QGCLabel {
                         id:         brandImageSectionLabel
                         text:       qsTr("Brand Image")
-                        visible:    QGroundControl.settingsManager.brandImageSettings.visible && !ScreenTools.isMobile
+                        visible:    QGroundControl.settingsManager.brandImageSettings.visible && !ScreenTools.isMobile && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredWidth:  brandImageGrid.width + (_margins * 2)
                         Layout.preferredHeight: brandImageGrid.height + (_margins * 2)
                         Layout.fillWidth:       true
                         color:                  qgcPal.windowShade
-                        visible:                brandImageSectionLabel.visible
+                        visible:                brandImageSectionLabel.visible && QGroundControl.corePlugin.showAdvancedUI
 
                         GridLayout {
                             id:                 brandImageGrid

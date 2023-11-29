@@ -22,7 +22,7 @@ Item {
     id:             _root
     width:          rssiRow.width * 1.1
     anchors.top:    parent.top
-    anchors.bottom: parent.bottom
+    height:         30
 
     property bool showIndicator: _activeVehicle.supportsRadio
 
@@ -72,17 +72,16 @@ Item {
         id:             rssiRow
         anchors.top:    parent.top
         anchors.bottom: parent.bottom
-        spacing:        ScreenTools.defaultFontPixelWidth
+        height:             30
 
         QGCColoredImage {
-            width:              height
+            width:              30
+            height:             20
             anchors.top:        parent.top
-            anchors.bottom:     parent.bottom
-            sourceSize.height:  height
             source:             "/qmlimages/RC.svg"
             fillMode:           Image.PreserveAspectFit
             opacity:            _rcRSSIAvailable ? 1 : 0.5
-            color:              qgcPal.buttonText
+            color:              qgcPal.colorBlue
         }
 
         SignalStrength {

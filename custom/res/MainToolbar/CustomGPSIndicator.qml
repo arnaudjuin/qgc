@@ -111,11 +111,11 @@ Item {
     Row {
         id:             gpsRow
         anchors.top:    parent.top
-        anchors.bottom: parent.bottom
-        anchors.left:     parent.left
-        spacing:        ScreenTools.defaultFontPixelWidth * 0.25
+//        anchors.bottom: parent.bottom
+//        anchors.left:     parent.left
+//        spacing:        ScreenTools.defaultFontPixelWidth * 0.25
         QGCColoredImage {
-            width:              height
+            width:              50
             anchors.top:        parent.top
             anchors.bottom:     parent.bottom
             sourceSize.height:  height

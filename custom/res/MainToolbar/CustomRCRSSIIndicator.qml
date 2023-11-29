@@ -73,13 +73,10 @@ Item {
     Row {
         id:             rssiRow
         anchors.top:    parent.top
-        anchors.bottom: parent.bottom
         spacing:        ScreenTools.defaultFontPixelWidth * 0.25
         QGCColoredImage {
-            width:              height
-            anchors.top:        parent.top
-            anchors.bottom:     parent.bottom
-            sourceSize.height:  height
+            width:              100
+            sourceSize.height:  height * 2
             source:             "/custom/img/menu_rc.svg"
             color:              qgcPal.text
             fillMode:           Image.PreserveAspectFit

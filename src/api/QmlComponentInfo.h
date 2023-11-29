@@ -18,7 +18,7 @@ class QmlComponentInfo : public QObject
     Q_OBJECT
 
 public:
-    QmlComponentInfo(QString title, QUrl url, QUrl icon = QUrl(), QObject* parent = nullptr);
+    QmlComponentInfo(QString title, QUrl url, QUrl icon = QUrl(), QObject* parent = nullptr,bool show=true );
 
     Q_PROPERTY(QString  title   READ title  CONSTANT)   ///< Title for page
     Q_PROPERTY(QUrl     url     READ url    CONSTANT)   ///< Qml source code
@@ -27,9 +27,11 @@ public:
     virtual QString title   () { return _title; }
     virtual QUrl    url     () { return _url;   }
     virtual QUrl    icon    () { return _icon;  }
+    virtual bool show () { return _show;   }
 
 protected:
     QString _title;
     QUrl    _url;
     QUrl    _icon;
+    bool   _show;
 };

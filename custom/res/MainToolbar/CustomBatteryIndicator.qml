@@ -232,8 +232,8 @@ Item {
                         model: 1// getCellCount()
                         QGCColoredImage {
                             height:         batteryLabel.height
-                            width:          height
-                            sourceSize.width:   width
+                            width:          height*2
+                            sourceSize.width:   width*2
                             source:         "/qmlimages/Battery.svg"
                             color:         qgcPal.text
                             fillMode:       Image.PreserveAspectFit
@@ -340,16 +340,16 @@ Item {
     Row {
         id:             batteryIndicatorRow
         anchors.top:    parent.top
-        anchors.bottom: parent.bottom
-        anchors.left:     parent.left
+//        anchors.bottom: parent.bottom
+//        anchors.left:     parent.left
         opacity:        (activeVehicle && activeVehicle.battery.voltage.value >= 0) ? 1 : 0.5
         spacing:        ScreenTools.defaultFontPixelWidth
         QGCColoredImage {
+            width:              50
             id:                 imagePercent
             anchors.top:        parent.top
             anchors.bottom:     parent.bottom
-            width:              height
-            sourceSize.width:   width
+            sourceSize.height:  height
             source:             "/qmlimages/Battery.svg"
             color:              CustomBattery.showFeatures? getAdvBatteryColor(): getBatteryColor(activeVehicle ? activeVehicle.battery : null)//qgcPal.text
             fillMode:           Image.PreserveAspectFit
@@ -387,6 +387,28 @@ Item {
             anchors.top:            parent.top
             visible:                true
         }
+
+
+
+
+                       QGCLabel {
+                                    text: QGroundControl.corePlugin.showAdvancedUI ? "ADVANCED" : "BASIC"
+                                    font.pointSize:         ScreenTools.mediumFontPointSize
+                                    color:                  labelLevel.color
+                                    anchors.top:            parent.top
+                                    visible:                true
+                                }
+
+
+Connections {
+    target: QGroundControl.corePlugin
+    onShowAdvancedUIChanged: {
+        if (!QGroundControl.corePlugin.showAdvancedUI) {
+            console.log("on/off")
+        }
+    }
+}
+
 
 
 

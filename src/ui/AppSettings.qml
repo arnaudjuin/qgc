@@ -72,7 +72,8 @@ Rectangle {
                     text:               modelData.title
                     exclusiveGroup:     panelActionGroup
                     Layout.fillWidth:   true
-
+                    //TODO SUIND
+                    visible :           (modelData.title == "General" || modelData.title == "Offline Maps" ||  modelData.title == "Change Role" ||  modelData.title == "Comm Links" ) ||  ((modelData.title == "Console" || modelData.title == "MAVLink") &&  QGroundControl.corePlugin.showAdvancedUI)
                     onClicked: {
                         if (mainWindow.preventViewSwitch()) {
                             return
@@ -83,10 +84,19 @@ Rectangle {
                         checked = true
                     }
 
+
                     Component.onCompleted: {
                         if(_first) {
                             _first = false
                             checked = true
+                        }
+                    }
+                    Connections {
+                        target: QGroundControl.corePlugin
+                        onShowAdvancedUIChanged: {
+                            if (!QGroundControl.corePlugin.showAdvancedUI) {
+                                console.log("on/off")
+                            }
                         }
                     }
                 }

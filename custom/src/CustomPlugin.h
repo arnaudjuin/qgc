@@ -17,6 +17,8 @@
 #include "VideoReceiver.h"
 #include "SettingsManager.h"
 #include "CustomClass.h"
+#include "AccessType.h"
+#include "SettingsManager.h"
 
 #include <QTranslator>
 
@@ -41,6 +43,7 @@ public:
 class CustomOptions : public QGCOptions
 {
 public:
+
     CustomOptions(CustomPlugin*, QObject* parent = nullptr);
     bool        wifiReliableForCalibration      () const final { return true; }
 #if defined(Q_OS_LINUX)
@@ -71,8 +74,24 @@ class CustomPlugin : public QGCCorePlugin
 {
     Q_OBJECT
 public:
+
     CustomPlugin(QGCApplication* app, QGCToolbox *toolbox);
     ~CustomPlugin();
+    AccessType returnAccess();
+    Q_PROPERTY(QString
+    accessType READ
+    accessType WRITE
+    setAccessType NOTIFY
+    accessTypeChanged);
+
+    Q_INVOKABLE void setAccessType(QString qAccessType);
+    QString accessType() {
+        return QString::fromStdString(accessTypeString(_accessType));
+    };
+    Q_INVOKABLE void updateFlightModes();
+    AccessType getAccessType() {
+        return _accessType;
+    };
 
     // Overrides from QGCCorePlugin
     QVariantList&           settingsPages                   () final;
@@ -103,5 +122,13 @@ private:
 
 private:
     CustomOptions*      _pOptions = nullptr;
-    QVariantList        _customSettingsList; // Not to be mixed up with QGCCorePlugin implementation
+
+    void _addSettingsEntry(const QString &title, const char *qmlFile,
+                           const char *iconFile = nullptr,bool show=true);
+    QVariantList _customSettingsList;
+protected:
+    AccessType _accessType;
+    signals:
+            void accessTypeChanged();
+
 };

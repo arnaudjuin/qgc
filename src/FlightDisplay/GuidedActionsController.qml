@@ -148,6 +148,7 @@ Item {
     property bool __flightMode:             _flightMode
 
     function _outputState() {
+        console.log("Test", _guidedActionsEnabled , activeVehicle.takeoffVehicleSupported , !_vehicleFlying , _canArm)
         if (_corePlugin.guidedActionsControllerLogging()) {
             console.log(qsTr("activeVehicle(%1) _vehicleArmed(%2) guidedModeSupported(%3) _vehicleFlying(%4) _vehicleWasFlying(%5) _vehicleInRTLMode(%6) pauseVehicleSupported(%7) _vehiclePaused(%8) _flightMode(%9) _missionItemCount(%10)").arg(activeVehicle ? 1 : 0).arg(_vehicleArmed ? 1 : 0).arg(__guidedModeSupported ? 1 : 0).arg(_vehicleFlying ? 1 : 0).arg(_vehicleWasFlying ? 1 : 0).arg(_vehicleInRTLMode ? 1 : 0).arg(__pauseVehicleSupported ? 1 : 0).arg(_vehiclePaused ? 1 : 0).arg(_flightMode).arg(_missionItemCount))
         }

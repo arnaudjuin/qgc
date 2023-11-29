@@ -23,6 +23,7 @@ Item {
     anchors.top:    parent.top
     anchors.bottom: parent.bottom
     width:          telemIcon.width * 1.1
+    backgroundColor: "lightblue" // Set the background color
 
     property bool showIndicator: _hasTelemetry
 

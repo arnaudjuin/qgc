@@ -23,7 +23,7 @@ import QGroundControl.Palette               1.0
 Item {
     width:          height
     anchors.top:    parent.top
-    anchors.bottom: parent.bottom
+    anchors.rightMargin: 10  // Set the margin from the right edge
 
     property bool showIndicator: true
 
@@ -56,15 +56,15 @@ Item {
         cache:              false
         visible:            activeVehicle && activeVehicle.messageCount > 0 && _isMessageImportant
     }
-
-    QGCColoredImage {
-        anchors.fill:       parent
-        source:             "/qmlimages/Megaphone.svg"
-        sourceSize.height:  height
-        fillMode:           Image.PreserveAspectFit
-        color:              getMessageColor()
-        visible:            !criticalMessageIcon.visible
-    }
+//TODO SUIND
+//    QGCColoredImage {
+//        anchors.fill:       parent
+//        source:             "/qmlimages/Megaphone.svg"
+//        sourceSize.height:  height
+//        fillMode:           Image.Stretch
+//        color:              getMessageColor()
+//        visible:            !criticalMessageIcon.visible
+//    }
 
     MouseArea {
         anchors.fill:   parent
