@@ -6,6 +6,7 @@ on:
     branches:
       - 'master'
       - 'Stable*'
+      - 'QGCustomAPM*'
     tags:
       - 'v*'
   pull_request:
