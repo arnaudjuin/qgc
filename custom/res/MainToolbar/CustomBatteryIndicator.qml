@@ -197,8 +197,6 @@ Item {
             height: battCol.height  + ScreenTools.defaultFontPixelHeight * 3//2
             radius: ScreenTools.defaultFontPixelHeight * 0.5
             color:  qgcPal.window
-            border.color:   qgcPal.text
-
             Column {
                 id:                 battCol
                 spacing:            ScreenTools.defaultFontPixelHeight * 0.5
@@ -392,9 +390,9 @@ Item {
 
 
                        QGCLabel {
-                                    text: QGroundControl.corePlugin.showAdvancedUI ? "ADVANCED" : "BASIC"
+                                    text: "MODE" + QGroundControl.corePlugin.showAdvancedUI ? "ADVANCED" : "EXPERT"
                                     font.pointSize:         ScreenTools.mediumFontPointSize
-                                    color:                  labelLevel.color
+                                    color:                  imagePercent.color
                                     anchors.top:            parent.top
                                     visible:                true
                                 }

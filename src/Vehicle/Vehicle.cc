@@ -140,6 +140,7 @@ Vehicle::Vehicle(LinkInterface*             link,
     , _globalPositionIntMessageAvailable(false)
     , _defaultCruiseSpeed(_settingsManager->appSettings()->offlineEditingCruiseSpeed()->rawValue().toDouble())
     , _defaultHoverSpeed(_settingsManager->appSettings()->offlineEditingHoverSpeed()->rawValue().toDouble())
+    , _defaultSprayerFlow(_settingsManager->appSettings()->offlineEditingSprayerFlow()->rawValue().toDouble())
     , _telemetryRRSSI(0)
     , _telemetryLRSSI(0)
     , _telemetryRXErrors(0)
@@ -344,6 +345,7 @@ Vehicle::Vehicle(MAV_AUTOPILOT              firmwareType,
     , _globalPositionIntMessageAvailable(false)
     , _defaultCruiseSpeed(_settingsManager->appSettings()->offlineEditingCruiseSpeed()->rawValue().toDouble())
     , _defaultHoverSpeed(_settingsManager->appSettings()->offlineEditingHoverSpeed()->rawValue().toDouble())
+    , _defaultSprayerFlow(_settingsManager->appSettings()->offlineEditingSprayerFlow()->rawValue().toDouble())
     , _mavlinkProtocolRequestComplete(true)
     , _maxProtoVersion(200)
     , _capabilityBitsKnown(true)
@@ -425,6 +427,7 @@ Vehicle::Vehicle(MAV_AUTOPILOT              firmwareType,
     connect(_settingsManager->appSettings()->offlineEditingVehicleType(),   &Fact::rawValueChanged, this, &Vehicle::_offlineVehicleTypeSettingChanged);
     connect(_settingsManager->appSettings()->offlineEditingCruiseSpeed(),   &Fact::rawValueChanged, this, &Vehicle::_offlineCruiseSpeedSettingChanged);
     connect(_settingsManager->appSettings()->offlineEditingHoverSpeed(),    &Fact::rawValueChanged, this, &Vehicle::_offlineHoverSpeedSettingChanged);
+    connect(_settingsManager->appSettings()->offlineEditingSprayerFlow(),    &Fact::rawValueChanged, this, &Vehicle::_offlineSprayerFlowSettingChanged);
 
     _firmwarePlugin->initializeVehicle(this);
 }
@@ -597,6 +600,12 @@ void Vehicle::_offlineHoverSpeedSettingChanged(QVariant value)
 {
     _defaultHoverSpeed = value.toDouble();
     emit defaultHoverSpeedChanged(_defaultHoverSpeed);
+}
+
+void Vehicle::_offlineSprayerFlowSettingChanged(QVariant value)
+{
+    _defaultSprayerFlow = value.toDouble();
+    emit defaultSprayerFlowChanged(_defaultSprayerFlow);
 }
 
 QString Vehicle::firmwareTypeString() const

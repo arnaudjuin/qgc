@@ -51,7 +51,7 @@ Item {
     QGCComboBox {
         id:         flightModeCombo
         width:      (_maxFMCharLength + 4) * ScreenTools.defaultFontPixelWidth
-        model:      activeVehicle ? activeVehicle.flightModes : 0
+        model:      0
         visible:    activeVehicle.flightModeSetAvailable
 
         onModelChanged: {

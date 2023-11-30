@@ -21,12 +21,39 @@ import QGroundControl.MultiVehicleManager   1.0
 import QGroundControl.ScreenTools           1.0
 import QGroundControl.Palette               1.0
 
+
+
 //-------------------------------------------------------------------------
 //-- Mode Indicator
 Item {
     anchors.top:                    parent.top
     anchors.bottom:                 parent.bottom
     width:                          selectorRow.width
+
+    property var flightModesMenuItems:["Manual", "Hold", "Return", "Precision Land"]
+    property var flightModesMenuItemsBasic: ["Manual", "Hold", "Return", "Precision Land"]
+    property var flightModesMenuItemsExpert: ["Manual", "Hold", "Return", "Precision Land", "Stabilized", "Acro", "Position", "Mission"]
+    property var flightModesMenuItemsFactory: ["Manual", "Stabilized", "Acro", "Rattitude", "Altitude", "Offboard", "Position", "Hold", "Mission", "Return", "Follow Me", "Precision Land"]
+
+    function updateFlightModesMenu(newAccessType) {
+        if (newAccessType == "Basic") {
+            flightModesMenuItems = flightModesMenuItemsBasic
+        } else if (newAccessType == "Expert") {
+            flightModesMenuItems = flightModesMenuItemsExpert
+        } else if (newAccessType == "Factory") {
+            flightModesMenuItems = flightModesMenuItemsFactory
+        }
+
+        if (flightModesMenuItems.indexOf(activeVehicle.flightMode) == -1) {
+            activeVehicle.flightMode = flightModesMenuItems[0]
+        }
+    }
+
+    Connections {
+        target:                 QGroundControl.multiVehicleManager
+        function onActiveVehicleChanged(activeVehicle) { _root.updateFlightModesMenu(accessType) }
+    }
+
 
     Row {
         id:                         selectorRow
@@ -93,7 +120,7 @@ Item {
             }*/
 
             Repeater {
-                model:          activeVehicle ? activeVehicle.flightModes : [ ]
+                model:          activeVehicle ? flightModesMenuItems : [ ]
                 QGCButton {
                     text:       modelData
                     Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 1 //3

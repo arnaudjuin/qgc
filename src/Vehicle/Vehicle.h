@@ -953,6 +953,7 @@ public:
     QString         followFlightMode        () const;
     double          defaultCruiseSpeed      () const { return _defaultCruiseSpeed; }
     double          defaultHoverSpeed       () const { return _defaultHoverSpeed; }
+    double          defaultSprayerFlow      () const { return _defaultSprayerFlow; }
     QString         firmwareTypeString      () const;
     QString         vehicleTypeString       () const;
     int             telemetryRRSSI          () { return _telemetryRRSSI; }
@@ -1151,6 +1152,7 @@ signals:
     void unhealthySensorsChanged        ();
     void defaultCruiseSpeedChanged      (double cruiseSpeed);
     void defaultHoverSpeedChanged       (double hoverSpeed);
+    void defaultSprayerFlowChanged       (double sprayerFlow);
     void firmwareTypeChanged            ();
     void vehicleTypeChanged             ();
     void dynamicCamerasChanged          ();
@@ -1253,6 +1255,7 @@ private slots:
     void _offlineVehicleTypeSettingChanged(QVariant value);
     void _offlineCruiseSpeedSettingChanged(QVariant value);
     void _offlineHoverSpeedSettingChanged(QVariant value);
+    void _offlineSprayerFlowSettingChanged(QVariant value);
     void _updateHighLatencyLink         (bool sendCommand = true);
 
     void _handleTextMessage             (int newCount);
@@ -1406,6 +1409,7 @@ private:
     bool            _globalPositionIntMessageAvailable;
     double          _defaultCruiseSpeed;
     double          _defaultHoverSpeed;
+    double          _defaultSprayerFlow;
     int             _telemetryRRSSI;
     int             _telemetryLRSSI;
     uint32_t        _telemetryRXErrors;

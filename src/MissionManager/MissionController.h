@@ -53,6 +53,7 @@ public:
         double  cruiseTime;
         double  cruiseSpeed;
         double  hoverSpeed;
+        double  sprayerFlow;
         double  vehicleSpeed;           ///< Either cruise or hover speed based on vehicle type and vtol state
         double  vehicleYaw;
         double  gimbalYaw;              ///< NaN signals yaw was never changed
@@ -372,6 +373,8 @@ private:
     static const char*  _jsonVehicleTypeKey;
     static const char*  _jsonCruiseSpeedKey;
     static const char*  _jsonHoverSpeedKey;
+    static const char*  _jsonSprayerFlowKey;
+    static const char*  _jsonTakeoffAltitudeKey;
     static const char*  _jsonItemsKey;
     static const char*  _jsonPlannedHomePositionKey;
     static const char*  _jsonParamsKey;

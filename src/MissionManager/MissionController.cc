@@ -35,7 +35,7 @@
 
 #define UPDATE_TIMEOUT 5000 ///< How often we check for bounding box changes
 
-QGC_LOGGING_CATEGORY(MissionControllerLog, "MissionControllerLog")
+QGC_LOGGING_CATEGORY(MissionControllerLog, "‡MissionControllerLog")
 
 const char* MissionController::_settingsGroup =                 "MissionController";
 const char* MissionController::_jsonFileTypeValue =             "Mission";
@@ -45,6 +45,7 @@ const char* MissionController::_jsonFirmwareTypeKey =           "firmwareType";
 const char* MissionController::_jsonVehicleTypeKey =            "vehicleType";
 const char* MissionController::_jsonCruiseSpeedKey =            "cruiseSpeed";
 const char* MissionController::_jsonHoverSpeedKey =             "hoverSpeed";
+const char* MissionController::_jsonSprayerFlowKey =            "sprayerFlow";
 const char* MissionController::_jsonParamsKey =                 "params";
 
 // Deprecated V1 format keys
@@ -53,7 +54,7 @@ const char* MissionController::_jsonMavAutopilotKey =           "MAV_AUTOPILOT";
 
 const int   MissionController::_missionFileVersion =            2;
 
-const QString MissionController::patternSurveyName          (QT_TRANSLATE_NOOP("MissionController", "Survey"));
+const QString MissionController::patternSurveyName          (QT_TRANSLATE_NOOP("MissionController", "Spray"));
 const QString MissionController::patternFWLandingName       (QT_TRANSLATE_NOOP("MissionController", "Fixed Wing Landing"));
 const QString MissionController::patternStructureScanName   (QT_TRANSLATE_NOOP("MissionController", "Structure Scan"));
 const QString MissionController::patternCorridorScanName    (QT_TRANSLATE_NOOP("MissionController", "Corridor Scan"));
@@ -99,6 +100,7 @@ void MissionController::_resetMissionFlightStatus(void)
     _missionFlightStatus.cruiseDistance =       0.0;
     _missionFlightStatus.cruiseSpeed =          _controllerVehicle->defaultCruiseSpeed();
     _missionFlightStatus.hoverSpeed =           _controllerVehicle->defaultHoverSpeed();
+    _missionFlightStatus.sprayerFlow =          _controllerVehicle->defaultSprayerFlow();
     _missionFlightStatus.vehicleSpeed =         _controllerVehicle->multiRotor() || _managerVehicle->vtol() ? _missionFlightStatus.hoverSpeed : _missionFlightStatus.cruiseSpeed;
     _missionFlightStatus.vehicleYaw =           0.0;
     _missionFlightStatus.gimbalYaw =            std::numeric_limits<double>::quiet_NaN();
@@ -740,6 +742,8 @@ bool MissionController::_loadJsonMissionFileV2(const QJsonObject& json, QmlObjec
         { _jsonVehicleTypeKey,              QJsonValue::Double, false },
         { _jsonCruiseSpeedKey,              QJsonValue::Double, false },
         { _jsonHoverSpeedKey,               QJsonValue::Double, false },
+        { _jsonSprayerFlowKey,              QJsonValue::Double, false },
+
     };
     if (!JsonHelper::validateKeys(json, rootKeyInfoList, errorString)) {
         return false;
@@ -762,6 +766,9 @@ bool MissionController::_loadJsonMissionFileV2(const QJsonObject& json, QmlObjec
     }
     if (json.contains(_jsonHoverSpeedKey)) {
         appSettings->offlineEditingHoverSpeed()->setRawValue(json[_jsonHoverSpeedKey].toDouble());
+    }
+    if (json.contains(_jsonSprayerFlowKey)) {
+        appSettings->offlineEditingSprayerFlow()->setRawValue(json[_jsonSprayerFlowKey].toDouble());
     }
 
     QGeoCoordinate homeCoordinate;
@@ -1087,6 +1094,7 @@ void MissionController::save(QJsonObject& json)
     json[_jsonVehicleTypeKey]           = _controllerVehicle->vehicleType();
     json[_jsonCruiseSpeedKey]           = _controllerVehicle->defaultCruiseSpeed();
     json[_jsonHoverSpeedKey]            = _controllerVehicle->defaultHoverSpeed();
+    json[_jsonSprayerFlowKey]           = _controllerVehicle->defaultSprayerFlow();
 
     // Save the visual items
 
@@ -1954,6 +1962,7 @@ void MissionController::managerVehicleChanged(Vehicle* managerVehicle)
     connect(_missionManager, &MissionManager::resumeMissionUploadFail,  this, &MissionController::resumeMissionUploadFail);
     connect(_managerVehicle, &Vehicle::defaultCruiseSpeedChanged,       this, &MissionController::_recalcMissionFlightStatus);
     connect(_managerVehicle, &Vehicle::defaultHoverSpeedChanged,        this, &MissionController::_recalcMissionFlightStatus);
+    connect(_managerVehicle, &Vehicle::defaultSprayerFlowChanged,       this, &MissionController::_recalcMissionFlightStatus);
     connect(_managerVehicle, &Vehicle::vehicleTypeChanged,              this, &MissionController::complexMissionItemNamesChanged);
 
     emit complexMissionItemNamesChanged();

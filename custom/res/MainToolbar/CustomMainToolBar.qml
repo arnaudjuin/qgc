@@ -74,19 +74,8 @@ Item {
                 } else {
                     drawer.open()
                 }
-                // Easter egg mechanism
-                _pressCount++
-                eggTimer.restart()
-                if (_pressCount == 5) {
-                    QGroundControl.corePlugin.showAdvancedUI = !QGroundControl.corePlugin.showAdvancedUI
-                }
             }
-            property int _pressCount: 0
-            Timer {
-                id:             eggTimer
-                interval:       1000
-                onTriggered:    parent._pressCount = 0
-            }
+
         }
         Rectangle {
             width:                          1
@@ -305,6 +294,7 @@ Item {
                 text:                       qsTr("Analyze")
                 icon.source:                "/qmlimages/Analyze.svg"
                 Layout.fillWidth:           true
+                visible :                   QgroundControl.corePlugin.showAdvancedUI
                 onClicked: {
                     checked = true
                     drawer.close()
@@ -312,6 +302,14 @@ Item {
                     mainWindow.showAnalyzeView()
                 }
             }
+                              Connections {
+                                    target: QGroundControl.corePlugin
+                                    onShowAdvancedUIChanged: {
+                                        if (!QGroundControl.corePlugin.showAdvancedUI) {
+                                            console.log("on/off")
+                                        }
+                                    }
+                                }
             Rectangle {
                 Layout.alignment:           Qt.AlignVCenter
                 width:                      parent.width

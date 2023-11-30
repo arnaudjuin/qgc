@@ -268,7 +268,7 @@ SimpleMissionItem::~SimpleMissionItem()
 void SimpleMissionItem::save(QJsonArray&  missionItems)
 {
     QList<MissionItem*> items;
-
+//TODO SUIND SAVE SPRAY
     appendMissionItems(items, this);
 
     for (int i=0; i<items.count(); i++) {

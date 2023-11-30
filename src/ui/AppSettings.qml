@@ -73,11 +73,11 @@ Rectangle {
                     exclusiveGroup:     panelActionGroup
                     Layout.fillWidth:   true
                     //TODO SUIND
-                    visible :           (modelData.title == "General" || modelData.title == "Offline Maps" ||  modelData.title == "Change Role" ||  modelData.title == "Comm Links" ) ||  ((modelData.title == "Console" || modelData.title == "MAVLink") &&  QGroundControl.corePlugin.showAdvancedUI)
+                    visible :           (modelData.title == "General" || modelData.title == "Offline Maps" ||  modelData.title == "Change Role" ||  modelData.title == "Comm Links" ) ||  ((modelData.title == "Remote ID" ||modelData.title == "Help" ||modelData.title == "Palette Test" ||modelData.title == "Debug" || modelData.title == "Console" || modelData.title == "MAVLink") &&  QGroundControl.corePlugin.showAdvancedUI)
                     onClicked: {
                         if (mainWindow.preventViewSwitch()) {
                             return
-                        }
+                            }
                         if (__rightPanel.source !== modelData.url) {
                             __rightPanel.source = modelData.url
                         }
