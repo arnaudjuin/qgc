@@ -35,30 +35,31 @@ linux {
         DEFINES += __STDC_LIMIT_MACROS __rasp_pi2__
         DEFINES += QGC_GST_TAISYNC_ENABLED
         DEFINES += QGC_GST_MICROHARD_ENABLED 
-    } else : android-clang {
+} else : android-clang {
         CONFIG += AndroidBuild MobileBuild
         DEFINES += __android__
         DEFINES += __STDC_LIMIT_MACROS
         DEFINES += QGC_ENABLE_BLUETOOTH
         DEFINES += QGC_GST_TAISYNC_ENABLED
-        DEFINES += QGC_GST_MICROHARD_ENABLED 
-        QMAKE_CXXFLAGS += -Wno-address-of-packed-member
-        QMAKE_CXXFLAGS += -Wno-unused-command-line-argument
-        QMAKE_CFLAGS += -Wno-unused-command-line-argument
-        QMAKE_LINK += -nostdlib++ # Hack fix?: https://forum.qt.io/topic/103713/error-cannot-find-lc-qt-5-12-android
+        DEFINES += QGC_GST_MICROHARD_ENABLED
+        QMAKE_CXXFLAGS_WARN_ON += -Werror \
+            -Wno-unused-parameter \             # gst_plugins-good has these errors
+            -Wno-implicit-fallthrough \         # gst_plugins-good has these errors
+            -Wno-unused-command-line-argument \ # from somewhere in Qt generated build files
+            -Wno-parentheses-equality           # android gstreamer header files
+        QMAKE_CFLAGS_WARN_ON += \
+            -Wno-unused-command-line-argument   # from somewhere in Qt generated build files
         target.path = $$DESTDIR
         equals(ANDROID_TARGET_ARCH, armeabi-v7a)  {
             DEFINES += __androidArm32__
-            DEFINES += QGC_ENABLE_MAVLINK_INSPECTOR
             message("Android Arm 32 bit build")
         } else:equals(ANDROID_TARGET_ARCH, arm64-v8a)  {
             DEFINES += __androidArm64__
-            DEFINES += QGC_ENABLE_MAVLINK_INSPECTOR
             message("Android Arm 64 bit build")
         } else:equals(ANDROID_TARGET_ARCH, x86)  {
             CONFIG += Androidx86Build
             DEFINES += __androidx86__
-            message("Android Arm build")
+            message("Android x86 build")
         } else {
             error("Unsupported Android architecture: $${ANDROID_TARGET_ARCH}")
         }
