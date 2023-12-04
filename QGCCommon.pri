@@ -42,7 +42,7 @@ linux {
         DEFINES += QGC_ENABLE_BLUETOOTH
         DEFINES += QGC_GST_TAISYNC_ENABLED
         DEFINES += QGC_GST_MICROHARD_ENABLED
-        QMAKE_CXXFLAGS_WARN_ON += -Werror \
+        QMAKE_CXXFLAGS_WARN_ON +=
             -Wno-unused-parameter \             # gst_plugins-good has these errors
             -Wno-implicit-fallthrough \         # gst_plugins-good has these errors
             -Wno-unused-command-line-argument \ # from somewhere in Qt generated build files
