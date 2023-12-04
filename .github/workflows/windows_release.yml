@@ -6,7 +6,6 @@ on:
       - 'master'
       - 'main'
       - 'Stable*'
-      - 'QGCustomAPM*'
     tags:
       - 'v*'
   pull_request:
