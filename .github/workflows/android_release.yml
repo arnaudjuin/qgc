@@ -100,7 +100,7 @@ jobs:
         run: |
           if [ $GIT_BRANCH_NAME != "Stable*" ]; then
             ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${GIT_BRANCH_NAME}
-          fi
+
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
         env:
