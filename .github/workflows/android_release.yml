@@ -96,10 +96,10 @@ jobs:
         id:   git-branch-name
         uses: EthanSK/git-branch-name-action@v1
 
-      - name: Update android manifest
-        run: |
-          if [ $GIT_BRANCH_NAME != "Stable*" ]; then
-            ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${GIT_BRANCH_NAME}
+#      - name: Update android manifest
+#        run: |
+#          if [ $GIT_BRANCH_NAME != "Stable*" ]; then
+#            ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${{ github.ref_name }}
 
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
