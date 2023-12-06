@@ -35,31 +35,30 @@ linux {
         DEFINES += __STDC_LIMIT_MACROS __rasp_pi2__
         DEFINES += QGC_GST_TAISYNC_ENABLED
         DEFINES += QGC_GST_MICROHARD_ENABLED 
-} else : android-clang {
+    } else : android-clang {
         CONFIG += AndroidBuild MobileBuild
         DEFINES += __android__
         DEFINES += __STDC_LIMIT_MACROS
         DEFINES += QGC_ENABLE_BLUETOOTH
         DEFINES += QGC_GST_TAISYNC_ENABLED
         DEFINES += QGC_GST_MICROHARD_ENABLED
-        QMAKE_CXXFLAGS_WARN_ON +=
-            -Wno-unused-parameter \             # gst_plugins-good has these errors
-            -Wno-implicit-fallthrough \         # gst_plugins-good has these errors
-            -Wno-unused-command-line-argument \ # from somewhere in Qt generated build files
-            -Wno-parentheses-equality           # android gstreamer header files
-        QMAKE_CFLAGS_WARN_ON += \
-            -Wno-unused-command-line-argument   # from somewhere in Qt generated build files
+        QMAKE_CXXFLAGS += -Wno-address-of-packed-member
+        QMAKE_CXXFLAGS += -Wno-unused-command-line-argument
+        QMAKE_CFLAGS += -Wno-unused-command-line-argument
+        QMAKE_LINK += -nostdlib++ # Hack fix?: https://forum.qt.io/topic/103713/error-cannot-find-lc-qt-5-12-android
         target.path = $$DESTDIR
         equals(ANDROID_TARGET_ARCH, armeabi-v7a)  {
             DEFINES += __androidArm32__
+            DEFINES += QGC_ENABLE_MAVLINK_INSPECTOR
             message("Android Arm 32 bit build")
         } else:equals(ANDROID_TARGET_ARCH, arm64-v8a)  {
             DEFINES += __androidArm64__
+            DEFINES += QGC_ENABLE_MAVLINK_INSPECTOR
             message("Android Arm 64 bit build")
         } else:equals(ANDROID_TARGET_ARCH, x86)  {
             CONFIG += Androidx86Build
             DEFINES += __androidx86__
-            message("Android x86 build")
+            message("Android Arm build")
         } else {
             error("Unsupported Android architecture: $${ANDROID_TARGET_ARCH}")
         }
@@ -73,7 +72,7 @@ linux {
         CONFIG += WarningsAsErrorsOn
         DEFINES += __STDC_LIMIT_MACROS
         DEFINES += QGC_GST_TAISYNC_ENABLED
-        DEFINES += QGC_GST_MICROHARD_ENABLED 
+        DEFINES += QGC_GST_MICROHARD_ENABLED
         DEFINES += QGC_ENABLE_MAVLINK_INSPECTOR
     } else {
         error("Unsupported Windows toolchain, only Visual Studio 2017 64 bit is supported")
@@ -85,7 +84,7 @@ linux {
         CONFIG  += x86_64
         CONFIG  -= x86
         DEFINES += QGC_GST_TAISYNC_ENABLED
-        DEFINES += QGC_GST_MICROHARD_ENABLED 
+        DEFINES += QGC_GST_MICROHARD_ENABLED
         DEFINES += QGC_ENABLE_MAVLINK_INSPECTOR
         equals(QT_MAJOR_VERSION, 5) | greaterThan(QT_MINOR_VERSION, 5) {
                 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
@@ -96,10 +95,7 @@ linux {
         #QMAKE_MAC_SDK = macosx10.12
         QMAKE_CXXFLAGS += -fvisibility=hidden
         #-- Disable annoying warnings comming from mavlink.h
-        QMAKE_CXXFLAGS += -Wno-address-of-packed-member \
-                    -Wno-unused-parameter \         # gst-plugins-good
-                    -Wno-unused-but-set-variable \ # eigen & QGCTileCacheWorker.cpp
-                    -Wno-deprecated-declarations    # eigen
+        QMAKE_CXXFLAGS += -Wno-address-of-packed-member
     } else {
         error("Unsupported Mac toolchain, only 64-bit LLVM+clang is supported")
     }
