@@ -602,8 +602,14 @@ void PlanMasterController::_updatePlanCreatorsList(void)
         if (!_planCreators) {
             _planCreators = new QmlObjectListModel(this);
         //    _planCreators->append(new BlankPlanCreator(this, this));
-            _planCreators->append(new SurveyPlanCreator(this, this));
-          //  _planCreators->append(new CorridorScanPlanCreator(this, this));
+            _planCreators->append(new SurveyPlanCreator(this, this,"Survey 05/02/2023 - 14:25"));
+            _planCreators->append(new SurveyPlanCreator(this, this,"Survey 04/02/2023 - 14:46"));
+            _planCreators->append(new SurveyPlanCreator(this, this,"Survey 01/02/2023 - 15:08"));
+            _planCreators->append(new SurveyPlanCreator(this, this,"Survey 28/01/2023 - 13:23"));
+            _planCreators->append(new SurveyPlanCreator(this, this,"Survey 5/01/2023 - 12:02"));
+            _planCreators->append(new SurveyPlanCreator(this, this,"Survey 3/01/2023 - 08:11,Farmx"));
+            //TODO SUIND
+            //  _planCreators->append(new CorridorScanPlanCreator(this, this));
             emit planCreatorsChanged(_planCreators);
         }
 

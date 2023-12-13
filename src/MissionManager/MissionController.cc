@@ -417,9 +417,9 @@ VisualMissionItem* MissionController::insertTakeoffItem(QGeoCoordinate /*coordin
     }
     newItem->setMissionFlightStatus(_missionFlightStatus);
     if (visualItemIndex == -1) {
-        _visualItems->append(newItem);
+       // _visualItems->append(newItem);
     } else {
-        _visualItems->insert(visualItemIndex, newItem);
+     //   _visualItems->insert(visualItemIndex, newItem);
     }
 
     _recalcAll();
@@ -438,7 +438,10 @@ VisualMissionItem* MissionController::insertLandItem(QGeoCoordinate coordinate, 
         fwLanding->setLoiterDragAngleOnly(true);
         return fwLanding;
     } else {
-        return _insertSimpleMissionItemWorker(coordinate, MAV_CMD_NAV_RETURN_TO_LAUNCH, visualItemIndex, makeCurrentItem);
+        qCDebug(MissionControllerLog) << "debugLand"
+                                      << visualItemIndex
+                                      << makeCurrentItem;
+       // return _insertSimpleMissionItemWorker(coordinate, MAV_CMD_NAV_RETURN_TO_LAUNCH, visualItemIndex, makeCurrentItem);
     }
 }
 

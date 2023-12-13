@@ -13,11 +13,11 @@ import QGroundControl.Controllers       1.0
 
 // Editor for Mission Settings
 Rectangle {
+//TODO SUIND
     id:                 valuesRect
     width:              availableWidth
     height:             valuesColumn.height + (_margin * 2)
     color:              qgcPal.windowShadeDark
-    visible:            missionItem.isCurrentItem
     radius:             _radius
 
     property var    _masterControler:               masterController

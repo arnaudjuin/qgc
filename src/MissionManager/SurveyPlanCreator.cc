@@ -13,8 +13,8 @@
 #include "FixedWingLandingComplexItem.h"
 #include "FixedWingLandingComplexItem.h"
 
-SurveyPlanCreator::SurveyPlanCreator(PlanMasterController* planMasterController, QObject* parent)
-    : PlanCreator(planMasterController, MissionController::patternSurveyName, QStringLiteral("/qmlimages/PlanCreator/SurveyPlanCreator.png"), parent)
+SurveyPlanCreator::SurveyPlanCreator(PlanMasterController* planMasterController, QObject* parent,QString name)
+    : PlanCreator(planMasterController, name, QStringLiteral("/qmlimages/PlanCreator/SurveyPlanCreator.png"), parent)
 {
 
 }
