@@ -401,6 +401,9 @@ VisualMissionItem* MissionController::insertSimpleMissionItem(QGeoCoordinate coo
 
 VisualMissionItem* MissionController::insertTakeoffItem(QGeoCoordinate /*coordinate*/, int visualItemIndex, bool makeCurrentItem)
 {
+    qCDebug(MissionControllerLog) << "debugTakeOff"
+                                  << visualItemIndex
+                                  << makeCurrentItem;
     int sequenceNumber = _nextSequenceNumber();
     TakeoffMissionItem * newItem = new TakeoffMissionItem(_controllerVehicle->vtol() ? MAV_CMD_NAV_VTOL_TAKEOFF : MAV_CMD_NAV_TAKEOFF, _controllerVehicle, _flyView, _settingsItem, this);
     newItem->setSequenceNumber(sequenceNumber);
@@ -417,6 +420,7 @@ VisualMissionItem* MissionController::insertTakeoffItem(QGeoCoordinate /*coordin
     }
     newItem->setMissionFlightStatus(_missionFlightStatus);
     if (visualItemIndex == -1) {
+        //TODO SUIND
        // _visualItems->append(newItem);
     } else {
      //   _visualItems->insert(visualItemIndex, newItem);
