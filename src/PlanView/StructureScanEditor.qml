@@ -120,14 +120,7 @@ Rectangle {
                     visible:        missionItem.cameraShots > 0 && _cameraMinTriggerInterval !== 0 && _cameraMinTriggerInterval > missionItem.timeBetweenShots
                 }
 
-                CameraCalcGrid {
-                    cameraCalc:                     missionItem.cameraCalc
-                    vehicleFlightIsFrontal:         false
-                    distanceToSurfaceLabel:         qsTr("Scan Distance")
-                    distanceToSurfaceAltitudeMode:  QGroundControl.AltitudeModeNone
-                    frontalDistanceLabel:           qsTr("Layer Height")
-                    sideDistanceLabel:              qsTr("Trigger Distance")
-                }
+
 
                 SectionHeader {
                     id:             scanHeader

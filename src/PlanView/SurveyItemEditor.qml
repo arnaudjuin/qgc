@@ -116,47 +116,47 @@ Rectangle {
                     onClicked:          missionItem.loadPreset(wizardPresetCombo.textAt(wizardPresetCombo.currentIndex))
                 }
 
-                SectionHeader {
-                    id:                 wizardPresectsTransectsHeader
-                    Layout.fillWidth:   true
-                    text:               qsTr("Transects")
-                }
-
-                GridLayout {
-                    Layout.fillWidth:   true
-                    columnSpacing:      _margin
-                    rowSpacing:         _margin
-                    columns:            2
-                    visible:            wizardPresectsTransectsHeader.checked
-
-                    QGCLabel { text: qsTr("Angle") }
-                    FactTextField {
-                        fact:                   missionItem.gridAngle
-                        Layout.fillWidth:       true
-                        onUpdated:              wizardPresetsAngleSlider.value = missionItem.gridAngle.value
-                    }
-
-                    QGCSlider {
-                        id:                     wizardPresetsAngleSlider
-                        minimumValue:           0
-                        maximumValue:           359
-                        stepSize:               1
-                        tickmarksEnabled:       false
-                        Layout.fillWidth:       true
-                        Layout.columnSpan:      2
-                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                        onValueChanged:         missionItem.gridAngle.value = value
-                        Component.onCompleted:  value = missionItem.gridAngle.value
-                        updateValueWhileDragging: true
-                    }
-
-                    QGCButton {
-                        Layout.columnSpan:  2
-                        Layout.fillWidth:   true
-                        text:               qsTr("Rotate Entry Point")
-                        onClicked:          missionItem.rotateEntryPoint();
-                    }
-                }
+//                SectionHeader {
+//                    id:                 wizardPresectsTransectsHeader
+//                    Layout.fillWidth:   true
+//                    text:               qsTr("Transects")
+//                }
+//
+//                GridLayout {
+//                    Layout.fillWidth:   true
+//                    columnSpacing:      _margin
+//                    rowSpacing:         _margin
+//                    columns:            2
+//                    visible:            wizardPresectsTransectsHeader.checked
+//
+//                    QGCLabel { text: qsTr("Angle") }
+//                    FactTextField {
+//                        fact:                   missionItem.gridAngle
+//                        Layout.fillWidth:       true
+//                        onUpdated:              wizardPresetsAngleSlider.value = missionItem.gridAngle.value
+//                    }
+//
+//                    QGCSlider {
+//                        id:                     wizardPresetsAngleSlider
+//                        minimumValue:           0
+//                        maximumValue:           359
+//                        stepSize:               1
+//                        tickmarksEnabled:       false
+//                        Layout.fillWidth:       true
+//                        Layout.columnSpan:      2
+//                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+//                        onValueChanged:         missionItem.gridAngle.value = value
+//                        Component.onCompleted:  value = missionItem.gridAngle.value
+//                        updateValueWhileDragging: true
+//                    }
+//
+//                    QGCButton {
+//                        Layout.columnSpan:  2
+//                        Layout.fillWidth:   true
+//                        text:               qsTr("Rotate Entry Point")
+//                        onClicked:          missionItem.rotateEntryPoint();
+//                    }
+//                }
 
                 Item { height: ScreenTools.defaultFontPixelHeight; width: 1 }
 
@@ -178,17 +178,17 @@ Rectangle {
             spacing:        _margin
             visible:        !wizardColumn.visible
 
-            QGCTabBar {
-                id:             tabBar
-                anchors.left:   parent.left
-                anchors.right:  parent.right
-
-                Component.onCompleted: currentIndex = QGroundControl.settingsManager.planViewSettings.displayPresetsTabFirst.rawValue ? 2 : 0
-
-                QGCTabButton { text: qsTr("Grid") }
-                QGCTabButton { text: qsTr("Camera") }
-                QGCTabButton { text: qsTr("Presets") }
-            }
+//            QGCTabBar {
+//                id:             tabBar
+//                anchors.left:   parent.left
+//                anchors.right:  parent.right
+//
+//                Component.onCompleted: currentIndex = QGroundControl.settingsManager.planViewSettings.displayPresetsTabFirst.rawValue ? 2 : 0
+//
+//                QGCTabButton { text: qsTr("Grid") }
+//                QGCTabButton { text: qsTr("Camera") }
+//                QGCTabButton { text: qsTr("Presets") }
+//            }
 
             Column {
                 anchors.left:       parent.left
@@ -196,6 +196,7 @@ Rectangle {
                 spacing:            _margin
                 visible:            tabBar.currentIndex == 0
 
+/*
                 QGCLabel {
                     anchors.left:   parent.left
                     anchors.right:  parent.right
@@ -204,7 +205,7 @@ Rectangle {
                     color:          qgcPal.warningText
                     visible:        missionItem.cameraShots > 0 && _cameraMinTriggerInterval !== 0 && _cameraMinTriggerInterval > missionItem.timeBetweenShots
                 }
-
+*/
                 CameraCalcGrid {
                     cameraCalc:                     missionItem.cameraCalc
                     vehicleFlightIsFrontal:         true
@@ -216,165 +217,166 @@ Rectangle {
                     sideDistanceLabel:              qsTr("Spacing")
                 }
 
-                SectionHeader {
-                    id:             transectsHeader
-                    anchors.left:   parent.left
-                    anchors.right:  parent.right
-                    text:           qsTr("Transects")
-                }
 
-                GridLayout {
-                    anchors.left:   parent.left
-                    anchors.right:  parent.right
-                    columnSpacing:  _margin
-                    rowSpacing:     _margin
-                    columns:        2
-                    visible:        transectsHeader.checked
-
-                    QGCLabel { text: qsTr("Angle") }
-                    FactTextField {
-                        fact:                   missionItem.gridAngle
-                        Layout.fillWidth:       true
-                        onUpdated:              angleSlider.value = missionItem.gridAngle.value
-                    }
-
-                    QGCSlider {
-                        id:                     angleSlider
-                        minimumValue:           0
-                        maximumValue:           359
-                        stepSize:               1
-                        tickmarksEnabled:       false
-                        Layout.fillWidth:       true
-                        Layout.columnSpan:      2
-                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                        onValueChanged:         missionItem.gridAngle.value = value
-                        Component.onCompleted:  value = missionItem.gridAngle.value
-                        updateValueWhileDragging: true
-                    }
-
-                    QGCLabel {
-                        text:       qsTr("Turnaround dist")
-                    }
-                    FactTextField {
-                        fact:               missionItem.turnAroundDistance
-                        Layout.fillWidth:   true
-                    }
-                }
-
-                QGCButton {
-                    text:               qsTr("Rotate Entry Point")
-                    onClicked:          missionItem.rotateEntryPoint();
-                }
-
-                ColumnLayout {
-                    anchors.left:   parent.left
-                    anchors.right:  parent.right
-                    spacing:        _margin
-                    visible:        transectsHeader.checked
-
-                    /*
-              Temporarily removed due to bug https://github.com/mavlink/qgroundcontrol/issues/7005
-            FactCheckBox {
-                text:       qsTr("Split concave polygons")
-                fact:       _splitConcave
-                visible:    _splitConcave.visible
-                property Fact _splitConcave: missionItem.splitConcavePolygons
-            }
-            */
-
-                    QGCOptionsComboBox {
-                        Layout.fillWidth: true
-
-                        model: [
-                            {
-                                text:       qsTr("Hover and capture image"),
-                                fact:       missionItem.hoverAndCapture,
-                                enabled:    !missionItem.followTerrain,
-                                visible:    missionItem.hoverAndCaptureAllowed
-                            },
-                            {
-                                text:       qsTr("Refly at 90 deg offset"),
-                                fact:       missionItem.refly90Degrees,
-                                enabled:    !missionItem.followTerrain,
-                                visible:    true
-                            },
-                            {
-                                text:       qsTr("Images in turnarounds"),
-                                fact:       missionItem.cameraTriggerInTurnAround,
-                                enabled:    missionItem.hoverAndCaptureAllowed ? !missionItem.hoverAndCapture.rawValue : true,
-                                visible:    true
-                            },
-                            {
-                                text:       qsTr("Fly alternate transects"),
-                                fact:       missionItem.flyAlternateTransects,
-                                enabled:    true,
-                                visible:    _vehicle ? (_vehicle.fixedWing || _vehicle.vtol) : false
-                            },
-                            {
-                                text:       qsTr("Relative altitude"),
-                                enabled:    missionItem.cameraCalc.isManualCamera && !missionItem.followTerrain,
-                                visible:    QGroundControl.corePlugin.options.showMissionAbsoluteAltitude || (!missionItem.cameraCalc.distanceToSurfaceRelative && !missionItem.followTerrain),
-                                checked:    missionItem.cameraCalc.distanceToSurfaceRelative
-                            }
-                        ]
-
-                        onItemClicked: {
-                            if (index == 4) {
-                                missionItem.cameraCalc.distanceToSurfaceRelative = !missionItem.cameraCalc.distanceToSurfaceRelative
-                                console.log(missionItem.cameraCalc.distanceToSurfaceRelative)
-                            }
-                        }
-                    }
-                }
-
-                SectionHeader {
-                    id:             terrainHeader
-                    anchors.left:   parent.left
-                    anchors.right:  parent.right
-                    text:           qsTr("Terrain")
-                    checked:        missionItem.followTerrain
-                }
-
-                ColumnLayout {
-                    anchors.left:   parent.left
-                    anchors.right:  parent.right
-                    spacing:        _margin
-                    visible:        terrainHeader.checked
-
-
-                    QGCCheckBox {
-                        id:         followsTerrainCheckBox
-                        text:       qsTr("Vehicle follows terrain")
-                        checked:    missionItem.followTerrain
-                        onClicked:  missionItem.followTerrain = checked
-                    }
-
-                    GridLayout {
-                        Layout.fillWidth:   true
-                        columnSpacing:      _margin
-                        rowSpacing:         _margin
-                        columns:            2
-                        visible:            followsTerrainCheckBox.checked
-
-                        QGCLabel { text: qsTr("Tolerance") }
-                        FactTextField {
-                            fact:               missionItem.terrainAdjustTolerance
-                            Layout.fillWidth:   true
-                        }
-
-                        QGCLabel { text: qsTr("Max Climb Rate") }
-                        FactTextField {
-                            fact:               missionItem.terrainAdjustMaxClimbRate
-                            Layout.fillWidth:   true
-                        }
-
-                        QGCLabel { text: qsTr("Max Descent Rate") }
-                        FactTextField {
-                            fact:               missionItem.terrainAdjustMaxDescentRate
-                            Layout.fillWidth:   true
-                        }
-                    }
-                }
+//                SectionHeader {
+//                    id:             transectsHeader
+//                    anchors.left:   parent.left
+//                    anchors.right:  parent.right
+//                    text:           qsTr("Transects")
+//                }
+//
+//                GridLayout {
+//                    anchors.left:   parent.left
+//                    anchors.right:  parent.right
+//                    columnSpacing:  _margin
+//                    rowSpacing:     _margin
+//                    columns:        2
+//                    visible:        transectsHeader.checked
+//
+//                    QGCLabel { text: qsTr("Angle") }
+//                    FactTextField {
+//                        fact:                   missionItem.gridAngle
+//                        Layout.fillWidth:       true
+//                        onUpdated:              angleSlider.value = missionItem.gridAngle.value
+//                    }
+//
+//                    QGCSlider {
+//                        id:                     angleSlider
+//                        minimumValue:           0
+//                        maximumValue:           359
+//                        stepSize:               1
+//                        tickmarksEnabled:       false
+//                        Layout.fillWidth:       true
+//                        Layout.columnSpan:      2
+//                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+//                        onValueChanged:         missionItem.gridAngle.value = value
+//                        Component.onCompleted:  value = missionItem.gridAngle.value
+//                        updateValueWhileDragging: true
+//                    }
+//
+//                    QGCLabel {
+//                        text:       qsTr("Turnaround dist")
+//                    }
+//                    FactTextField {
+//                        fact:               missionItem.turnAroundDistance
+//                        Layout.fillWidth:   true
+//                    }
+//                }
+//
+//                QGCButton {
+//                    text:               qsTr("Rotate Entry Point")
+//                    onClicked:          missionItem.rotateEntryPoint();
+//                }
+//
+//                ColumnLayout {
+//                    anchors.left:   parent.left
+//                    anchors.right:  parent.right
+//                    spacing:        _margin
+//                    visible:        transectsHeader.checked
+//
+//                    /*
+//              Temporarily removed due to bug https://github.com/mavlink/qgroundcontrol/issues/7005
+//            FactCheckBox {
+//                text:       qsTr("Split concave polygons")
+//                fact:       _splitConcave
+//                visible:    _splitConcave.visible
+//                property Fact _splitConcave: missionItem.splitConcavePolygons
+//            }
+//            */
+//
+//                    QGCOptionsComboBox {
+//                        Layout.fillWidth: true
+//
+//                        model: [
+//                            {
+//                                text:       qsTr("Hover and capture image"),
+//                                fact:       missionItem.hoverAndCapture,
+//                                enabled:    !missionItem.followTerrain,
+//                                visible:    missionItem.hoverAndCaptureAllowed
+//                            },
+//                            {
+//                                text:       qsTr("Refly at 90 deg offset"),
+//                                fact:       missionItem.refly90Degrees,
+//                                enabled:    !missionItem.followTerrain,
+//                                visible:    true
+//                            },
+//                            {
+//                                text:       qsTr("Images in turnarounds"),
+//                                fact:       missionItem.cameraTriggerInTurnAround,
+//                                enabled:    missionItem.hoverAndCaptureAllowed ? !missionItem.hoverAndCapture.rawValue : true,
+//                                visible:    true
+//                            },
+//                            {
+//                                text:       qsTr("Fly alternate transects"),
+//                                fact:       missionItem.flyAlternateTransects,
+//                                enabled:    true,
+//                                visible:    _vehicle ? (_vehicle.fixedWing || _vehicle.vtol) : false
+//                            },
+//                            {
+//                                text:       qsTr("Relative altitude"),
+//                                enabled:    missionItem.cameraCalc.isManualCamera && !missionItem.followTerrain,
+//                                visible:    QGroundControl.corePlugin.options.showMissionAbsoluteAltitude || (!missionItem.cameraCalc.distanceToSurfaceRelative && !missionItem.followTerrain),
+//                                checked:    missionItem.cameraCalc.distanceToSurfaceRelative
+//                            }
+//                        ]
+//
+//                        onItemClicked: {
+//                            if (index == 4) {
+//                                missionItem.cameraCalc.distanceToSurfaceRelative = !missionItem.cameraCalc.distanceToSurfaceRelative
+//                                console.log(missionItem.cameraCalc.distanceToSurfaceRelative)
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                SectionHeader {
+//                    id:             terrainHeader
+//                    anchors.left:   parent.left
+//                    anchors.right:  parent.right
+//                    text:           qsTr("Terrain")
+//                    checked:        missionItem.followTerrain
+//                }
+//
+//                ColumnLayout {
+//                    anchors.left:   parent.left
+//                    anchors.right:  parent.right
+//                    spacing:        _margin
+//                    visible:        terrainHeader.checked
+//
+//
+//                    QGCCheckBox {
+//                        id:         followsTerrainCheckBox
+//                        text:       qsTr("Vehicle follows terrain")
+//                        checked:    missionItem.followTerrain
+//                        onClicked:  missionItem.followTerrain = checked
+//                    }
+//
+//                    GridLayout {
+//                        Layout.fillWidth:   true
+//                        columnSpacing:      _margin
+//                        rowSpacing:         _margin
+//                        columns:            2
+//                        visible:            followsTerrainCheckBox.checked
+//
+//                        QGCLabel { text: qsTr("Tolerance") }
+//                        FactTextField {
+//                            fact:               missionItem.terrainAdjustTolerance
+//                            Layout.fillWidth:   true
+//                        }
+//
+//                        QGCLabel { text: qsTr("Max Climb Rate") }
+//                        FactTextField {
+//                            fact:               missionItem.terrainAdjustMaxClimbRate
+//                            Layout.fillWidth:   true
+//                        }
+//
+//                        QGCLabel { text: qsTr("Max Descent Rate") }
+//                        FactTextField {
+//                            fact:               missionItem.terrainAdjustMaxDescentRate
+//                            Layout.fillWidth:   true
+//                        }
+//                    }
+//                }
 
                 SectionHeader {
                     id:             statsHeader
@@ -390,137 +392,137 @@ Rectangle {
                 }
             } // Grid Column
 
-            Column {
-                anchors.left:       parent.left
-                anchors.right:      parent.right
-                spacing:            _margin
-                visible:            tabBar.currentIndex == 1
+//            Column {
+//                anchors.left:       parent.left
+//                anchors.right:      parent.right
+//                spacing:            _margin
+//                visible:            tabBar.currentIndex == 1
+//
+//                CameraCalcCamera {
+//                    cameraCalc:                     missionItem.cameraCalc
+//                    vehicleFlightIsFrontal:         true
+//                    distanceToSurfaceLabel:         qsTr("AltitudeTest")
+//                    distanceToSurfaceAltitudeMode:  missionItem.followTerrain ?
+//                                                        QGroundControl.AltitudeModeAboveTerrain :
+//                                                        missionItem.cameraCalc.distanceToSurfaceRelative
+//                    frontalDistanceLabel:           qsTr("Trigger Dist")
+//                    sideDistanceLabel:              qsTr("Spacing")
+//                }
+//            } // Camera Column
 
-                CameraCalcCamera {
-                    cameraCalc:                     missionItem.cameraCalc
-                    vehicleFlightIsFrontal:         true
-                    distanceToSurfaceLabel:         qsTr("Altitude")
-                    distanceToSurfaceAltitudeMode:  missionItem.followTerrain ?
-                                                        QGroundControl.AltitudeModeAboveTerrain :
-                                                        missionItem.cameraCalc.distanceToSurfaceRelative
-                    frontalDistanceLabel:           qsTr("Trigger Dist")
-                    sideDistanceLabel:              qsTr("Spacing")
-                }
-            } // Camera Column
-
-            ColumnLayout {
-                anchors.left:       parent.left
-                anchors.right:      parent.right
-                spacing:            _margin
-                visible:            tabBar.currentIndex == 2
-
-                QGCLabel {
-                    Layout.fillWidth:   true
-                    text:               qsTr("Presets")
-                    wrapMode:           Text.WordWrap
-                }
-
-                QGCComboBox {
-                    id:                 presetCombo
-                    Layout.fillWidth:   true
-                    model:              missionItem.presetNames
-                }
-
-                RowLayout {
-                    Layout.fillWidth:   true
-
-                    QGCButton {
-                        Layout.fillWidth:   true
-                        text:               qsTr("Apply Preset")
-                        enabled:            missionItem.presetNames.length != 0
-                        onClicked:          missionItem.loadPreset(presetCombo.textAt(presetCombo.currentIndex))
-                    }
-
-                    QGCButton {
-                        Layout.fillWidth:   true
-                        text:               qsTr("Delete Preset")
-                        enabled:            missionItem.presetNames.length != 0
-                        onClicked:          mainWindow.showComponentDialog(deletePresetMessage, qsTr("Delete Preset"), mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.No)
-
-                        Component {
-                            id: deletePresetMessage
-                            QGCViewMessage {
-                                message: qsTr("Are you sure you want to delete '%1' preset?").arg(presetName)
-                                property string presetName: presetCombo.textAt(presetCombo.currentIndex)
-                                function accept() {
-                                    missionItem.deletePreset(presetName)
-                                    hideDialog()
-                                }
-                            }
-                        }
-                    }
-
-                }
-
-                Item { height: ScreenTools.defaultFontPixelHeight; width: 1 }
-
-                QGCButton {
-                    Layout.alignment:   Qt.AlignCenter
-                    Layout.fillWidth:   true
-                    text:               qsTr("Save Settings As New Preset")
-                    onClicked:          mainWindow.showComponentDialog(savePresetDialog, qsTr("Save Preset"), mainWindow.showDialogDefaultWidth, StandardButton.Save | StandardButton.Cancel)
-                }
-
-                SectionHeader {
-                    id:                 presectsTransectsHeader
-                    Layout.fillWidth:   true
-                    text:               qsTr("Transects")
-                }
-
-                GridLayout {
-                    Layout.fillWidth:   true
-                    columnSpacing:      _margin
-                    rowSpacing:         _margin
-                    columns:            2
-                    visible:            presectsTransectsHeader.checked
-
-                    QGCLabel { text: qsTr("Angle") }
-                    FactTextField {
-                        fact:                   missionItem.gridAngle
-                        Layout.fillWidth:       true
-                        onUpdated:              presetsAngleSlider.value = missionItem.gridAngle.value
-                    }
-
-                    QGCSlider {
-                        id:                     presetsAngleSlider
-                        minimumValue:           0
-                        maximumValue:           359
-                        stepSize:               1
-                        tickmarksEnabled:       false
-                        Layout.fillWidth:       true
-                        Layout.columnSpan:      2
-                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                        onValueChanged:         missionItem.gridAngle.value = value
-                        Component.onCompleted:  value = missionItem.gridAngle.value
-                        updateValueWhileDragging: true
-                    }
-
-                    QGCButton {
-                        Layout.columnSpan:  2
-                        Layout.fillWidth:   true
-                        text:               qsTr("Rotate Entry Point")
-                        onClicked:          missionItem.rotateEntryPoint();
-                    }
-                }
-
-                SectionHeader {
-                    id:                 presetsStatsHeader
-                    Layout.fillWidth:   true
-                    text:               qsTr("Statistics")
-                }
-
-                TransectStyleComplexItemStats {
-                    Layout.fillWidth:   true
-                    visible:            presetsStatsHeader.checked
-                }
-            } // Main editing column
-        } // Top level  Column
-
+//            ColumnLayout {
+//                anchors.left:       parent.left
+//                anchors.right:      parent.right
+//                spacing:            _margin
+//                visible:            tabBar.currentIndex == 2
+//
+//                QGCLabel {
+//                    Layout.fillWidth:   true
+//                    text:               qsTr("Presets")
+//                    wrapMode:           Text.WordWrap
+//                }
+//
+//                QGCComboBox {
+//                    id:                 presetCombo
+//                    Layout.fillWidth:   true
+//                    model:              missionItem.presetNames
+//                }
+//
+//                RowLayout {
+//                    Layout.fillWidth:   true
+//
+//                    QGCButton {
+//                        Layout.fillWidth:   true
+//                        text:               qsTr("Apply Preset")
+//                        enabled:            missionItem.presetNames.length != 0
+//                        onClicked:          missionItem.loadPreset(presetCombo.textAt(presetCombo.currentIndex))
+//                    }
+//
+//                    QGCButton {
+//                        Layout.fillWidth:   true
+//                        text:               qsTr("Delete Preset")
+//                        enabled:            missionItem.presetNames.length != 0
+//                        onClicked:          mainWindow.showComponentDialog(deletePresetMessage, qsTr("Delete Preset"), mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.No)
+//
+//                        Component {
+//                            id: deletePresetMessage
+//                            QGCViewMessage {
+//                                message: qsTr("Are you sure you want to delete '%1' preset?").arg(presetName)
+//                                property string presetName: presetCombo.textAt(presetCombo.currentIndex)
+//                                function accept() {
+//                                    missionItem.deletePreset(presetName)
+//                                    hideDialog()
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                }
+//
+//                Item { height: ScreenTools.defaultFontPixelHeight; width: 1 }
+//
+//                QGCButton {
+//                    Layout.alignment:   Qt.AlignCenter
+//                    Layout.fillWidth:   true
+//                    text:               qsTr("Save Settings As New Preset")
+//                    onClicked:          mainWindow.showComponentDialog(savePresetDialog, qsTr("Save Preset"), mainWindow.showDialogDefaultWidth, StandardButton.Save | StandardButton.Cancel)
+//                }
+//
+//                SectionHeader {
+//                    id:                 presectsTransectsHeader
+//                    Layout.fillWidth:   true
+//                    text:               qsTr("Transects")
+//                }
+//
+//                GridLayout {
+//                    Layout.fillWidth:   true
+//                    columnSpacing:      _margin
+//                    rowSpacing:         _margin
+//                    columns:            2
+//                    visible:            presectsTransectsHeader.checked
+//
+//                    QGCLabel { text: qsTr("Angle") }
+//                    FactTextField {
+//                        fact:                   missionItem.gridAngle
+//                        Layout.fillWidth:       true
+//                        onUpdated:              presetsAngleSlider.value = missionItem.gridAngle.value
+//                    }
+//
+//                    QGCSlider {
+//                        id:                     presetsAngleSlider
+//                        minimumValue:           0
+//                        maximumValue:           359
+//                        stepSize:               1
+//                        tickmarksEnabled:       false
+//                        Layout.fillWidth:       true
+//                        Layout.columnSpan:      2
+//                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+//                        onValueChanged:         missionItem.gridAngle.value = value
+//                        Component.onCompleted:  value = missionItem.gridAngle.value
+//                        updateValueWhileDragging: true
+//                    }
+//
+//                    QGCButton {
+//                        Layout.columnSpan:  2
+//                        Layout.fillWidth:   true
+//                        text:               qsTr("Rotate Entry Point")
+//                        onClicked:          missionItem.rotateEntryPoint();
+//                    }
+//                }
+//
+//                SectionHeader {
+//                    id:                 presetsStatsHeader
+//                    Layout.fillWidth:   true
+//                    text:               qsTr("Statistics")
+//                }
+//
+//                TransectStyleComplexItemStats {
+//                    Layout.fillWidth:   true
+//                    visible:            presetsStatsHeader.checked
+//                }
+//            } // Main editing column
+//         // Top level  Column
+}
         Component {
             id: savePresetDialog
 

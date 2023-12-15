@@ -123,7 +123,7 @@ Column {
         columns:        2
         visible:        cameraCalc.isManualCamera
 
-        QGCLabel { text: distanceToSurfaceLabel }
+/*        QGCLabel { text: distanceToSurfaceLabel }
         AltitudeFactTextField {
             fact:               cameraCalc.distanceToSurface
             altitudeMode:       distanceToSurfaceAltitudeMode
@@ -132,7 +132,7 @@ Column {
 
         QGCLabel { text: frontalDistanceLabel }
         FactTextField {
-            Layout.fillWidth:   true
+            Layout.fillWidth:   true*//**//*
             fact:               cameraCalc.adjustedFootprintFrontal
         }
 
@@ -140,6 +140,32 @@ Column {
         FactTextField {
             Layout.fillWidth:   true
             fact:               cameraCalc.adjustedFootprintSide
-        }
+        }*/
+        QGCLabel { text: "Travel Height" }
+                FactTextField {
+                    Layout.fillWidth:   true
+                    fact:               cameraCalc.adjustedFootprintSide
+                }
+        QGCLabel { text: "Spray Height" }
+                FactTextField {
+                    Layout.fillWidth:   true
+                    fact:               cameraCalc.adjustedFootprintSide
+                }
+        QGCLabel { text: "Spray Volume" }
+                FactTextField {
+                    Layout.fillWidth:   true
+                    fact:               cameraCalc.adjustedFootprintSide
+                }
+        QGCLabel { text: "Spacing" }
+                FactTextField {
+                    Layout.fillWidth:   true
+                    fact:               cameraCalc.adjustedFootprintSide
+                }
+        QGCLabel { text: "Sprayer Flow" }
+                FactTextField {
+                    Layout.fillWidth:   true
+                    fact:               cameraCalc.adjustedFootprintSide
+                }
+
     } // GridLayout
 } // Column
