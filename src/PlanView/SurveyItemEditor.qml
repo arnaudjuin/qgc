@@ -196,7 +196,6 @@ Rectangle {
                 spacing:            _margin
                 visible:            tabBar.currentIndex == 0
 
-/*
                 QGCLabel {
                     anchors.left:   parent.left
                     anchors.right:  parent.right
@@ -205,7 +204,7 @@ Rectangle {
                     color:          qgcPal.warningText
                     visible:        missionItem.cameraShots > 0 && _cameraMinTriggerInterval !== 0 && _cameraMinTriggerInterval > missionItem.timeBetweenShots
                 }
-*/
+
                 CameraCalcGrid {
                     cameraCalc:                     missionItem.cameraCalc
                     vehicleFlightIsFrontal:         true
@@ -216,7 +215,6 @@ Rectangle {
                     frontalDistanceLabel:           qsTr("Trigger Dist")
                     sideDistanceLabel:              qsTr("Spacing")
                 }
-
 
 //                SectionHeader {
 //                    id:             transectsHeader
@@ -392,23 +390,23 @@ Rectangle {
                 }
             } // Grid Column
 
-//            Column {
-//                anchors.left:       parent.left
-//                anchors.right:      parent.right
-//                spacing:            _margin
-//                visible:            tabBar.currentIndex == 1
-//
-//                CameraCalcCamera {
-//                    cameraCalc:                     missionItem.cameraCalc
-//                    vehicleFlightIsFrontal:         true
-//                    distanceToSurfaceLabel:         qsTr("AltitudeTest")
-//                    distanceToSurfaceAltitudeMode:  missionItem.followTerrain ?
-//                                                        QGroundControl.AltitudeModeAboveTerrain :
-//                                                        missionItem.cameraCalc.distanceToSurfaceRelative
-//                    frontalDistanceLabel:           qsTr("Trigger Dist")
-//                    sideDistanceLabel:              qsTr("Spacing")
-//                }
-//            } // Camera Column
+/*            Column {
+                anchors.left:       parent.left
+                anchors.right:      parent.right
+                spacing:            _margin
+                visible:            tabBar.currentIndex == 1
+
+                CameraCalcCamera {
+                    cameraCalc:                     missionItem.cameraCalc
+                    vehicleFlightIsFrontal:         true
+                    distanceToSurfaceLabel:         qsTr("AltitudeTest")
+                    distanceToSurfaceAltitudeMode:  missionItem.followTerrain ?
+                                                        QGroundControl.AltitudeModeAboveTerrain :
+                                                        missionItem.cameraCalc.distanceToSurfaceRelative
+                    frontalDistanceLabel:           qsTr("Trigger Dist")
+                    sideDistanceLabel:              qsTr("Spacing")
+                }
+            } // Camera Column*/
 
 //            ColumnLayout {
 //                anchors.left:       parent.left

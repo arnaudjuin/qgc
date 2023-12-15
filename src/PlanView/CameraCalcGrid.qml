@@ -123,7 +123,7 @@ Column {
         columns:        2
         visible:        cameraCalc.isManualCamera
 
-/*        QGCLabel { text: distanceToSurfaceLabel }
+        /*        QGCLabel { text: distanceToSurfaceLabel }
         AltitudeFactTextField {
             fact:               cameraCalc.distanceToSurface
             altitudeMode:       distanceToSurfaceAltitudeMode
@@ -141,31 +141,378 @@ Column {
             Layout.fillWidth:   true
             fact:               cameraCalc.adjustedFootprintSide
         }*/
-        QGCLabel { text: "Travel Height" }
-                FactTextField {
-                    Layout.fillWidth:   true
-                    fact:               cameraCalc.adjustedFootprintSide
-                }
+
+        /*        QGCLabel { text: "Travel Height" }
+        FactTextField {
+            Layout.fillWidth:   true
+            fact:               cameraCalc.adjustedFootprintSide
+        }
         QGCLabel { text: "Spray Height" }
-                FactTextField {
-                    Layout.fillWidth:   true
-                    fact:               cameraCalc.adjustedFootprintSide
-                }
+
+        FactTextField {
+            Layout.fillWidth:   true
+            fact:               cameraCalc.adjustedFootprintSide
+        }
         QGCLabel { text: "Spray Volume" }
-                FactTextField {
-                    Layout.fillWidth:   true
-                    fact:               cameraCalc.adjustedFootprintSide
-                }
+        FactTextField {
+            Layout.fillWidth:   true
+            fact:               cameraCalc.adjustedFootprintSide
+        }
         QGCLabel { text: "Spacing" }
-                FactTextField {
-                    Layout.fillWidth:   true
-                    fact:               cameraCalc.adjustedFootprintSide
-                }
+        FactTextField {
+            Layout.fillWidth:   true
+            fact:               cameraCalc.adjustedFootprintSide
+        }
         QGCLabel { text: "Sprayer Flow" }
-                FactTextField {
-                    Layout.fillWidth:   true
-                    fact:               cameraCalc.adjustedFootprintSide
+        FactTextField {
+            Layout.fillWidth:   true
+            fact:               cameraCalc.adjustedFootprintSide
+        }*/
+        Rectangle {
+            id:                 basicSurveyRectangle
+            anchors.left:       parent.left
+            anchors.right:      parent.right
+            color:"transparent"
+            //TODOSUIND
+            height:             500
+
+            Column {
+                id:                 basicSurveyColumn
+                anchors.margins:    _margins
+                anchors.left:       parent.left
+                anchors.right:      parent.right
+                anchors.top:        parent.top
+                spacing:            _margins
+
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 4
+
+                    QGCLabel {
+                        text:       qsTr("Sprayer Flow")
+                        font.family: ScreenTools.demiboldFontFamily
+                    }
                 }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 1
+                    anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "-"
+                        anchors.verticalCenter: parent.verticalCenter
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    Slider {
+
+                        id:                 sprayerFlow3
+                        minimumValue:       0.08
+                        maximumValue:       4
+                        stepSize:           1
+                        tickmarksEnabled:   true
+
+                        //                                onValueChanged: {
+                        //                                    if (_loadComplete) {
+                        //                                        _rateRollP.value = value
+                        //                                        _rateRollI.value = value
+                        //                                        _ratePitchP.value = value
+                        //                                        _ratePitchI.value = value
+                        //                                    }
+                    }
+
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "+"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    FactTextField {
+                        anchors.verticalCenter: parent.verticalCenter
+                        fact:                   sliderRoot.fact
+                        showUnits:              true
+                        showHelp:               false
+                        text:                   "2"
+                        width:                  30
+                    }
+                }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 4
+
+                    QGCLabel {
+                        text:       qsTr("Travel Height")
+                        font.family: ScreenTools.demiboldFontFamily
+                    }
+                }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 1
+                    anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "-"
+                        anchors.verticalCenter: parent.verticalCenter
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    Slider {
+
+                        id:                 travelHeight
+                        minimumValue:       0.08
+                        maximumValue:       4
+                        stepSize:           1
+                        tickmarksEnabled:   true
+
+                        //                                onValueChanged: {
+                        //                                    if (_loadComplete) {
+                        //                                        _rateRollP.value = value
+                        //                                        _rateRollI.value = value
+                        //                                        _ratePitchP.value = value
+                        //                                        _ratePitchI.value = value
+                        //                                    }
+                    }
+
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "+"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    FactTextField {
+                        anchors.verticalCenter: parent.verticalCenter
+                        fact:                   sliderRoot.fact
+                        showUnits:              true
+                        showHelp:               false
+                        text:                   "2"
+                        width:                  30
+                    }
+                }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 4
+
+                    QGCLabel {
+                        text:       qsTr("Spray Height")
+                        font.family: ScreenTools.demiboldFontFamily
+                    }
+                }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 1
+                    anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "-"
+                        anchors.verticalCenter: parent.verticalCenter
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    Slider {
+
+                        id:                 sprayHeight
+                        minimumValue:       0.08
+                        maximumValue:       4
+                        stepSize:           1
+                        tickmarksEnabled:   true
+
+                        //                                onValueChanged: {
+                        //                                    if (_loadComplete) {
+                        //                                        _rateRollP.value = value
+                        //                                        _rateRollI.value = value
+                        //                                        _ratePitchP.value = value
+                        //                                        _ratePitchI.value = value
+                        //                                    }
+                    }
+
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "+"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    FactTextField {
+                        anchors.verticalCenter: parent.verticalCenter
+                        fact:                   sliderRoot.fact
+                        showUnits:              true
+                        showHelp:               false
+                        text:                   "2"
+                        width:                  30
+                    }
+                }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 4
+
+                    QGCLabel {
+                        text:       qsTr("Spray Volume")
+                        font.family: ScreenTools.demiboldFontFamily
+                    }
+                }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 1
+                    anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "-"
+                        anchors.verticalCenter: parent.verticalCenter
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    Slider {
+
+                        id:                 sprayVolume
+                        minimumValue:       0.08
+                        maximumValue:       4
+                        stepSize:           1
+                        tickmarksEnabled:   true
+
+                        //                                onValueChanged: {
+                        //                                    if (_loadComplete) {
+                        //                                        _rateRollP.value = value
+                        //                                        _rateRollI.value = value
+                        //                                        _ratePitchP.value = value
+                        //                                        _ratePitchI.value = value
+                        //                                    }
+                    }
+
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "+"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    FactTextField {
+                        anchors.verticalCenter: parent.verticalCenter
+                        fact:                   sliderRoot.fact
+                        showUnits:              true
+                        showHelp:               false
+                        text:                   "2"
+                        width:                  30
+                    }
+                }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 4
+
+                    QGCLabel {
+                        text:       qsTr("Spacing")
+                        font.family: ScreenTools.demiboldFontFamily
+                    }
+                }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 1
+                    anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "-"
+                        anchors.verticalCenter: parent.verticalCenter
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    Slider {
+
+                        id:                 spacing
+                        minimumValue:       0.08
+                        maximumValue:       4
+                        stepSize:           1
+                        tickmarksEnabled:   true
+
+                        //                                onValueChanged: {
+                        //                                    if (_loadComplete) {
+                        //                                        _rateRollP.value = value
+                        //                                        _rateRollI.value = value
+                        //                                        _ratePitchP.value = value
+                        //                                        _ratePitchI.value = value
+                        //                                    }
+                    }
+
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "+"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    FactTextField {
+                        anchors.verticalCenter: parent.verticalCenter
+                        fact:                   sliderRoot.fact
+                        showUnits:              true
+                        showHelp:               false
+                        text:                   "2"
+                        width:                  30
+                    }
+                }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 4
+
+                    QGCLabel {
+                        text:       qsTr("Spray Speed")
+                        font.family: ScreenTools.demiboldFontFamily
+                    }
+                }
+                Row {
+                    width:      parent.width
+                    spacing:            ScreenTools.defaultFontPixelWidth * 1
+                    anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "-"
+                        anchors.verticalCenter: parent.verticalCenter
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    Slider {
+
+                        id:                 spraySpeed
+                        minimumValue:       0.08
+                        maximumValue:       4
+                        stepSize:           1
+                        tickmarksEnabled:   true
+
+                        //                                onValueChanged: {
+                        //                                    if (_loadComplete) {
+                        //                                        _rateRollP.value = value
+                        //                                        _rateRollI.value = value
+                        //                                        _ratePitchP.value = value
+                        //                                        _ratePitchI.value = value
+                        //                                    }
+                    }
+
+                    QGCButton {
+                        height:                 parent.height
+                        width:                  height
+                        text:                   "+"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                    }
+                    FactTextField {
+                        anchors.verticalCenter: parent.verticalCenter
+                        fact:                   sliderRoot.fact
+                        showUnits:              true
+                        showHelp:               false
+                        text:                   "2"
+                        width:                  30
+                    }
+                }
+
+
+            }
+        }
 
     } // GridLayout
 } // Column
+
