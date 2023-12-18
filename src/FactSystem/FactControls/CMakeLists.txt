@@ -14,6 +14,7 @@ add_custom_target(FactControlsQml
     FactTextFieldGrid.qml  
     FactTextFieldRow.qml  
     FactValueSlider.qml
+    SprayFactTextsFields.qml
 )
 
 target_link_libraries(FactControls qgc)
