@@ -15,57 +15,46 @@ import QGroundControl.FactSystem    1.0
 import QGroundControl.Controls      1.0
 import QGroundControl.ScreenTools   1.0
 
-Row {
-    width:      parent.width
-    spacing:            ScreenTools.defaultFontPixelWidth * 4
+FactTextField {
 
-    QGCLabel {
-        text:       qsTr("Travel Height")
-        font.family: ScreenTools.demiboldFontFamily
-    }
-}
-Row {
-    width:      parent.width
-    spacing:            ScreenTools.defaultFontPixelWidth * 1
-    anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
-    QGCButton {
-        height:                 parent.height
-        width:                  height
-        text:                   "-"
-        anchors.verticalCenter: parent.verticalCenter
-        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
-    }
-    Slider {
+    unitsLabel:         fact ? fact.units : ""
+    extraUnitsLabel:    fact ? _altitudeModeExtraUnits : ""
+    showUnits:          true
+    showHelp:           true
 
-        id:                 travelHeight
-        minimumValue:       0.08
-        maximumValue:       4
-        stepSize:           1
-        tickmarksEnabled:   true
+    property int altitudeMode: QGroundControl.AltitudeModeNone
 
-        //                                onValueChanged: {
-        //                                    if (_loadComplete) {
-        //                                        _rateRollP.value = value
-        //                                        _rateRollI.value = value
-        //                                        _ratePitchP.value = value
-        //                                        _ratePitchI.value = value
-        //                                    }
+    readonly property string _altModeNoneExtraUnits:            ""
+    readonly property string _altModeRelativeExtraUnits:        qsTr("(Rel)")
+    readonly property string _altModeAbsoluteExtraUnits:        qsTr("(AMSL)")
+    readonly property string _altModeAboveTerrainExtraUnits:    qsTr("(Abv Terr)")
+    readonly property string _altModeTerrainFrameExtraUnits:    qsTr("(TerrF)")
+
+    property string _altitudeModeExtraUnits:    _altModeNoneExtraUnits
+    property Fact   _aboveTerrainWarning:       QGroundControl.settingsManager.planViewSettings.aboveTerrainWarning
+
+    onAltitudeModeChanged: updateAltitudeModeExtraUnits()
+
+    function updateAltitudeModeExtraUnits() {
+        if (altitudeMode === QGroundControl.AltitudeModeNone) {
+            _altitudeModeExtraUnits = _altModeNoneExtraUnits
+        } else if (altitudeMode === QGroundControl.AltitudeModeRelative) {
+            //_altitudeModeExtraUnits = _altModeRelativeExtraUnits
+            _altitudeModeExtraUnits = "" // Showing (rel) all the time is too noisy
+        } else if (altitudeMode === QGroundControl.AltitudeModeAbsolute) {
+            _altitudeModeExtraUnits = _altModeAbsoluteExtraUnits
+        } else if (altitudeMode === QGroundControl.AltitudeModeAboveTerrain) {
+            _altitudeModeExtraUnits = _altModeAboveTerrainExtraUnits
+            if (!_aboveTerrainWarning.rawValue) {
+                mainWindow.showComponentDialog(aboveTerrainWarning, qsTr("Warning"), mainWindow.showDialogDefaultWidth, StandardButton.Ok)
+            }
+        } else if (missionItem.altitudeMode === QGroundControl.AltitudeModeTerrainFrame) {
+            _altitudeModeExtraUnits = _altModeTerrainFrameExtraUnits
+        } else {
+            console.log("AltitudeFactTextField Internal error: Unknown altitudeMode", altitudeMode)
+            _altitudeModeExtraUnits = ""
+        }
     }
 
-    QGCButton {
-        height:                 parent.height
-        width:                  height
-        text:                   "+"
-        anchors.verticalCenter: parent.verticalCenter
 
-        //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
-    }
-    FactTextField {
-        anchors.verticalCenter: parent.verticalCenter
-        fact:                   sliderRoot.fact
-        showUnits:              true
-        showHelp:               false
-        text:                   "2"
-        width:                  30
-    }
 }

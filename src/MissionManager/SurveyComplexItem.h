@@ -51,8 +51,8 @@ public:
     double  timeBetweenShots    (void) final;
 
     // Overrides from VisualMissionionItem
-    QString             commandDescription  (void) const final { return tr("Survey1"); }
-    QString             commandName         (void) const final { return tr("Survey2"); }
+    QString             commandDescription  (void) const final { return tr("Spray"); }
+    QString             commandName         (void) const final { return tr("Spray"); }
     QString             abbreviation        (void) const final { return tr("S"); }
     ReadyForSaveState   readyForSaveState    (void) const final;
     double              additionalTimeDelay (void) const final;
