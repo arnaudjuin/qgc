@@ -1,5 +1,6 @@
 Module QGroundControl.FactControls
 
+SprayFactTextsFields 1.0 SprayFactTextsFields.qml
 AltitudeFactTextField   1.0 AltitudeFactTextField.qml
 FactBitmask             1.0 FactBitmask.qml
 FactCheckBox            1.0 FactCheckBox.qml

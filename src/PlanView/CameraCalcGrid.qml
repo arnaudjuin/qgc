@@ -92,12 +92,8 @@ Column {
                 onClicked:              cameraCalc.valueSetIsDistance.value = 1
             }
 
-            AltitudeFactTextField {
-                fact:                   cameraCalc.distanceToSurface
-                altitudeMode:           distanceToSurfaceAltitudeMode
-                enabled:                fixedDistanceRadio.checked
-                Layout.fillWidth:       true
-            }
+
+
 
             QGCRadioButton {
                 id:                     fixedImageDensityRadio
@@ -123,51 +119,6 @@ Column {
         columns:        2
         visible:        cameraCalc.isManualCamera
 
-        /*        QGCLabel { text: distanceToSurfaceLabel }
-        AltitudeFactTextField {
-            fact:               cameraCalc.distanceToSurface
-            altitudeMode:       distanceToSurfaceAltitudeMode
-            Layout.fillWidth:   true
-        }
-
-        QGCLabel { text: frontalDistanceLabel }
-        FactTextField {
-            Layout.fillWidth:   true*//**//*
-            fact:               cameraCalc.adjustedFootprintFrontal
-        }
-
-        QGCLabel { text: sideDistanceLabel }
-        FactTextField {
-            Layout.fillWidth:   true
-            fact:               cameraCalc.adjustedFootprintSide
-        }*/
-
-        /*        QGCLabel { text: "Travel Height" }
-        FactTextField {
-            Layout.fillWidth:   true
-            fact:               cameraCalc.adjustedFootprintSide
-        }
-        QGCLabel { text: "Spray Height" }
-
-        FactTextField {
-            Layout.fillWidth:   true
-            fact:               cameraCalc.adjustedFootprintSide
-        }
-        QGCLabel { text: "Spray Volume" }
-        FactTextField {
-            Layout.fillWidth:   true
-            fact:               cameraCalc.adjustedFootprintSide
-        }
-        QGCLabel { text: "Spacing" }
-        FactTextField {
-            Layout.fillWidth:   true
-            fact:               cameraCalc.adjustedFootprintSide
-        }
-        QGCLabel { text: "Sprayer Flow" }
-        FactTextField {
-            Layout.fillWidth:   true
-            fact:               cameraCalc.adjustedFootprintSide
-        }*/
         Rectangle {
             id:                 basicSurveyRectangle
             anchors.left:       parent.left
@@ -185,7 +136,6 @@ Column {
                 spacing:            _margins
 
 
-
                 Row {
                     width:      parent.width
                     spacing:            ScreenTools.defaultFontPixelWidth * 4
@@ -195,13 +145,6 @@ Column {
                         font.family: ScreenTools.demiboldFontFamily
                     }
                 }
-
-                         AltitudeFactTextField {
-                           fact:               cameraCalc.distanceToSurface
-                           altitudeMode:       distanceToSurfaceAltitudeMode
-                           Layout.fillWidth:   true
-                         }
-
                 Row {
                     width:      parent.width
                     spacing:            ScreenTools.defaultFontPixelWidth * 1
