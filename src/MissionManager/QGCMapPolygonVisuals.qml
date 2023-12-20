@@ -207,6 +207,7 @@ Item {
         addCommonVisuals()
         _handleInteractiveChanged()
     }
+
     Component.onDestruction: mapPolygon.traceMode = false
 
     QGCDynamicObjectManager { id: _objMgrCommonVisuals }
@@ -544,7 +545,7 @@ Item {
                 _horizontalPadding: 0
                 text:               mapPolygon.traceMode ? qsTr("Done Tracing") : qsTr("Trace")
                 onClicked: {
-                    if (mapPolygon.traceMode) {
+                    if   (mapPolygon.traceMode) {
                         if (mapPolygon.count < 3) {
                             _restorePreviousVertices()
                         }

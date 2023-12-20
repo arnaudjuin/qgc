@@ -21,7 +21,8 @@ Rectangle {
     radius:         _radius
     opacity:        _currentItem ? 1.0 : 0.7
     border.width:   _readyForSave ? 0 : 1
-    border.color:   qgcPal.warningText
+    border.color:   qgcPal.hoverColor
+
 
     property var    map                 ///< Map control
     property var    masterController
@@ -75,8 +76,11 @@ Rectangle {
             onCoordinateChanged: missionItem.coordinate = coordinate
         }
     }
+   
+
 
     Rectangle {
+        
         id:                     notReadyForSaveIndicator
         anchors.verticalCenter: notReadyForSaveLabel.visible ? notReadyForSaveLabel.verticalCenter : commandPicker.verticalCenter
         anchors.leftMargin:     _margin
@@ -87,7 +91,9 @@ Rectangle {
         border.color:           qgcPal.warningText
         color:                  "white"
         radius:                 width / 2
-        visible:                !_readyForSave
+        visible:false
+
+
 
         QGCLabel {
             id:                 readyForSaveLabel
@@ -105,10 +111,8 @@ Rectangle {
         anchors.left:           notReadyForSaveIndicator.right
         anchors.right:          parent.right
         anchors.top:            commandPicker.bottom
-        visible:                _currentItem && !_readyForSave
-        text:                   missionItem.readyForSaveState === VisualMissionItem.NotReadyForSaveTerrain ?
-                                    qsTr("Incomplete: Waiting on terrain data.") :
-                                    qsTr("Incomplete: Item not fully specified.")
+        visible:false
+        text:                   _singleComplexItem ? qsTr("This item is  ready to save") : qsTr("This complex item is not ready to save")
         wrapMode:               Text.WordWrap
         horizontalAlignment:    Text.AlignHCenter
         color:                  qgcPal.warningText
@@ -123,13 +127,13 @@ Rectangle {
         height:                 _hamburgerSize
         sourceSize.height:      _hamburgerSize
         source:                 "qrc:/qmlimages/Hamburger.svg"
-        visible:                missionItem.isCurrentItem && missionItem.sequenceNumber !== 0
+        visible:false
         color:                  qgcPal.text
     }
 
     QGCMouseArea {
         fillItem:   hamburger
-        visible:    hamburger.visible
+        visible:false
         onClicked: {
             currentItemScope.focus = true
             hamburgerMenu.popup()
@@ -189,6 +193,8 @@ Rectangle {
     }
 
     QGCColoredImage {
+                visible:false
+
         id:                     deleteButton
         anchors.margins:        _margin
         anchors.left:           parent.left
@@ -200,7 +206,6 @@ Rectangle {
         mipmap:                 true
         smooth:                 true
         color:                  qgcPal.text
-        visible:                _currentItem && missionItem.sequenceNumber !== 0
         source:                 "/res/TrashDelete.svg"
 
         QGCMouseArea {
@@ -210,13 +215,13 @@ Rectangle {
     }
 
     Rectangle {
+        visible:false
         id:                 commandPicker
         anchors.margins:    _margin
         anchors.left:       deleteButton.right
         anchors.top:        parent.top
         height:             ScreenTools.implicitComboBoxHeight
         width:              innerLayout.x + innerLayout.width + ScreenTools.comboBoxPadding
-        visible:            !commandLabel.visible
         color:              qgcPal.window
         border.width:       1
         border.color:       qgcPal.text
@@ -265,7 +270,7 @@ Rectangle {
         id:                     commandLabel
         anchors.leftMargin:     ScreenTools.comboBoxPadding
         anchors.fill:           commandPicker
-        visible:                !missionItem.isCurrentItem || !missionItem.isSimpleItem || _waypointsOnlyMode || missionItem.isTakeoffItem
+        visible:                false
         verticalAlignment:      Text.AlignVCenter
         text:                   missionItem.commandName
         color:                  _outerTextColor

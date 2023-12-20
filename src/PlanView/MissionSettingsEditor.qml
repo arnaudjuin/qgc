@@ -13,12 +13,12 @@ import QGroundControl.Controllers       1.0
 
 // Editor for Mission Settings
 Rectangle {
-    //TODO SUIND
     id:                 valuesRect
     width:              availableWidth
     height:             valuesColumn.height + (_margin * 2)
     color:              qgcPal.windowShadeDark
     radius:             _radius
+    visible:            missionItem.isCurrentItem
 
     property var    _masterControler:               masterController
     property var    _missionController:             _masterControler.missionController
@@ -54,6 +54,17 @@ Rectangle {
         anchors.right:      parent.right
         anchors.top:        parent.top
         spacing:            _margin
+
+
+                QGCButton {
+                    text:               _missionController.complexMissionItemNames[2]
+                    Layout.fillWidth:   true
+
+                    onClicked: {
+                        insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[2])
+                        dropPanel.hide()
+                    }
+                }
 
         Row {
             width:      parent.width
@@ -300,7 +311,7 @@ Rectangle {
                 stepSize:           0.5
                 tickmarksEnabled:   true
                 width:150
-                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value + 1
+                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
             QGCButton {

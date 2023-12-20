@@ -14,6 +14,7 @@ import QGroundControl.Palette       1.0
 import QGroundControl.FlightMap     1.0
 
 Rectangle {
+    visible:false
     id:         _root
     height:     visible ? (editorColumn.height + (_margin * 2)) : 0
     width:      availableWidth

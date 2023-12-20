@@ -44,7 +44,7 @@ CameraCalc::CameraCalc(Vehicle* vehicle, const QString& settingsGroup, QObject* 
     , _imageFootprintSide           (0)
     , _imageFootprintFrontal        (0)
     , _knownCameraList              (_vehicle->staticCameraList())
-{
+{       
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 
     connect(&_valueSetIsDistanceFact,       &Fact::valueChanged,                            this, &CameraCalc::_setDirty);
