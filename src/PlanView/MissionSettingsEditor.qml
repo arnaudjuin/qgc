@@ -18,7 +18,7 @@ Rectangle {
     height:             valuesColumn.height + (_margin * 2)
     color:              qgcPal.windowShadeDark
     radius:             _radius
-    visible:            missionItem.isCurrentItem
+    //visible:            missionItem.isCurrentItem
 
     property var    _masterControler:               masterController
     property var    _missionController:             _masterControler.missionController
@@ -55,10 +55,14 @@ Rectangle {
         anchors.top:        parent.top
         spacing:            _margin
 
+        Row {
+            width:      parent.width
+            spacing:            ScreenTools.defaultFontPixelWidth * 3
 
                 QGCButton {
                     text:               "New"
                     Layout.fillWidth:   true
+                    //enabled:_missionController.visualItems.count < 2
 
                     onClicked: {
                         insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
@@ -66,12 +70,30 @@ Rectangle {
                     }
                 }
 
+                QGCButton {
+                    text:               "Load"
+                    Layout.fillWidth:   true
+
+                    onClicked: {
+                        insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
+                        dropPanel.hide()
+                    }
+                }
+        }
+
         Row {
             width:      parent.width
-
+            spacing:            ScreenTools.defaultFontPixelWidth * 3
             QGCLabel {
                 text:       qsTr("Travel Height")
                 font.family: ScreenTools.demiboldFontFamily
+            }
+            QGCButton {
+                height:                 parent.height
+                width:                  height * 8
+                text:                   "Add travel wp"
+                anchors.verticalCenter: parent.verticalCenter
+                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
         }
         Row {

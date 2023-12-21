@@ -19,14 +19,15 @@ Rectangle {
     height:         editorLoader.visible ? (editorLoader.y + editorLoader.height + (_margin * 2)) : (commandPicker.y + commandPicker.height + _margin / 2)
     color:          _currentItem ? qgcPal.missionItemEditor : qgcPal.windowShade
     radius:         _radius
-    opacity:        _currentItem ? 1.0 : 0.7
     border.width:   _readyForSave ? 0 : 1
     border.color:   qgcPal.warningText
-    visible : missionItem.sequenceNumber == 0
+    visible : missionItem.sequenceNumber == 0  || missionItem.wizardMode
 
     property var    map                 ///< Map control
     property var    masterController
     property var    missionItem         ///< MissionItem associated with this editor
+    property var    nextMissionItem         ///< MissionItem associated with this editor
+
     property bool   readOnly            ///< true: read only view, false: full editing view
 
     signal clicked
@@ -248,9 +249,10 @@ Rectangle {
         border.color:           qgcPal.warningText
         color:                  "white"
         radius:                 width / 2
-        //visible:                !_readyForSave
+        visible:                false
 
         QGCLabel {
+            visible:false
             id:                 readyForSaveLabel
             anchors.centerIn:   parent
             //: Indicator in Plan view to show mission item is not ready for save/send
@@ -266,7 +268,7 @@ Rectangle {
     anchors.left:           notReadyForSaveIndicator.right
     anchors.right:          parent.right
     anchors.top:            commandPicker.bottom
-    //visible:                _currentItem && !_readyForSave
+    visible:                 false
     text:                   missionItem.readyForSaveState === VisualMissionItem.NotReadyForSaveTerrain ?
                                 qsTr("Incomplete: Waiting on terrain data.") :
                                 qsTr("Incomplete: Item not fully specified.")
@@ -280,8 +282,8 @@ Rectangle {
         anchors.margins:    _margin
         anchors.left:       parent.left
         anchors.top:        _readyForSave ? commandPicker.bottom : notReadyForSaveLabel.bottom
-        source:             missionItem.editorQml
-
+        //HACK TO BENEFIT FROM THE SPRAY EDITOR
+        source:               missionItem.editorQml 
         property var    masterController:   _masterController
         property real   availableWidth:     _root.width - (_margin * 2) ///< How wide the editor should be
         property var    editorRoot:         _root

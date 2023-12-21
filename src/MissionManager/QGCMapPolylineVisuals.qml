@@ -326,13 +326,13 @@ Item {
             QGCButton {
                 _horizontalPadding: 0
                 text:               qsTr("Basic")
-                visible:            !mapPolyline.traceMode
+                visible:            false
                 onClicked:          _resetPolyline()
             }
 
             QGCButton {
                 _horizontalPadding: 0
-                text:               mapPolyline.traceMode ? qsTr("Done Tracing") : qsTr("Trace")
+                text:               mapPolyline.traceMode ? qsTr("Done Tracing") : ""
                 onClicked: {
                     if (mapPolyline.traceMode) {
                         if (mapPolyline.count < 2) {
@@ -351,7 +351,8 @@ Item {
                 _horizontalPadding: 0
                 text:               qsTr("Load KML...")
                 onClicked:          kmlLoadDialog.openForLoad()
-                visible:            !mapPolyline.traceMode
+                visible:            false
+
             }
         }
     }

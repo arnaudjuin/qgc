@@ -571,6 +571,7 @@ Item {
             z:                  QGroundControl.zOrderWidgets
             maxHeight:          parent.height - toolStrip.y
             title:              qsTr("Plan")
+            
 
             //readonly property int flyButtonIndex:       0
             readonly property int fileButtonIndex:      0
@@ -705,7 +706,7 @@ Item {
             width:              _rightPanelWidth
             color:              qgcPal.window
             opacity:            planExpanded.visible ? 0.2 : 0
-            anchors.bottom:     parent.bottom
+            anchors.bottom:     parent  .bottom
             anchors.right:      parent.right
             anchors.rightMargin: _toolsMargin
         }
@@ -843,6 +844,7 @@ Item {
                         map:            editorMap
                         masterController:  _planMasterController
                         missionItem:    object
+                        nextMissionItem: _missionController.visualItems
                         width:          parent.width
                         readOnly:       false
                         onClicked:      _missionController.setCurrentPlanViewSeqNum(object.sequenceNumber, false)

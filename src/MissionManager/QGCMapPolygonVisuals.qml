@@ -529,7 +529,7 @@ Item {
             QGCButton {
                 _horizontalPadding: 0
                 text:               qsTr("Basic")
-                visible:            false
+                visible:            !mapPolygon.traceMode
                 onClicked:          _resetPolygon()
             }
 
@@ -542,7 +542,7 @@ Item {
 
             QGCButton {
                 _horizontalPadding: 0
-                text:               mapPolygon.traceMode ? qsTr("Done Tracing") : ""
+                text:               mapPolygon.traceMode ? qsTr("Done Tracing") : qsTr("Trace")
                 onClicked: {
                     if (mapPolygon.traceMode) {
                         if (mapPolygon.count < 3) {
