@@ -22,6 +22,7 @@ Rectangle {
     opacity:        _currentItem ? 1.0 : 0.7
     border.width:   _readyForSave ? 0 : 1
     border.color:   qgcPal.warningText
+    visible : missionItem.sequenceNumber == 0
 
     property var    map                 ///< Map control
     property var    masterController
@@ -76,43 +77,8 @@ Rectangle {
         }
     }
 
-    Rectangle {
-        id:                     notReadyForSaveIndicator
-        anchors.verticalCenter: notReadyForSaveLabel.visible ? notReadyForSaveLabel.verticalCenter : commandPicker.verticalCenter
-        anchors.leftMargin:     _margin
-        anchors.left:           parent.left
-        width:                  readyForSaveLabel.contentHeight
-        height:                 width
-        border.width:           1
-        border.color:           qgcPal.warningText
-        color:                  "white"
-        radius:                 width / 2
-        visible:                !_readyForSave
+  
 
-        QGCLabel {
-            id:                 readyForSaveLabel
-            anchors.centerIn:   parent
-            //: Indicator in Plan view to show mission item is not ready for save/send
-            text:               qsTr("?")
-            color:              qgcPal.warningText
-            font.pointSize:     ScreenTools.smallFontPointSize
-        }
-    }
-
-    QGCLabel {
-        id:                     notReadyForSaveLabel
-        anchors.margins:        _margin
-        anchors.left:           notReadyForSaveIndicator.right
-        anchors.right:          parent.right
-        anchors.top:            commandPicker.bottom
-        visible:                _currentItem && !_readyForSave
-        text:                   missionItem.readyForSaveState === VisualMissionItem.NotReadyForSaveTerrain ?
-                                    qsTr("Incomplete: Waiting on terrain data.") :
-                                    qsTr("Incomplete: Item not fully specified.")
-        wrapMode:               Text.WordWrap
-        horizontalAlignment:    Text.AlignHCenter
-        color:                  qgcPal.warningText
-    }
 
     QGCColoredImage {
         id:                     hamburger
@@ -271,13 +237,50 @@ Rectangle {
         color:                  _outerTextColor
     }
 
+  Rectangle {
+        id:                     notReadyForSaveIndicator
+        anchors.verticalCenter: notReadyForSaveLabel.visible ? notReadyForSaveLabel.verticalCenter : commandPicker.verticalCenter
+        anchors.leftMargin:     _margin
+        anchors.left:           parent.left
+        width:                  readyForSaveLabel.contentHeight
+        height:                 width
+        border.width:           1
+        border.color:           qgcPal.warningText
+        color:                  "white"
+        radius:                 width / 2
+        //visible:                !_readyForSave
+
+        QGCLabel {
+            id:                 readyForSaveLabel
+            anchors.centerIn:   parent
+            //: Indicator in Plan view to show mission item is not ready for save/send
+            text:               qsTr("?")
+            color:              qgcPal.warningText
+            font.pointSize:     ScreenTools.smallFontPointSize
+        }
+    }
+
+    QGCLabel {
+    id:                     notReadyForSaveLabel1
+    anchors.margins:        _margin
+    anchors.left:           notReadyForSaveIndicator.right
+    anchors.right:          parent.right
+    anchors.top:            commandPicker.bottom
+    //visible:                _currentItem && !_readyForSave
+    text:                   missionItem.readyForSaveState === VisualMissionItem.NotReadyForSaveTerrain ?
+                                qsTr("Incomplete: Waiting on terrain data.") :
+                                qsTr("Incomplete: Item not fully specified.")
+    wrapMode:               Text.WordWrap
+    horizontalAlignment:    Text.AlignHCenter
+    color:                  qgcPal.warningText
+}
+
     Loader {
         id:                 editorLoader
         anchors.margins:    _margin
         anchors.left:       parent.left
         anchors.top:        _readyForSave ? commandPicker.bottom : notReadyForSaveLabel.bottom
         source:             missionItem.editorQml
-        visible:            _currentItem
 
         property var    masterController:   _masterController
         property real   availableWidth:     _root.width - (_margin * 2) ///< How wide the editor should be

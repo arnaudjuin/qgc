@@ -442,7 +442,7 @@ Item {
                     onClicked:  _missionController.setCurrentPlanViewSeqNum(sequenceNumber, false)
                     visible:    _editingLayer == _layerMission
                 }
-            }
+            } 
 
             // Add lines between waypoints
             MissionLineView {
@@ -600,7 +600,7 @@ Item {
                     alternateIconSource:"/qmlimages/MapSyncChanged.svg",
                     dropPanelComponent: syncDropPanel
                 },
-                {
+                  /* {
                     name:               qsTr("Takeoff"),
                     iconSource:         "/res/takeoff.svg",
                     buttonEnabled:      _missionController.isInsertTakeoffValid,
@@ -613,7 +613,7 @@ Item {
                     buttonVisible:      _isRallyLayer || _isMissionLayer,
                     toggle:             true,
                     checked:            _addWaypointOnClick
-                },
+                },*/
                 {
                     name:               _missionController.isROIActive ? qsTr("Cancel ROI") : qsTr("ROI"),
                     iconSource:         "/qmlimages/MapAddMission.svg",
@@ -621,7 +621,7 @@ Item {
                     buttonVisible:      _isMissionLayer && _planMasterController.controllerVehicle.roiModeSupported,
                     toggle:             !_missionController.isROIActive
                 },
-                {
+               /* {
                     name:               _singleComplexItem ? _missionController.complexMissionItemNames[0] : qsTr("Pattern"),
                     iconSource:         "/qmlimages/MapDrawShape.svg",
                     buttonEnabled:      _missionController.flyThroughCommandsAllowed,
@@ -633,7 +633,7 @@ Item {
                     iconSource:         "/res/rtl.svg",
                     buttonEnabled:      _missionController.isInsertLandValid,
                     buttonVisible:      _isMissionLayer
-                },
+                },*/
                 {
                     name:               qsTr("Center"),
                     iconSource:         "/qmlimages/MapCenter.svg",
