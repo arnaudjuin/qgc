@@ -7,7 +7,7 @@ on:
       - 'Stable*'
       - 'main'
       - 'QGCustomAPM'
-      - 'missionPlanner3
+      - 'missionPlanner3'
     tags:
       - 'v*'
   pull_request:
