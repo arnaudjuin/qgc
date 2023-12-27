@@ -35,8 +35,7 @@
 #include <string>
 
 
-QGC_LOGGING_CATEGORY(CustomLog,
-"CustomLog")
+
 
 CustomVideoReceiver::CustomVideoReceiver(QObject *parent)
         : VideoReceiver(parent) {
@@ -52,7 +51,6 @@ CustomVideoReceiver::~CustomVideoReceiver() {
 //-----------------------------------------------------------------------------
 static QObject *
 customQuickInterfaceSingletonFactory(QQmlEngine *, QJSEngine *) {
-    qCDebug(CustomLog) << "Creating CustomQuickInterface instance";
     CustomQuickInterface *pIFace = new CustomQuickInterface();
     auto *pPlug = qobject_cast<CustomPlugin *>(qgcApp()->toolbox()->corePlugin());
     if (pPlug) {
