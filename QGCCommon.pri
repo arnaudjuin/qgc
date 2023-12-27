@@ -17,6 +17,8 @@
 # the project file.
 
 CONFIG -= debug_and_release
+CONFIG += c++17
+
 linux {
     linux-g++ | linux-g++-64 | linux-g++-32 | linux-clang {
         message("Linux build")
