@@ -12,7 +12,7 @@
 #include <QLocale>
 #include <QQuaternion>
 
-#include <../../libs/Eigen/Eigen>
+#include <../../../libs/Eigen/Eigen>
 
 #include "Vehicle.h"
 #include "MAVLinkProtocol.h"
