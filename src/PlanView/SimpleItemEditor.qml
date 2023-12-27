@@ -49,7 +49,7 @@ Rectangle {
 
     Connections {
         target:                 missionItem
-        onAltitudeModeChanged:  updateAltitudeModeText()
+        function onAltitudeModeChanged (){  updateAltitudeModeText()}
     }
 
     Column {

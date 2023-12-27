@@ -31,16 +31,16 @@ Button {
 
     Connections {
         target: __behavior
-        onMouseXChanged: {
+        function onMouseXChanged() {
             __lastGlobalMouseX = ScreenTools.mouseX()
             __lastGlobalMouseY = ScreenTools.mouseY()
         }
-        onMouseYChanged: {
+        function onMouseYChanged() {
             __lastGlobalMouseX = ScreenTools.mouseX()
             __lastGlobalMouseY = ScreenTools.mouseY()
         }
-        onEntered: { __forceHoverOff = false; hoverTimer.start() }
-        onExited: { __forceHoverOff = false; hoverTimer.stop() }
+        function onEntered() { __forceHoverOff = false; hoverTimer.start() }
+        function onExited() { __forceHoverOff = false; hoverTimer.stop() }
     }
 
     Timer {

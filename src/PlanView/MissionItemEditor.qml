@@ -240,7 +240,7 @@ Rectangle {
 
   Rectangle {
         id:                     notReadyForSaveIndicator
-        anchors.verticalCenter: notReadyForSaveLabel.visible ? notReadyForSaveLabel.verticalCenter : commandPicker.verticalCenter
+        //anchors.verticalCenter: notReadyForSaveLabel.visible ? notReadyForSaveLabel.verticalCenter : commandPicker.verticalCenter
         anchors.leftMargin:     _margin
         anchors.left:           parent.left
         width:                  readyForSaveLabel.contentHeight
