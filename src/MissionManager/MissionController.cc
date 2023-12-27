@@ -420,10 +420,9 @@ VisualMissionItem* MissionController::insertTakeoffItem(QGeoCoordinate /*coordin
     }
     newItem->setMissionFlightStatus(_missionFlightStatus);
     if (visualItemIndex == -1) {
-        //TODO SUIND
-       // _visualItems->append(newItem);
+        _visualItems->append(newItem);
     } else {
-     //   _visualItems->insert(visualItemIndex, newItem);
+        _visualItems->insert(visualItemIndex, newItem);
     }
 
     _recalcAll();
@@ -551,7 +550,6 @@ void MissionController::_insertComplexMissionItemWorker(const QGeoCoordinate& ma
 
     complexItem->setSequenceNumber(sequenceNumber);
     complexItem->setWizardMode(true);
-
     _initVisualItem(complexItem);
 
     if (visualItemIndex == -1) {
