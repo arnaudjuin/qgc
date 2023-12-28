@@ -1106,7 +1106,7 @@ Item {
                 }
             }
 
-            /*           SectionHeader {
+                      SectionHeader {
                 id:                 storageSection
                 Layout.fillWidth:   true
                 text:               qsTr("Storage")
@@ -1118,7 +1118,7 @@ Item {
                 columnSpacing:      ScreenTools.defaultFontPixelWidth
                 visible:            storageSection.visible
 
-                /*QGCButton {
+                QGCButton {
                     text:               qsTr("New...")
                     Layout.fillWidth:   true
                     onClicked:  {
@@ -1232,7 +1232,7 @@ Item {
                         mainWindow.showComponentDialog(clearVehicleMissionDialog, text, mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.Cancel)
                     }
                 }
-            } */
+            }
         }
     }
 }

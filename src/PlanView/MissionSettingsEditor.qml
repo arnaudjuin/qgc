@@ -66,13 +66,12 @@ Rectangle {
             }
 
             QGCButton {
-                text:               "New "
+                text:               "New"
                 Layout.fillWidth:   true
                 enabled:_missionController.visualItems.count < 138
 
                 onClicked: {
                     insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
-                    dropPanel.hide()
                 }
 
 
@@ -81,26 +80,24 @@ Rectangle {
             QGCButton {
                 text:               "Load"
                 Layout.fillWidth:   true
-
-
-                onClicked: {
-                    syncDropPanel.visible = true;
-                    toolStrip.visible = false;
-
-                    // Emit a signal to open SyncDropPanel
-                    openSyncDropPanelSignal.trigger();
-                }
-            }
+  
+            } 
 
             QGCButton {
                 text:               "Start"
                 Layout.fillWidth:   true
                 onClicked: {
                     mainWindow.showFlyView()
-
                 }
             }
         }
+                    SectionHeader {
+                id:             sep
+                anchors.left:   parent.left
+                anchors.right:  parent.right
+                text:           ""
+            }
+        
         /*         ToolStrip {
             id:                 toolStrip
             anchors.margins:    _toolsMargin
@@ -153,13 +150,17 @@ Rectangle {
             }
 
             QGCButton {
+                id :    addTravelWP
                 anchors.topMargin: 10 // Set top margin
+                anchors.verticalCenter: parent.verticalCenter
                 height:                 parent.height
                 width:                  height * 8
                 text:                   "Add travel WP"
-
-                anchors.verticalCenter: parent.verticalCenter
-                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                //color:                _addWaypointOnClick ? qgcPal.colorOrange : qgcPal.windowShadeDark
+                onClicked: {
+                    _addWaypointOnClick =   !_addWaypointOnClick
+                    addTravelWP.color = _addWaypointOnClick ? qgcPal.colorOrange : qgcPal.windowShadeDark
+                }
             }
         }
         Row {
@@ -173,21 +174,16 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-            Slider {
+          Slider {
+                property bool   _loadComplete:  false
 
                 id:                 travelHeight
-                minimumValue:       0.08
-                maximumValue:       4
-                stepSize:           1
+                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min
+                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
+                stepSize:           0.5
                 tickmarksEnabled:   true
-
-                //                                onValueChanged: {
-                //                                    if (_loadComplete) {
-                //                                        _rateRollP.value = value
-                //                                        _rateRollI.value = value
-                //                                        _ratePitchP.value = value
-                //                                        _ratePitchI.value = value
-                //                                    }
+                width:200 
+                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
             QGCButton {
@@ -198,13 +194,11 @@ Rectangle {
 
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-            FactTextField {
-                anchors.verticalCenter: parent.verticalCenter
-                fact:                   sliderRoot.fact
+         FactTextField {
+                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
                 showUnits:              true
                 showHelp:               false
-                text:                   "2"
-                width:                  30
+                width:                  80
             }
         }
         Row {
@@ -234,21 +228,16 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-            Slider {
+          Slider {
+                property bool   _loadComplete:  false
 
                 id:                 sprayHeight
-                minimumValue:       0.08
-                maximumValue:       4
-                stepSize:           1
+                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min
+                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
+                stepSize:           0.5
                 tickmarksEnabled:   true
-
-                //                                onValueChanged: {
-                //                                    if (_loadComplete) {
-                //                                        _rateRollP.value = value
-                //                                        _rateRollI.value = value
-                //                                        _ratePitchP.value = value
-                //                                        _ratePitchI.value = value
-                //                                    }
+                width:200 
+                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
             QGCButton {
@@ -259,13 +248,11 @@ Rectangle {
 
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-            FactTextField {
-                anchors.verticalCenter: parent.verticalCenter
-                fact:                   sliderRoot.fact
+         FactTextField {
+                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
                 showUnits:              true
                 showHelp:               false
-                text:                   "2"
-                width:                  30
+                width:                  80
             }
         }
         Row {
@@ -288,21 +275,16 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-            Slider {
+          Slider {
+                property bool   _loadComplete:  false
 
                 id:                 sprayVolume
-                minimumValue:       0.08
-                maximumValue:       4
-                stepSize:           1
+                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min
+                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
+                stepSize:           0.5
                 tickmarksEnabled:   true
-
-                //                                onValueChanged: {
-                //                                    if (_loadComplete) {
-                //                                        _rateRollP.value = value
-                //                                        _rateRollI.value = value
-                //                                        _ratePitchP.value = value
-                //                                        _ratePitchI.value = value
-                //                                    }
+                width:200 
+                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
             QGCButton {
@@ -313,13 +295,11 @@ Rectangle {
 
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-            FactTextField {
-                anchors.verticalCenter: parent.verticalCenter
-                fact:                   sliderRoot.fact
+         FactTextField {
+                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
                 showUnits:              true
                 showHelp:               false
-                text:                   "2"
-                width:                  30
+                width:                  80
             }
         }
         Row {
@@ -342,21 +322,16 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-            Slider {
+          Slider {
+                property bool   _loadComplete:  false
 
                 id:                 spacing
-                minimumValue:       0.08
-                maximumValue:       4
-                stepSize:           1
+                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min
+                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
+                stepSize:           0.5
                 tickmarksEnabled:   true
-
-                //                                onValueChanged: {
-                //                                    if (_loadComplete) {
-                //                                        _rateRollP.value = value
-                //                                        _rateRollI.value = value
-                //                                        _ratePitchP.value = value
-                //                                        _ratePitchI.value = value
-                //                                    }
+                width:200 
+                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
             QGCButton {
@@ -367,13 +342,11 @@ Rectangle {
 
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-            FactTextField {
-                anchors.verticalCenter: parent.verticalCenter
-                fact:                   sliderRoot.fact
+         FactTextField {
+                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
                 showUnits:              true
                 showHelp:               false
-                text:                   "2"
-                width:                  30
+                width:                  80
             }
         }
         Row {
@@ -405,7 +378,7 @@ Rectangle {
                 maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
                 stepSize:           0.5
                 tickmarksEnabled:   true
-                width:150
+                width:200 
                 value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
@@ -426,7 +399,6 @@ Rectangle {
 
         }
         Column {
-
             SectionHeader {
                 id:             statsHeader
                 anchors.left:   parent.left
