@@ -14,7 +14,7 @@ import QGroundControl.Controllers       1.0
 // Editor for Mission Settings
 Rectangle {
     id:                 valuesRect
-    width:              availableWidth
+    width:              availableWidth * 1.5
     height:             valuesColumn.height + (_margin * 2)
     color:              qgcPal.windowShadeDark
     radius:             _radius
@@ -59,46 +59,112 @@ Rectangle {
             width:      parent.width
             spacing:            ScreenTools.defaultFontPixelWidth * 3
 
-                QGCButton {
-                    text:               "New"
-                    Layout.fillWidth:   true
-                    //enabled:_missionController.visualItems.count < 2
+            QGCButton {
+                text:               "Resume"
+                Layout.fillWidth:   true
+                enabled: false
+            }
 
-                    onClicked: {
-                        insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
-                        dropPanel.hide()
-                    }
+            QGCButton {
+                text:               "New "
+                Layout.fillWidth:   true
+                enabled:_missionController.visualItems.count < 138
+
+                onClicked: {
+                    insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
+                    dropPanel.hide()
                 }
 
-                QGCButton {
-                    text:               "Load"
-                    Layout.fillWidth:   true
 
-                    onClicked: {
-                        insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
-                        dropPanel.hide()
-                    }
+            }
+
+            QGCButton {
+                text:               "Load"
+                Layout.fillWidth:   true
+
+
+                onClicked: {
+                    syncDropPanel.visible = true;
+                    toolStrip.visible = false;
+
+                    // Emit a signal to open SyncDropPanel
+                    openSyncDropPanelSignal.trigger();
                 }
+            }
+
+            QGCButton {
+                text:               "Start"
+                Layout.fillWidth:   true
+                onClicked: {
+                    mainWindow.showFlyView()
+
+                }
+            }
         }
+        /*         ToolStrip {
+            id:                 toolStrip
+            anchors.margins:    _toolsMargin
+            anchors.left:       parent.left
+            anchors.top:        parent.top
+            z:                  QGroundControl.zOrderWidgets
+            maxHeight:          parent.height - toolStrip.y
+            title:              qsTr("Plan")
+            
 
+            //readonly property int flyButtonIndex:       0
+            readonly property int fileButtonIndex:      0
+            readonly property int takeoffButtonIndex:   1
+            readonly property int waypointButtonIndex:  2
+            readonly property int roiButtonIndex:       3
+            readonly property int patternButtonIndex:   4
+            readonly property int landButtonIndex:      5
+            readonly property int centerButtonIndex:    6
+
+            property bool _isRallyLayer:    _editingLayer == _layerRallyPoints
+            property bool _isMissionLayer:  _editingLayer == _layerMission
+
+            model: [
+                {
+                    name:               qsTr("File"),
+                    iconSource:         "/qmlimages/MapSync.svg",
+                    buttonEnabled:      !_planMasterController.syncInProgress,
+                    buttonVisible:      true,
+                    showAlternateIcon:  _planMasterController.dirty,
+                    alternateIconSource:"/qmlimages/MapSyncChanged.svg",
+                    dropPanelComponent: syncDropPanel
+                }
+            ]
+
+                function openSyncDropPanel() {
+                syncDropPanel.visible = true;
+            }
+
+            onDropped: {
+                allAddClickBoolsOff()
+            }
+        }
+*/
         Row {
             width:      parent.width
-            spacing:            ScreenTools.defaultFontPixelWidth * 3
+            spacing:            ScreenTools.defaultFontPixelWidth * 17
             QGCLabel {
                 text:       qsTr("Travel Height")
                 font.family: ScreenTools.demiboldFontFamily
             }
+
             QGCButton {
+                anchors.topMargin: 10 // Set top margin
                 height:                 parent.height
                 width:                  height * 8
-                text:                   "Add travel wp"
+                text:                   "Add travel WP"
+
                 anchors.verticalCenter: parent.verticalCenter
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
         }
         Row {
             width:      parent.width
-            spacing:            ScreenTools.defaultFontPixelWidth * 1
+            spacing:            ScreenTools.defaultFontPixelWidth * 3
             anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
             QGCButton {
                 height:                 parent.height
@@ -142,18 +208,25 @@ Rectangle {
             }
         }
         Row {
+            spacing:            ScreenTools.defaultFontPixelWidth * 17
             width:      parent.width
-            spacing:            ScreenTools.defaultFontPixelWidth * 4
-
             QGCLabel {
                 text:       qsTr("Spray Height")
                 font.family: ScreenTools.demiboldFontFamily
             }
+
+            QGCButton {
+                anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
+                height:                 parent.height
+                width:                  height * 8
+                text:                   "Add spray WP"
+                anchors.verticalCenter: parent.verticalCenter
+                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+            }
         }
         Row {
-            width:      parent.width
-            spacing:            ScreenTools.defaultFontPixelWidth * 1
-            anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
+            width:      parent.width * 1.5
+            spacing:            ScreenTools.defaultFontPixelWidth * 3
             QGCButton {
                 height:                 parent.height
                 width:                  height
@@ -206,7 +279,7 @@ Rectangle {
         }
         Row {
             width:      parent.width
-            spacing:            ScreenTools.defaultFontPixelWidth * 1
+            spacing:            ScreenTools.defaultFontPixelWidth * 3
             anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
             QGCButton {
                 height:                 parent.height
@@ -260,7 +333,7 @@ Rectangle {
         }
         Row {
             width:      parent.width
-            spacing:            ScreenTools.defaultFontPixelWidth * 1
+            spacing:            ScreenTools.defaultFontPixelWidth * 3
             anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
             QGCButton {
                 height:                 parent.height
@@ -305,7 +378,7 @@ Rectangle {
         }
         Row {
             width:      parent.width
-            spacing:            ScreenTools.defaultFontPixelWidth * 4
+            spacing:            ScreenTools.defaultFontPixelWidth * 6
             QGCLabel {
                 text:       qsTr("Spray Speed")
                 font.family: ScreenTools.demiboldFontFamily
@@ -314,8 +387,8 @@ Rectangle {
 
         }
         Row {
-            width:      parent.width
-            spacing:            ScreenTools.defaultFontPixelWidth * 1
+            width:      parent.width * 1.5
+            spacing:            ScreenTools.defaultFontPixelWidth * 3
             anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
             QGCButton {
                 height:                 parent.height

@@ -442,7 +442,7 @@ Item {
                     onClicked:  _missionController.setCurrentPlanViewSeqNum(sequenceNumber, false)
                     visible:    _editingLayer == _layerMission
                 }
-            } 
+            }
 
             // Add lines between waypoints
             MissionLineView {
@@ -601,7 +601,7 @@ Item {
                     alternateIconSource:"/qmlimages/MapSyncChanged.svg",
                     dropPanelComponent: syncDropPanel
                 },
-                  /* {
+                /* {
                     name:               qsTr("Takeoff"),
                     iconSource:         "/res/takeoff.svg",
                     buttonEnabled:      _missionController.isInsertTakeoffValid,
@@ -622,7 +622,7 @@ Item {
                     buttonVisible:      _isMissionLayer && _planMasterController.controllerVehicle.roiModeSupported,
                     toggle:             !_missionController.isROIActive
                 },
-               /* {
+                /* {
                     name:               _singleComplexItem ? _missionController.complexMissionItemNames[0] : qsTr("Pattern"),
                     iconSource:         "/qmlimages/MapDrawShape.svg",
                     buttonEnabled:      _missionController.flyThroughCommandsAllowed,
@@ -648,10 +648,13 @@ Item {
                 _addROIOnClick =        false
                 _addWaypointOnClick =   false
             }
+            function openSyncDropPanel() {
+                syncDropPanel.visible = true;
+            }
 
             onClicked: {
                 switch (index) {
-                /*case flyButtonIndex:
+                    /*case flyButtonIndex:
                     mainWindow.showFlyView()
                     break*/
                 case takeoffButtonIndex:
@@ -703,7 +706,7 @@ Item {
         Rectangle {
             id:                 rightPanel
             height:             parent.height
-            width:              _rightPanelWidth
+            width:              _rightPanelWidth * 1.4
             color:              qgcPal.window
             opacity:            planExpanded.visible ? 0.2 : 0
             anchors.bottom:     parent  .bottom
@@ -713,6 +716,7 @@ Item {
         //-------------------------------------------------------
         // Right Panel Controls
         Item {
+            width:              _rightPanelWidth * 1.4
             anchors.fill:           rightPanel
             anchors.topMargin:      _toolsMargin
             DeadMouseArea {
@@ -820,6 +824,7 @@ Item {
             //-------------------------------------------------------
             // Mission Item Editor
             Item {
+                width:              _rightPanelWidth * 1.5
                 id:                     missionItemEditor
                 anchors.left:           parent.left
                 anchors.right:          parent.right
@@ -829,6 +834,7 @@ Item {
                 anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
                 visible:                _editingLayer == _layerMission && !planControlColapsed
                 QGCListView {
+                    width:              _rightPanelWidth * 1.5
                     id:                 missionItemEditorListView
                     anchors.fill:       parent
                     spacing:            ScreenTools.defaultFontPixelHeight / 4
@@ -1032,7 +1038,7 @@ Item {
             SectionHeader {
                 id:                 createSection
                 Layout.fillWidth:   true
-                text:               qsTr("Create Plan")
+                text:               qsTr("Load Mission")
                 showSpacer:         false
             }
 
@@ -1100,7 +1106,7 @@ Item {
                 }
             }
 
-            SectionHeader {
+            /*           SectionHeader {
                 id:                 storageSection
                 Layout.fillWidth:   true
                 text:               qsTr("Storage")
@@ -1121,7 +1127,7 @@ Item {
                             mainWindow.showComponentDialog(removeAllPromptDialog, qsTr("New Plan"), mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.No)
                         }
                     }
-                }*/
+                }
 
                 QGCButton {
                     text:               qsTr("Open...")
@@ -1226,7 +1232,7 @@ Item {
                         mainWindow.showComponentDialog(clearVehicleMissionDialog, text, mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.Cancel)
                     }
                 }
-            }
+            } */
         }
     }
 }
