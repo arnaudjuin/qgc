@@ -560,10 +560,11 @@ Item {
                 }
             }
         }
-
+        
+        /*
         //-----------------------------------------------------------
         // Left tool strip
-        ToolStrip {
+         ToolStrip {
             id:                 toolStrip
             anchors.margins:    _toolsMargin
             anchors.left:       parent.left
@@ -592,7 +593,7 @@ Item {
                     buttonEnabled:      true,
                     buttonVisible:      true,
                 },*/
-                {
+        /*           {
                     name:               qsTr("File"),
                     iconSource:         "/qmlimages/MapSync.svg",
                     buttonEnabled:      !_planMasterController.syncInProgress,
@@ -600,8 +601,8 @@ Item {
                     showAlternateIcon:  _planMasterController.dirty,
                     alternateIconSource:"/qmlimages/MapSyncChanged.svg",
                     dropPanelComponent: syncDropPanel
-                },
-                /* {
+                }, */
+        /* {
                     name:               qsTr("Takeoff"),
                     iconSource:         "/res/takeoff.svg",
                     buttonEnabled:      _missionController.isInsertTakeoffValid,
@@ -614,7 +615,7 @@ Item {
                     buttonVisible:      _isRallyLayer || _isMissionLayer,
                     toggle:             true,
                     checked:            _addWaypointOnClick
-                },*/
+                },
                 {
                     name:               _missionController.isROIActive ? qsTr("Cancel ROI") : qsTr("ROI"),
                     iconSource:         "/qmlimages/MapAddMission.svg",
@@ -634,7 +635,7 @@ Item {
                     iconSource:         "/res/rtl.svg",
                     buttonEnabled:      _missionController.isInsertLandValid,
                     buttonVisible:      _isMissionLayer
-                },*/
+                },
                 {
                     name:               qsTr("Center"),
                     iconSource:         "/qmlimages/MapCenter.svg",
@@ -656,7 +657,7 @@ Item {
                 switch (index) {
                     /*case flyButtonIndex:
                     mainWindow.showFlyView()
-                    break*/
+                    break
                 case takeoffButtonIndex:
                     allAddClickBoolsOff()
                     insertTakeItemAfterCurrent()
@@ -700,10 +701,12 @@ Item {
                 allAddClickBoolsOff()
             }
         }
-
+*/
         //-----------------------------------------------------------
         // Right pane for mission editing controls
         Rectangle {
+            y: 0
+            anchors.top : _root.top
             id:                 rightPanel
             height:             parent.height
             width:              _rightPanelWidth * 1.4
@@ -784,15 +787,33 @@ Item {
                         }
                     }
                 }
-                //-------------------------------------------------------
-                // Mission Controls (Expanded)
-                Rectangle {
-                    id:         planExpanded
-                    width:      parent.width
-                    height:     (!planControlColapsed || !_airspaceEnabled) ? bar.height + ScreenTools.defaultFontPixelHeight : 0
-                    color:      qgcPal.missionItemEditor
-                    radius:     _radius
-                    visible:    (!planControlColapsed || !_airspaceEnabled) && QGroundControl.corePlugin.options.enablePlanViewSelector
+
+            }
+
+            //-------------------------------------------------------
+            // Mission Item Editor
+            Item {
+                width:              _rightPanelWidth * 1.5
+                id:                     missionItemEditor
+                anchors.left:           parent.left
+                anchors.right:          parent.right
+                anchors.top:            rightControls.bottom
+                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
+                anchors.bottom:         parent.bottom
+                anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
+                visible:                _editingLayer == _layerMission && !planControlColapsed
+                QGCListView {
+                    //-------------------------------------------------------
+                    // Mission Controls (Expanded)
+                    Rectangle {
+                        id:         planExpanded
+                        width:      parent.width
+                        height:     (!planControlColapsed || !_airspaceEnabled) ? bar.height + ScreenTools.defaultFontPixelHeight : 0
+                        color:      qgcPal.missionItemEditor
+                        radius:     _radius
+                        visible:    (!planControlColapsed || !_airspaceEnabled) && QGroundControl.corePlugin.options.enablePlanViewSelector
+
+                    }
                     Item {
                         height:             bar.height
                         anchors.left:       parent.left
@@ -813,27 +834,8 @@ Item {
                                 text:       qsTr("Fence")
                                 enabled:    _geoFenceController.supported
                             }
-                            QGCTabButton {
-                                text:       qsTr("Rally")
-                                enabled:    _rallyPointController.supported
-                            }
                         }
                     }
-                }
-            }
-            //-------------------------------------------------------
-            // Mission Item Editor
-            Item {
-                width:              _rightPanelWidth * 1.5
-                id:                     missionItemEditor
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                anchors.top:            rightControls.bottom
-                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.bottom:         parent.bottom
-                anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
-                visible:                _editingLayer == _layerMission && !planControlColapsed
-                QGCListView {
                     width:              _rightPanelWidth * 1.5
                     id:                 missionItemEditorListView
                     anchors.fill:       parent
@@ -875,7 +877,10 @@ Item {
                 myGeoFenceController:   _geoFenceController
                 flightMap:              editorMap
                 visible:                _editingLayer == _layerGeoFence
+
             }
+
+
             // Rally Point Editor
             RallyPointEditorHeader {
                 id:                     rallyPointHeader
@@ -1106,7 +1111,7 @@ Item {
                 }
             }
 
-                      SectionHeader {
+            SectionHeader {
                 id:                 storageSection
                 Layout.fillWidth:   true
                 text:               qsTr("Storage")
@@ -1234,5 +1239,9 @@ Item {
                 }
             }
         }
+    }
+    DropPanel {
+        id:         dropPanel
+        toolStrip:  _root
     }
 }

@@ -19,7 +19,6 @@ Rectangle {
     color:              qgcPal.windowShadeDark
     radius:             _radius
     //visible:            missionItem.isCurrentItem
-
     property var    _masterControler:               masterController
     property var    _missionController:             _masterControler.missionController
     property var    _missionVehicle:                _masterControler.controllerVehicle
@@ -39,7 +38,7 @@ Rectangle {
     property bool   _showCameraSection:             (_waypointsOnlyMode || QGroundControl.corePlugin.showAdvancedUI) && !_missionVehicle.apmFirmware
     property bool   _simpleMissionStart:            QGroundControl.corePlugin.options.showSimpleMissionStart
     property bool   _showFlightSpeed:               !_missionVehicle.vtol && !_simpleMissionStart && !_missionVehicle.apmFirmware
-
+    property bool   _confirmationStart:             false
     readonly property string _firmwareLabel:    qsTr("Firmware")
     readonly property string _vehicleLabel:     qsTr("Vehicle")
     readonly property real  _margin:            ScreenTools.defaultFontPixelWidth / 2
@@ -48,6 +47,7 @@ Rectangle {
     QGCFileDialogController { id: fileController }
 
     Column {
+        visible :           !_confirmationStart
         id:                 valuesColumn
         anchors.margins:    _margin
         anchors.left:       parent.left
@@ -66,37 +66,153 @@ Rectangle {
             }
 
             QGCButton {
-                text:               "New"
+                text:               "Load"
                 Layout.fillWidth:   true
-                enabled:_missionController.visualItems.count < 138
 
                 onClicked: {
-                    insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
+                    dropPanel.show(0, 0, syncDropPanel)
                 }
-
-
             }
 
             QGCButton {
-                text:               "Load"
+                text:               "Save"
                 Layout.fillWidth:   true
-  
-            } 
-
+            }
+            
             QGCButton {
                 text:               "Start"
                 Layout.fillWidth:   true
                 onClicked: {
-                    mainWindow.showFlyView()
+                    _confirmationStart=true;
+                }
+                PropertyAnimation on opacity {
+                    easing.type:    Easing.OutQuart
+                    from:           0.5
+                    to:             1
+                    loops:          Animation.Infinite
+                    running:        true
+                    alwaysRunToEnd: true
+                    duration:       2000
                 }
             }
         }
-                    SectionHeader {
-                id:             sep
-                anchors.left:   parent.left
-                anchors.right:  parent.right
-                text:           ""
+
+
+        Row {
+            width:      parent.width
+            spacing:    ScreenTools.defaultFontPixelWidth * 1
+
+
+            
+
+            QGCHoverButton {
+                id:             buttonDraw
+                Layout.fillWidth:   true
+                width:150
+                anchors.left:   toolStripColumn.left
+                anchors.right:  toolStripColumn.right
+                height:         width
+                radius:         ScreenTools.defaultFontPixelWidth / 2
+                fontPointSize:  ScreenTools.smallFontPointSize
+                autoExclusive:  true
+
+                imageSource:    "/qmlimages/MapDrawShape.svg"
+                text:           "Draw"
+                checked:        false
+
+
+                onClicked: {
+                    /*                         dropPanel.hide()    // DropPanel will call hide on "lastClickedButton"
+                        if (modelData.dropPanelComponent === undefined) {
+                            _root.clicked(index, checked)
+                        } else if (checked) {
+                            var panelEdgeTopPoint = mapToItem(_root, width, 0)
+                            dropPanel.show(panelEdgeTopPoint, height, modelData.dropPanelComponent)
+                            _root.dropped(index)
+                        }
+                        if(_root && buttonTemplate)
+                            _root.lastClickedButton = buttonTemplate */
+                    insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
+                }
             }
+
+            QGCHoverButton {
+                id:             buttonTravelWP
+                Layout.fillWidth:   true
+                width:150
+                anchors.left:   toolStripColumn.left
+                anchors.right:  toolStripColumn.right
+                height:         width
+                radius:         ScreenTools.defaultFontPixelWidth / 2
+                fontPointSize:  ScreenTools.smallFontPointSize
+                autoExclusive:  true
+                imageSource:    "/qmlimages/MapAddMission.svg"
+                text:           "Add Travel WP"
+                checked:            _addWaypointOnClick
+
+
+                onClicked: {
+                    _addWaypointOnClick=!_addWaypointOnClick
+
+                    
+                    /*                         dropPanel.hide()    // DropPanel will call hide on "lastClickedButton"
+                        if (modelData.dropPanelComponent === undefined) {
+                            _root.clicked(index, checked)
+                        } else if (checked) {
+                            var panelEdgeTopPoint = mapToItem(_root, width, 0)
+                            dropPanel.show(panelEdgeTopPoint, height, modelData.dropPanelComponent)
+                            _root.dropped(index)
+                        }
+                        if(_root && buttonTemplate)
+                            _root.lastClickedButton = buttonTemplate */
+                }
+            }
+            QGCHoverButton {
+                id:             buttonSprayWP
+                Layout.fillWidth:   true
+                width:150
+                anchors.left:   toolStripColumn.left
+                anchors.right:  toolStripColumn.right
+                height:         width
+                radius:         ScreenTools.defaultFontPixelWidth / 2
+                fontPointSize:  ScreenTools.smallFontPointSize
+                autoExclusive:  true
+
+                imageSource:    "/qmlimages/MapAddMission.svg"
+                text:           "Add Spray WP"
+                checked:        false
+
+                onClicked: {
+                    /*                         dropPanel.hide()    // DropPanel will call hide on "lastClickedButton"
+                        if (modelData.dropPanelComponent === undefined) {
+                            _root.clicked(index, checked)
+                        } else if (checked) {
+                            var panelEdgeTopPoint = mapToItem(_root, width, 0)
+                            dropPanel.show(panelEdgeTopPoint, height, modelData.dropPanelComponent)
+                            _root.dropped(index)
+                        }
+                        if(_root && buttonTemplate)
+                            _root.lastClickedButton = buttonTemplate */
+                    insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
+                }
+            }
+
+            QGCButton {
+                text:               "Travel WP"
+                Layout.fillWidth:   true
+            }
+            QGCButton {
+                text:               "Spray WP"
+                Layout.fillWidth:   true
+            }
+        }
+
+        SectionHeader {
+            id:             sep
+            anchors.left:   parent.left
+            anchors.right:  parent.right
+            text:           ""
+        }
         
         /*         ToolStrip {
             id:                 toolStrip
@@ -149,19 +265,6 @@ Rectangle {
                 font.family: ScreenTools.demiboldFontFamily
             }
 
-            QGCButton {
-                id :    addTravelWP
-                anchors.topMargin: 10 // Set top margin
-                anchors.verticalCenter: parent.verticalCenter
-                height:                 parent.height
-                width:                  height * 8
-                text:                   "Add travel WP"
-                //color:                _addWaypointOnClick ? qgcPal.colorOrange : qgcPal.windowShadeDark
-                onClicked: {
-                    _addWaypointOnClick =   !_addWaypointOnClick
-                    addTravelWP.color = _addWaypointOnClick ? qgcPal.colorOrange : qgcPal.windowShadeDark
-                }
-            }
         }
         Row {
             width:      parent.width
@@ -174,7 +277,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-          Slider {
+            Slider {
                 property bool   _loadComplete:  false
 
                 id:                 travelHeight
@@ -182,7 +285,7 @@ Rectangle {
                 maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
                 stepSize:           0.5
                 tickmarksEnabled:   true
-                width:200 
+                width:200
                 value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
@@ -194,7 +297,7 @@ Rectangle {
 
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-         FactTextField {
+            FactTextField {
                 fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
                 showUnits:              true
                 showHelp:               false
@@ -208,15 +311,6 @@ Rectangle {
                 text:       qsTr("Spray Height")
                 font.family: ScreenTools.demiboldFontFamily
             }
-
-            QGCButton {
-                anchors.topMargin:  ScreenTools.defaultFontPixelWidth * 2
-                height:                 parent.height
-                width:                  height * 8
-                text:                   "Add spray WP"
-                anchors.verticalCenter: parent.verticalCenter
-                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
-            }
         }
         Row {
             width:      parent.width * 1.5
@@ -228,7 +322,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-          Slider {
+            Slider {
                 property bool   _loadComplete:  false
 
                 id:                 sprayHeight
@@ -236,7 +330,7 @@ Rectangle {
                 maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
                 stepSize:           0.5
                 tickmarksEnabled:   true
-                width:200 
+                width:200
                 value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
@@ -248,7 +342,7 @@ Rectangle {
 
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-         FactTextField {
+            FactTextField {
                 fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
                 showUnits:              true
                 showHelp:               false
@@ -275,7 +369,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-          Slider {
+            Slider {
                 property bool   _loadComplete:  false
 
                 id:                 sprayVolume
@@ -283,7 +377,7 @@ Rectangle {
                 maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
                 stepSize:           0.5
                 tickmarksEnabled:   true
-                width:200 
+                width:200
                 value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
@@ -295,7 +389,7 @@ Rectangle {
 
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-         FactTextField {
+            FactTextField {
                 fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
                 showUnits:              true
                 showHelp:               false
@@ -322,7 +416,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-          Slider {
+            Slider {
                 property bool   _loadComplete:  false
 
                 id:                 spacing
@@ -330,7 +424,7 @@ Rectangle {
                 maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
                 stepSize:           0.5
                 tickmarksEnabled:   true
-                width:200 
+                width:200
                 value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
@@ -342,7 +436,7 @@ Rectangle {
 
                 //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
             }
-         FactTextField {
+            FactTextField {
                 fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
                 showUnits:              true
                 showHelp:               false
@@ -378,7 +472,7 @@ Rectangle {
                 maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
                 stepSize:           0.5
                 tickmarksEnabled:   true
-                width:200 
+                width:200
                 value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
             }
 
@@ -586,4 +680,44 @@ Rectangle {
             //            }
         } // Column
     } // Column
+    Column {
+        visible :           _confirmationStart
+        id:                 confirmationColumn
+        anchors.margins:    _margin
+        anchors.left:       parent.left
+        anchors.right:      parent.right
+        anchors.top:        parent.top
+        spacing:            _margin
+        SectionHeader {
+            id:             sepConfirmation
+            anchors.left:   parent.left
+            anchors.right:  parent.right
+            text:           "Recap Header"
+        }
+        QGCLabel {
+            text:       qsTr("Are you sure you want to start the mission?")
+            font.family: ScreenTools.demiboldFontFamily
+        }
+        Row {
+            QGCButton {
+                text:               "No"
+                Layout.fillWidth:   true
+                enabled: false
+                onClicked: {
+                    _confirmationStart=false;
+                }
+            }
+
+            QGCButton {
+                text:               "Yes"
+                Layout.fillWidth:   true
+                onClicked: {
+                    //mainWindow.showFlyView()
+                    _confirmationStart=false;
+
+                }
+            }
+        }
+    }
+
 } // Rectangle

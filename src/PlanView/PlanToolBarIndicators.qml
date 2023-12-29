@@ -103,7 +103,7 @@ Item {
         text:                   "Done"
         visible:                false
     }
-
+    /*
     GridLayout {
         id:                     missionStats
         anchors.top:            parent.top
@@ -226,7 +226,7 @@ Item {
             }
 
             Item { width: 1; height: 1 }
-/*
+
             FIXME: Swap point display is currently hidden since the code which calcs it doesn't work correctly
             QGCLabel { text: qsTr("Swap waypoint:"); font.pointSize: _dataFontSize; }
             QGCLabel {
@@ -234,7 +234,7 @@ Item {
                 font.pointSize:         _dataFontSize
                 Layout.minimumWidth:    _mediumValueWidth
             }
-*/
+
         }
     }
 
@@ -259,6 +259,7 @@ Item {
             duration:       2000
         }
     }
+    */
 
     // Small mission download progress bar
     Rectangle {

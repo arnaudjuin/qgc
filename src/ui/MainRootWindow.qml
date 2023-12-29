@@ -305,7 +305,7 @@ ApplicationWindow {
 
     //-------------------------------------------------------------------------
     /// Toolbar
-    header: ToolBar {
+    /*     header: ToolBar {
         height:         ScreenTools.toolbarHeight
         visible:        !QGroundControl.videoManager.fullScreen
         background:     Rectangle {
@@ -328,32 +328,33 @@ ApplicationWindow {
                 }
             }
         }
-    }
+    } */
 
     footer: LogReplayStatusBar {
         visible: QGroundControl.settingsManager.flyViewSettings.showLogReplayStatusBar.rawValue
     }
 
     //-------------------------------------------------------------------------
-    /// Fly View
-    FlightDisplayView {
-        id:             flightView
+
+    //TODOSUIND
+    //-----------------------------------------------------------------
+    //-- Loader helper for any child, no matter how deep, to display
+    //   elements on top of the fly (video) window.
+    Loader {
+        visible:        false
         anchors.fill:   parent
-        //-----------------------------------------------------------------
-        //-- Loader helper for any child, no matter how deep, to display
-        //   elements on top of the fly (video) window.
-        Loader {
-            id: rootVideoLoader
-            anchors.centerIn: parent
-        }
+        id:             flightView
+        source:         "FlightDisplayView.qml"
+        anchors.centerIn: parent
     }
+    
 
     //-------------------------------------------------------------------------
     /// Plan View
     Loader {
         id:             planViewLoader
         anchors.fill:   parent
-        visible:        false
+        visible:        true
         source:         "PlanView.qml"
     }
 
@@ -425,6 +426,7 @@ ApplicationWindow {
             messageFlick.flick(0,-500)
         }
     }
+    
 
     Popup {
         id:                 vehicleMessageArea

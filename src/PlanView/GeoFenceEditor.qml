@@ -10,6 +10,8 @@ import QGroundControl.FactSystem    1.0
 import QGroundControl.FactControls  1.0
 
 QGCFlickable {
+
+
     id:             root
     contentHeight:  geoFenceEditorRect.height
     clip:           true
@@ -22,13 +24,38 @@ QGCFlickable {
     readonly property real  _radius:            ScreenTools.defaultFontPixelWidth / 2
 
     Rectangle {
+
         id:     geoFenceEditorRect
         anchors.left:   parent.left
         anchors.right:  parent.right
         height: geoFenceItems.y + geoFenceItems.height + (_margin * 2)
         radius: _radius
         color:  qgcPal.missionItemEditor
+        Item {
+            height:             bar.height
+            anchors.left:       parent.left
+            anchors.right:      parent.right
+            anchors.margins:    ScreenTools.defaultFontPixelWidth
+            anchors.verticalCenter: parent.verticalCenter
+            QGCTabBar {
+                id:             bar2
+                width:          parent.width
+                anchors.centerIn: parent
+                Component.onCompleted: {
+                    currentIndex = 0
+                }
+                QGCTabButton {
+                    text:       qsTr("Mission")
+                    onClicked: {
+                        confirmationPopup.visible = true;
+                    }                                    }
 
+                QGCTabButton {
+                    text:       qsTr("Fence")
+                    enabled:    _geoFenceController.supported
+                }
+            }
+        }
         QGCLabel {
             id:                 geoFenceLabel
             anchors.margins:    _margin
