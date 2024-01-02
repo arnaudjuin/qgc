@@ -812,8 +812,6 @@ Item {
                         color:      qgcPal.missionItemEditor
                         radius:     _radius
                         visible:    (!planControlColapsed || !_airspaceEnabled) && QGroundControl.corePlugin.options.enablePlanViewSelector
-
-                    }
                     Item {
                         height:             bar.height
                         anchors.left:       parent.left
@@ -832,10 +830,14 @@ Item {
                             }
                             QGCTabButton {
                                 text:       qsTr("Fence")
-                                enabled:    _geoFenceController.supported
+                                //enabled:    _geoFenceController.supported
+                                //TODO SUIND 
+                                enabled:    false
                             }
                         }
                     }
+                    }
+
                     width:              _rightPanelWidth * 1.5
                     id:                 missionItemEditorListView
                     anchors.fill:       parent
@@ -877,7 +879,29 @@ Item {
                 myGeoFenceController:   _geoFenceController
                 flightMap:              editorMap
                 visible:                _editingLayer == _layerGeoFence
-
+                    Item {
+                        height:             bar.height
+                        anchors.left:       parent.left
+                        anchors.right:      parent.right
+                        anchors.margins:    ScreenTools.defaultFontPixelWidth
+                        anchors.top:        parent.top
+                        anchors.verticalCenter: parent.verticalCenter
+                        QGCTabBar {
+                            id:             barGeoFence
+                            width:          parent.width
+                            anchors.centerIn: parent
+                            Component.onCompleted: {
+                                currentIndex = 0
+                            }
+                            QGCTabButton {
+                                text:       qsTr("Mission")
+                            }
+                            QGCTabButton {
+                                text:       qsTr("Fence")
+                                enabled:    _geoFenceController.supported
+                            }
+                        }
+                    }
             }
 
 

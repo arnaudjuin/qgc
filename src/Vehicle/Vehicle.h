@@ -954,6 +954,10 @@ public:
     double          defaultCruiseSpeed      () const { return _defaultCruiseSpeed; }
     double          defaultHoverSpeed       () const { return _defaultHoverSpeed; }
     double          defaultSprayerFlow      () const { return _defaultSprayerFlow; }
+    double          defaultSprayerHeight      () const { return _defaultSprayerHeight; }
+    double          defaultSprayerVolume      () const { return _defaultSprayerVolume; }
+    double          defaultSpacing      () const { return _defaultSpacing; }
+
     QString         firmwareTypeString      () const;
     QString         vehicleTypeString       () const;
     int             telemetryRRSSI          () { return _telemetryRRSSI; }
@@ -1153,6 +1157,10 @@ signals:
     void defaultCruiseSpeedChanged      (double cruiseSpeed);
     void defaultHoverSpeedChanged       (double hoverSpeed);
     void defaultSprayerFlowChanged       (double sprayerFlow);
+    void defaultSprayerHeightChanged (double sprayerHeight);
+    void defaultSprayerVolumeChanged       (double sprayerVolume);
+    void defaultSpacingChanged       (double spacing);
+
     void firmwareTypeChanged            ();
     void vehicleTypeChanged             ();
     void dynamicCamerasChanged          ();
@@ -1256,6 +1264,9 @@ private slots:
     void _offlineCruiseSpeedSettingChanged(QVariant value);
     void _offlineHoverSpeedSettingChanged(QVariant value);
     void _offlineSprayerFlowSettingChanged(QVariant value);
+    void _offlineSprayerHeightSettingChanged(QVariant value);
+    void _offlineSprayerVolumeSettingChanged(QVariant value);
+    void _offlineSpacingSettingChanged(QVariant value);
     void _updateHighLatencyLink         (bool sendCommand = true);
 
     void _handleTextMessage             (int newCount);
@@ -1409,7 +1420,10 @@ private:
     bool            _globalPositionIntMessageAvailable;
     double          _defaultCruiseSpeed;
     double          _defaultHoverSpeed;
+    double          _defaultSprayerHeight;
     double          _defaultSprayerFlow;
+    double          _defaultSprayerVolume;
+    double          _defaultSpacing;
     int             _telemetryRRSSI;
     int             _telemetryLRSSI;
     uint32_t        _telemetryRXErrors;

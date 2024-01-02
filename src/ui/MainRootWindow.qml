@@ -305,7 +305,7 @@ ApplicationWindow {
 
     //-------------------------------------------------------------------------
     /// Toolbar
-    /*     header: ToolBar {
+         header: ToolBar {
         height:         ScreenTools.toolbarHeight
         visible:        !QGroundControl.videoManager.fullScreen
         background:     Rectangle {
@@ -328,7 +328,7 @@ ApplicationWindow {
                 }
             }
         }
-    } */
+    } 
 
     footer: LogReplayStatusBar {
         visible: QGroundControl.settingsManager.flyViewSettings.showLogReplayStatusBar.rawValue

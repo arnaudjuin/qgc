@@ -15,7 +15,7 @@ import QGroundControl.Controllers       1.0
 Rectangle {
     id:                 valuesRect
     width:              availableWidth * 1.5
-    height:             valuesColumn.height + (_margin * 2)
+    height:             valuesColumn.height + (_margin * 5)
     color:              qgcPal.windowShadeDark
     radius:             _radius
     //visible:            missionItem.isCurrentItem
@@ -39,6 +39,8 @@ Rectangle {
     property bool   _simpleMissionStart:            QGroundControl.corePlugin.options.showSimpleMissionStart
     property bool   _showFlightSpeed:               !_missionVehicle.vtol && !_simpleMissionStart && !_missionVehicle.apmFirmware
     property bool   _confirmationStart:             false
+    property bool   _textFieldSave      :             false
+
     readonly property string _firmwareLabel:    qsTr("Firmware")
     readonly property string _vehicleLabel:     qsTr("Vehicle")
     readonly property real  _margin:            ScreenTools.defaultFontPixelWidth / 2
@@ -47,7 +49,7 @@ Rectangle {
     QGCFileDialogController { id: fileController }
 
     Column {
-        visible :           !_confirmationStart
+        visible :           !_confirmationStart && !_textFieldSave
         id:                 valuesColumn
         anchors.margins:    _margin
         anchors.left:       parent.left
@@ -77,10 +79,15 @@ Rectangle {
             QGCButton {
                 text:               "Save"
                 Layout.fillWidth:   true
+                                onClicked: {
+                    _textFieldSave=true;
+                }
             }
             
             QGCButton {
                 text:               "Start"
+                //TODO SUIND 
+                primary:            true
                 Layout.fillWidth:   true
                 onClicked: {
                     _confirmationStart=true;
@@ -714,6 +721,54 @@ Rectangle {
                 onClicked: {
                     //mainWindow.showFlyView()
                     _confirmationStart=false;
+
+                }
+            }
+        }
+    }
+        Column {
+        visible :           _textFieldSave
+        id:                 saveColumn
+        anchors.margins:    _margin
+        anchors.left:       parent.left
+        anchors.right:      parent.right
+        anchors.top:        parent.top
+        spacing:            _margin
+        SectionHeader {
+            id:             sepSave
+            anchors.left:   parent.left
+            anchors.right:  parent.right
+            text:           "Save Mission"
+        }
+        QGCLabel {
+            text:       qsTr("Are you sure you want to save the mission?")
+            font.family: ScreenTools.demiboldFontFamily
+        }
+                    QGCGroupBox {
+                title: "Name file ?"
+
+                QGCTextField {
+                    id:                     nameFile
+                    Layout.fillWidth:       true
+                    text:                   ""
+                }
+            }
+        Row {
+            QGCButton {
+                text:               "No"
+                Layout.fillWidth:   true
+                enabled: false
+                onClicked: {
+                    _textFieldSave=false;
+                }
+            }
+
+            QGCButton {
+                text:               "Yes"
+                Layout.fillWidth:   true
+                onClicked: {
+                    //mainWindow.showFlyView()
+                    _textFieldSave=false;
 
                 }
             }

@@ -141,6 +141,9 @@ Vehicle::Vehicle(LinkInterface*             link,
     , _defaultCruiseSpeed(_settingsManager->appSettings()->offlineEditingCruiseSpeed()->rawValue().toDouble())
     , _defaultHoverSpeed(_settingsManager->appSettings()->offlineEditingHoverSpeed()->rawValue().toDouble())
     , _defaultSprayerFlow(_settingsManager->appSettings()->offlineEditingSprayerFlow()->rawValue().toDouble())
+    , _defaultSprayerVolume(_settingsManager->appSettings()->offlineEditingSprayerVolume()->rawValue().toDouble())
+    , _defaultSprayerHeight(_settingsManager->appSettings()->offlineEditingSprayerHeight()->rawValue().toDouble())
+    , _defaultSpacing(_settingsManager->appSettings()->offlineEditingSpacing()->rawValue().toDouble())
     , _telemetryRRSSI(0)
     , _telemetryLRSSI(0)
     , _telemetryRXErrors(0)
@@ -346,6 +349,9 @@ Vehicle::Vehicle(MAV_AUTOPILOT              firmwareType,
     , _defaultCruiseSpeed(_settingsManager->appSettings()->offlineEditingCruiseSpeed()->rawValue().toDouble())
     , _defaultHoverSpeed(_settingsManager->appSettings()->offlineEditingHoverSpeed()->rawValue().toDouble())
     , _defaultSprayerFlow(_settingsManager->appSettings()->offlineEditingSprayerFlow()->rawValue().toDouble())
+    , _defaultSprayerVolume(_settingsManager->appSettings()->offlineEditingSprayerVolume()->rawValue().toDouble())
+    , _defaultSprayerHeight(_settingsManager->appSettings()->offlineEditingSprayerHeight()->rawValue().toDouble())
+    , _defaultSpacing(_settingsManager->appSettings()->offlineEditingSpacing()->rawValue().toDouble())
     , _mavlinkProtocolRequestComplete(true)
     , _maxProtoVersion(200)
     , _capabilityBitsKnown(true)
@@ -428,6 +434,9 @@ Vehicle::Vehicle(MAV_AUTOPILOT              firmwareType,
     connect(_settingsManager->appSettings()->offlineEditingCruiseSpeed(),   &Fact::rawValueChanged, this, &Vehicle::_offlineCruiseSpeedSettingChanged);
     connect(_settingsManager->appSettings()->offlineEditingHoverSpeed(),    &Fact::rawValueChanged, this, &Vehicle::_offlineHoverSpeedSettingChanged);
     connect(_settingsManager->appSettings()->offlineEditingSprayerFlow(),    &Fact::rawValueChanged, this, &Vehicle::_offlineSprayerFlowSettingChanged);
+    connect(_settingsManager->appSettings()->offlineEditingSprayerVolume(),    &Fact::rawValueChanged, this, &Vehicle::_offlineSprayerHeightSettingChanged);
+    connect(_settingsManager->appSettings()->offlineEditingSprayerHeight(),    &Fact::rawValueChanged, this, &Vehicle::_offlineSprayerVolumeSettingChanged);
+    connect(_settingsManager->appSettings()->offlineEditingSpacing(),    &Fact::rawValueChanged, this, &Vehicle::_offlineSpacingSettingChanged);
 
     _firmwarePlugin->initializeVehicle(this);
 }
@@ -606,6 +615,21 @@ void Vehicle::_offlineSprayerFlowSettingChanged(QVariant value)
 {
     _defaultSprayerFlow = value.toDouble();
     emit defaultSprayerFlowChanged(_defaultSprayerFlow);
+}
+void Vehicle::_offlineSprayerHeightSettingChanged(QVariant value)
+{
+    _defaultSprayerHeight = value.toDouble();
+    emit defaultSprayerHeightChanged(_defaultSprayerHeight);
+}
+void Vehicle::_offlineSprayerVolumeSettingChanged(QVariant value)
+{
+    _defaultSprayerVolume = value.toDouble();
+    emit defaultSprayerVolumeChanged(_defaultSprayerVolume);
+}
+void Vehicle::_offlineSpacingSettingChanged(QVariant value)
+{
+    _defaultSpacing = value.toDouble();
+   // emit defaultSpacing(_defaultSpacing);
 }
 
 QString Vehicle::firmwareTypeString() const
