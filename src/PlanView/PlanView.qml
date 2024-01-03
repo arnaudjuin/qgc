@@ -47,6 +47,7 @@ Item {
     property var    _visualItems:                       _missionController.visualItems
     property bool   _lightWidgetBorders:                editorMap.isSatelliteMap
     property bool   _addWaypointOnClick:                false
+    property bool   _addWaypointOnClickLoiter:                false
     property bool   _addROIOnClick:                     false
     property bool   _singleComplexItem:                 _missionController.complexMissionItemNames.length === 1
     property int    _editingLayer:                      bar.currentIndex ? _layers[bar.currentIndex] : _layerMission
@@ -274,6 +275,11 @@ Item {
         _missionController.insertSimpleMissionItem(coordinate, nextIndex, true /* makeCurrentItem */)
     }
 
+    function insertSimpleItemAfterCurrentLoiter(coordinate) {
+        var nextIndex = _missionController.currentPlanViewVIIndex + 1
+        _missionController.insertSimpleMissionItemLoiter(coordinate, nextIndex, true /* makeCurrentItem */)
+    }
+
     function insertROIAfterCurrent(coordinate) {
         var nextIndex = _missionController.currentPlanViewVIIndex + 1
         _missionController.insertROIMissionItem(coordinate, nextIndex, true /* makeCurrentItem */)
@@ -419,7 +425,11 @@ Item {
                     case _layerMission:
                         if (_addWaypointOnClick) {
                             insertSimpleItemAfterCurrent(coordinate)
-                        } else if (_addROIOnClick) {
+                        } 
+                                                if (_addWaypointOnClickLoiter) {
+                            insertSimpleItemAfterCurrentLoiter(coordinate)
+                        }
+                        else if (_addROIOnClick) {
                             _addROIOnClick = false
                             insertROIAfterCurrent(coordinate)
                         }

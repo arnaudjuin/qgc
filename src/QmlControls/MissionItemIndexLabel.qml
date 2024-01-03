@@ -37,7 +37,7 @@ Canvas {
     property real   _gimbalRadians:     degreesToRadians(vehicleYaw + gimbalYaw - 90)
     property real   _labelMargin:       2
     property real   _labelRadius:       _indicatorRadius + _labelMargin
-    property string _label:             label.length > 1 ? label : ""
+    property string _label:             label
     property string _index:             index === 0 || index === -1 ? label.charAt(0) : (showSequenceNumbers ? index : "")
 
     onColorChanged:         requestPaint()
@@ -81,7 +81,8 @@ Canvas {
         color:                  "white"
         opacity:                0.5
         radius:                 _labelRadius
-        visible:                _label.length !== 0 && !small
+        //TODO SUIND
+        visible:                true
     }
 
     QGCLabel {

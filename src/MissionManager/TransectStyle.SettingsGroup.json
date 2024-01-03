@@ -6,7 +6,7 @@
     "decimalPlaces":    2,
     "min":              0,
     "units":            "m",
-    "defaultValue":     30
+    "defaultValue":     0
 },
 {
     "name":             "TurnAroundDistanceMultiRotor",
@@ -15,7 +15,7 @@
     "decimalPlaces":    2,
     "min":              0,
     "units":            "m",
-    "defaultValue":     10
+    "defaultValue":     0
 },
 {
     "name":             "CameraTriggerInTurnAround",

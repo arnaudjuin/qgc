@@ -34,6 +34,7 @@ public:
 DEFINE_SETTINGFACT(offlineEditingSprayerHeight)
 DEFINE_SETTINGFACT(offlineEditingSpacing)
 DEFINE_SETTINGFACT(offlineEditingSprayerVolume)
+DEFINE_SETTINGFACT(offlineEditingAltitude)
 
 
 

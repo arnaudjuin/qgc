@@ -54,6 +54,10 @@ public:
         double  cruiseSpeed;
         double  hoverSpeed;
         double  sprayerFlow;
+        double  altitude;
+        double  spacing;
+        double  sprayerHeight;
+        double  sprayerVolume;
         double  vehicleSpeed;           ///< Either cruise or hover speed based on vehicle type and vtol state
         double  vehicleYaw;
         double  gimbalYaw;              ///< NaN signals yaw was never changed
@@ -112,6 +116,7 @@ public:
     ///     @param makeCurrentItem: true: Make this item the current item
     /// @return Newly created item
     Q_INVOKABLE VisualMissionItem* insertSimpleMissionItem(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem = false);
+    Q_INVOKABLE VisualMissionItem* insertSimpleMissionItemLoiter(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem = false);
 
     /// Add a new takeoff item to the list
     ///     @param coordinate: Coordinate for item
@@ -374,6 +379,12 @@ private:
     static const char*  _jsonCruiseSpeedKey;
     static const char*  _jsonHoverSpeedKey;
     static const char*  _jsonSprayerFlowKey;
+    static const char*  _jsonAltitudeKey;
+
+    static const char*  _jsonSprayerHeightKey;
+    static const char*  _jsonSprayerVolumeKey;
+    static const char*  _jsonSpacingKey;
+
     static const char*  _jsonTakeoffAltitudeKey;
     static const char*  _jsonItemsKey;
     static const char*  _jsonPlannedHomePositionKey;

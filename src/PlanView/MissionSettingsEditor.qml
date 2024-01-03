@@ -139,7 +139,20 @@ Rectangle {
                         }
                         if(_root && buttonTemplate)
                             _root.lastClickedButton = buttonTemplate */
+                    {
                     insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
+                                        if (mapPolygon.traceMode) {
+                                            if (mapPolygon.count < 3) {
+                                                _restorePreviousVertices()
+                                            }
+                                            mapPolygon.traceMode = false
+                                        } else {
+                                            _saveCurrentVertices()
+                                            _circleMode = false
+                                            mapPolygon.traceMode = true
+                                            mapPolygon.clear();
+                                        }
+}
                 }
             }
 
@@ -187,9 +200,11 @@ Rectangle {
 
                 imageSource:    "/qmlimages/MapAddMission.svg"
                 text:           "Add Spray WP"
-                checked:        false
+                checked:        _addWaypointOnClickLoiter
 
                 onClicked: {
+                                        _addWaypointOnClickLoiter=!_addWaypointOnClickLoiter
+
                     /*                         dropPanel.hide()    // DropPanel will call hide on "lastClickedButton"
                         if (modelData.dropPanelComponent === undefined) {
                             _root.clicked(index, checked)
@@ -200,7 +215,6 @@ Rectangle {
                         }
                         if(_root && buttonTemplate)
                             _root.lastClickedButton = buttonTemplate */
-                    insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
                 }
             }
 
@@ -282,18 +296,18 @@ Rectangle {
                 width:                  height
                 text:                   "-"
                 anchors.verticalCenter: parent.verticalCenter
-                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                onClicked: QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value  = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value - 0.5, QGroundControl.settingsManager.appSettings.offlineEditingAltitude.max), QGroundControl.settingsManager.appSettings.offlineEditingAltitude.min)
             }
             Slider {
                 property bool   _loadComplete:  false
 
                 id:                 travelHeight
-                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min
-                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
+                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingAltitude.min
+                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingAltitude.max
                 stepSize:           0.5
                 tickmarksEnabled:   true
                 width:200
-                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
+                value:QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value
             }
 
             QGCButton {
@@ -302,13 +316,13 @@ Rectangle {
                 text:                   "+"
                 anchors.verticalCenter: parent.verticalCenter
 
-                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                onClicked: QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value  = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value + 0.5, QGroundControl.settingsManager.appSettings.offlineEditingAltitude.max), QGroundControl.settingsManager.appSettings.offlineEditingAltitude.min)
             }
             FactTextField {
-                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
+                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingAltitude
                 showUnits:              true
                 showHelp:               false
-                width:                  80
+                width:                  100
             }
         }
         Row {
@@ -327,18 +341,18 @@ Rectangle {
                 width:                  height
                 text:                   "-"
                 anchors.verticalCenter: parent.verticalCenter
-                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value  = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value - 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.max), QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.min)
             }
             Slider {
                 property bool   _loadComplete:  false
 
                 id:                 sprayHeight
-                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min
-                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
+                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.min
+                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.max
                 stepSize:           0.5
                 tickmarksEnabled:   true
                 width:200
-                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
+                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value
             }
 
             QGCButton {
@@ -347,13 +361,13 @@ Rectangle {
                 text:                   "+"
                 anchors.verticalCenter: parent.verticalCenter
 
-                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value  = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value + 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.max), QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.min)
             }
             FactTextField {
-                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
+                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight
                 showUnits:              true
                 showHelp:               false
-                width:                  80
+                width:                  100
             }
         }
         Row {
@@ -374,18 +388,18 @@ Rectangle {
                 width:                  height
                 text:                   "-"
                 anchors.verticalCenter: parent.verticalCenter
-                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value  = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value - 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.max), QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.min)
             }
             Slider {
                 property bool   _loadComplete:  false
 
                 id:                 sprayVolume
-                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min
-                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
+                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.min
+                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.max
                 stepSize:           0.5
                 tickmarksEnabled:   true
                 width:200
-                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
+                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value
             }
 
             QGCButton {
@@ -394,13 +408,13 @@ Rectangle {
                 text:                   "+"
                 anchors.verticalCenter: parent.verticalCenter
 
-                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value  = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value + 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.max), QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.min)
             }
             FactTextField {
-                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
+                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume
                 showUnits:              true
                 showHelp:               false
-                width:                  80
+                width:                  100
             }
         }
         Row {
@@ -421,18 +435,18 @@ Rectangle {
                 width:                  height
                 text:                   "-"
                 anchors.verticalCenter: parent.verticalCenter
-                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value  = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value - 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSpacing.max), QGroundControl.settingsManager.appSettings.offlineEditingSpacing.min)
             }
             Slider {
                 property bool   _loadComplete:  false
 
                 id:                 spacing
-                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min
-                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
+                minimumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSpacing.min
+                maximumValue:       QGroundControl.settingsManager.appSettings.offlineEditingSpacing.max
                 stepSize:           0.5
                 tickmarksEnabled:   true
                 width:200
-                value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
+                value:QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value
             }
 
             QGCButton {
@@ -441,13 +455,13 @@ Rectangle {
                 text:                   "+"
                 anchors.verticalCenter: parent.verticalCenter
 
-                //onClicked: fact.value = Math.max(Math.min(fact.value - _minIncrement, fact.max), fact.min)
+                onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value  = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value + 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSpacing.max), QGroundControl.settingsManager.appSettings.offlineEditingSpacing.min)
             }
             FactTextField {
-                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
+                fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSpacing
                 showUnits:              true
                 showHelp:               false
-                width:                  80
+                width:                  100
             }
         }
         Row {
@@ -495,7 +509,7 @@ Rectangle {
                 fact:                   QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
                 showUnits:              true
                 showHelp:               false
-                width:                  80
+                width:                  100
             }
 
         }

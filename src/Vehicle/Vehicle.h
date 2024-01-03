@@ -957,6 +957,7 @@ public:
     double          defaultSprayerHeight      () const { return _defaultSprayerHeight; }
     double          defaultSprayerVolume      () const { return _defaultSprayerVolume; }
     double          defaultSpacing      () const { return _defaultSpacing; }
+    double          defaultAltitude      () const { return _defaultAltitude; }
 
     QString         firmwareTypeString      () const;
     QString         vehicleTypeString       () const;
@@ -1157,6 +1158,7 @@ signals:
     void defaultCruiseSpeedChanged      (double cruiseSpeed);
     void defaultHoverSpeedChanged       (double hoverSpeed);
     void defaultSprayerFlowChanged       (double sprayerFlow);
+    void defaultAltitudeChanged         (double altitude);
     void defaultSprayerHeightChanged (double sprayerHeight);
     void defaultSprayerVolumeChanged       (double sprayerVolume);
     void defaultSpacingChanged       (double spacing);
@@ -1264,6 +1266,7 @@ private slots:
     void _offlineCruiseSpeedSettingChanged(QVariant value);
     void _offlineHoverSpeedSettingChanged(QVariant value);
     void _offlineSprayerFlowSettingChanged(QVariant value);
+    void _offlineAltitudeSettingChanged(QVariant value);
     void _offlineSprayerHeightSettingChanged(QVariant value);
     void _offlineSprayerVolumeSettingChanged(QVariant value);
     void _offlineSpacingSettingChanged(QVariant value);
@@ -1422,6 +1425,7 @@ private:
     double          _defaultHoverSpeed;
     double          _defaultSprayerHeight;
     double          _defaultSprayerFlow;
+    double          _defaultAltitude;
     double          _defaultSprayerVolume;
     double          _defaultSpacing;
     int             _telemetryRRSSI;

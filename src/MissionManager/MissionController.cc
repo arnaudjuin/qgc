@@ -46,6 +46,13 @@ const char* MissionController::_jsonVehicleTypeKey =            "vehicleType";
 const char* MissionController::_jsonCruiseSpeedKey =            "cruiseSpeed";
 const char* MissionController::_jsonHoverSpeedKey =             "hoverSpeed";
 const char* MissionController::_jsonSprayerFlowKey =            "sprayerFlow";
+const char* MissionController::_jsonAltitudeKey =                "altitude";
+
+const char* MissionController::_jsonSprayerVolumeKey =            "sprayerVolume";
+const char* MissionController::_jsonSprayerHeightKey =            "sprayerHeight";
+const char* MissionController::_jsonSpacingKey =                   "spacing";
+
+
 const char* MissionController::_jsonParamsKey =                 "params";
 
 // Deprecated V1 format keys
@@ -101,6 +108,12 @@ void MissionController::_resetMissionFlightStatus(void)
     _missionFlightStatus.cruiseSpeed =          _controllerVehicle->defaultCruiseSpeed();
     _missionFlightStatus.hoverSpeed =           _controllerVehicle->defaultHoverSpeed();
     _missionFlightStatus.sprayerFlow =          _controllerVehicle->defaultSprayerFlow();
+    _missionFlightStatus.altitude =          _controllerVehicle->defaultAltitude();
+    _missionFlightStatus.sprayerVolume =          _controllerVehicle->defaultSprayerVolume();
+    _missionFlightStatus.sprayerHeight =          _controllerVehicle->defaultSprayerHeight();
+    _missionFlightStatus.spacing =          _controllerVehicle->defaultSpacing();
+
+
     _missionFlightStatus.vehicleSpeed =         _controllerVehicle->multiRotor() || _managerVehicle->vtol() ? _missionFlightStatus.hoverSpeed : _missionFlightStatus.cruiseSpeed;
     _missionFlightStatus.vehicleYaw =           0.0;
     _missionFlightStatus.gimbalYaw =            std::numeric_limits<double>::quiet_NaN();
@@ -397,6 +410,11 @@ VisualMissionItem* MissionController::_insertSimpleMissionItemWorker(QGeoCoordin
 VisualMissionItem* MissionController::insertSimpleMissionItem(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem)
 {
     return _insertSimpleMissionItemWorker(coordinate, MAV_CMD_NAV_WAYPOINT, visualItemIndex, makeCurrentItem);
+}
+
+VisualMissionItem* MissionController::insertSimpleMissionItemLoiter(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem)
+{
+    return _insertSimpleMissionItemWorker(coordinate, MAV_CMD_NAV_LOITER_UNLIM, visualItemIndex, makeCurrentItem);
 }
 
 VisualMissionItem* MissionController::insertTakeoffItem(QGeoCoordinate /*coordinate*/, int visualItemIndex, bool makeCurrentItem)
@@ -749,6 +767,12 @@ bool MissionController::_loadJsonMissionFileV2(const QJsonObject& json, QmlObjec
         { _jsonCruiseSpeedKey,              QJsonValue::Double, false },
         { _jsonHoverSpeedKey,               QJsonValue::Double, false },
         { _jsonSprayerFlowKey,              QJsonValue::Double, false },
+        { _jsonAltitudeKey,              QJsonValue::Double, false },
+
+        { _jsonSprayerVolumeKey,              QJsonValue::Double, false },
+        { _jsonSprayerHeightKey,              QJsonValue::Double, false },
+        { _jsonSpacingKey,              QJsonValue::Double, false },
+
 
     };
     if (!JsonHelper::validateKeys(json, rootKeyInfoList, errorString)) {
@@ -776,6 +800,20 @@ bool MissionController::_loadJsonMissionFileV2(const QJsonObject& json, QmlObjec
     if (json.contains(_jsonSprayerFlowKey)) {
         appSettings->offlineEditingSprayerFlow()->setRawValue(json[_jsonSprayerFlowKey].toDouble());
     }
+    if (json.contains(_jsonSprayerVolumeKey)) {
+        appSettings->offlineEditingSprayerVolume()->setRawValue(json[_jsonSprayerVolumeKey].toDouble());
+    }
+    if (json.contains(_jsonSprayerHeightKey)) {
+        appSettings->offlineEditingSprayerHeight()->setRawValue(json[_jsonSprayerHeightKey].toDouble());
+    }
+    if (json.contains(_jsonAltitudeKey)) {
+        appSettings->offlineEditingAltitude()->setRawValue(json[_jsonAltitudeKey].toDouble());
+    }
+    if (json.contains(_jsonSpacingKey)) {
+        appSettings->offlineEditingSpacing()->setRawValue(json[_jsonSpacingKey].toDouble());
+    }
+
+
 
     QGeoCoordinate homeCoordinate;
     if (!JsonHelper::loadGeoCoordinate(json[_jsonPlannedHomePositionKey], true /* altitudeRequired */, homeCoordinate, errorString)) {
@@ -1101,6 +1139,10 @@ void MissionController::save(QJsonObject& json)
     json[_jsonCruiseSpeedKey]           = _controllerVehicle->defaultCruiseSpeed();
     json[_jsonHoverSpeedKey]            = _controllerVehicle->defaultHoverSpeed();
     json[_jsonSprayerFlowKey]           = _controllerVehicle->defaultSprayerFlow();
+    json[_jsonAltitudeKey]           = _controllerVehicle->defaultAltitude();
+    json[_jsonSprayerVolumeKey]           = _controllerVehicle->defaultSprayerVolume();
+    json[_jsonSprayerHeightKey]           = _controllerVehicle->defaultSprayerHeight();
+    json[_jsonSpacingKey]           = _controllerVehicle->defaultSpacing();
 
     // Save the visual items
 
@@ -1969,6 +2011,15 @@ void MissionController::managerVehicleChanged(Vehicle* managerVehicle)
     connect(_managerVehicle, &Vehicle::defaultCruiseSpeedChanged,       this, &MissionController::_recalcMissionFlightStatus);
     connect(_managerVehicle, &Vehicle::defaultHoverSpeedChanged,        this, &MissionController::_recalcMissionFlightStatus);
     connect(_managerVehicle, &Vehicle::defaultSprayerFlowChanged,       this, &MissionController::_recalcMissionFlightStatus);
+    connect(_managerVehicle, &Vehicle::defaultAltitudeChanged,       this, &MissionController::_recalcMissionFlightStatus);
+
+
+    connect(_managerVehicle, &Vehicle::defaultSprayerHeightChanged,       this, &MissionController::_recalcMissionFlightStatus);
+    connect(_managerVehicle, &Vehicle::defaultSprayerVolumeChanged,       this, &MissionController::_recalcMissionFlightStatus);
+    connect(_managerVehicle, &Vehicle::defaultSpacingChanged,       this, &MissionController::_recalcMissionFlightStatus);
+
+
+
     connect(_managerVehicle, &Vehicle::vehicleTypeChanged,              this, &MissionController::complexMissionItemNamesChanged);
 
     emit complexMissionItemNamesChanged();
