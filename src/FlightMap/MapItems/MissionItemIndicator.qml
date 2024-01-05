@@ -27,11 +27,11 @@ MapQuickItem {
     anchorPoint.x:  sourceItem.anchorPointX
     anchorPoint.y:  sourceItem.anchorPointY
 
-    sourceItem:
+    sourceItem:     _sourceItem
         MissionItemIndexLabel {
             id:                 _label
             checked:            _isCurrentItem
-            label:              missionItem.command // tochangeto missionItem.abbreviation
+            label:              missionItem.commandName == "Loiter" ? "S" :  missionItem.commandName.charAt(0)
             index:              missionItem.abbreviation.charAt(0) > 'A' && missionItem.abbreviation.charAt(0) < 'z' ? -1 : missionItem.sequenceNumber
             gimbalYaw:          missionItem.missionGimbalYaw
             vehicleYaw:         missionItem.missionVehicleYaw

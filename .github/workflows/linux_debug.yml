@@ -6,7 +6,6 @@ on:
       - 'master'
       - 'main'
       - 'QGCustomAPM'
-      - 'missionPlanner3'
   pull_request:
     branches:
       - '*'

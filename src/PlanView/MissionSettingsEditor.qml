@@ -11,8 +11,11 @@ import QGroundControl.Palette           1.0
 import QGroundControl.SettingsManager   1.0
 import QGroundControl.Controllers       1.0
 
+import QGroundControl.FactSystem    1.0
+import QGroundControl.FactControls  1.0
 // Editor for Mission Settings
 Rectangle {
+    FactPanelController { id: controller; }
     id:                 valuesRect
     width:              availableWidth * 1.5
     height:             valuesColumn.height + (_margin * 5)
@@ -79,14 +82,14 @@ Rectangle {
             QGCButton {
                 text:               "Save"
                 Layout.fillWidth:   true
-                                onClicked: {
+                onClicked: {
                     _textFieldSave=true;
                 }
             }
             
             QGCButton {
                 text:               "Start"
-                //TODO SUIND 
+                //TODO SUIND
                 primary:            true
                 Layout.fillWidth:   true
                 onClicked: {
@@ -140,19 +143,19 @@ Rectangle {
                         if(_root && buttonTemplate)
                             _root.lastClickedButton = buttonTemplate */
                     {
-                    insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
-                                        if (mapPolygon.traceMode) {
-                                            if (mapPolygon.count < 3) {
-                                                _restorePreviousVertices()
-                                            }
-                                            mapPolygon.traceMode = false
-                                        } else {
-                                            _saveCurrentVertices()
-                                            _circleMode = false
-                                            mapPolygon.traceMode = true
-                                            mapPolygon.clear();
-                                        }
-}
+                        insertComplexItemAfterCurrent( _missionController.complexMissionItemNames[0])
+                        if (mapPolygon.traceMode) {
+                            if (mapPolygon.count < 3) {
+                                _restorePreviousVertices()
+                            }
+                            mapPolygon.traceMode = false
+                        } else {
+                            _saveCurrentVertices()
+                            _circleMode = false
+                            mapPolygon.traceMode = true
+                            mapPolygon.clear();
+                        }
+                    }
                 }
             }
 
@@ -172,6 +175,8 @@ Rectangle {
 
 
                 onClicked: {
+                    _addWaypointOnClickLoiter=false
+
                     _addWaypointOnClick=!_addWaypointOnClick
 
                     
@@ -203,7 +208,8 @@ Rectangle {
                 checked:        _addWaypointOnClickLoiter
 
                 onClicked: {
-                                        _addWaypointOnClickLoiter=!_addWaypointOnClickLoiter
+                    _addWaypointOnClick=false
+                    _addWaypointOnClickLoiter=!_addWaypointOnClickLoiter
 
                     /*                         dropPanel.hide()    // DropPanel will call hide on "lastClickedButton"
                         if (modelData.dropPanelComponent === undefined) {
@@ -307,8 +313,18 @@ Rectangle {
                 stepSize:           0.5
                 tickmarksEnabled:   true
                 width:200
-                value:QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value
+                value: QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value
+                onValueChanged: {
+                    // Update the value of the FactSlider when the Slider value changes
+                    factTravelHeight.fact.value = travelHeight.value;
+                }
             }
+            FactTextFieldSlider {
+                id:factTravelHeight
+                visible: false
+                fact: controller.getParameterFact(-1, "SU")
+            }
+
 
             QGCButton {
                 height:                 parent.height
@@ -353,6 +369,15 @@ Rectangle {
                 tickmarksEnabled:   true
                 width:200
                 value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value
+                onValueChanged: {
+                    // Update the value of the FactSlider when the Slider value changes
+                    factSprayHeight.fact.value = sprayHeight.value;
+                }
+            }
+            FactTextFieldSlider {
+                id:factSprayHeight
+                visible: false
+                fact: controller.getParameterFact(-1, "ATC_ANG_RLL_P")
             }
 
             QGCButton {
@@ -400,7 +425,17 @@ Rectangle {
                 tickmarksEnabled:   true
                 width:200
                 value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value
+                onValueChanged: {
+                    // Update the value of the FactSlider when the Slider value changes
+                    factSprayVolume.fact.value = sprayVolume.value;
+                }
             }
+            FactTextFieldSlider {
+                id:factSprayVolume
+                visible: false
+                fact: controller.getParameterFact(-1, "SU")
+            }
+
 
             QGCButton {
                 height:                 parent.height
@@ -447,7 +482,17 @@ Rectangle {
                 tickmarksEnabled:   true
                 width:200
                 value:QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value
+                onValueChanged: {
+                    // Update the value of the FactSlider when the Slider value changes
+                    factSpacing.fact.value = spacing.value;
+                }
             }
+            FactTextFieldSlider {
+                id:factSpacing
+                visible: false
+                fact: controller.getParameterFact(-1, "SU")
+            }
+
 
             QGCButton {
                 height:                 parent.height
@@ -495,8 +540,17 @@ Rectangle {
                 tickmarksEnabled:   true
                 width:200
                 value:QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value
-            }
 
+                onValueChanged: {
+                    // Update the value of the FactSlider when the Slider value changes
+                    factSpraySpeed.fact.value = spraySpeed.value;
+                }
+            }
+            FactTextFieldSlider {
+                id:factSpraySpeed
+                visible: false
+                fact: controller.getParameterFact(-1, "SU")
+            }
             QGCButton {
                 height:                 parent.height
                 width:                  height
@@ -740,7 +794,7 @@ Rectangle {
             }
         }
     }
-        Column {
+    Column {
         visible :           _textFieldSave
         id:                 saveColumn
         anchors.margins:    _margin
@@ -758,15 +812,15 @@ Rectangle {
             text:       qsTr("Are you sure you want to save the mission?")
             font.family: ScreenTools.demiboldFontFamily
         }
-                    QGCGroupBox {
-                title: "Name file ?"
+        QGCGroupBox {
+            title: "Name file ?"
 
-                QGCTextField {
-                    id:                     nameFile
-                    Layout.fillWidth:       true
-                    text:                   ""
-                }
+            QGCTextField {
+                id:                     nameFile
+                Layout.fillWidth:       true
+                text:                   ""
             }
+        }
         Row {
             QGCButton {
                 text:               "No"
