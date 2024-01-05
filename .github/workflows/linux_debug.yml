@@ -6,6 +6,8 @@ on:
       - 'master'
       - 'main'
       - 'QGCustomAPM'
+      - 'missionPlanner3'
+
   pull_request:
     branches:
       - '*'
@@ -83,7 +85,7 @@ jobs:
           make -j2
           
       - name: ccache post-run
-      run:  ccache -s
+        run:  ccache -s
 
       - name: Create AppImage
         working-directory:  ${{ runner.temp }}/shadow_build_dir
