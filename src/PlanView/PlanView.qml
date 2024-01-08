@@ -26,6 +26,7 @@ import QGroundControl.Controllers       1.0
 import QGroundControl.ShapeFileHelper   1.0
 import QGroundControl.Airspace          1.0
 import QGroundControl.Airmap            1.0
+import Qt.labs.folderlistmodel 2.1
 
 Item {
     id: _root
@@ -1077,7 +1078,7 @@ Item {
             SectionHeader {
                 id:                 createSection
                 Layout.fillWidth:   true
-                text:               qsTr("Load Mission")
+                text:               qsTr("Load Mission1")
                 showSpacer:         false
             }
 
@@ -1088,61 +1089,34 @@ Item {
                 Layout.fillWidth:   true
                 visible:            createSection.visible
 
-                Repeater {
-                    model: _planMasterController.planCreators
+    ListView {
+        width: 1000
+        height: 1000
 
-                    Rectangle {
-                        id:     button
-                        width:  ScreenTools.defaultFontPixelHeight * 7
-                        height: planCreatorNameLabel.y + planCreatorNameLabel.height
-                        color:  button.pressed || button.highlighted ? qgcPal.buttonHighlight : qgcPal.button
+        model: FolderListModel {
+            id: folderModel
+            folder: "file//Users/arnaudjuin/CLionProjects/qgroundcontroledit/plans"
+            nameFilters: ["*"] // Display all files; you can specify filters as needed
+        }
 
-                        property bool highlighted: mouseArea.containsMouse
-                        property bool pressed:     mouseArea.pressed
+        delegate: Item {
+            width: parent.width
+            height: 500
 
-                        Image {
-                            id:                 planCreatorImage
-                            anchors.left:       parent.left
-                            anchors.right:      parent.right
-                            source:             object.imageResource
-                            sourceSize.width:   width
-                            fillMode:           Image.PreserveAspectFit
-                            mipmap:             true
-                        }
+            Rectangle {
+                width: parent.width
+                height: 200
+                color: index % 2 === 0 ? "lightgray" : "white"
 
-                        QGCLabel {
-                            id:                     planCreatorNameLabel
-                            anchors.top:            planCreatorImage.bottom
-                            anchors.left:           parent.left
-                            anchors.right:          parent.right
-                            horizontalAlignment:    Text.AlignHCenter
-                            text:                   object.name
-                            color:                  button.pressed || button.highlighted ? qgcPal.buttonHighlightText : qgcPal.buttonText
-                        }
-
-                        QGCMouseArea {
-                            id:                 mouseArea
-                            anchors.fill:       parent
-                            hoverEnabled:       true
-                            preventStealing:    true
-                            onClicked:          {
-                                if (_planMasterController.containsItems) {
-                                    createPlanRemoveAllPromptDialogMapCenter = _mapCenter()
-                                    createPlanRemoveAllPromptDialogPlanCreator = object
-                                    mainWindow.showComponentDialog(createPlanRemoveAllPromptDialog, qsTr("Create Plan"), mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.No)
-                                } else {
-                                    object.createPlan(_mapCenter())
-                                }
-                                dropPanel.hide()
-                            }
-
-                            function _mapCenter() {
-                                var centerPoint = Qt.point(editorMap.centerViewport.left + (editorMap.centerViewport.width / 2), editorMap.centerViewport.top + (editorMap.centerViewport.height / 2))
-                                return editorMap.toCoordinate(centerPoint, false /* clipToViewPort */)
-                            }
-                        }
-                    }
+                Text {
+                    anchors.centerIn: parent
+                    text: model.fileName
                 }
+            }
+        }
+    }
+
+   
             }
 
             SectionHeader {
