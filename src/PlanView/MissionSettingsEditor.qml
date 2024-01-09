@@ -548,8 +548,7 @@ Rectangle {
             }
             FactTextFieldSlider {
                 id:factSpraySpeed
-                visible: false
-                fact: controller.getParameterFact(-1, "SU")
+                fact: controller.getParameterFact(-1, "ATC_ANG_PIT_P")
             }
             QGCButton {
                 height:                 parent.height

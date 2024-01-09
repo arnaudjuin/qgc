@@ -426,8 +426,8 @@ Item {
                     case _layerMission:
                         if (_addWaypointOnClick) {
                             insertSimpleItemAfterCurrent(coordinate)
-                        } 
-                                                if (_addWaypointOnClickLoiter) {
+                        }
+                        if (_addWaypointOnClickLoiter) {
                             insertSimpleItemAfterCurrentLoiter(coordinate)
                         }
                         else if (_addROIOnClick) {
@@ -823,30 +823,30 @@ Item {
                         color:      qgcPal.missionItemEditor
                         radius:     _radius
                         visible:    (!planControlColapsed || !_airspaceEnabled) && QGroundControl.corePlugin.options.enablePlanViewSelector
-                    Item {
-                        height:             bar.height
-                        anchors.left:       parent.left
-                        anchors.right:      parent.right
-                        anchors.margins:    ScreenTools.defaultFontPixelWidth
-                        anchors.verticalCenter: parent.verticalCenter
-                        QGCTabBar {
-                            id:             bar
-                            width:          parent.width
-                            anchors.centerIn: parent
-                            Component.onCompleted: {
-                                currentIndex = 0
-                            }
-                            QGCTabButton {
-                                text:       qsTr("Mission")
-                            }
-                            QGCTabButton {
-                                text:       qsTr("Fence")
-                                //enabled:    _geoFenceController.supported
-                                //TODO SUIND 
-                                enabled:    false
+                        Item {
+                            height:             bar.height
+                            anchors.left:       parent.left
+                            anchors.right:      parent.right
+                            anchors.margins:    ScreenTools.defaultFontPixelWidth
+                            anchors.verticalCenter: parent.verticalCenter
+                            QGCTabBar {
+                                id:             bar
+                                width:          parent.width
+                                anchors.centerIn: parent
+                                Component.onCompleted: {
+                                    currentIndex = 0
+                                }
+                                QGCTabButton {
+                                    text:       qsTr("Mission")
+                                }
+                                QGCTabButton {
+                                    text:       qsTr("Fence")
+                                    //enabled:    _geoFenceController.supported
+                                    //TODO SUIND
+                                    enabled:    false
+                                }
                             }
                         }
-                    }
                     }
 
                     width:              _rightPanelWidth * 1.5
@@ -890,29 +890,29 @@ Item {
                 myGeoFenceController:   _geoFenceController
                 flightMap:              editorMap
                 visible:                _editingLayer == _layerGeoFence
-                    Item {
-                        height:             bar.height
-                        anchors.left:       parent.left
-                        anchors.right:      parent.right
-                        anchors.margins:    ScreenTools.defaultFontPixelWidth
-                        anchors.top:        parent.top
-                        anchors.verticalCenter: parent.verticalCenter
-                        QGCTabBar {
-                            id:             barGeoFence
-                            width:          parent.width
-                            anchors.centerIn: parent
-                            Component.onCompleted: {
-                                currentIndex = 0
-                            }
-                            QGCTabButton {
-                                text:       qsTr("Mission")
-                            }
-                            QGCTabButton {
-                                text:       qsTr("Fence")
-                                enabled:    _geoFenceController.supported
-                            }
+                Item {
+                    height:             bar.height
+                    anchors.left:       parent.left
+                    anchors.right:      parent.right
+                    anchors.margins:    ScreenTools.defaultFontPixelWidth
+                    anchors.top:        parent.top
+                    anchors.verticalCenter: parent.verticalCenter
+                    QGCTabBar {
+                        id:             barGeoFence
+                        width:          parent.width
+                        anchors.centerIn: parent
+                        Component.onCompleted: {
+                            currentIndex = 0
+                        }
+                        QGCTabButton {
+                            text:       qsTr("Mission")
+                        }
+                        QGCTabButton {
+                            text:       qsTr("Fence")
+                            enabled:    _geoFenceController.supported
                         }
                     }
+                }
             }
 
 
@@ -1078,46 +1078,75 @@ Item {
             SectionHeader {
                 id:                 createSection
                 Layout.fillWidth:   true
-                text:               qsTr("Load Mission1")
+                text:               qsTr("Load Missions")
                 showSpacer:         false
             }
 
-            GridLayout {
-                columns:            5
-                columnSpacing:      _margin
-                rowSpacing:         _margin
-                Layout.fillWidth:   true
-                visible:            createSection.visible
 
-    ListView {
-        width: 1000
-        height: 1000
 
-        model: FolderListModel {
-            id: folderModel
-            folder: "file//Users/arnaudjuin/CLionProjects/qgroundcontroledit/plans"
-            nameFilters: ["*"] // Display all files; you can specify filters as needed
-        }
 
-        delegate: Item {
-            width: parent.width
-            height: 500
+            
+            GridView {
+                width: 600
+                height: 300
 
-            Rectangle {
-                width: parent.width
-                height: 200
-                color: index % 2 === 0 ? "lightgray" : "white"
+                model: FolderListModel {
+                    id: folderModel
+                    folder: "file:///Users/arnaudjuin/Documents/Custom/Missions"
+                    nameFilters: ["*"] // Display all files; you can specify filters as needed
+                }
 
-                Text {
-                    anchors.centerIn: parent
-                    text: model.fileName
+                delegate: Item {
+
+                    Rectangle {
+                        id : button
+                        width:  ScreenTools.defaultFontPixelHeight * 5
+                        height: planCreatorNameLabel.y + planCreatorNameLabel.height
+                        color:  button.pressed || button.highlighted ? qgcPal.buttonHighlight : qgcPal.button
+
+                        property bool highlighted: mouseArea.containsMouse
+                        property bool pressed:     mouseArea.pressed
+                        anchors.margins: 10
+
+
+                        Image {
+                            id:                 planCreatorImage
+                            anchors.left:       parent.left
+                            anchors.right:      parent.right
+                            source:             "/qmlimages/MapSyncBlack.svg"
+                            sourceSize.width:   parent.width
+                            fillMode:           Image.PreserveAspectFit
+                            mipmap:             true
+                        }
+
+                        QGCLabel {
+                            id:                     planCreatorNameLabel
+                            anchors.top:            planCreatorImage.bottom
+                            anchors.left:           parent.left
+                            anchors.right:          parent.right
+                            horizontalAlignment:    Text.AlignHCenter
+                            text:                   model.fileName
+                            color:                  white //button.pressed || button.highlighted ? qgcPal.buttonHighlightText : qgcPal.buttonText
+                        }
+
+                        QGCMouseArea {
+                            id:                 mouseArea
+                            anchors.fill:       parent
+                            hoverEnabled:       true
+                            preventStealing:    true
+                            onClicked:          {
+                                dropPanel.hide()
+                                _planMasterController.loadFromFile(model.filePath)
+                            }
+
+                        }
+                    }
                 }
             }
-        }
-    }
 
-   
-            }
+
+
+            
 
             SectionHeader {
                 id:                 storageSection
