@@ -22,9 +22,10 @@ if [ ! -f ${QGC_SRC}/qgroundcontrol.pro ]; then
   exit 1
 fi
 
-echo "${QGC_RELEASE_DIR}/${QGC_CUSTOM_BINARY_NAME} "
 
 QGC_RELEASE_DIR=$(readlink -f $2)
+echo "${QGC_RELEASE_DIR}/${QGC_CUSTOM_BINARY_NAME} "
+
 if [ ! -f ${QGC_RELEASE_DIR}/${QGC_CUSTOM_BINARY_NAME} ]; then
   echo "please specify path to ${QGC_CUSTOM_BINARY_NAME} release as the 2nd argument"
   exit 1
