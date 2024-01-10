@@ -7,6 +7,8 @@ on:
       - 'master'
       - 'Stable*'
       - 'QGCustomAPM*'
+      - 'linuxTest'
+
     tags:
       - 'v*'
   pull_request:
