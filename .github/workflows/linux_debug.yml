@@ -91,6 +91,9 @@ jobs:
         working-directory:  ${{ runner.temp }}/shadow_build_dir
         run:                ${SOURCE_DIR}/deploy/create_linux_appimage.sh ${SOURCE_DIR} ./debug ./package;
 
+      - name: Verify AppImage Existence
+        run: ls -l ${{ runner.temp }}/shadow_build_dir/package/
+
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
