@@ -306,6 +306,7 @@ Item {
         id:             _mapAndVideo
         anchors.fill:   parent
 
+
         //-- Map View
         Item {
             id: _flightMapContainer
@@ -815,5 +816,4 @@ Item {
             }
         }
     }
-
 }

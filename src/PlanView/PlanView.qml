@@ -460,8 +460,7 @@ Item {
                 showSpecialVisual:  _missionController.isROIBeginCurrentItem
                 model:              _editingLayer == _layerMission ? _missionController.waypointLines : undefined
             }
-
-            // Direction arrows in waypoint lines
+                        // Direction arrows in waypoint lines
             MapItemView {
                 model: _editingLayer == _layerMission ? _missionController.directionArrows : undefined
 
@@ -1092,7 +1091,7 @@ Item {
 
                 model: FolderListModel {
                     id: folderModel
-                    folder: "file:///Users/arnaudjuin/Documents/Custom/Missions"
+                    folder: "file:///Users/arnaudjuin/Documents/CustomQGC/Missions"
                     nameFilters: ["*"] // Display all files; you can specify filters as needed
                 }
 

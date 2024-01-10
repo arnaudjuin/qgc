@@ -96,7 +96,7 @@ Canvas {
         color:                  "black"
         text:                   _label
         verticalAlignment:      Text.AlignVCenter
-        visible:                labelControl.visible
+        visible:                true
     }
 
     Rectangle {

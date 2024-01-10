@@ -31,8 +31,8 @@ MapQuickItem {
         MissionItemIndexLabel {
             id:                 _label
             checked:            _isCurrentItem
-            label:              missionItem.commandName == "Loiter" ? "S" :  missionItem.commandName.charAt(0)
-            index:              missionItem.abbreviation.charAt(0) > 'A' && missionItem.abbreviation.charAt(0) < 'z' ? -1 : missionItem.sequenceNumber
+            label:              "S"
+            index:              missionItem.sequenceNumber
             gimbalYaw:          missionItem.missionGimbalYaw
             vehicleYaw:         missionItem.missionVehicleYaw
             showGimbalYaw:      !isNaN(missionItem.missionGimbalYaw)

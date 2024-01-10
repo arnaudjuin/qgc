@@ -76,6 +76,7 @@ Rectangle {
 
                 onClicked: {
                     dropPanel.show(0, 0, syncDropPanel)
+                    
                 }
             }
 
@@ -232,7 +233,7 @@ Rectangle {
                 text:               "Spray WP"
                 Layout.fillWidth:   true
             }
-        }
+        }   
 
         SectionHeader {
             id:             sep
@@ -317,12 +318,13 @@ Rectangle {
                 onValueChanged: {
                     // Update the value of the FactSlider when the Slider value changes
                     factTravelHeight.fact.value = travelHeight.value;
+                    QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value= travelHeight.value;
                 }
             }
             FactTextFieldSlider {
                 id:factTravelHeight
                 visible: false
-                fact: controller.getParameterFact(-1, "SU")
+                fact: controller.getParameterFact(-1, "SU_TRAVEL_ALT")
             }
 
 
@@ -372,12 +374,13 @@ Rectangle {
                 onValueChanged: {
                     // Update the value of the FactSlider when the Slider value changes
                     factSprayHeight.fact.value = sprayHeight.value;
+                    QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value = sprayHeight.value;
                 }
             }
             FactTextFieldSlider {
                 id:factSprayHeight
                 visible: false
-                fact: controller.getParameterFact(-1, "ATC_ANG_RLL_P")
+                fact: controller.getParameterFact(-1, "SU_TRAVEL_ALT")
             }
 
             QGCButton {
@@ -428,12 +431,13 @@ Rectangle {
                 onValueChanged: {
                     // Update the value of the FactSlider when the Slider value changes
                     factSprayVolume.fact.value = sprayVolume.value;
+                    QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value = sprayVolume.value;
                 }
             }
             FactTextFieldSlider {
                 id:factSprayVolume
                 visible: false
-                fact: controller.getParameterFact(-1, "SU")
+                fact: controller.getParameterFact(-1, "SU_SPRY_VOL")
             }
 
 
@@ -485,12 +489,13 @@ Rectangle {
                 onValueChanged: {
                     // Update the value of the FactSlider when the Slider value changes
                     factSpacing.fact.value = spacing.value;
+                    QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value  = spacing.value;
                 }
             }
             FactTextFieldSlider {
                 id:factSpacing
                 visible: false
-                fact: controller.getParameterFact(-1, "SU")
+                fact: controller.getParameterFact(-1, "SU_SPRY_WIDTH")
             }
 
 
@@ -544,12 +549,13 @@ Rectangle {
                 onValueChanged: {
                     // Update the value of the FactSlider when the Slider value changes
                     factSpraySpeed.fact.value = spraySpeed.value;
+                    QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value = spraySpeed.value;
                 }
             }
             FactTextFieldSlider {
                 id:factSpraySpeed
                 visible: false
-                fact: controller.getParameterFact(-1, "ATC_ANG_PIT_P")
+                fact: controller.getParameterFact(-1, "SU_SPRY_FLT_SPD")
             }
             QGCButton {
                 height:                 parent.height
@@ -789,7 +795,8 @@ Rectangle {
                 onClicked: {
                     //mainWindow.showFlyView()
                     _confirmationStart=false;
-
+                    _planMasterController.upload()
+                    mainWindow.showFlyView()
                 }
             }
         }
