@@ -6,7 +6,7 @@ on:
       - 'master'
       - 'main'
       - 'QGCustomAPM'
-      - 'missionPlanner3'
+      - 'linuxTest'
 
   pull_request:
     branches:
