@@ -78,7 +78,16 @@ jobs:
       - name: Create build directory
         run: mkdir ${{ runner.temp }}/shadow_build_dir
 
+      - name: Cache build output
+        id: cache-build
+        uses: actions/cache@v3
+        with:
+          path: ${{ runner.temp }}/shadow_build_dir
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-build-
+
       - name: Build
+        if: steps.cache-build.outputs.cache-hit != 'true'
         working-directory: ${{ runner.temp }}/shadow_build_dir
         run: |
           qmake -r ${SOURCE_DIR}/qgroundcontrol.pro CONFIG+=debug CONFIG+=${BUILD_TYPE}
@@ -101,6 +110,6 @@ jobs:
           path: ${{ runner.temp }}/shadow_build_dir/package/CustomQGC.AppImage
 
       - name: Download artifact
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@master  
         with:
           name: CustomQGC
