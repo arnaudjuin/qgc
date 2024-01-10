@@ -7,7 +7,7 @@ on:
       - 'master'
       - 'Stable*'
       - 'QGCustomAPM*'
-      - 'linuxTest'
+      - 'androidTest'
 
     tags:
       - 'v*'
