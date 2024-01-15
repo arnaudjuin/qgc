@@ -252,7 +252,6 @@ WindowsBuild {
 
 ReleaseBuild {
     DEFINES += QT_NO_DEBUG QT_MESSAGELOGCONTEXT
-    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
     CONFIG += force_debug_info  # Enable debugging symbols on release builds
     !iOSBuild {
         !AndroidBuild {
