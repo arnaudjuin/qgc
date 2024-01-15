@@ -91,7 +91,7 @@ jobs:
         if: steps.cache-build.outputs.cache-hit != 'true'
         working-directory: ${{ runner.temp }}/shadow_build_dir
         run: |
-          qmake -r ${SOURCE_DIR}/qgroundcontrol.pro CONFIG+=debug CONFIG+=${BUILD_TYPE}
+          qmake -r ${SOURCE_DIR}/qgroundcontrol.pro CONFIG+=installer CONFIG+=${BUILD_TYPE}
           make -j2
           
       - name: ccache post-run
@@ -99,7 +99,7 @@ jobs:
 
       - name: Create AppImage
         working-directory:  ${{ runner.temp }}/shadow_build_dir
-        run:                ${SOURCE_DIR}/deploy/create_linux_appimage.sh ${SOURCE_DIR} ./debug ./package;
+        run:                ${SOURCE_DIR}/deploy/create_linux_appimage.sh ${SOURCE_DIR} ./staging ./package;
 
       - name: Verify AppImage Existence
         run: ls -l ${{ runner.temp }}/shadow_build_dir/package/
