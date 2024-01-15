@@ -715,23 +715,25 @@ Item {
         //-----------------------------------------------------------
         // Right pane for mission editing controls
         Rectangle {
+                            anchors.right: parent.right
+        //anchors.horizontalCenter: parent.horizontalCenter
             y: 0
             anchors.top : _root.top
             id:                 rightPanel
             height:             parent.height
-            width:              _rightPanelWidth * 1.4
+            width:              _rightPanelWidth * 2
             color:              qgcPal.window
             opacity:            planExpanded.visible ? 0.2 : 0
             anchors.bottom:     parent  .bottom
-            anchors.right:      parent.right
             anchors.rightMargin: _toolsMargin
         }
         //-------------------------------------------------------
         // Right Panel Controls
         Item {
-            width:              _rightPanelWidth * 1.4
+            width:              _rightPanelWidth 
             anchors.fill:           rightPanel
             anchors.topMargin:      _toolsMargin
+
             DeadMouseArea {
                 anchors.fill:   parent
             }

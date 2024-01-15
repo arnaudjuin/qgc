@@ -230,14 +230,6 @@ Rectangle {
                 }
             }
 
-            QGCButton {
-                text:               "Travel WP"
-                Layout.fillWidth:   true
-            }
-            QGCButton {
-                text:               "Spray WP"
-                Layout.fillWidth:   true
-            }
         }   
 
         SectionHeader {
