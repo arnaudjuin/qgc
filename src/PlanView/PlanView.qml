@@ -848,7 +848,6 @@ Item {
                         }
                     }
 
-                    width:              _rightPanelWidth * 1.5
                     id:                 missionItemEditorListView
                     anchors.fill:       parent
                     spacing:            ScreenTools.defaultFontPixelHeight / 4

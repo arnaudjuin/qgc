@@ -17,7 +17,7 @@ import QGroundControl.FactControls  1.0
 Rectangle {
     FactPanelController { id: controller; }
     id:                 valuesRect
-    width:              availableWidth * 1.5
+    width:              availableWidth 
     height:             valuesColumn.height + (_margin * 5)
     color:              qgcPal.windowShadeDark
     radius:             _radius
