@@ -64,10 +64,15 @@ Rectangle {
             width:      parent.width
             spacing:            ScreenTools.defaultFontPixelWidth * 3
 
-            QGCButton {
+            QGCLabel {
                 text:               "Resume"
+ 
+            }
+
+            FactCheckBox {
+                id:factResume
+                fact:               controller.getParameterFact(-1, "SU_MSN_RESUME")
                 Layout.fillWidth:   true
-                enabled: false
             }
 
             QGCButton {
