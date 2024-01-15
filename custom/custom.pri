@@ -4,8 +4,8 @@ message("Adding Custom Plugin")
 #   Major and minor versions are defined here (manually)
 
 CUSTOM_QGC_VER_MAJOR = 4
-CUSTOM_QGC_VER_MINOR = 0
-CUSTOM_QGC_VER_FIRST_BUILD = 5395
+CUSTOM_QGC_VER_MINOR = 1
+CUSTOM_QGC_VER_FIRST_BUILD = 0
 
 # Build number is automatic
 # Uses the current branch. This way it works on any branch including build-server's PR branches
