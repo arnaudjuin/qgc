@@ -43,6 +43,7 @@ Rectangle {
     property bool   _showFlightSpeed:               !_missionVehicle.vtol && !_simpleMissionStart && !_missionVehicle.apmFirmware
     property bool   _confirmationStart:             false
     property bool   _textFieldSave      :             false
+    property bool _editTracing : false
 
     readonly property string _firmwareLabel:    qsTr("Firmware")
     readonly property string _vehicleLabel:     qsTr("Vehicle")
@@ -133,12 +134,14 @@ Rectangle {
                 autoExclusive:  true
 
                 imageSource:    "/qmlimages/MapDrawShape.svg"
-                text:           "Draw"
-                checked:        false
+                text:           "Trace"
+                checked:        _editTracing
 
 
                 onClicked: {
-                    /*                         dropPanel.hide()    // DropPanel will call hide on "lastClickedButton"
+                    _editTracing=!_editTracing
+                    /*               
+                              dropPanel.hide()    // DropPanel will call hide on "lastClickedButton"
                         if (modelData.dropPanelComponent === undefined) {
                             _root.clicked(index, checked)
                         } else if (checked) {

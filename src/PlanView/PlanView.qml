@@ -814,16 +814,20 @@ Item {
                 anchors.bottom:         parent.bottom
                 anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
                 visible:                _editingLayer == _layerMission && !planControlColapsed
-                QGCListView {
-                    //-------------------------------------------------------
+                ListView {
+                            height: 200
+
+                      //-------------------------------------------------------
                     // Mission Controls (Expanded)
                     Rectangle {
+                        visible:false
+                        //TODO SUIND
                         id:         planExpanded
                         width:      parent.width
                         height:     (!planControlColapsed || !_airspaceEnabled) ? bar.height + ScreenTools.defaultFontPixelHeight : 0
                         color:      qgcPal.missionItemEditor
                         radius:     _radius
-                        visible:    (!planControlColapsed || !_airspaceEnabled) && QGroundControl.corePlugin.options.enablePlanViewSelector
+                        //visible:    (!planControlColapsed || !_airspaceEnabled) && QGroundControl.corePlugin.options.enablePlanViewSelector
                         Item {
                             height:             bar.height
                             anchors.left:       parent.left
@@ -848,7 +852,7 @@ Item {
                                 }
                             }
                         }
-                    }
+                    }  
 
                     id:                 missionItemEditorListView
                     anchors.fill:       parent
@@ -861,22 +865,13 @@ Item {
                     highlightMoveDuration: 250
                     visible:            _editingLayer == _layerMission && !planControlColapsed
                     //-- List Elements
-                    delegate: MissionItemEditor {
+                    MissionItemEditor {
                         map:            editorMap
                         masterController:  _planMasterController
-                        missionItem:    object
+                        missionItem:    _missionController.visualItems.get(0)
                         nextMissionItem: _missionController.visualItems
                         width:          parent.width
                         readOnly:       false
-                        onClicked:      _missionController.setCurrentPlanViewSeqNum(object.sequenceNumber, false)
-                        onRemove: {
-                            var removeVIIndex = index
-                            _missionController.removeMissionItem(removeVIIndex)
-                            if (removeVIIndex >= _missionController.visualItems.count) {
-                                removeVIIndex--
-                            }
-                        }
-                        onSelectNextNotReadyItem:   selectNextNotReady()
                     }
                 }
             }
