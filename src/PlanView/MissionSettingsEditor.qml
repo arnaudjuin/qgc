@@ -81,8 +81,12 @@ Rectangle {
                 Layout.fillWidth:   true
 
                 onClicked: {
-                    dropPanel.show(0, 0, syncDropPanel)
-                    
+                    if (dropPanelLoad.visible) {
+                        dropPanelLoad.hide()
+                    } else {
+                        dropPanelLoad.show(0, 0, syncDropPanelLoad)
+                        dropPanelSave.hide()
+                    }
                 }
             }
 
@@ -90,6 +94,13 @@ Rectangle {
                 text:               "Save"
                 Layout.fillWidth:   true
                 onClicked: {
+                    if (dropPanelSave.visible) {
+                        dropPanelSave.hide()
+                    } else {
+                        dropPanelSave.show(0, 0, syncDropPanelSave)
+                        dropPanelLoad.hide()
+                    }
+                                       
                     _textFieldSave=true;
                 }
             }
@@ -100,6 +111,8 @@ Rectangle {
                 primary:            true
                 Layout.fillWidth:   true
                 onClicked: {
+                                    dropPanelLoad.hide()
+                    dropPanelSave.hide()
                     _confirmationStart=true;
                 }
                 PropertyAnimation on opacity {
@@ -139,7 +152,11 @@ Rectangle {
 
 
                 onClicked: {
+                                    dropPanelLoad.hide()
+                    dropPanelSave.hide()
                     _editTracing=!_editTracing
+                    _addWaypointOnClick=false
+                    _addWaypointOnClickLoiter=false
                     /*               
                               dropPanel.hide()    // DropPanel will call hide on "lastClickedButton"
                         if (modelData.dropPanelComponent === undefined) {
@@ -185,9 +202,9 @@ Rectangle {
 
                 onClicked: {
                     _addWaypointOnClickLoiter=false
-
                     _addWaypointOnClick=!_addWaypointOnClick
-
+                    dropPanelLoad.hide()
+                    dropPanelSave.hide()
                     
                     /*                         dropPanel.hide()    // DropPanel will call hide on "lastClickedButton"
                         if (modelData.dropPanelComponent === undefined) {
@@ -217,6 +234,8 @@ Rectangle {
                 checked:        _addWaypointOnClickLoiter
 
                 onClicked: {
+                                    dropPanelLoad.hide()
+                    dropPanelSave.hide()
                     _addWaypointOnClick=false
                     _addWaypointOnClickLoiter=!_addWaypointOnClickLoiter
 

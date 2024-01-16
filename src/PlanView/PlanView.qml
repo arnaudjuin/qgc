@@ -63,6 +63,7 @@ Item {
     readonly property int       _layerRallyPoints:          3
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
 
+
     function mapCenter() {
         var coordinate = editorMap.center
         coordinate.latitude  = coordinate.latitude.toFixed(_decimalPlaces)
@@ -460,7 +461,7 @@ Item {
                 showSpecialVisual:  _missionController.isROIBeginCurrentItem
                 model:              _editingLayer == _layerMission ? _missionController.waypointLines : undefined
             }
-                        // Direction arrows in waypoint lines
+            // Direction arrows in waypoint lines
             MapItemView {
                 model: _editingLayer == _layerMission ? _missionController.directionArrows : undefined
 
@@ -715,8 +716,8 @@ Item {
         //-----------------------------------------------------------
         // Right pane for mission editing controls
         Rectangle {
-                            anchors.right: parent.right
-        //anchors.horizontalCenter: parent.horizontalCenter
+            anchors.right: parent.right
+            //anchors.horizontalCenter: parent.horizontalCenter
             y: 0
             anchors.top : _root.top
             id:                 rightPanel
@@ -730,7 +731,7 @@ Item {
         //-------------------------------------------------------
         // Right Panel Controls
         Item {
-            width:              _rightPanelWidth 
+            width:              _rightPanelWidth
             anchors.fill:           rightPanel
             anchors.topMargin:      _toolsMargin
 
@@ -815,9 +816,15 @@ Item {
                 anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
                 visible:                _editingLayer == _layerMission && !planControlColapsed
                 ListView {
-                            height: 200
 
-                      //-------------------------------------------------------
+                    onContentYChanged: {
+                        // Lock the scroll position to the top
+                        if (contentY !== 0) {
+                            contentY = 0;
+                        }
+                    }
+
+                    //-------------------------------------------------------
                     // Mission Controls (Expanded)
                     Rectangle {
                         visible:false
@@ -852,7 +859,7 @@ Item {
                                 }
                             }
                         }
-                    }  
+                    }
 
                     id:                 missionItemEditorListView
                     anchors.fill:       parent
@@ -860,18 +867,18 @@ Item {
                     orientation:        ListView.Vertical
                     model:              _missionController.visualItems
                     cacheBuffer:        Math.max(height * 2, 0)
-                    clip:               true
                     currentIndex:       _missionController.currentPlanViewSeqNum
                     highlightMoveDuration: 250
                     visible:            _editingLayer == _layerMission && !planControlColapsed
                     //-- List Elements
-                    MissionItemEditor {
+                    delegate: MissionItemEditor {
                         map:            editorMap
                         masterController:  _planMasterController
-                        missionItem:    _missionController.visualItems.get(0)
+                        missionItem:    object
                         nextMissionItem: _missionController.visualItems
                         width:          parent.width
                         readOnly:       false
+
                     }
                 }
             }
@@ -1052,7 +1059,7 @@ Item {
     }
 
     Component {
-        id: syncDropPanel
+        id: syncDropPanelLoad
 
         ColumnLayout {
             id:         columnHolder
@@ -1069,6 +1076,7 @@ Item {
                                         qsTr("You have unsaved changes.")
                 visible:            _planMasterController.dirty
             }
+
 
             SectionHeader {
                 id:                 createSection
@@ -1130,7 +1138,7 @@ Item {
                             hoverEnabled:       true
                             preventStealing:    true
                             onClicked:          {
-                                dropPanel.hide()
+                                dropPanelLoad.hide()
                                 _planMasterController.loadFromFile(model.filePath)
                             }
 
@@ -1138,10 +1146,15 @@ Item {
                     }
                 }
             }
+        }
+    }
 
+    Component {
+        id: syncDropPanelSave
 
-
-            
+        ColumnLayout {
+            id:         columnHolder
+            spacing:    _margin
 
             SectionHeader {
                 id:                 storageSection
@@ -1159,7 +1172,7 @@ Item {
                     text:               qsTr("New...")
                     Layout.fillWidth:   true
                     onClicked:  {
-                        dropPanel.hide()
+                        dropPanelLoad.hide()
                         if (_planMasterController.containsItems) {
                             mainWindow.showComponentDialog(removeAllPromptDialog, qsTr("New Plan"), mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.No)
                         }
@@ -1171,7 +1184,7 @@ Item {
                     Layout.fillWidth:   true
                     enabled:            !_planMasterController.syncInProgress
                     onClicked: {
-                        dropPanel.hide()
+                        dropPanelLoad.hide()
                         if (_planMasterController.dirty) {
                             mainWindow.showComponentDialog(syncLoadFromFileOverwrite, columnHolder._overwriteText, mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.Cancel)
                         } else {
@@ -1185,7 +1198,7 @@ Item {
                     Layout.fillWidth:   true
                     enabled:            !_planMasterController.syncInProgress && _planMasterController.currentPlanFile !== ""
                     onClicked: {
-                        dropPanel.hide()
+                        dropPanelLoad.hide()
                         if(_planMasterController.currentPlanFile !== "") {
                             _planMasterController.saveToCurrent()
                         } else {
@@ -1199,7 +1212,7 @@ Item {
                     Layout.fillWidth:   true
                     enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
                     onClicked: {
-                        dropPanel.hide()
+                        dropPanelSave.hide()
                         _planMasterController.saveToSelectedFile()
                     }
                 }
@@ -1215,7 +1228,7 @@ Item {
                             mainWindow.showComponentDialog(noItemForKML, qsTr("KML"), mainWindow.showDialogDefaultWidth, StandardButton.Cancel)
                             return
                         }
-                        dropPanel.hide()
+                        dropPanelSave.hide()
                         _planMasterController.saveKmlToSelectedFile()
                     }
                 }
@@ -1238,7 +1251,7 @@ Item {
                     enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress && _planMasterController.containsItems
                     visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
                     onClicked: {
-                        dropPanel.hide()
+                        dropPanelSave.hide()
                         _planMasterController.upload()
                     }
                 }
@@ -1249,7 +1262,7 @@ Item {
                     enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress
                     visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
                     onClicked: {
-                        dropPanel.hide()
+                        dropPanelSave.hide()
                         if (_planMasterController.dirty) {
                             mainWindow.showComponentDialog(syncLoadFromVehicleOverwrite, columnHolder._overwriteText, mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.Cancel)
                         } else {
@@ -1265,15 +1278,20 @@ Item {
                     enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress
                     visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
                     onClicked: {
-                        dropPanel.hide()
+                        dropPanelSave.hide()
                         mainWindow.showComponentDialog(clearVehicleMissionDialog, text, mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.Cancel)
                     }
                 }
             }
+            
         }
     }
     DropPanel {
-        id:         dropPanel
+        id:         dropPanelLoad
+        toolStrip:  _root
+    }
+    DropPanel {
+        id:         dropPanelSave
         toolStrip:  _root
     }
 }
