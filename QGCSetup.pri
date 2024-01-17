@@ -20,6 +20,19 @@ LinuxBuild {
 MacBuild {
     DESTDIR_COPY_RESOURCE_LIST = $$DESTDIR/$${TARGET}.app/Contents/MacOS
 }
+    AndroidBuild {
+        QMAKE_POST_LINK += && mkdir -p $${DESTDIR}/package
+        QMAKE_POST_LINK += && make install INSTALL_ROOT=$${DESTDIR}/android-build/
+        QMAKE_POST_LINK += && androiddeployqt --input android-libQGroundControl.so-deployment-settings.json --output $${DESTDIR}/android-build --deployment bundled --gradle --sign $${BASEDIR}/android/android_release.keystore dagar --storepass $$(ANDROID_STOREPASS)
+        contains(QT_ARCH, arm) {
+            QGC_APK_BITNESS = "32"
+        } else:contains(QT_ARCH, arm64) {
+            QGC_APK_BITNESS = "64"
+        } else {
+            QGC_APK_BITNESS = ""
+        }
+        QMAKE_POST_LINK += && cp $${DESTDIR}/android-build/build/outputs/apk/android-build-release-signed.apk $${DESTDIR}/package/QGroundControl$${QGC_APK_BITNESS}.apk
+    }
 
 # Windows version of QMAKE_COPY_DIR of course doesn't work the same as Mac/Linux. It will only
 # copy the contents of the source directory. It doesn't create the top level source directory
@@ -104,6 +117,7 @@ LinuxBuild {
         libQt5PositioningQuick.so.5 \
         libQt5PrintSupport.so.5 \
         libQt5Qml.so.5 \
+        libQt5QmlModels.so.5 \
         libQt5Quick.so.5 \
         libQt5QuickControls2.so.5 \
         libQt5QuickTemplates2.so.5 \
@@ -112,6 +126,8 @@ LinuxBuild {
         libQt5Sql.so.5 \
         libQt5Svg.so.5 \
         libQt5Test.so.5 \
+        libQt5WaylandClient.so.5 \
+        libQt5QmlWorkerScript.so.5  \
         libQt5Widgets.so.5 \
         libQt5X11Extras.so.5 \
         libQt5XcbQpa.so.5 \
@@ -163,4 +179,5 @@ LinuxBuild {
     QMAKE_POST_LINK += && $$QMAKE_COPY $$BASEDIR/deploy/qgroundcontrol-start.sh $$DESTDIR
     QMAKE_POST_LINK += && $$QMAKE_COPY $$BASEDIR/deploy/qgroundcontrol.desktop $$DESTDIR
     QMAKE_POST_LINK += && $$QMAKE_COPY $$BASEDIR/resources/icons/qgroundcontrol.png $$DESTDIR
+
 }
