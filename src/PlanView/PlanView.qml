@@ -1095,7 +1095,7 @@ Item {
 
                 model: FolderListModel {
                     id: folderModel
-                    folder: "file:///Users/arnaudjuin/Documents/CustomQGC/Missions"
+                    folder:  QGroundControl.settingsManager.appSettings.missionSavePath
                     nameFilters: ["*"] // Display all files; you can specify filters as needed
                 }
 
