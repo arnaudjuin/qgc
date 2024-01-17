@@ -21,17 +21,7 @@ MacBuild {
     DESTDIR_COPY_RESOURCE_LIST = $$DESTDIR/$${TARGET}.app/Contents/MacOS
 }
     AndroidBuild {
-        QMAKE_POST_LINK += && mkdir -p $${DESTDIR}/package
-        QMAKE_POST_LINK += && make install INSTALL_ROOT=$${DESTDIR}/android-build/
-        QMAKE_POST_LINK += && androiddeployqt --input android-libQGroundControl.so-deployment-settings.json --output $${DESTDIR}/android-build --deployment bundled --gradle --sign $${BASEDIR}/android/android_release.keystore dagar --storepass $$(ANDROID_STOREPASS)
-        contains(QT_ARCH, arm) {
-            QGC_APK_BITNESS = "32"
-        } else:contains(QT_ARCH, arm64) {
-            QGC_APK_BITNESS = "64"
-        } else {
-            QGC_APK_BITNESS = ""
-        }
-        QMAKE_POST_LINK += && cp $${DESTDIR}/android-build/build/outputs/apk/android-build-release-signed.apk $${DESTDIR}/package/QGroundControl$${QGC_APK_BITNESS}.apk
+        QMAKE_POST_LINK += echo Post Link Common && mkdir -p package && make apk_install_target INSTALL_ROOT=android-build && androiddeployqt --verbose --input android-QGroundControl-deployment-settings.json --output android-build --release --sign /home/runner/work/qgroundcontrol/qgroundcontrol/android/android_release.keystore QGCAndroidKeyStore --storepass *** && cp android-build/build/outputs/apk/release/android-build-release-signed.apk package/QGroundControl64.apk
     }
 
 # Windows version of QMAKE_COPY_DIR of course doesn't work the same as Mac/Linux. It will only
