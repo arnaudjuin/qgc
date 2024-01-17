@@ -124,6 +124,12 @@ jobs:
       - name: List directory contentspackage
         run: ls -l ${{ runner.temp }}/shadow_build_dir/debug
 
+      - name: Copy files
+        run: make -f Makefile INSTALL_ROOT=${{ runner.temp }}/shadow_build_dir/android-build install
+
+      - name: Deploy APK
+        run: ${{ runner.temp }}/Qt/5.15.2/android/bin/androiddeployqt --input ${{ runner.temp }}/shadow_build_dir/android-QGroundControl-deployment-settings.json --output ${{ runner.temp }}/shadow_build_dir/android-build --apk ${{ runner.temp }}/shadow_build_dir/android-build/QGroundControl.apk
+
 
       - name: Save artifact
         uses: actions/upload-artifact@master
