@@ -1,5 +1,5 @@
 # The 32 and 64 bit version of these actions should be kept in sync
-name: Android 32-bit Release
+name: Android 64-bit Release
 
 on:
   push:
@@ -21,7 +21,7 @@ defaults:
 env:
   SOURCE_DIR:   ${{ github.workspace }}
   QT_VERSION:   5.15.2
-  ARTIFACT:     QGroundControl32.apk
+  ARTIFACT:     QGroundControl64.apk
   BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
 
 jobs:
@@ -122,14 +122,14 @@ jobs:
         run: ls -l ${{ runner.temp }}/shadow_build_dir
 
       - name: List directory contentspackage
-        run: ls -l ${{ runner.temp }}/shadow_build_dir/package
+        run: ls -l ${{ runner.temp }}/shadow_build_dir/debug
 
 
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
           name: ${{ env.ARTIFACT }}
-          path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir/debug/${{ env.ARTIFACT }}
 
       #      - name: Upload build to S3 Bucket
       #        if:                 github.event_name == 'push'
@@ -150,5 +150,5 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@master
         with:
-          name: QGroundControl32.apk  # Replace with the actual artifact name
+          name: QGroundControl64.apk  # Replace with the actual artifact name
 
