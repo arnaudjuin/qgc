@@ -118,6 +118,13 @@ jobs:
       - name: ccache post-run
         run:  ccache -s
 
+      - name: List directory contents
+        run: ls -l ${{ runner.temp }}/shadow_build_dir
+
+      - name: List directory contentspackage
+        run: ls -l ${{ runner.temp }}/shadow_build_dir/package
+
+
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
