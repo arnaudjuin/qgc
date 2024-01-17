@@ -115,6 +115,29 @@ jobs:
           qmake -r ${SOURCE_DIR}/qgroundcontrol.pro -spec android-clang CONFIG+=${BUILD_TYPE} CONFIG+=debug  ANDROID_ABIS="arm64-v8a"
           make -j2
 
+
+      - name: Run QML Import Scanner
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        env:
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_LATEST_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK: ${{ steps.setup-ndk.outputs.ndk-path }}
+        run: |
+          /home/runner/work/_temp/Qt/5.15.2/android/bin/qmlimportscanner \
+            -qrcFiles /home/runner/work/qgc/qgc/qgroundcontrol.qrc \
+                       /home/runner/work/qgc/qgc/qgcresources.qrc \
+                       /home/runner/work/qgc/qgc/qgcimages.qrc \
+                       /home/runner/work/qgc/qgc/HackFileDialog.qrc \
+                       /home/runner/work/qgc/qgc/UnitTest.qrc \
+                       /home/runner/work/qgc/qgc/src/FirmwarePlugin/APM/APMResources.qrc \
+                       /home/runner/work/qgc/qgc/src/FirmwarePlugin/PX4/PX4Resources.qrc \
+                       /home/runner/work/qgc/qgc/src/Airmap/dummy/airmap_dummy.qrc \
+                       /home/runner/work/_temp/shadow_build_dir/rcc/arm64-v8a/qmake_qmake_qm_files.qrc \
+            -rootPath /home/runner/work/qgc/qgc/ \
+            -importPath /home/runner/work/_temp/Qt/5.15.2/android/qml /home/runner/work/qgc/qgc/ /home/runner/work/qgc/qgc/src/QmlControls
+
+
       - name: ccache post-run
         run:  ccache -s
 
@@ -127,8 +150,6 @@ jobs:
       - name: Copy files
         run: make -f Makefile INSTALL_ROOT=${{ runner.temp }}/shadow_build_dir/android-build install
 
-      - name: Deploy APK
-        run: ${{ runner.temp }}/Qt/5.15.2/android/bin/androiddeployqt --input ${{ runner.temp }}/shadow_build_dir/android-QGroundControl-deployment-settings.json --output ${{ runner.temp }}/shadow_build_dir/android-build --apk ${{ runner.temp }}/shadow_build_dir/android-build/QGroundControl.apk
 
 
       - name: Save artifact
