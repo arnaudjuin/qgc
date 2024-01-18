@@ -20,7 +20,7 @@ defaults:
 
 env:
   SOURCE_DIR:   ${{ github.workspace }}
-  QT_VERSION:   5.12.6
+  QT_VERSION:   5.12.9
   ARTIFACT:     QGroundControl64.apk
   BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
 
@@ -52,7 +52,7 @@ jobs:
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r20b
+          ndk-version: r21e
           add-to-path: false
 
       - name: Remove Android SDK android-33-ext
