@@ -20,7 +20,7 @@ defaults:
 
 env:
   SOURCE_DIR:   ${{ github.workspace }}
-  QT_VERSION:   5.12.9
+  QT_VERSION:   5.15.2
   ARTIFACT:     QGroundControl64.apk
   BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
 
@@ -99,11 +99,9 @@ jobs:
         id:   git-branch-name
         uses: EthanSK/git-branch-name-action@v1
 
-#      - name: Update android manifest
-#        run: |
-#          if [ $GIT_BRANCH_NAME != "Stable*" ]; then
-#            ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${{ github.ref_name }}
-      # Debug build
+      - name: Update android manifest
+        run: |
+            ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${{ github.ref_name }}
 
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
