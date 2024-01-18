@@ -21,7 +21,7 @@ MacBuild {
     DESTDIR_COPY_RESOURCE_LIST = $$DESTDIR/$${TARGET}.app/Contents/MacOS
 }
     AndroidBuild {
-        QMAKE_POST_LINK += echo Post Link Common && mkdir -p package && make apk_install_target INSTALL_ROOT=android-build && androiddeployqt --verbose --input android-QGroundControl-deployment-settings.json --output android-build --release --sign /home/runner/work/qgroundcontrol/qgroundcontrol/android/android_release.keystore QGCAndroidKeyStore --storepass *** && cp android-build/build/outputs/apk/release/android-build-release-signed.apk package/QGroundControl64.apk
+QMAKE_POST_LINK += echo Post Link Common && mkdir -p package && make apk_install_target INSTALL_ROOT=android-build && androiddeployqt --verbose --input android-QGroundControl-deployment-settings.json --output android-build --sign /home/runner/work/qgroundcontrol/qgroundcontrol/android/android_debug.keystore QGCAndroidKeyStore --storepass *** && cp android-build/build/outputs/apk/debug/android-build-debug.apk package/QGroundControl64-debug.apk
     }
 
 # Windows version of QMAKE_COPY_DIR of course doesn't work the same as Mac/Linux. It will only
