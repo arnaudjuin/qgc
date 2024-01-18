@@ -21,7 +21,18 @@ MacBuild {
     DESTDIR_COPY_RESOURCE_LIST = $$DESTDIR/$${TARGET}.app/Contents/MacOS
 }
     AndroidBuild {
-QMAKE_POST_LINK += echo Post Link Common && mkdir -p package && make apk_install_target INSTALL_ROOT=android-build && androiddeployqt --verbose --input android-QGroundControl-deployment-settings.json --output android-build --sign /home/runner/work/qgroundcontrol/qgroundcontrol/android/android_debug.keystore QGCAndroidKeyStore --storepass *** && cp android-build/build/outputs/apk/debug/android-build-debug.apk package/QGroundControl64-debug.apk
+        _ANDROID_KEYSTORE_PASSWORD = $$(ANDROID_KEYSTORE_PASSWORD)
+        QMAKE_POST_LINK += && mkdir -p package
+        isEmpty(_ANDROID_KEYSTORE_PASSWORD) {
+            message(Keystore password not available - not signing package)
+            # This is for builds in forks and PR where the Android keystore password is not available
+            QMAKE_POST_LINK += && make apk
+            QMAKE_POST_LINK += && cp android-build/build/outputs/apk/debug/android-build-debug.apk package/QGroundControl$${ANDROID_TRUE_BITNESS}.apk
+        } else {
+            QMAKE_POST_LINK += && make apk_install_target INSTALL_ROOT=android-build
+            QMAKE_POST_LINK += && androiddeployqt --verbose --input android-QGroundControl-deployment-settings.json --output android-build --release --sign $${SOURCE_DIR}/android/android_release.keystore QGCAndroidKeyStore --storepass $$(ANDROID_KEYSTORE_PASSWORD)
+            QMAKE_POST_LINK += && cp android-build/build/outputs/apk/release/android-build-release-signed.apk package/QGroundControl$${ANDROID_TRUE_BITNESS}.apk
+        }
     }
 
 # Windows version of QMAKE_COPY_DIR of course doesn't work the same as Mac/Linux. It will only
