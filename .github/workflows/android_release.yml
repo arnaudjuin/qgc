@@ -49,6 +49,8 @@ jobs:
           setup-python: true
           aqtversion:   ==3.1.*
           arch:         android_arm64_v8a
+          modules:      qtcharts,qtserialport  # Add qtserialport module
+
 
       - name: Install Android NDK
         uses: nttld/setup-ndk@v1
