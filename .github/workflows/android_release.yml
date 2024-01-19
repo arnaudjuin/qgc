@@ -45,11 +45,10 @@ jobs:
           host:         linux
           target:       android
           dir:          ${{ runner.temp }}
-          modules:      qtcharts
+          modules:      qtcharts,qtserialport
           setup-python: true
           aqtversion:   ==3.1.*
           arch:         android_arm64_v8a
-          modules:      qtcharts,qtserialport  # Add qtserialport module
 
 
       - name: Install Android NDK
