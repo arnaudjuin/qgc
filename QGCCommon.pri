@@ -55,7 +55,6 @@ linux {
             message("Android Arm 32 bit build")
         } else:equals(ANDROID_TARGET_ARCH, arm64-v8a)  {
             DEFINES += __androidArm64__
-            QMAKE_LINK += -nostdlib++ # Hack fix
             DEFINES += QGC_ENABLE_MAVLINK_INSPECTOR
             message("Android Arm 64 bit build")
         } else:equals(ANDROID_TARGET_ARCH, x86)  {
