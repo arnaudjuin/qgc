@@ -5,14 +5,13 @@ on:
   push:
     branches:
       - 'master'
-      - 'Stable*'
-      - 'QGCustomAPM*'
       - 'android*'
+      - 'Stable*'
     tags:
       - 'v*'
   pull_request:
     branches:
-      - '*'
+    - '*'
 
 defaults:
   run:
@@ -30,7 +29,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           submodules: recursive
 
@@ -47,8 +46,6 @@ jobs:
           dir:          ${{ runner.temp }}
           modules:      qtcharts
           setup-python: true
-          aqtversion:   ==3.1.*
-          arch:         android_arm64_v8a
 
       - name: Install Android NDK
         uses: nttld/setup-ndk@v1
@@ -59,13 +56,8 @@ jobs:
 
       - name: Remove Android SDK android-33-ext
         run: |
-          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext5"
-          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext4"
-          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34"
-          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34-ext8"
-
-
-          
+            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext5"
+            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext4"
       - name: Install ccache
         run:  sudo apt-get install ccache
 
@@ -84,21 +76,21 @@ jobs:
 
       - name: Setup ccache
         run: |
-          mkdir -p ~/.ccache
-          echo "base_dir = ${GITHUB_WORKSPACE}" > ~/.ccache/ccache.conf
-          echo "compression = true" >> ~/.ccache/ccache.conf
-          echo "compression_level = 5" >> ~/.ccache/ccache.conf
-          ccache -s
-          ccache -z
+            mkdir -p ~/.ccache
+            echo "base_dir = ${GITHUB_WORKSPACE}" > ~/.ccache/ccache.conf
+            echo "compression = true" >> ~/.ccache/ccache.conf
+            echo "compression_level = 5" >> ~/.ccache/ccache.conf
+            ccache -s
+            ccache -z
       - name: Create build directory
         run:  mkdir ${{ runner.temp }}/shadow_build_dir
 
       - name:               Install gstreamer
         working-directory:  ${{ github.workspace }}
         run: |
-          wget --quiet https://gstreamer.freedesktop.org/data/pkg/android/1.18.5/gstreamer-1.0-android-universal-1.18.5.tar.xz
-          mkdir gstreamer-1.0-android-universal-1.18.5
-          tar xf gstreamer-1.0-android-universal-1.18.5.tar.xz -C gstreamer-1.0-android-universal-1.18.5
+            wget --quiet https://gstreamer.freedesktop.org/data/pkg/android/1.18.5/gstreamer-1.0-android-universal-1.18.5.tar.xz
+            mkdir gstreamer-1.0-android-universal-1.18.5
+            tar xf gstreamer-1.0-android-universal-1.18.5.tar.xz -C gstreamer-1.0-android-universal-1.18.5
       # This will set GIT_BRANCH_NAME environment variable
       - name: Git branch name
         id:   git-branch-name
@@ -106,8 +98,9 @@ jobs:
 
       - name: Update android manifest
         run: |
-            ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${{ github.ref_name }}
-
+          if [ $GIT_BRANCH_NAME != "Stable*" ]; then
+            ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${GIT_BRANCH_NAME}
+          fi
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
         env:
@@ -117,70 +110,28 @@ jobs:
           ANDROID_NDK_LATEST_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
           ANDROID_NDK: ${{ steps.setup-ndk.outputs.ndk-path }}
         run:  |
-          qmake -r ${SOURCE_DIR}/qgroundcontrol.pro -spec android-clang CONFIG+=${BUILD_TYPE} CONFIG+=installer  ANDROID_ABIS="arm64-v8a"
-          make -j2
-
-
-      - name: Run QML Import Scanner
-        working-directory: ${{ runner.temp }}/shadow_build_dir
-        env:
-          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          ANDROID_NDK_LATEST_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          ANDROID_NDK: ${{ steps.setup-ndk.outputs.ndk-path }}
-        run: |
-          /home/runner/work/_temp/Qt/5.15.2/android/bin/qmlimportscanner \
-            -qrcFiles /home/runner/work/qgc/qgc/qgroundcontrol.qrc \
-                       /home/runner/work/qgc/qgc/qgcresources.qrc \
-                       /home/runner/work/qgc/qgc/qgcimages.qrc \
-                       /home/runner/work/qgc/qgc/HackFileDialog.qrc \
-                       /home/runner/work/qgc/qgc/UnitTest.qrc \
-                       /home/runner/work/qgc/qgc/src/FirmwarePlugin/APM/APMResources.qrc \
-                       /home/runner/work/qgc/qgc/src/FirmwarePlugin/PX4/PX4Resources.qrc \
-                       /home/runner/work/qgc/qgc/src/Airmap/dummy/airmap_dummy.qrc \
-                       /home/runner/work/_temp/shadow_build_dir/rcc/arm64-v8a/qmake_qmake_qm_files.qrc \
-            -rootPath /home/runner/work/qgc/qgc/ \
-            -importPath /home/runner/work/_temp/Qt/5.15.2/android/qml /home/runner/work/qgc/qgc/ /home/runner/work/qgc/qgc/src/QmlControls
-
-
+            qmake -r ${SOURCE_DIR}/qgroundcontrol.pro -spec android-clang CONFIG+=${BUILD_TYPE} CONFIG+=installer ANDROID_ABIS="arm64-v8a"
+            make -j2
       - name: ccache post-run
         run:  ccache -s
-
-      - name: List directory contents
-        run: ls -l ${{ runner.temp }}/shadow_build_dir
-
-      - name: List directory contentspackage
-        run: ls -l ${{ runner.temp }}/shadow_build_dir/debug
-
-      - name: Copy files
-        run: make -f Makefile INSTALL_ROOT=${{ runner.temp }}/shadow_build_dir/android-build install
-
-
 
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
           name: ${{ env.ARTIFACT }}
-          path: ${{ runner.temp }}/shadow_build_dir/debug/${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
 
-      #      - name: Upload build to S3 Bucket
-      #        if:                 github.event_name == 'push'
-      #        working-directory:  ${{ runner.temp }}/shadow_build_dir/package
-      #        run: |
-      #              aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #              aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #              aws s3 cp ${{ matrix.ARTIFACT }} s3://qgroundcontrol/builds/${{ github.ref_name }}/${{ matrix.ARTIFACT }} --region us-west-2 --acl public-read
-      #
-      #      - name: Upload tagged stable build to S3 latest Bucket
-      #        if:                 github.event_name == 'push' && github.ref_type == 'tag'
-      #        working-directory:  ${{ runner.temp }}/shadow_build_dir/package
-      #        run: |
-      #              aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #              aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #              aws s3 cp ${{ matrix.ARTIFACT }} s3://qgroundcontrol/latest/${{ matrix.ARTIFACT }} --region us-west-2 --acl public-read
-
-      - name: Download artifact
-        uses: actions/download-artifact@master
-        with:
-          name: QGroundControl64.apk  # Replace with the actual artifact name
-
+      - name: Upload build to S3 Bucket
+        if:                 github.event_name == 'push'
+        working-directory:  ${{ runner.temp }}/shadow_build_dir/package
+        run: |
+              aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws s3 cp ${ARTIFACT} s3://qgroundcontrol/builds/${GIT_BRANCH_NAME}/${ARTIFACT} --region us-west-2 --acl public-read
+      - name: Upload tagged stable build to S3 latest Bucket
+        if:                 github.event_name == 'push' && github.ref_type == 'tag'
+        working-directory:  ${{ runner.temp }}/shadow_build_dir/package
+        run: |
+              aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws s3 cp ${ARTIFACT} s3://qgroundcontrol/latest/${ARTIFACT} --region us-west-2 --acl public-read
