@@ -30,5 +30,6 @@
     </qresource>
     <qresource prefix="/qml">
         <file alias="QGroundControl/FlightDisplay/FlyViewCustomLayer.qml">res/CustomFlyViewOverlay.qml</file>
+        <file alias="QGroundControl/FlightDisplay/FlyViewToolBar.qml">res/CustomMainToolbar.qml</file>
     </qresource>
 </RCC>

@@ -1,2 +1,3 @@
         <file alias="QGroundControl/FlightDisplay/FlyViewCustomLayer.qml">src/FlightDisplay/FlyViewCustomLayer.qml</file>
+        <file alias="QGroundControl/FlightDisplay/FlyViewToolBar.qml">src/ui/toolbar/FlyViewToolBar.qml</file>
 

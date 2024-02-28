@@ -107,7 +107,7 @@ Item {
         visible:        false
     }
 
-
+ 
 
     Rectangle {
         id:             borderRect
