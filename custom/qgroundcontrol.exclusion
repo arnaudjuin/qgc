@@ -1,3 +1,6 @@
         <file alias="QGroundControl/FlightDisplay/FlyViewCustomLayer.qml">src/FlightDisplay/FlyViewCustomLayer.qml</file>
         <file alias="QGroundControl/FlightDisplay/FlyViewToolBar.qml">src/ui/toolbar/FlyViewToolBar.qml</file>
+        <file alias="QGroundControl/FlightDisplay/FlyViewToolStripActionList.qml">src/FlightDisplay/FlyViewToolStripActionList.qml</file>
+        <file alias="MainRootWindow.qml">src/ui/MainRootWindow.qml</file>
+        <file alias="PlanViewToolBar.qml">src/ui/toolbar/PlanViewToolBar.qml</file>
 

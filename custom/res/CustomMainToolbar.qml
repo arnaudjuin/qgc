@@ -11,6 +11,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQml.Models
+import QGroundControl
+import QGroundControl.Controls
 
 import QGroundControl
 import QGroundControl.Controls
@@ -23,11 +26,11 @@ Rectangle {
     id:     _root
     width:  parent.width
     height: ScreenTools.toolbarHeight
-    color:  "#ff6701"
+    color:  "#ff4800"
 
     property var    _activeVehicle:     QGroundControl.multiVehicleManager.activeVehicle
     property bool   _communicationLost: _activeVehicle ? _activeVehicle.vehicleLinkManager.communicationLost : false
-    property color  _mainStatusBGColor: "#ff6701"
+    property color  _mainStatusBGColor: "#ff4800"
 
     function dropMessageIndicatorTool() {
         toolIndicators.dropMessageIndicatorTool();
@@ -66,9 +69,19 @@ Rectangle {
         QGCToolBarButton {
             id:                     currentButton
             Layout.preferredHeight: viewButtonRow.height
-            icon.source:            "/res/QGCLogoFull"
+            icon.source:            "/custom/img/list.svg"
             logo:                   true
             onClicked:              mainWindow.showToolSelectDialog()
+        }
+
+        Item {
+            Layout.preferredHeight: viewButtonRow.height
+                Image {
+                height: parent.height
+                width: 150
+                source: "/custom/img/logohural.png"
+                fillMode: Image.PreserveAspectFit
+            }
         }
 
         QGCButton {

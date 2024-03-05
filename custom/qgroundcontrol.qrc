@@ -58,7 +58,6 @@
 		<file alias="LinkSettings.qml">../src/ui/preferences/LinkSettings.qml</file>
 		<file alias="LogDownloadPage.qml">../src/AnalyzeView/LogDownloadPage.qml</file>
 		<file alias="LogReplaySettings.qml">../src/ui/preferences/LogReplaySettings.qml</file>
-		<file alias="MainRootWindow.qml">../src/ui/MainRootWindow.qml</file>
 		<file alias="MapSettings.qml">../src/ui/preferences/MapSettings.qml</file>
 		<file alias="MavlinkConsolePage.qml">../src/AnalyzeView/MavlinkConsolePage.qml</file>
 		<file alias="MAVLinkInspectorPage.qml">../src/AnalyzeView/MAVLinkInspectorPage.qml</file>
@@ -71,7 +70,6 @@
 		<file alias="PlanToolBarIndicators.qml">../src/PlanView/PlanToolBarIndicators.qml</file>
 		<file alias="PlanView.qml">../src/PlanView/PlanView.qml</file>
 		<file alias="PlanViewSettings.qml">../src/ui/preferences/PlanViewSettings.qml</file>
-		<file alias="PlanViewToolBar.qml">../src/ui/toolbar/PlanViewToolBar.qml</file>
 		<file alias="PreFlightCheckList.qml">../src/FlightDisplay/PreFlightCheckList.qml</file>
 		<file alias="PX4FlowSensor.qml">../src/VehicleSetup/PX4FlowSensor.qml</file>
 		<file alias="VerticalCompassAttitude.qml">../src/FlightMap/Widgets/VerticalCompassAttitude.qml</file>
@@ -227,7 +225,6 @@
 		<file alias="QGroundControl/FlightDisplay/FlyViewPreFlightChecklistPopup.qml">../src/FlightDisplay/FlyViewPreFlightChecklistPopup.qml</file>
 		<file alias="QGroundControl/FlightDisplay/FlyViewToolBarIndicators.qml">../src/ui/toolbar/FlyViewToolBarIndicators.qml</file>
 		<file alias="QGroundControl/FlightDisplay/FlyViewToolStrip.qml">../src/FlightDisplay/FlyViewToolStrip.qml</file>
-		<file alias="QGroundControl/FlightDisplay/FlyViewToolStripActionList.qml">../src/FlightDisplay/FlyViewToolStripActionList.qml</file>
 		<file alias="QGroundControl/FlightDisplay/FlyViewTopRightColumnLayout.qml">../src/FlightDisplay/FlyViewTopRightColumnLayout.qml</file>
 		<file alias="QGroundControl/FlightDisplay/FlyViewVideo.qml">../src/FlightDisplay/FlyViewVideo.qml</file>
 		<file alias="QGroundControl/FlightDisplay/FlyViewWidgetLayer.qml">../src/FlightDisplay/FlyViewWidgetLayer.qml</file>

@@ -13,6 +13,8 @@
         <file alias="odometer.svg">res/Images/odometer.svg</file>
         <file alias="vertical_speed.svg">res/Images/vertical_speed.svg</file>
         <file alias="CustomAppIcon.png">res/Images/CustomAppIcon.png</file>
+        <file alias="list.svg">res/Images/list.svg</file>
+        <file alias="logohural.png">res/Images/logohural.png</file>
     </qresource>
     <qresource prefix="/qmlimages">
 	<file alias="PaperPlane.svg">res/Images/CustomVehicleIcon.svg</file>
@@ -31,5 +33,8 @@
     <qresource prefix="/qml">
         <file alias="QGroundControl/FlightDisplay/FlyViewCustomLayer.qml">res/CustomFlyViewOverlay.qml</file>
         <file alias="QGroundControl/FlightDisplay/FlyViewToolBar.qml">res/CustomMainToolbar.qml</file>
+        <file alias="QGroundControl/FlightDisplay/FlyViewToolStripActionList.qml">res/CustomFlyViewToolStrip.qml</file>
+        <file alias="MainRootWindow.qml">res/CustomMainRootWindow.qml</file>
+        <file alias="PlanViewToolBar.qml">res/CustomPlanViewToolBar.qml</file>
     </qresource>
 </RCC>

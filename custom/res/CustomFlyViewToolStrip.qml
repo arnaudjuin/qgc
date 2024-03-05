@@ -22,6 +22,7 @@ ToolStripActionList {
         ToolStripAction {
             text:           qsTr("Missão")
             iconSource:     "/qmlimages/Plan.svg"
+            visible: false
             onTriggered:{
                 mainWindow.showPlanView()
                 viewer3DWindow.close()
@@ -31,7 +32,7 @@ ToolStripActionList {
             property bool _is3DViewOpen: viewer3DWindow.isOpen
 
             id: view3DIcon
-            visible: _viewer3DEnabled
+            visible: false
             text:           qsTr("3D View")
             iconSource:     "/qmlimages/Viewer3D/City3DMapIcon.svg"
             onTriggered:{
@@ -45,20 +46,13 @@ ToolStripActionList {
             on_Is3DViewOpenChanged: {
                 if(_is3DViewOpen === true){
                     view3DIcon.iconSource =     "/qmlimages/PaperPlane.svg"
-                    text=           qsTr("Fly")
+                    text=           qsTr("Teste")
                 }else{
                     viewer3DWindow.close()
                     iconSource =     "/qmlimages/Viewer3D/City3DMapIcon.svg"
                     text =           qsTr("3D View")
                 }
             }
-        },
-        PreFlightCheckListShowAction { onTriggered: displayPreFlightChecklist() },
-        GuidedActionTakeoff { },
-        GuidedActionLand { },
-        GuidedActionRTL { },
-        GuidedActionPause { },
-        GuidedActionActionList { },
-        GuidedActionGripper { }
+        }
     ]
 }

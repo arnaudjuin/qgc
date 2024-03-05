@@ -283,10 +283,26 @@ ApplicationWindow {
                         property bool   _viewer3DEnabled:        QGroundControl.settingsManager.viewer3DSettings.enabled.rawValue
 
                         SubMenuButton {
+                            height:             toolSelectDialog._toolButtonHeight
+                            Layout.fillWidth:   true
+                            text:           qsTr("Minhas Áreas")
+                            imageResource:     "/qmlimages/Plan.svg"
+                            imageColor: "transparent"
+                            visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
+                            onClicked:{
+                                if (!mainWindow.preventViewSwitch()) {
+                                    mainWindow.closeIndicatorDrawer()
+                                    mainWindow.showPlanView()
+                                    viewer3DWindow.close()
+                                }
+                            }
+                        }
+
+                        SubMenuButton {
                             id:                 setupButton
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
-                            text:               qsTr("Vehicle Setup")
+                            text:               qsTr("Configurações")
                             imageColor:         qgcPal.text
                             imageResource:      "/qmlimages/Gears.svg"
                             onClicked: {
@@ -313,32 +329,20 @@ ApplicationWindow {
                             }
                         }
 
+
                         SubMenuButton {
                             id:                 settingsButton
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
                             text:               qsTr("Application Settings")
-                            imageResource:      "/res/QGCLogoFull"
+                            imageResource:      "/qmlimages/Gears.svg"
                             imageColor:         "transparent"
-                            visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
+                            visible:            false
                             onClicked: {
                                 if (!mainWindow.preventViewSwitch()) {
                                     drawer.close()
                                     mainWindow.showSettingsTool()
                                 }
-                            }
-                        }
-
-                        SubMenuButton {
-                            height:             toolSelectDialog._toolButtonHeight
-                            Layout.fillWidth:   true
-                            text:           qsTr("Testando")
-                            imageResource:     "/qmlimages/Plan.svg"
-                            imageColor: "transparent"
-                            visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
-                            onClicked:{
-                                mainWindow.showPlanView()
-                                viewer3DWindow.close()
                             }
                         }
 
@@ -498,7 +502,7 @@ ApplicationWindow {
 
                 QGCLabel {
                     id:     backTextLabel
-                    text:   qsTr("Back")
+                    text:   qsTr("Início")
                 }
 
                 QGCLabel {
