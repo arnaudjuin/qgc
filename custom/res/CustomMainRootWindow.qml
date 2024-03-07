@@ -128,7 +128,7 @@ ApplicationWindow {
     }
 
     function showTool(toolTitle, toolSource, toolIcon) {
-        toolDrawer.backIcon     = flightView.visible ? "/qmlimages/PaperPlane.svg" : "/qmlimages/Plan.svg"
+        toolDrawer.backIcon     = flightView.visible ? "/qmlimages/Home.svg" : "/qmlimages/Home.svg"
         toolDrawer.toolTitle    = toolTitle
         toolDrawer.toolSource   = toolSource
         toolDrawer.toolIcon     = toolIcon
@@ -140,7 +140,7 @@ ApplicationWindow {
     }
 
     function showVehicleSetupTool(setupPage = "") {
-        showTool(qsTr("Vehicle Setup"), "SetupView.qml", "/qmlimages/Gears.svg")
+        showTool(qsTr("Configurações"), "SetupView.qml", "/qmlimages/Gears.svg")
         if (setupPage !== "") {
             toolDrawerLoader.item.showNamedComponentPanel(setupPage)
         }

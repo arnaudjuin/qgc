@@ -36,5 +36,6 @@
         <file alias="QGroundControl/FlightDisplay/FlyViewToolStripActionList.qml">res/CustomFlyViewToolStrip.qml</file>
         <file alias="MainRootWindow.qml">res/CustomMainRootWindow.qml</file>
         <file alias="PlanViewToolBar.qml">res/CustomPlanViewToolBar.qml</file>
+        <file alias="QGroundControl/PlanView/PlanView.qml">res/CustomPlanView.qml</file>
     </qresource>
 </RCC>

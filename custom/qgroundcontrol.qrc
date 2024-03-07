@@ -68,7 +68,6 @@
 		<file alias="ActuatorFact.qml">../src/AutoPilotPlugins/PX4/ActuatorFact.qml</file>
 		<file alias="ActuatorSlider.qml">../src/AutoPilotPlugins/PX4/ActuatorSlider.qml</file>
 		<file alias="PlanToolBarIndicators.qml">../src/PlanView/PlanToolBarIndicators.qml</file>
-		<file alias="PlanView.qml">../src/PlanView/PlanView.qml</file>
 		<file alias="PlanViewSettings.qml">../src/ui/preferences/PlanViewSettings.qml</file>
 		<file alias="PreFlightCheckList.qml">../src/FlightDisplay/PreFlightCheckList.qml</file>
 		<file alias="PX4FlowSensor.qml">../src/VehicleSetup/PX4FlowSensor.qml</file>
