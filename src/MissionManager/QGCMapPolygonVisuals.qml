@@ -48,7 +48,7 @@ Item {
     property real _zorderSplitHandle:   QGroundControl.zOrderMapItems + 2
     property real _zorderCenterHandle:  QGroundControl.zOrderMapItems + 1   // Lowest such that drag or split takes precedence
 
-    readonly property string _polygonToolsText: qsTr("Polygon Tools")
+    //readonly property string _polygonToolsText: qsTr("Polygon Tools")
     readonly property string _traceText:        qsTr("Click in the map to add vertices. Click 'Done Tracing' when finished.")
 
     function addCommonVisuals() {
@@ -588,19 +588,6 @@ Item {
             y:                              mapControl.centerViewport.top
             availableWidth:                 mapControl.centerViewport.width
 
-            QGCButton {
-                _horizontalPadding: 0
-                text:               qsTr("Basic")
-                visible:            !mapPolygon.traceMode
-                onClicked:          _resetPolygon()
-            }
-
-            QGCButton {
-                _horizontalPadding: 0
-                text:               qsTr("Circular")
-                visible:            !mapPolygon.traceMode
-                onClicked:          _resetCircle()
-            }
 
             QGCButton {
                 _horizontalPadding: 0
@@ -620,12 +607,6 @@ Item {
                 }
             }
 
-            QGCButton {
-                _horizontalPadding: 0
-                text:               qsTr("Load KML/SHP...")
-                onClicked:          kmlOrSHPLoadDialog.openForLoad()
-                visible:            !mapPolygon.traceMode
-            }
         }
     }
 

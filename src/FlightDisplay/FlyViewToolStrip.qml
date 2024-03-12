@@ -15,7 +15,6 @@ import QGroundControl.FlightDisplay
 
 ToolStrip {
     id:     _root
-    title:  qsTr("Fly")
 
     signal displayPreFlightChecklist
 

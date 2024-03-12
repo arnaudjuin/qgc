@@ -548,122 +548,100 @@ Item {
 
         //-----------------------------------------------------------
         // Left tool strip
-        ToolStrip {
-            id:                 toolStrip
-            anchors.margins:    _toolsMargin
-            anchors.left:       parent.left
-            anchors.top:        parent.top
-            z:                  QGroundControl.zOrderWidgets
-            maxHeight:          parent.height - toolStrip.y
-            title:              qsTr("Plan")
+        
+        ColumnLayout {
+            spacing:    ScreenTools.defaultFontPixelWidth * 0.5
 
-            readonly property int flyButtonIndex:       0
-            readonly property int fileButtonIndex:      1
-            readonly property int takeoffButtonIndex:   2
-            readonly property int waypointButtonIndex:  3
-            readonly property int roiButtonIndex:       4
-            readonly property int patternButtonIndex:   5
-            readonly property int landButtonIndex:      6
-            readonly property int centerButtonIndex:    7
+            QGCLabel { text: qsTr("Create complex pattern:") }
 
-            property bool _isRallyLayer:    _editingLayer == _layerRallyPoints
-            property bool _isMissionLayer:  _editingLayer == _layerMission
-            property bool _isUtmspLayer:     _editingLayer == _layerUTMSP
+            Repeater {
+                model: _missionController.complexMissionItemNames
 
-            ToolStripActionList {
-                id: toolStripActionList
-                model: [
-                    ToolStripAction {
-                        text:           qsTr("Fly")
-                        iconSource:     "/qmlimages/PaperPlane.svg"
-                        onTriggered:    mainWindow.popView()
-                    },
-                    ToolStripAction {
-                        text:                   qsTr("File")
-                        enabled:                !_planMasterController.syncInProgress
-                        visible:                true
-                        showAlternateIcon:      _planMasterController.dirty
-                        iconSource:             "/qmlimages/MapSync.svg"
-                        alternateIconSource:    "/qmlimages/MapSyncChanged.svg"
-                        dropPanelComponent:     syncDropPanel
-                    },
-                    ToolStripAction {
-                        text:       qsTr("Takeoff")
-                        iconSource: "/res/takeoff.svg"
-                        enabled:    _missionController.isInsertTakeoffValid
-                        visible:    (toolStrip._isMissionLayer || toolStrip._isUtmspLayer) && !_planMasterController.controllerVehicle.rover
-                        onTriggered: {
-                            toolStrip.allAddClickBoolsOff()
-                            insertTakeItemAfterCurrent()
-                            _triggerSubmit = true
-                        }
-                    },
-                    ToolStripAction {
-                        id:                 addWaypointRallyPointAction
-                        text:               _editingLayer == _layerRallyPoints ? qsTr("Rally Point") : qsTr("Waypoint")
-                        iconSource:         "/qmlimages/MapAddMission.svg"
-                        enabled:            toolStrip._isRallyLayer ? true : _missionController.flyThroughCommandsAllowed
-                        visible:            toolStrip._isRallyLayer || toolStrip._isMissionLayer || toolStrip._isUtmspLayer
-                        checkable:          true
-                    },
-                    ToolStripAction {
-                        text:               _missionController.isROIActive ? qsTr("Cancel ROI") : qsTr("ROI")
-                        iconSource:         "/qmlimages/MapAddMission.svg"
-                        enabled:            !_missionController.onlyInsertTakeoffValid
-                        visible:            toolStrip._isMissionLayer && _planMasterController.controllerVehicle.roiModeSupported
-                        checkable:          !_missionController.isROIActive
-                        onCheckedChanged:   _addROIOnClick = checked
-                        onTriggered: {
-                            if (_missionController.isROIActive) {
-                                toolStrip.allAddClickBoolsOff()
-                                insertCancelROIAfterCurrent()
+                QGCButton {
+                    text:               modelData
+                    Layout.fillWidth:   true
+
+                    onClicked: {
+                        insertComplexItemAfterCurrent(modelData)
+                    } 
+                }
+            }
+
+            ColumnLayout {
+                id:         columnHolder
+                spacing:    _margin
+
+                property string _overwriteText: qsTr("Plan overwrite")
+
+                QGCLabel {
+                    id:                 unsavedChangedLabel
+                    Layout.fillWidth:   true
+                    wrapMode:           Text.WordWrap
+                    text:               globals.activeVehicle ?
+                                            qsTr("You have unsaved changes. You should upload to your vehicle, or save to a file.") :
+                                            qsTr("You have unsaved changes.")
+                    visible:            _planMasterController.dirty
+                }
+
+                GridLayout {
+                    columns:            3
+                    rowSpacing:         _margin
+                    columnSpacing:      ScreenTools.defaultFontPixelWidth
+                    visible:            storageSection.visible
+
+                    QGCButton {
+                        text:               qsTr("Open...")
+                        Layout.fillWidth:   true
+                        enabled:            !_planMasterController.syncInProgress
+                        onClicked: {
+                            if (_planMasterController.dirty) {
+                                showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
+                            } else {
+                                _planMasterController.loadFromSelectedFile()
                             }
                         }
-                        property bool myAddROIOnClick: _addROIOnClick
-                        onMyAddROIOnClickChanged: checked = _addROIOnClick
-                    },
-                    ToolStripAction {
-                        text:               _singleComplexItem ? _missionController.complexMissionItemNames[0] : qsTr("Pattern")
-                        iconSource:         "/qmlimages/MapDrawShape.svg"
-                        enabled:            _missionController.flyThroughCommandsAllowed
-                        visible:            toolStrip._isMissionLayer
-                        dropPanelComponent: _singleComplexItem ? undefined : patternDropPanel
-                        onTriggered: {
-                            toolStrip.allAddClickBoolsOff()
-                            if (_singleComplexItem) {
-                                insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0])
-                            }
-                        }
-                    },
-                    ToolStripAction {
-                        text:       _planMasterController.controllerVehicle.multiRotor ? qsTr("Return") : qsTr("Land")
-                        iconSource: "/res/rtl.svg"
-                        enabled:    _missionController.isInsertLandValid
-                        visible:    toolStrip._isMissionLayer || toolStrip._isUtmspLayer
-                        onTriggered: {
-                            toolStrip.allAddClickBoolsOff()
-                            insertLandItemAfterCurrent()
-                        }
-                    },
-                    ToolStripAction {
-                        text:               qsTr("Center")
-                        iconSource:         "/qmlimages/MapCenter.svg"
-                        enabled:            true
-                        visible:            true
-                        dropPanelComponent: centerMapDropPanel
                     }
-                ]
-            }
 
-            model: toolStripActionList.model
+                    QGCButton {
+                        text:               qsTr("Save")
+                        Layout.fillWidth:   true
+                        enabled:            !_planMasterController.syncInProgress && _planMasterController.currentPlanFile !== ""
+                        onClicked: {
+                            if(_planMasterController.currentPlanFile !== "") {
+                                _planMasterController.saveToCurrent()
+                            } else {
+                                _planMasterController.saveToSelectedFile()
+                            }
+                        }
+                    }
 
-            function allAddClickBoolsOff() {
-                _addROIOnClick =        false
-                addWaypointRallyPointAction.checked = false
-            }
+                    QGCButton {
+                        text:               qsTr("Save As...")
+                        Layout.fillWidth:   true
+                        enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
+                        onClicked: {
+                            _planMasterController.saveToSelectedFile()
+                        }
+                    }
 
-            onDropped: allAddClickBoolsOff()
+                    QGCButton {
+                        Layout.columnSpan:  3
+                        Layout.fillWidth:   true
+                        text:               qsTr("Save Mission Waypoints As KML...")
+                        enabled:            !_planMasterController.syncInProgress && _visualItems.count > 1
+                        onClicked: {
+                            // First point does not count
+                            if (_visualItems.count < 2) {
+                                mainWindow.showMessageDialog(qsTr("KML"), qsTr("You need at least one item to create a KML."))
+                                return
+                            }
+                            _planMasterController.saveKmlToSelectedFile()
+                        }
+                    }
+                }
+            } 
         }
+
 
         //-----------------------------------------------------------
         // Right pane for mission editing controls
@@ -707,14 +685,6 @@ Item {
                     Component.onCompleted: currentIndex = 0
                     QGCTabButton {
                         text:       qsTr("Mission")
-                    }
-                    QGCTabButton {
-                        text:       qsTr("Fence")
-                        enabled:    _geoFenceController.supported
-                    }
-                    QGCTabButton {
-                        text:       qsTr("Rally")
-                        enabled:    _rallyPointController.supported
                     }
                 }
 
