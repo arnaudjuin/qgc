@@ -16,7 +16,7 @@ import QGroundControl.Controls
 import QGroundControl.ScreenTools
 import QGroundControl.Palette
 import QGroundControl.FlightMap
-
+import Qt5Compat.GraphicalEffects
 Item {
     id: root
 
@@ -107,7 +107,11 @@ Item {
         visible:        false
     }
 
- 
+    OpacityMask {
+        anchors.fill:   instrument
+        source:         instrument
+        maskSource:     mask
+    }
 
     Rectangle {
         id:             borderRect
