@@ -26,12 +26,16 @@ import QGroundControl.Controllers
 import QGroundControl.ShapeFileHelper
 import QGroundControl.FlightDisplay
 import QGroundControl.UTMSP
+import Qt5Compat.GraphicalEffects
 
 
 Item {
     id: _root
 
     property bool planControlColapsed: false
+
+    property var parentToolInsets                       // These insets tell you what screen real estate is available for positioning the controls in your overlay
+    property var totalToolInsets:   _totalToolInsets    // The insets updated for the custom overlay additions
 
     readonly property int   _decimalPlaces:             8
     readonly property real  _margin:                    ScreenTools.defaultFontPixelHeight * 0.5
@@ -549,98 +553,122 @@ Item {
         //-----------------------------------------------------------
         // Left tool strip
         
-        ColumnLayout {
-            spacing:    ScreenTools.defaultFontPixelWidth * 0.5
+                Rectangle {
+                    id: exampleRectangle
+                    color: '#ffffff'
+                    width: parent.width * 0.15
+                    height: parent.height 
+                    anchors.left: parent.left 
+                    anchors.top: parent.top 
 
-            QGCLabel { text: qsTr("Create complex pattern:") }
+                    
+                    ColumnLayout {
+                        id:         columnHolder
+                        //spacing:    _margin
+                        spacing:    ScreenTools.defaultFontPixelWidth * 0.2
+                        anchors.fill:parent
 
-            Repeater {
-                model: _missionController.complexMissionItemNames
+                        QGCLabel {
+                        font.pointSize: 15
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                        text: qsTr("Minhas áreas")
+                        color: 'black'
+                        antialiasing: true
+                        }
+                        
+                        Repeater {
+                            model: _missionController.complexMissionItemNames
+                    
+                            QGCButton {
+                                text:               "+"
+                                Layout.fillWidth:   true
+                                width: parent.width * 0.15
+                                height: width
+                                anchors.bottom: parent.bottom
+                                anchors.right: parent.right
 
-                QGCButton {
-                    text:               modelData
-                    Layout.fillWidth:   true
+                                onClicked: {
+                                    insertComplexItemAfterCurrent(modelData)
+                                }
+                            }
+                        }
 
-                    onClicked: {
-                        insertComplexItemAfterCurrent(modelData)
-                    } 
-                }
-            }
+                        property string _overwriteText: qsTr("Plan overwrite")
 
-            ColumnLayout {
-                id:         columnHolder
-                spacing:    _margin
+                        QGCLabel {
+                            id:                 unsavedChangedLabel
+                            Layout.fillWidth:   true
+                            wrapMode:           Text.WordWrap
+                            text:               globals.activeVehicle ?
+                                                    qsTr("You have unsaved changes. You should upload to your vehicle, or save to a file.") :
+                                                    qsTr("You have unsaved changes.")
+                            visible:            _planMasterController.dirty
+                        }
 
-                property string _overwriteText: qsTr("Plan overwrite")
+                        GridLayout {
+                            columns:            3
+                            rowSpacing:         _margin
+                            columnSpacing:      ScreenTools.defaultFontPixelWidth
+                            visible:            storageSection.visible
 
-                QGCLabel {
-                    id:                 unsavedChangedLabel
-                    Layout.fillWidth:   true
-                    wrapMode:           Text.WordWrap
-                    text:               globals.activeVehicle ?
-                                            qsTr("You have unsaved changes. You should upload to your vehicle, or save to a file.") :
-                                            qsTr("You have unsaved changes.")
-                    visible:            _planMasterController.dirty
-                }
+                            QGCButton {
+                                text:               qsTr("Open...")
+                                Layout.fillWidth:   true
+                                Layout.alignment: Qt.AlignHCenter 
+                                enabled:            !_planMasterController.syncInProgress
+                                onClicked: {
+                                    if (_planMasterController.dirty) {
+                                        showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
+                                    } else {
+                                        _planMasterController.loadFromSelectedFile()
+                                    }
+                                }
+                            }
 
-                GridLayout {
-                    columns:            3
-                    rowSpacing:         _margin
-                    columnSpacing:      ScreenTools.defaultFontPixelWidth
-                    visible:            storageSection.visible
+                            QGCButton {
+                                text:               qsTr("Save")
+                                Layout.fillWidth:   true
+                                Layout.alignment: Qt.AlignHCenter 
+                                enabled:            !_planMasterController.syncInProgress && _planMasterController.currentPlanFile !== ""
+                                visible: false
+                                onClicked: {
+                                    if(_planMasterController.currentPlanFile !== "") {
+                                        _planMasterController.saveToCurrent()
+                                    } else {
+                                        _planMasterController.saveToSelectedFile()
+                                    }
+                                }
+                            }
 
-                    QGCButton {
-                        text:               qsTr("Open...")
-                        Layout.fillWidth:   true
-                        enabled:            !_planMasterController.syncInProgress
-                        onClicked: {
-                            if (_planMasterController.dirty) {
-                                showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
-                            } else {
-                                _planMasterController.loadFromSelectedFile()
+                            QGCButton {
+                                text:               qsTr("Salvar")
+                                Layout.fillWidth:   true
+                                Layout.alignment: Qt.AlignHCenter 
+                                enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
+                                onClicked: {
+                                    _planMasterController.saveToSelectedFile()
+                                }
+                            }
+
+                            QGCButton {
+                                Layout.columnSpan:  3
+                                Layout.fillWidth:   true
+                                text:               qsTr("Save Mission Waypoints As KML...")
+                                enabled:            !_planMasterController.syncInProgress && _visualItems.count > 1
+                                visible: false
+                                onClicked: {
+                                    // First point does not count
+                                    if (_visualItems.count < 2) {
+                                        mainWindow.showMessageDialog(qsTr("KML"), qsTr("You need at least one item to create a KML."))
+                                        return
+                                    }
+                                    _planMasterController.saveKmlToSelectedFile()
+                                }
                             }
                         }
                     }
-
-                    QGCButton {
-                        text:               qsTr("Save")
-                        Layout.fillWidth:   true
-                        enabled:            !_planMasterController.syncInProgress && _planMasterController.currentPlanFile !== ""
-                        onClicked: {
-                            if(_planMasterController.currentPlanFile !== "") {
-                                _planMasterController.saveToCurrent()
-                            } else {
-                                _planMasterController.saveToSelectedFile()
-                            }
-                        }
-                    }
-
-                    QGCButton {
-                        text:               qsTr("Save As...")
-                        Layout.fillWidth:   true
-                        enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
-                        onClicked: {
-                            _planMasterController.saveToSelectedFile()
-                        }
-                    }
-
-                    QGCButton {
-                        Layout.columnSpan:  3
-                        Layout.fillWidth:   true
-                        text:               qsTr("Save Mission Waypoints As KML...")
-                        enabled:            !_planMasterController.syncInProgress && _visualItems.count > 1
-                        onClicked: {
-                            // First point does not count
-                            if (_visualItems.count < 2) {
-                                mainWindow.showMessageDialog(qsTr("KML"), qsTr("You need at least one item to create a KML."))
-                                return
-                            }
-                            _planMasterController.saveKmlToSelectedFile()
-                        }
-                    }
-                }
-            } 
-        }
+                } 
+            
 
 
         //-----------------------------------------------------------
@@ -821,7 +849,7 @@ Item {
             readonly property string _licenseString: QGroundControl.elevationProviderNotice
 
             id:                         licenseLabel
-            visible:                    terrainStatus.visible && _licenseString !== ""
+            visible:                    false
             anchors.bottom:             terrainStatus.top
             anchors.horizontalCenter:   terrainStatus.horizontalCenter
             anchors.bottomMargin:       ScreenTools.defaultFontPixelWidth * 0.5
@@ -838,7 +866,8 @@ Item {
             anchors.bottom:     parent.bottom
             height:             ScreenTools.defaultFontPixelHeight * 7
             missionController:  _missionController
-            visible:            _internalVisible && _editingLayer === _layerMission && QGroundControl.corePlugin.options.showMissionStatus
+            //visible:            _internalVisible && _editingLayer === _layerMission && QGroundControl.corePlugin.options.showMissionStatus
+            visible: false
 
             onSetCurrentSeqNum: _missionController.setCurrentPlanViewSeqNum(seqNum, true)
 
@@ -860,6 +889,7 @@ Item {
             terrainButtonVisible:   _editingLayer === _layerMission
             terrainButtonChecked:   terrainStatus.visible
             onTerrainButtonClicked: terrainStatus.toggleVisible()
+            visible: false
         }
     }
 

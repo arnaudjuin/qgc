@@ -38,7 +38,7 @@ Item {
     property var    _savedVertices:         [ ]
 
     readonly property string _corridorToolsText:    qsTr("Polyline Tools")
-    readonly property string _traceText:            qsTr("Click in the map to add vertices. Click 'Done Tracing' when finished.")
+    readonly property string _traceText:            qsTr("Clique no mapa para adicionar as vertices. Clique em 'Finalizar' quando terminar.")
 
     function _addCommonVisuals() {
         if (_objMgrCommonVisuals.empty) {
@@ -337,7 +337,7 @@ Item {
 
             QGCButton {
                 _horizontalPadding: 0
-                text:               mapPolyline.traceMode ? qsTr("Done Tracing") : qsTr("Trace")
+                text:               mapPolyline.traceMode ? qsTr("Finalizar") : qsTr("Iniciar")
                 onClicked: {
                     if (mapPolyline.traceMode) {
                         if (mapPolyline.count < 2) {

@@ -49,7 +49,7 @@ Item {
     property real _zorderCenterHandle:  QGroundControl.zOrderMapItems + 1   // Lowest such that drag or split takes precedence
 
     //readonly property string _polygonToolsText: qsTr("Polygon Tools")
-    readonly property string _traceText:        qsTr("Click in the map to add vertices. Click 'Done Tracing' when finished.")
+    readonly property string _traceText:        qsTr("Clique no mapa para adicionar as vertices. Clique em 'Finalizar' quando terminar.")
 
     function addCommonVisuals() {
         if (_objMgrCommonVisuals.empty) {
@@ -591,7 +591,7 @@ Item {
 
             QGCButton {
                 _horizontalPadding: 0
-                text:               mapPolygon.traceMode ? qsTr("Done Tracing") : qsTr("Trace")
+                text:               mapPolygon.traceMode ? qsTr("Finalizar") : qsTr("Iniciar")
                 onClicked: {
                     if (mapPolygon.traceMode) {
                         if (mapPolygon.count < 3) {
