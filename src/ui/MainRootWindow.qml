@@ -87,11 +87,9 @@ ApplicationWindow {
         readonly property var       activeVehicle:                  QGroundControl.multiVehicleManager.activeVehicle
         readonly property real      defaultTextHeight:              ScreenTools.defaultFontPixelHeight
         readonly property real      defaultTextWidth:               ScreenTools.defaultFontPixelWidth
-        readonly property var       planMasterControllerFlyView:    flightView.planController
-        readonly property var       guidedControllerFlyView:        flightView.guidedController
+        readonly property var       planMasterControllerFlyView:    flyView.planController
+        readonly property var       guidedControllerFlyView:        flyView.guidedController
 
-        property var                planMasterControllerPlanView:   null
-        property var                currentPlanMissionItem:         planMasterControllerPlanView ? planMasterControllerPlanView.missionController.currentPlanViewItem : null
         property bool               validationError:                false   // There is a FactTextField somewhere with a validation error
 
         // Property to manage RemoteID quick acces to settings page
@@ -120,15 +118,17 @@ ApplicationWindow {
     }
 
     function showPlanView() {
-        stackView.push(planViewComponenent)
+        flyView.visible = false
+        planView.visible = true
     }
 
-    function popView() {
-        stackView.pop()
+    function showFlyView() {
+        flyView.visible = true
+        planView.visible = false
     }
 
     function showTool(toolTitle, toolSource, toolIcon) {
-        toolDrawer.backIcon     = flightView.visible ? "/qmlimages/PaperPlane.svg" : "/qmlimages/Plan.svg"
+        toolDrawer.backIcon     = flyView.visible ? "/qmlimages/PaperPlane.svg" : "/qmlimages/Plan.svg"
         toolDrawer.toolTitle    = toolTitle
         toolDrawer.toolSource   = toolSource
         toolDrawer.toolIcon     = toolIcon
@@ -197,7 +197,7 @@ ApplicationWindow {
     property string closeDialogTitle: qsTr("Close %1").arg(QGroundControl.appName)
 
     function checkForUnsavedMission() {
-        if (globals.planMasterControllerPlanView && globals.planMasterControllerPlanView.dirty) {
+        if (planView._planMasterController.dirty) {
             showMessageDialog(closeDialogTitle,
                               qsTr("You have a mission edit in progress which has not been saved/sent. If you close you will lose changes. Are you sure you want to close?"),
                               Dialog.Yes | Dialog.No,
@@ -243,11 +243,26 @@ ApplicationWindow {
         color:          QGroundControl.globalPalette.window
     }
 
-    StackView {
-        id:             stackView
-        anchors.fill:   parent
+    FlyView { 
+        id:                     flyView
+        anchors.fill:           parent
+        enabled:                !toolDrawer.visible //The DragHandler in FlightMap.qml needs to be disabled when the toolDrawer is open, otherwise touch signals bleed through the pages
+        utmspSendActTrigger:    _utmspSendActTrigger
+    }
 
-        initialItem: FlyView { id: flightView; utmspSendActTrigger: _utmspSendActTrigger}
+    PlanView {
+        id:             planView
+        anchors.fill:   parent
+        enabled:                !toolDrawer.visible //The DragHandler in FlightMap.qml needs to be disabled when the toolDrawer is open, otherwise touch signals bleed through the pages
+        visible:        false
+
+        onActivationParamsSent:{
+            if(_utmspEnabled){
+                _startTimeStamp = startTime
+                _showVisible = activate
+                _flightID = flightID
+            }
+        }
     }
 
     footer: LogReplayStatusBar {
@@ -279,8 +294,6 @@ ApplicationWindow {
                         id:             innerLayout
                         Layout.margins: toolSelectDialog._margins
                         spacing:        ScreenTools.defaultFontPixelWidth
-                        signal displayPreFlightChecklist
-                        property bool   _viewer3DEnabled:        QGroundControl.settingsManager.viewer3DSettings.enabled.rawValue
 
                         SubMenuButton {
                             id:                 setupButton
@@ -328,20 +341,6 @@ ApplicationWindow {
                                 }
                             }
                         }
-
-                        SubMenuButton {
-                            height:             toolSelectDialog._toolButtonHeight
-                            Layout.fillWidth:   true
-                            text:           qsTr("Testando")
-                            imageResource:     "/qmlimages/Plan.svg"
-                            imageColor: "transparent"
-                            visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
-                            onClicked:{
-                                mainWindow.showPlanView()
-                                viewer3DWindow.close()
-                            }
-                        }
-
 
                         ColumnLayout {
                             width:                  innerLayout.width
@@ -432,21 +431,6 @@ ApplicationWindow {
                             }
                         }
                     }
-                }
-            }
-        }
-    }
-
-    Component {
-        id: planViewComponenent
-
-        PlanView {
-            id: planView
-            onActivationParamsSent:{
-                if(_utmspEnabled){
-                    _startTimeStamp = startTime
-                    _showVisible = activate
-                    _flightID = flightID
                 }
             }
         }
@@ -646,7 +630,7 @@ ApplicationWindow {
                 if (criticalVehicleMessagePopup.dropMessageIndicatorOnClose) {
                     criticalVehicleMessagePopup.dropMessageIndicatorOnClose = false;
                     QGroundControl.multiVehicleManager.activeVehicle.resetErrorLevelMessages();
-                    flyView.toolbar.dropMessageIndicatorTool();
+                    flyView.dropMessageIndicatorTool();
                 }
             }
         }
