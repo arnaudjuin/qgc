@@ -8,7 +8,7 @@
  ****************************************************************************/
 
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls 2.15
 import QtQuick.Dialogs
 import QtLocation
 import QtPositioning
@@ -561,19 +561,17 @@ Item {
                     anchors.left: parent.left 
                     anchors.top: parent.top 
 
-                    
                     ColumnLayout {
                         id:         columnHolder
-                        //spacing:    _margin
                         spacing:    ScreenTools.defaultFontPixelWidth * 0.2
                         anchors.fill:parent
 
                         QGCLabel {
-                        font.pointSize: 15
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        text: qsTr("Minhas áreas")
-                        color: 'black'
-                        antialiasing: true
+                            font.pointSize: 15
+                            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                            text: qsTr("Minhas áreas")
+                            color: 'black'
+                            antialiasing: true
                         }
                         
                         Repeater {
@@ -582,10 +580,16 @@ Item {
                             QGCButton {
                                 text:               "+"
                                 Layout.fillWidth:   true
-                                width: parent.width * 0.15
+                                width: parent.width 
                                 height: width
+                                anchors.horizontalCenter: parent.horizontalCenter
                                 anchors.bottom: parent.bottom
-                                anchors.right: parent.right
+
+                                background: Rectangle {
+                                    color: "orange" // Set the background color of the button
+                                    radius: width/2
+                                    clip: true
+                                }
 
                                 onClicked: {
                                     insertComplexItemAfterCurrent(modelData)
@@ -667,7 +671,7 @@ Item {
                             }
                         }
                     }
-                } 
+                }
             
 
 
@@ -676,14 +680,15 @@ Item {
         Rectangle {
             id:                 rightPanel
             height:             parent.height
-            width:{
+            /*width:{
                  if(_utmspEnabled){
                      _rightPanelWidth + ScreenTools.defaultFontPixelWidth * 21.667
                  }
                  else{
                      _rightPanelWidth
                  }
-             }
+             }*/
+             width: parent.width * 0.15
             color:              qgcPal.window
             opacity:            layerTabBar.visible ? 0.2 : 0
             anchors.bottom:     parent.bottom
