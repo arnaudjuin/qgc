@@ -48,8 +48,8 @@ Item {
     property real _zorderSplitHandle:   QGroundControl.zOrderMapItems + 2
     property real _zorderCenterHandle:  QGroundControl.zOrderMapItems + 1   // Lowest such that drag or split takes precedence
 
-    readonly property string _polygonToolsText: qsTr("Inicie para adicionar as vértices")
-    readonly property string _traceText:        qsTr("Click in the map to add vertices. Click 'Done Tracing' when finished.")
+    readonly property string _polygonToolsText: qsTr("Inicie")
+    readonly property string _traceText:        qsTr("Finalize")
 
     function addCommonVisuals() {
         if (_objMgrCommonVisuals.empty) {

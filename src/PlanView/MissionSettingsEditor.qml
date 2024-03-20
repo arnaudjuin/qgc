@@ -237,7 +237,8 @@ Rectangle {
                 anchors.left:   parent.left
                 anchors.right:  parent.right
                 text:           qsTr("Launch Position")
-                visible:        !_vehicleHasHomePosition
+                //visible:        !_vehicleHasHomePosition
+                visible: false
                 checked:        false
             }
 

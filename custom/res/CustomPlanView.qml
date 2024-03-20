@@ -696,7 +696,7 @@ Item {
                      _rightPanelWidth
                  }
              }*/
-             width: parent.width * 0.16
+             width: parent.width * 0.20
             color:              qgcPal.window
             opacity:            layerTabBar.visible ? 0.2 : 0
             anchors.bottom:     parent.bottom
@@ -726,14 +726,6 @@ Item {
                     Component.onCompleted: currentIndex = 0
                     QGCTabButton {
                         text:       qsTr("Mission")
-                    }
-                    QGCTabButton {
-                        text:       qsTr("Fence")
-                        enabled:    _geoFenceController.supported
-                    }
-                    QGCTabButton {
-                        text:       qsTr("Rally")
-                        enabled:    _rallyPointController.supported
                     }
                 }
 
