@@ -8,7 +8,7 @@
  ****************************************************************************/
 
 import QtQuick
-import QtQuick.Controls 2.15
+import QtQuick.Controls
 import QtQuick.Dialogs
 import QtLocation
 import QtPositioning
@@ -26,16 +26,12 @@ import QGroundControl.Controllers
 import QGroundControl.ShapeFileHelper
 import QGroundControl.FlightDisplay
 import QGroundControl.UTMSP
-import Qt5Compat.GraphicalEffects
 
 
 Item {
     id: _root
 
     property bool planControlColapsed: false
-
-    property var parentToolInsets                       // These insets tell you what screen real estate is available for positioning the controls in your overlay
-    property var totalToolInsets:   _totalToolInsets    // The insets updated for the custom overlay additions
 
     readonly property int   _decimalPlaces:             8
     readonly property real  _margin:                    ScreenTools.defaultFontPixelHeight * 0.5
@@ -552,14 +548,25 @@ Item {
 
         //-----------------------------------------------------------
         // Left tool strip
-        
-                Rectangle {
+        Rectangle {
                     id: exampleRectangle
                     color: '#ffffff'
                     width: parent.width * 0.15
                     height: parent.height 
                     anchors.left: parent.left 
                     anchors.top: parent.top 
+
+                    /*Component.onCompleted: {
+                        loadFilesAutomatically()
+                    }
+
+                    function loadFilesAutomatically() {
+                        if (_planMasterController.dirty) {
+                            showLoadFromFileOverwritePrompt(columnHolder._overwriteText);
+                        } else {
+                            _planMasterController.loadFromSelectedFile();
+                        }
+                    }*/
 
                     ColumnLayout {
                         id:         columnHolder
@@ -576,19 +583,22 @@ Item {
                         
                         Repeater {
                             model: _missionController.complexMissionItemNames
-                    
+
                             QGCButton {
-                                text:               "+"
-                                Layout.fillWidth:   true
-                                width: parent.width 
-                                height: width
-                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: "+"
+                                Layout.fillWidth: false
+                                width: parent.width * 0.20 
+                                height: width 
+                                anchors.right: parent.right
                                 anchors.bottom: parent.bottom
+                                anchors.rightMargin: 5
+                                anchors. bottomMargin: 5
 
                                 background: Rectangle {
-                                    color: "orange" // Set the background color of the button
-                                    radius: width/2
+                                    color: "#ff4800"
+                                    radius: height / 2 // Faz o raio ser metade da altura para tornar o Rectangle redondo
                                     clip: true
+                                    anchors.fill: parent // Garante que o Rectangle de fundo preencha todo o espaço do botão
                                 }
 
                                 onClicked: {
@@ -672,8 +682,6 @@ Item {
                         }
                     }
                 }
-            
-
 
         //-----------------------------------------------------------
         // Right pane for mission editing controls
@@ -718,6 +726,14 @@ Item {
                     Component.onCompleted: currentIndex = 0
                     QGCTabButton {
                         text:       qsTr("Mission")
+                    }
+                    QGCTabButton {
+                        text:       qsTr("Fence")
+                        enabled:    _geoFenceController.supported
+                    }
+                    QGCTabButton {
+                        text:       qsTr("Rally")
+                        enabled:    _rallyPointController.supported
                     }
                 }
 
@@ -854,7 +870,8 @@ Item {
             readonly property string _licenseString: QGroundControl.elevationProviderNotice
 
             id:                         licenseLabel
-            visible:                    false
+            //visible:                    terrainStatus.visible && _licenseString !== ""
+            visible: false
             anchors.bottom:             terrainStatus.top
             anchors.horizontalCenter:   terrainStatus.horizontalCenter
             anchors.bottomMargin:       ScreenTools.defaultFontPixelWidth * 0.5

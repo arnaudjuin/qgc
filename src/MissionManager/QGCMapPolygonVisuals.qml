@@ -48,8 +48,8 @@ Item {
     property real _zorderSplitHandle:   QGroundControl.zOrderMapItems + 2
     property real _zorderCenterHandle:  QGroundControl.zOrderMapItems + 1   // Lowest such that drag or split takes precedence
 
-    //readonly property string _polygonToolsText: qsTr("Polygon Tools")
-    readonly property string _traceText:        qsTr("Clique no mapa para adicionar as vertices. Clique em 'Finalizar' quando terminar.")
+    readonly property string _polygonToolsText: qsTr("Inicie para adicionar as vértices")
+    readonly property string _traceText:        qsTr("Click in the map to add vertices. Click 'Done Tracing' when finished.")
 
     function addCommonVisuals() {
         if (_objMgrCommonVisuals.empty) {
@@ -588,6 +588,21 @@ Item {
             y:                              mapControl.centerViewport.top
             availableWidth:                 mapControl.centerViewport.width
 
+            QGCButton {
+                _horizontalPadding: 0
+                text:               qsTr("Basic")
+                //visible:            !mapPolygon.traceMode
+                visible: false
+                onClicked:          _resetPolygon()
+            }
+
+            QGCButton {
+                _horizontalPadding: 0
+                text:               qsTr("Circular")
+                //visible:            !mapPolygon.traceMode
+                visible: false
+                onClicked:          _resetCircle()
+            }
 
             QGCButton {
                 _horizontalPadding: 0
@@ -605,8 +620,21 @@ Item {
                         mapPolygon.clear();
                     }
                 }
+
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: "#ff4800" // Exemplo de cor de fundo
+                    radius: parent.height / 2 // Ajusta para uma borda mais arredondada
+                }
             }
 
+            QGCButton {
+                _horizontalPadding: 0
+                text:               qsTr("Load KML/SHP...")
+                onClicked:          kmlOrSHPLoadDialog.openForLoad()
+                //visible:            !mapPolygon.traceMode
+                visible: false
+            }
         }
     }
 

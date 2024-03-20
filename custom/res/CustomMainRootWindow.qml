@@ -337,7 +337,6 @@ ApplicationWindow {
                             text:               qsTr("Application Settings")
                             imageResource:      "/qmlimages/Gears.svg"
                             imageColor:         "transparent"
-                            visible:            false
                             onClicked: {
                                 if (!mainWindow.preventViewSwitch()) {
                                     drawer.close()
