@@ -688,15 +688,14 @@ Item {
         Rectangle {
             id:                 rightPanel
             height:             parent.height
-            /*width:{
+            width:{
                  if(_utmspEnabled){
                      _rightPanelWidth + ScreenTools.defaultFontPixelWidth * 21.667
                  }
                  else{
                      _rightPanelWidth
                  }
-             }*/
-             width: parent.width * 0.20
+             }
             color:              qgcPal.window
             opacity:            layerTabBar.visible ? 0.2 : 0
             anchors.bottom:     parent.bottom
