@@ -696,7 +696,7 @@ Item {
                      _rightPanelWidth
                  }
              }*/
-             width: parent.width * 0.15
+             width: parent.width * 0.16
             color:              qgcPal.window
             opacity:            layerTabBar.visible ? 0.2 : 0
             anchors.bottom:     parent.bottom
