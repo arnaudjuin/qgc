@@ -467,14 +467,7 @@ VisualMissionItem* MissionController::insertComplexMissionItemFromKMLOrSHP(QStri
 
     if (itemName == SurveyComplexItem::name) {
         newItem = new SurveyComplexItem(_masterController, _flyView, file);
-    } else if (itemName == StructureScanComplexItem::name) {
-        newItem = new StructureScanComplexItem(_masterController, _flyView, file);
-    } else if (itemName == CorridorScanComplexItem::name) {
-        newItem = new CorridorScanComplexItem(_masterController, _flyView, file);
-    } else {
-        qWarning() << "Internal error: Unknown complex item:" << itemName;
-        return nullptr;
-    }
+    } 
 
     _insertComplexMissionItemWorker(QGeoCoordinate(), newItem, visualItemIndex, makeCurrentItem);
 
@@ -2258,10 +2251,6 @@ QStringList MissionController::complexMissionItemNames(void) const
     QStringList complexItems;
 
     complexItems.append(SurveyComplexItem::name);
-    complexItems.append(CorridorScanComplexItem::name);
-    if (_controllerVehicle->multiRotor() || _controllerVehicle->vtol()) {
-        complexItems.append(StructureScanComplexItem::name);
-    }
 
     // Note: The landing pattern items are not added here since they have there own button which adds them
 
