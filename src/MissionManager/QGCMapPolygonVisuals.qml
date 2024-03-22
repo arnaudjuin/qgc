@@ -20,6 +20,7 @@ import QGroundControl.Palette
 import QGroundControl.Controls
 import QGroundControl.FlightMap
 import QGroundControl.ShapeFileHelper
+import GlobalSignals 1.0 
 
 /// QGCMapPolygon map visuals
 Item {
@@ -606,18 +607,20 @@ Item {
 
             QGCButton {
                 _horizontalPadding: 0
-                text:               mapPolygon.traceMode ? qsTr("Finalizar") : qsTr("Iniciar")
+                text: mapPolygon.traceMode ? qsTr("Finalizar") : qsTr("Iniciar")
                 onClicked: {
                     if (mapPolygon.traceMode) {
                         if (mapPolygon.count < 3) {
                             _restorePreviousVertices()
                         }
                         mapPolygon.traceMode = false
+                        GlobalSignals.showPanels()
                     } else {
                         _saveCurrentVertices()
                         _circleMode = false
                         mapPolygon.traceMode = true
                         mapPolygon.clear();
+                        GlobalSignals.hidePanels()
                     }
                 }
 

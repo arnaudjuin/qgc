@@ -419,6 +419,7 @@ SOURCES += \
 # Main QGC Headers and Source files
 
 HEADERS += \
+    src/GlobalSignals/GlobalSignals.h \
     src/ADSB/ADSBVehicle.h \
     src/ADSB/ADSBVehicleManager.h \
     src/AnalyzeView/LogDownloadController.h \
@@ -870,6 +871,7 @@ SOURCES += \
     src/Viewer3D/Viewer3DUtils.cc \
     src/Viewer3D/Viewer3DManager.cc \
     src/Settings/Viewer3DSettings.cc \
+    src/GlobalSignals/GlobalSignals.cpp \
 
 DebugBuild {
 SOURCES += \

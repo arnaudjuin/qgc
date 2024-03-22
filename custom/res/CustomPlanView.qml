@@ -26,6 +26,7 @@ import QGroundControl.Controllers
 import QGroundControl.ShapeFileHelper
 import QGroundControl.FlightDisplay
 import QGroundControl.UTMSP
+import GlobalSignals 1.0
 
 
 Item {
@@ -548,7 +549,7 @@ Item {
 
         //-----------------------------------------------------------
         // Left tool strip
-        Rectangle {
+                Rectangle {
                     id: exampleRectangle
                     color: '#ffffff'
                     width: parent.width * 0.15
@@ -685,155 +686,168 @@ Item {
 
         //-----------------------------------------------------------
         // Right pane for mission editing controls
-        Rectangle {
-            id:                 rightPanel
-            height:             parent.height
-            width:{
-                 if(_utmspEnabled){
-                     _rightPanelWidth + ScreenTools.defaultFontPixelWidth * 21.667
-                 }
-                 else{
-                     _rightPanelWidth
-                 }
-             }
-            color:              qgcPal.window
-            opacity:            layerTabBar.visible ? 0.2 : 0
-            anchors.bottom:     parent.bottom
-            anchors.right:      parent.right
-            anchors.rightMargin: _toolsMargin
-        }
-        //-------------------------------------------------------
-        // Right Panel Controls
-        Item {
-            anchors.fill:           rightPanel
-            anchors.topMargin:      _toolsMargin
-            DeadMouseArea {
-                anchors.fill:   parent
-            }
-            Column {
-                id:                 rightControls
-                spacing:            ScreenTools.defaultFontPixelHeight * 0.5
-                anchors.left:       parent.left
-                anchors.right:      parent.right
-                anchors.top:        parent.top
-                //-------------------------------------------------------
-                // Mission Controls (Expanded)
-                QGCTabBar {
-                    id:         layerTabBar
-                    width:      parent.width
-                    visible:    QGroundControl.corePlugin.options.enablePlanViewSelector  && !_utmspEnabled
-                    Component.onCompleted: currentIndex = 0
-                    QGCTabButton {
-                        text:       qsTr("Mission")
+                Rectangle {
+                    id: rightPanel
+                    height: parent.height
+                    width: {
+                        let baseWidth = _rightPanelWidth;
+                        if (_utmspEnabled) {
+                            // Ajusta a largura adicionando um valor baseado na largura disponível
+                            baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 15, 300);
+                        }
+                        return baseWidth;
                     }
+                    color: qgcPal.window
+                    opacity: layerTabBar.visible ? 0.2 : 0
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+                    anchors.rightMargin: _toolsMargin
                 }
 
-                QGCTabBar {
-                    id:         layerTabBarUTMSP
-                    width:      parent.width
-                    visible:    QGroundControl.corePlugin.options.enablePlanViewSelector && _utmspEnabled
-                    QGCTabButton {
-                        text:       qsTr("Mission")
+                Item {
+                    id: rightPanelMenuBar
+                    anchors.fill: rightPanel
+                    anchors.topMargin: _toolsMargin
+                    DeadMouseArea {
+                        anchors.fill: parent
                     }
-                    QGCTabButton {
-                        text:       qsTr("Rally")
-                        enabled:    _rallyPointController.supported
-                    }
-                    QGCTabButton {
-                        id: utmspbutton
-                        text:       qsTr("UTM-Adapter")
-                        visible: _utmspEnabled
-                    }
-                }
-            }
-            //-------------------------------------------------------
-            // Mission Item Editor
-            Item {
-                id:                     missionItemEditor
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                anchors.top:            rightControls.bottom
-                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.bottom:         parent.bottom
-                anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
-                visible:                _editingLayer == _layerMission && !planControlColapsed
-                QGCListView {
-                    id:                 missionItemEditorListView
-                    anchors.fill:       parent
-                    spacing:            ScreenTools.defaultFontPixelHeight / 4
-                    orientation:        ListView.Vertical
-                    model:              _missionController.visualItems
-                    cacheBuffer:        Math.max(height * 2, 0)
-                    clip:               true
-                    currentIndex:       _missionController.currentPlanViewSeqNum
-                    highlightMoveDuration: 250
-                    visible:            _editingLayer == _layerMission && !planControlColapsed
-                    //-- List Elements
-                    delegate: MissionItemEditor {
-                        map:            editorMap
-                        masterController:  _planMasterController
-                        missionItem:    object
-                        width:          missionItemEditorListView.width
-                        readOnly:       false
-                        onClicked: (sequenceNumber) => { _missionController.setCurrentPlanViewSeqNum(object.sequenceNumber, false) }
-                        onRemove: {
-                            var removeVIIndex = index
-                            _missionController.removeVisualItem(removeVIIndex)
-                            if (removeVIIndex >= _missionController.visualItems.count) {
-                                removeVIIndex--
+
+                    Column {
+                        id: rightControls
+                        spacing: ScreenTools.defaultFontPixelHeight * 0.3 // Reduz o espaçamento
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+
+                        QGCTabBar {
+                            id: layerTabBar
+                            width: parent.width
+                            visible: QGroundControl.corePlugin.options.enablePlanViewSelector && !_utmspEnabled
+                            Component.onCompleted: currentIndex = 0
+                            QGCTabButton {
+                                text: qsTr("Mission")
                             }
                         }
-                        onSelectNextNotReadyItem:   selectNextNotReady()
+
+                        QGCTabBar {
+                            id: layerTabBarUTMSP
+                            width: parent.width
+                            visible: QGroundControl.corePlugin.options.enablePlanViewSelector && _utmspEnabled
+                            QGCTabButton {
+                                text: qsTr("Mission")
+                            }
+                            QGCTabButton {
+                                text: qsTr("Rally")
+                                enabled: _rallyPointController.supported
+                            }
+                            QGCTabButton {
+                                id: utmspbutton
+                                text: qsTr("UTM-Adapter")
+                                visible: _utmspEnabled
+                            }
+                        }
+                    }
+
+                    // Mission Item Editor
+                    Item {
+                        id: missionItemEditor
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: rightControls.bottom
+                        anchors.topMargin: ScreenTools.defaultFontPixelHeight * 0.2 // Ajusta margem superior
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: ScreenTools.defaultFontPixelHeight * 0.2 // Ajusta margem inferior
+                        visible: _editingLayer == _layerMission && !planControlColapsed
+                        QGCListView {
+                            id:                 missionItemEditorListView
+                            anchors.fill:       parent
+                            spacing:            ScreenTools.defaultFontPixelHeight / 4
+                            orientation:        ListView.Vertical
+                            model:              _missionController.visualItems
+                            cacheBuffer:        Math.max(height * 2, 0)
+                            clip:               true
+                            currentIndex:       _missionController.currentPlanViewSeqNum
+                            highlightMoveDuration: 250
+                            visible:            _editingLayer == _layerMission && !planControlColapsed
+                            //-- List Elements
+                            delegate: MissionItemEditor {
+                                map:            editorMap
+                                masterController:  _planMasterController
+                                missionItem:    object
+                                width:          missionItemEditorListView.width
+                                readOnly:       false
+                                onClicked: (sequenceNumber) => { _missionController.setCurrentPlanViewSeqNum(object.sequenceNumber, false) }
+                                onRemove: {
+                                    var removeVIIndex = index
+                                    _missionController.removeVisualItem(removeVIIndex)
+                                    if (removeVIIndex >= _missionController.visualItems.count) {
+                                        removeVIIndex--
+                                    }
+                                }
+                                onSelectNextNotReadyItem:   selectNextNotReady()
+                            }
+                        }
+                    }
+                    // GeoFence Editor
+                    GeoFenceEditor {
+                        anchors.top:            rightControls.bottom
+                        anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
+                        anchors.bottom:         parent.bottom
+                        anchors.left:           parent.left
+                        anchors.right:          parent.right
+                        myGeoFenceController:   _geoFenceController
+                        flightMap:              editorMap
+                        visible:                _editingLayer == _layerGeoFence
+                    }
+
+                    // Rally Point Editor
+                    RallyPointEditorHeader {
+                        id:                     rallyPointHeader
+                        anchors.top:            rightControls.bottom
+                        anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
+                        anchors.left:           parent.left
+                        anchors.right:          parent.right
+                        visible:                _editingLayer == _layerRallyPoints
+                        controller:             _rallyPointController
+                    }
+                    RallyPointItemEditor {
+                        id:                     rallyPointEditor
+                        anchors.top:            rallyPointHeader.bottom
+                        anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
+                        anchors.left:           parent.left
+                        anchors.right:          parent.right
+                        visible:                _editingLayer == _layerRallyPoints && _rallyPointController.points.count
+                        rallyPoint:             _rallyPointController.currentRallyPoint
+                        controller:             _rallyPointController
+                    }
+                    UTMSPAdapterEditor{
+                        id: utmspEditor
+                        enabled:                 _utmspEnabled
+                        anchors.top:             rightControls.bottom
+                        anchors.topMargin:       ScreenTools.defaultFontPixelHeight * 0.25
+                        anchors.bottom:          parent.bottom
+                        anchors.left:            parent.left
+                        anchors.right:           parent.right
+                        currentMissionItems:     _visualItems
+                        myGeoFenceController:    _geoFenceController
+                        flightMap:               editorMap
+                        visible:                 _editingLayer == _layerUTMSP
+                        triggerSubmitButton:     _triggerSubmit
+                        resetRegisterFlightPlan: _resetRegisterFlightPlan
                     }
                 }
-            }
-            // GeoFence Editor
-            GeoFenceEditor {
-                anchors.top:            rightControls.bottom
-                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.bottom:         parent.bottom
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                myGeoFenceController:   _geoFenceController
-                flightMap:              editorMap
-                visible:                _editingLayer == _layerGeoFence
-            }
 
-            // Rally Point Editor
-            RallyPointEditorHeader {
-                id:                     rallyPointHeader
-                anchors.top:            rightControls.bottom
-                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                visible:                _editingLayer == _layerRallyPoints
-                controller:             _rallyPointController
-            }
-            RallyPointItemEditor {
-                id:                     rallyPointEditor
-                anchors.top:            rallyPointHeader.bottom
-                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                visible:                _editingLayer == _layerRallyPoints && _rallyPointController.points.count
-                rallyPoint:             _rallyPointController.currentRallyPoint
-                controller:             _rallyPointController
-            }
-            UTMSPAdapterEditor{
-                id: utmspEditor
-                enabled:                 _utmspEnabled
-                anchors.top:             rightControls.bottom
-                anchors.topMargin:       ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.bottom:          parent.bottom
-                anchors.left:            parent.left
-                anchors.right:           parent.right
-                currentMissionItems:     _visualItems
-                myGeoFenceController:    _geoFenceController
-                flightMap:               editorMap
-                visible:                 _editingLayer == _layerUTMSP
-                triggerSubmitButton:     _triggerSubmit
-                resetRegisterFlightPlan: _resetRegisterFlightPlan
-            }
+
+        Component.onCompleted: {
+        GlobalSignals.showPanels.connect(function() {
+            exampleRectangle.visible = true;
+            rightPanelMenuBar.visible = true;
+        })
+
+        GlobalSignals.hidePanels.connect(function() {
+            exampleRectangle.visible = false;
+            rightPanelMenuBar.visible = false;
+        })
         }
 
         Connections {
