@@ -98,9 +98,9 @@ Rectangle {
                     Layout.fillWidth:               true
                     cameraCalc:                     _missionItem.cameraCalc
                     vehicleFlightIsFrontal:         true
-                    distanceToSurfaceLabel:         qsTr("Altitude")
-                    frontalDistanceLabel:           qsTr("Trigger Dist")
-                    sideDistanceLabel:              qsTr("Spacing")
+                    /*distanceToSurfaceLabel:         qsTr("Altitude")
+                    frontalDistanceLabel:           qsTr("Trigger Dist")*/
+                    sideDistanceLabel:              qsTr("Largura de faixa")
                 }
 
                 SectionHeader {
@@ -111,7 +111,7 @@ Rectangle {
 
                 Loader {
                     Layout.fillWidth:   true
-                    visible:            transectValuesHeader.checked
+                    visible:            true
                     sourceComponent:    transectValuesComponent
 
                     property bool forPresets: false
@@ -121,7 +121,7 @@ Rectangle {
                     Layout.alignment:   Qt.AlignHCenter
                     text:               qsTr("Rotate Entry Point")
                     onClicked:          _missionItem.rotateEntryPoint()
-                    visible:            transectValuesHeader.checked
+                    visible:            false
                 }
 
                 SectionHeader {

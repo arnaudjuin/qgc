@@ -11,7 +11,7 @@ import QGroundControl.Palette
 // Camera calculator "Camera" section for mission item editors
 ColumnLayout {
     spacing: _margin
-
+    
     property var    cameraCalc
 
     property real   _margin:            ScreenTools.defaultFontPixelWidth / 2

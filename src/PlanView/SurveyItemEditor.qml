@@ -35,7 +35,7 @@ TransectStyleComplexItemEditor {
             rowSpacing:         _margin
             columns:            2
 
-            QGCLabel { text: qsTr("Angle") }
+            QGCLabel { text: qsTr("Alinhamento") }
             FactTextField {
                 fact:                   missionItem.gridAngle
                 Layout.fillWidth:       true
@@ -58,18 +58,18 @@ TransectStyleComplexItemEditor {
 
             QGCLabel {
                 text:       qsTr("Turnaround dist")
-                visible:    !forPresets
+                visible:    false
             }
             FactTextField {
                 Layout.fillWidth:   true
                 fact:               missionItem.turnAroundDistance
-                visible:            !forPresets
+                visible:            false
             }
 
             QGCOptionsComboBox {
                 Layout.columnSpan:  2
                 Layout.fillWidth:   true
-                visible:            !forPresets
+                visible:            false
 
                 model: [
                     {

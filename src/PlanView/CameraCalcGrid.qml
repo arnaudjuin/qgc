@@ -45,10 +45,12 @@ Column {
             QGCLabel {
                 Layout.preferredWidth:  _root._fieldWidth
                 text:                   qsTr("Front Lap")
+                visible: false
             }
             QGCLabel {
                 Layout.preferredWidth:  _root._fieldWidth
                 text:                   qsTr("Side Lap")
+                visible: false
             }
         }
 
@@ -56,6 +58,7 @@ Column {
             anchors.left:   parent.left
             anchors.right:  parent.right
             spacing:        _margin
+            visible:false
             QGCLabel { text: qsTr("Overlap"); Layout.fillWidth: true }
             FactTextField {
                 Layout.preferredWidth:  _root._fieldWidth
@@ -72,6 +75,7 @@ Column {
             text:                   qsTr("Select one:")
             Layout.preferredWidth:  parent.width
             Layout.columnSpan:      2
+            visible: false
         }
 
         GridLayout {
@@ -80,6 +84,7 @@ Column {
             columnSpacing:  _margin
             rowSpacing:     _margin
             columns:        2
+            visible: false
 
             QGCRadioButton {
                 id:                     fixedDistanceRadio

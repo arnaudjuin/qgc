@@ -727,6 +727,10 @@ Item {
                             QGCTabButton {
                                 text: qsTr("Mission")
                             }
+                            QGCTabButton {
+                                text:       qsTr("Fence")
+                                enabled:    _geoFenceController.supported
+                            }
                         }
 
                         QGCTabBar {
