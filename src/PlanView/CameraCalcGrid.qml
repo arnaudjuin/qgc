@@ -131,12 +131,14 @@ Column {
             fact:                       cameraCalc.distanceToSurface
             altitudeMode:               cameraCalc.distanceMode
             Layout.fillWidth:           true
+            visible: false
         }
 
         QGCLabel { text: frontalDistanceLabel }
         FactTextField {
             Layout.fillWidth:   true
             fact:               cameraCalc.adjustedFootprintFrontal
+            visible: false
         }
 
         QGCLabel { text: sideDistanceLabel }
