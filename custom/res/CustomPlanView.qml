@@ -725,10 +725,10 @@ Item {
                             visible: QGroundControl.corePlugin.options.enablePlanViewSelector && !_utmspEnabled
                             Component.onCompleted: currentIndex = 0
                             QGCTabButton {
-                                text: qsTr("Mission")
+                                text: qsTr("Missão")
                             }
                             QGCTabButton {
-                                text:       qsTr("Fence")
+                                text:       qsTr("Área de risco")
                                 enabled:    _geoFenceController.supported
                             }
                         }
@@ -738,7 +738,7 @@ Item {
                             width: parent.width
                             visible: QGroundControl.corePlugin.options.enablePlanViewSelector && _utmspEnabled
                             QGCTabButton {
-                                text: qsTr("Mission")
+                                text: qsTr("Missão")
                             }
                             QGCTabButton {
                                 text: qsTr("Rally")

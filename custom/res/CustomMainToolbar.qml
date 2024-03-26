@@ -98,18 +98,22 @@ Rectangle {
         }
 
     QGCFlickable {
-        id:                     toolsFlickable
-        anchors.leftMargin:     ScreenTools.defaultFontPixelWidth * ScreenTools.largeFontPointRatio * 1.5
-        anchors.left:           viewButtonRow.right
-        anchors.bottomMargin:   1
-        anchors.top:            parent.top
-        anchors.bottom:         parent.bottom
-        anchors.right:          parent.right
-        contentWidth:           toolIndicators.width
-        flickableDirection:     Flickable.HorizontalFlick
+        id: toolsFlickable
+        // Removidas as âncoras laterais para não forçar o estiramento até os limites
+        // Removida a margem esquerda para não deslocar o conteúdo
+        width: toolIndicators.width // Defina a largura do Flickable para a largura dos indicadores
+        anchors.horizontalCenter: parent.horizontalCenter // Centraliza horizontalmente no parent
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        contentWidth: toolIndicators.width // Certifique-se de que isso corresponde à largura dos ícones que você quer centralizar
+        flickableDirection: Flickable.HorizontalFlick
 
-        FlyViewToolBarIndicators { id: toolIndicators }
+        FlyViewToolBarIndicators {
+            id: toolIndicators
+            // Se FlyViewToolBarIndicators não estiver centralizando os ícones internamente, você pode precisar ajustar isso também
+        }
     }
+
 
     //-------------------------------------------------------------------------
     //-- Branding Logo
@@ -118,7 +122,8 @@ Rectangle {
         anchors.top:            parent.top
         anchors.bottom:         parent.bottom
         anchors.margins:        ScreenTools.defaultFontPixelHeight * 0.66
-        visible:                _activeVehicle && !_communicationLost && x > (toolsFlickable.x + toolsFlickable.contentWidth + ScreenTools.defaultFontPixelWidth)
+        visible: false
+        //visible:                _activeVehicle && !_communicationLost && x > (toolsFlickable.x + toolsFlickable.contentWidth + ScreenTools.defaultFontPixelWidth)
         fillMode:               Image.PreserveAspectFit
         source:                 _outdoorPalette ? _brandImageOutdoor : _brandImageIndoor
         mipmap:                 true

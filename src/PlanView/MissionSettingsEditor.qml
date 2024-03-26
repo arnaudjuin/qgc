@@ -66,6 +66,7 @@ Rectangle {
 
         QGCLabel {
             text:           qsTr("All Altitudes")
+            visible: false
             font.pointSize: ScreenTools.smallFontPointSize
         }
         MouseArea {
@@ -85,6 +86,7 @@ Rectangle {
             RowLayout {
                 spacing: ScreenTools.defaultFontPixelWidth
                 enabled: _noMissionItemsAdded
+                visible: false
 
                 QGCLabel {
                     id:     altModeLabel
@@ -102,10 +104,12 @@ Rectangle {
         QGCLabel {
             text:           qsTr("Initial Waypoint Alt")
             font.pointSize: ScreenTools.smallFontPointSize
+            visible: false
         }
         FactTextField {
             fact:               QGroundControl.settingsManager.appSettings.defaultMissionItemAltitude
             Layout.fillWidth:   true
+            visible: false
         }
 
         GridLayout {
@@ -116,7 +120,7 @@ Rectangle {
 
             QGCCheckBox {
                 id:         flightSpeedCheckBox
-                text:       qsTr("Flight speed")
+                text:       qsTr("Velocidade")
                 visible:    _showFlightSpeed
                 checked:    missionItem.speedSection.specifyFlightSpeed
                 onClicked:   missionItem.speedSection.specifyFlightSpeed = checked
@@ -155,7 +159,7 @@ Rectangle {
                 anchors.left:   parent.left
                 anchors.right:  parent.right
                 text:           qsTr("Vehicle Info")
-                visible:        !_waypointsOnlyMode
+                visible:        false
                 checked:        false
             }
 

@@ -19,6 +19,7 @@ Row {
     anchors.top:        parent.top
     anchors.bottom:     parent.bottom
     anchors.margins:    _toolIndicatorMargins
+    anchors.horizontalCenter: parent.horizontalCenter 
     spacing:            ScreenTools.defaultFontPixelWidth * 1.75
 
     property var  _activeVehicle:           QGroundControl.multiVehicleManager.activeVehicle
