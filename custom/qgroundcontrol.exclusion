@@ -4,4 +4,5 @@
         <file alias="MainRootWindow.qml">src/ui/MainRootWindow.qml</file>
         <file alias="PlanViewToolBar.qml">src/ui/toolbar/PlanViewToolBar.qml</file>
         <file alias="PlanView.qml">src/PlanView/PlanView.qml</file>
+        <file alias="QGroundControl/Controls/FlightModeIndicator.qml">src/ui/toolbar/FlightModeIndicator.qml</file>
 

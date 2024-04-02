@@ -98,6 +98,7 @@ Item {
         color:                      "#DEDEDE"
         radius:                     2
         clip:                       true
+        visible: false
         anchors.top:                headingIndicator.bottom
         anchors.topMargin:          -headingIndicator.height / 2
         anchors.horizontalCenter:   parent.horizontalCenter
@@ -138,6 +139,7 @@ Item {
         width:                      ScreenTools.defaultFontPixelWidth * 4
         color:                      qgcPal.windowShadeDark
         anchors.top:                parent.top
+        visible: false
         anchors.topMargin:          _toolsMargin
         anchors.horizontalCenter:   parent.horizontalCenter
         QGCLabel {
@@ -151,6 +153,7 @@ Item {
         id:                         compassArrowIndicator
         height:                     _indicatorsHeight
         width:                      height
+        visible: false
         source:                     "/custom/img/compass_pointer.svg"
         fillMode:                   Image.PreserveAspectFit
         sourceSize.height:          height

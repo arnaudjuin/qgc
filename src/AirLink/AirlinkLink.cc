@@ -140,7 +140,7 @@ bool AirlinkLink::_connect()
 
 void AirlinkLink::_configureUdpSettings()
 {
-    quint16 availablePort = 14550;
+    quint16 availablePort = 14551;
     QUdpSocket udpSocket;
     while (!udpSocket.bind(QHostAddress::LocalHost, availablePort))
         availablePort++;

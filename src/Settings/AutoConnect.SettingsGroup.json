@@ -70,7 +70,7 @@
     "name":             "udpListenPort",
     "shortDesc": "UDP port for autoconnect",
     "type":             "uint32",
-    "default":     14550
+    "default":     14551
 },
 {
     "name":             "udpTargetHostIP",
@@ -82,7 +82,7 @@
     "name":             "udpTargetHostPort",
     "shortDesc": "UDP target host port for autoconnect",
     "type":             "uint32",
-    "default":     14550
+    "default":     14551
 },
 {
     "name":             "nmeaUdpPort",

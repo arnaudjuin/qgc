@@ -16,6 +16,7 @@ import QGroundControl.MultiVehicleManager
 import QGroundControl.ScreenTools
 import QGroundControl.Palette
 import QGroundControl.FactSystem
+import GlobalSignals 1.0
 
 RowLayout {
     id:         control
@@ -301,6 +302,16 @@ RowLayout {
             }
         }
     }
+
+    Component.onCompleted: {
+        GlobalSignals.buttonArm.connect(function() {
+            mainWindow.armVehicleRequest()
+        })
+
+        GlobalSignals.buttonDisarm.connect(function() {
+            mainWindow.disarmVehicleRequest()
+        })
+        }
 
     Component {
         id: mainStatusExpandedComponent

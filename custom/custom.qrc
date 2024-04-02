@@ -37,5 +37,6 @@
         <file alias="MainRootWindow.qml">res/CustomMainRootWindow.qml</file>
         <file alias="PlanViewToolBar.qml">res/CustomPlanViewToolBar.qml</file>
         <file alias="PlanView.qml">res/CustomPlanView.qml</file>
+        <file alias="FlightModeIndicator.qml">res/CustomFlightModeIndicator.qml</file>
     </qresource>
 </RCC>

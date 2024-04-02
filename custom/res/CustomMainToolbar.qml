@@ -21,6 +21,7 @@ import QGroundControl.Palette
 import QGroundControl.MultiVehicleManager
 import QGroundControl.ScreenTools
 import QGroundControl.Controllers
+import GlobalSignals 1.0
 
 Rectangle {
     id:     _root
@@ -30,6 +31,7 @@ Rectangle {
 
     property var    _activeVehicle:     QGroundControl.multiVehicleManager.activeVehicle
     property bool   _communicationLost: _activeVehicle ? _activeVehicle.vehicleLinkManager.communicationLost : false
+    property bool   _armed:             _activeVehicle ? _activeVehicle.armed : false
     property color  _mainStatusBGColor: "#ff4800"
 
     function dropMessageIndicatorTool() {
@@ -75,10 +77,10 @@ Rectangle {
         }
 
         Item {
-            Layout.preferredHeight: viewButtonRow.height
-                Image {
+        Layout.preferredHeight: viewButtonRow.height
+            Image {
                 height: parent.height
-                width: 150
+                width: 150 // Ajustado de 150 para 200 para fazer a imagem um pouco maior
                 source: "/custom/img/logohural.png"
                 fillMode: Image.PreserveAspectFit
             }
@@ -111,6 +113,19 @@ Rectangle {
         FlyViewToolBarIndicators {
             id: toolIndicators
             // Se FlyViewToolBarIndicators não estiver centralizando os ícones internamente, você pode precisar ajustar isso também
+            QGCButton {
+                id: armDisarmButton
+                text: _armed ? qsTr("Disarmar") : qsTr("Armar")
+                visible:            _activeVehicle
+                onClicked: {
+                    if (!_armed) {
+                        GlobalSignals.buttonArm()
+                    }
+                    else {
+                        GlobalSignals.buttonDisarm()
+                    }
+                }
+            }
         }
     }
 

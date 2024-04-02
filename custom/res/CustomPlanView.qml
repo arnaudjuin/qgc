@@ -84,6 +84,7 @@ Item {
     property bool _firstFenceLoadComplete:      false
     property bool _firstRallyLoadComplete:      false
     property bool _firstLoadComplete:           false
+    property bool buttonSaveVisible: false
 
     MapFitFunctions {
         id:                         mapFitFunctions  // The name for this id cannot be changed without breaking references outside of this code. Beware!
@@ -604,6 +605,7 @@ Item {
 
                                 onClicked: {
                                     insertComplexItemAfterCurrent(modelData)
+                                    buttonSaveVisible = true
                                 }
                             }
                         }
@@ -652,16 +654,6 @@ Item {
                                     } else {
                                         _planMasterController.saveToSelectedFile()
                                     }
-                                }
-                            }
-
-                            QGCButton {
-                                text:               qsTr("Salvar")
-                                Layout.fillWidth:   true
-                                Layout.alignment: Qt.AlignHCenter 
-                                enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
-                                onClicked: {
-                                    _planMasterController.saveToSelectedFile()
                                 }
                             }
 
@@ -750,6 +742,16 @@ Item {
                                 visible: _utmspEnabled
                             }
                         }
+                        QGCButton {
+                                text:               qsTr("Salvar")
+                                Layout.fillWidth:   true
+                                Layout.alignment: Qt.AlignHCenter 
+                                enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
+                                visible: buttonSaveVisible
+                                onClicked: {
+                                    _planMasterController.saveToSelectedFile()
+                                }
+                            }
                     }
 
                     // Mission Item Editor

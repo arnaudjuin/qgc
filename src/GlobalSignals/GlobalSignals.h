@@ -14,6 +14,8 @@ public:
 signals:
     void showPanels();
     void hidePanels();
+    void buttonArm();
+    void buttonDisarm();
 
 private:
     static GlobalSignals* _instance;
