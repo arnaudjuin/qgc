@@ -37,11 +37,11 @@ RowLayout {
         implicitWidth:  maxWidth
         maxWidth:       ScreenTools.defaultFontPixelWidth * ScreenTools.largeFontPointRatio * 10
 
-        property string _commLostText:      qsTr("Communication Lost")
-        property string _readyToFlyText:    qsTr("Ready To Fly")
+        property string _commLostText:      qsTr("Conexão perdida")
+        property string _readyToFlyText:    qsTr("Pronto para navegar")
         property string _notReadyToFlyText: qsTr("Not Ready")
-        property string _disconnectedText:  qsTr("Disconnected - Click to manually connect")
-        property string _armedText:         qsTr("Armed")
+        property string _disconnectedText:  qsTr("Disconectado - Clique para conectar manualmente")
+        property string _armedText:         qsTr("Armado")
         property string _flyingText:        qsTr("Flying")
         property string _landingText:       qsTr("Landing")
 
@@ -66,10 +66,6 @@ RowLayout {
                     }
 
                     if (_activeVehicle.flying) {
-                        return mainStatusLabel._flyingText
-                    } else if (_activeVehicle.landing) {
-                        return mainStatusLabel._landingText
-                    } else {
                         return mainStatusLabel._armedText
                     }
                 } else {

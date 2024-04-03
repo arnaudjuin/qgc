@@ -45,15 +45,18 @@ FirstRunPrompt {
             _unitsSettings.verticalDistanceUnits.value = metric ? UnitsSettings.VerticalDistanceUnitsMeters : UnitsSettings.VerticalDistanceUnitsFeet
         }
         if (_unitsSettings.areaUnits.visible) {
-            _unitsSettings.areaUnits.value = metric ? UnitsSettings.AreaUnitsSquareMeters : UnitsSettings.AreaUnitsSquareFeet
+            // Aqui mudamos para usar Hectares como unidade padrão no sistema métrico
+            _unitsSettings.areaUnits.value = metric ? UnitsSettings.AreaUnitsHectares : UnitsSettings.AreaUnitsSquareFeet
         }
         if (_unitsSettings.speedUnits.visible) {
-            _unitsSettings.speedUnits.value = metric ? UnitsSettings.SpeedUnitsMetersPerSecond : UnitsSettings.SpeedUnitsFeetPerSecond
+            // Aqui mudamos para usar Kilômetros por hora como unidade padrão no sistema métrico
+            _unitsSettings.speedUnits.value = metric ? UnitsSettings.SpeedUnitsKilometersPerHour : UnitsSettings.SpeedUnitsFeetPerSecond
         }
         if (_unitsSettings.temperatureUnits.visible) {
             _unitsSettings.temperatureUnits.value = metric ? UnitsSettings.TemperatureUnitsCelsius : UnitsSettings.TemperatureUnitsFarenheit
         }
     }
+
 
     ColumnLayout {
         id:         settingsColumn

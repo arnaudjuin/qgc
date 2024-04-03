@@ -47,10 +47,10 @@
 },
 {
     "name":             "groundSpeed",
-    "shortDesc": "Ground Speed",
+    "shortDesc": "Velocidade",
     "type":             "double",
     "decimalPlaces":    1,
-    "units":            "m/s"
+    "units":            "km/h"
 },
 {
     "name":             "airSpeed",
@@ -89,14 +89,14 @@
 },
 {
     "name":             "flightDistance",
-    "shortDesc": "Flight Distance",
+    "shortDesc": "Distancia Percorrida",
     "type":             "double",
     "decimalPlaces":    1,
     "units":            "m"
 },
 {
     "name":             "distanceToHome",
-    "shortDesc": "Distance to Home",
+    "shortDesc": "Distancia de Casa",
     "type":             "double",
     "decimalPlaces":    1,
     "units":            "m"

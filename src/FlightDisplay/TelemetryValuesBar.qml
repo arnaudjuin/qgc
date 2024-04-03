@@ -34,7 +34,7 @@ Item {
 
     //DeadMouseArea { anchors.fill: parent }
 
-    ColumnLayout {
+    RowLayout {
         id:                 mainLayout
         anchors.margins:    _toolsMargin
         anchors.bottom:     parent.bottom
@@ -43,13 +43,13 @@ Item {
         RowLayout {
             visible: mouseArea.containsMouse || valueArea.settingsUnlocked
 
-            QGCColoredImage {
+            /*QGCColoredImage {
                 source:             valueArea.settingsUnlocked ? "/res/LockOpen.svg" : "/res/pencil.svg"
                 mipmap:             true
                 width:              ScreenTools.minTouchPixels * 0.75
                 height:             width
                 sourceSize.width:   width
-                color:              qgcPal.text
+                color:              qgcPal.textpencil
                 fillMode:           Image.PreserveAspectFit
 
                 QGCMouseArea {
@@ -58,7 +58,7 @@ Item {
                     cursorShape:  Qt.PointingHandCursor
                     onClicked:    valueArea.settingsUnlocked = !valueArea.settingsUnlocked
                 }
-            }
+            }*/
         }
 
         HorizontalFactValueGrid {
