@@ -98,8 +98,8 @@ Rectangle {
                     Layout.fillWidth:               true
                     cameraCalc:                     _missionItem.cameraCalc
                     vehicleFlightIsFrontal:         true
-                    /*distanceToSurfaceLabel:         qsTr("Altitude")
-                    frontalDistanceLabel:           qsTr("Trigger Dist")*/
+                    /*distanceToSurfaceLabel:         qsTr("Altitude")*/
+                    frontalDistanceLabel:           qsTr("Trigger Dist")
                     sideDistanceLabel:              qsTr("Largura de faixa")
                 }
 

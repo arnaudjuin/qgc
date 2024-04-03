@@ -96,7 +96,7 @@ Rectangle {
 
     MainStatusIndicator {
             anchors.right:parent.right 
-            visible: currentToolbar === FlyViewToolBar
+            visible: false
         }
 
     QGCFlickable {
