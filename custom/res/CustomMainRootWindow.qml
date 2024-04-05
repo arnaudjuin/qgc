@@ -130,7 +130,7 @@ ApplicationWindow {
     }
 
     function showTool(toolTitle, toolSource, toolIcon) {
-        toolDrawer.backIcon     = flightView.visible ? "/qmlimages/Home.svg" : "/qmlimages/Home.svg"
+        toolDrawer.backIcon     = flyView.visible ? "/qmlimages/Home.svg" : "/qmlimages/Home.svg"
         toolDrawer.toolTitle    = toolTitle
         toolDrawer.toolSource   = toolSource
         toolDrawer.toolIcon     = toolIcon
