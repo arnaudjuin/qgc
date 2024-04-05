@@ -51,7 +51,7 @@ Rectangle {
             Layout.preferredHeight: viewButtonRow.height
             icon.source:            "/qmlimages/Home.svg"
             logo:                   true
-            onClicked:              mainWindow.popView()
+            onClicked:              mainWindow.showFlyView()
         }
 
         Item {

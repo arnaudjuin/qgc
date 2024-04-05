@@ -120,11 +120,13 @@ ApplicationWindow {
     }
 
     function showPlanView() {
-        stackView.push(planViewComponenent)
+        flyView.visible = false
+        planView.visible = true
     }
 
-    function popView() {
-        stackView.pop()
+    function showFlyView() {
+        flyView.visible = true
+        planView.visible = false
     }
 
     function showTool(toolTitle, toolSource, toolIcon) {
@@ -197,7 +199,7 @@ ApplicationWindow {
     property string closeDialogTitle: qsTr("Close %1").arg(QGroundControl.appName)
 
     function checkForUnsavedMission() {
-        if (globals.planMasterControllerPlanView && globals.planMasterControllerPlanView.dirty) {
+        if (planView._planMasterController.dirty) {
             showMessageDialog(closeDialogTitle,
                               qsTr("You have a mission edit in progress which has not been saved/sent. If you close you will lose changes. Are you sure you want to close?"),
                               Dialog.Yes | Dialog.No,
@@ -243,11 +245,26 @@ ApplicationWindow {
         color:          QGroundControl.globalPalette.window
     }
 
-    StackView {
-        id:             stackView
-        anchors.fill:   parent
+    FlyView { 
+        id:                     flyView
+        anchors.fill:           parent
+        
+        utmspSendActTrigger:    _utmspSendActTrigger
+    }
 
-        initialItem: FlyView { id: flightView; utmspSendActTrigger: _utmspSendActTrigger}
+    PlanView {
+        id:             planView
+        anchors.fill:   parent
+        
+        visible:        false
+
+        onActivationParamsSent:{
+            if(_utmspEnabled){
+                _startTimeStamp = startTime
+                _showVisible = activate
+                _flightID = flightID
+            }
+        }
     }
 
     footer: LogReplayStatusBar {
