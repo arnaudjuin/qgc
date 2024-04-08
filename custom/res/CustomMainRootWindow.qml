@@ -87,11 +87,9 @@ ApplicationWindow {
         readonly property var       activeVehicle:                  QGroundControl.multiVehicleManager.activeVehicle
         readonly property real      defaultTextHeight:              ScreenTools.defaultFontPixelHeight
         readonly property real      defaultTextWidth:               ScreenTools.defaultFontPixelWidth
-        readonly property var       planMasterControllerFlyView:    flightView.planController
-        readonly property var       guidedControllerFlyView:        flightView.guidedController
+        readonly property var       planMasterControllerFlyView:    flyView.planController
+        readonly property var       guidedControllerFlyView:        flyView.guidedController
 
-        property var                planMasterControllerPlanView:   null
-        property var                currentPlanMissionItem:         planMasterControllerPlanView ? planMasterControllerPlanView.missionController.currentPlanViewItem : null
         property bool               validationError:                false   // There is a FactTextField somewhere with a validation error
 
         // Property to manage RemoteID quick acces to settings page
@@ -248,14 +246,12 @@ ApplicationWindow {
     FlyView { 
         id:                     flyView
         anchors.fill:           parent
-        
         utmspSendActTrigger:    _utmspSendActTrigger
     }
 
     PlanView {
         id:             planView
         anchors.fill:   parent
-        
         visible:        false
 
         onActivationParamsSent:{
@@ -362,7 +358,6 @@ ApplicationWindow {
                             }
                         }
 
-
                         ColumnLayout {
                             width:                  innerLayout.width
                             spacing:                0
@@ -452,21 +447,6 @@ ApplicationWindow {
                             }
                         }
                     }
-                }
-            }
-        }
-    }
-
-    Component {
-        id: planViewComponenent
-
-        PlanView {
-            id: planView
-            onActivationParamsSent:{
-                if(_utmspEnabled){
-                    _startTimeStamp = startTime
-                    _showVisible = activate
-                    _flightID = flightID
                 }
             }
         }
@@ -666,7 +646,7 @@ ApplicationWindow {
                 if (criticalVehicleMessagePopup.dropMessageIndicatorOnClose) {
                     criticalVehicleMessagePopup.dropMessageIndicatorOnClose = false;
                     QGroundControl.multiVehicleManager.activeVehicle.resetErrorLevelMessages();
-                    flyView.toolbar.dropMessageIndicatorTool();
+                    flyView.dropMessageIndicatorTool();
                 }
             }
         }
