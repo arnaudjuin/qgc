@@ -83,6 +83,7 @@ Rectangle {
                 width: 150 // Ajustado de 150 para 200 para fazer a imagem um pouco maior
                 source: "/custom/img/logohural.png"
                 fillMode: Image.PreserveAspectFit
+                visible: !_activeVehicle
             }
         }
 
