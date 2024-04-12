@@ -370,47 +370,40 @@ void QGCApplication::_exitWithError(QString errorMessage)
 
 void QGCApplication::setLanguage()
 {
-    _locale = QLocale::system();
-    qDebug() << "System reported locale:" << _locale << "; Name" << _locale.name() << "; Preffered (used in maps): " << (QLocale::system().uiLanguages().length() > 0 ? QLocale::system().uiLanguages()[0] : "None");
+    // Define a localidade fixa como Português do Brasil
+    _locale = QLocale(QLocale::Portuguese, QLocale::Portugal);
+    qDebug() << "Locale set to:" << _locale.name();
 
-    QLocale::Language possibleLocale = AppSettings::_qLocaleLanguageID();
-    if (possibleLocale != QLocale::AnyLanguage) {
-        _locale = QLocale(possibleLocale);
+    // Configura o idioma padrão
+    QLocale::setDefault(_locale);
+
+    // Carregar as traduções para a biblioteca Qt
+    if(_qgcTranslatorQtLibs.load("qt_" + _locale.name(), QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
+        _app->installTranslator(&_qgcTranslatorQtLibs);
+    } else {
+        qCWarning(LocalizationLog) << "Qt lib localization for" << _locale.name() << "is not present";
     }
-    //-- We have specific fonts for Korean
-    if(_locale == QLocale::Korean) {
-        qCDebug(LocalizationLog) << "Loading Korean fonts" << _locale.name();
-        if(QFontDatabase::addApplicationFont(":/fonts/NanumGothic-Regular") < 0) {
-            qCWarning(LocalizationLog) << "Could not load /fonts/NanumGothic-Regular font";
-        }
-        if(QFontDatabase::addApplicationFont(":/fonts/NanumGothic-Bold") < 0) {
-            qCWarning(LocalizationLog) << "Could not load /fonts/NanumGothic-Bold font";
-        }
+
+    // Carregar as traduções do código-fonte
+    if(_qgcTranslatorSourceCode.load(_locale, QLatin1String("qgc_source_"), "", ":/i18n")) {
+        _app->installTranslator(&_qgcTranslatorSourceCode);
+    } else {
+        qCWarning(LocalizationLog) << "Error loading source localization for" << _locale.name();
     }
-    qCDebug(LocalizationLog) << "Loading localizations for" << _locale.name();
-    _app->removeTranslator(&_qgcTranslatorJSON);
-    _app->removeTranslator(&_qgcTranslatorSourceCode);
-    _app->removeTranslator(&_qgcTranslatorQtLibs);
-    if (_locale.name() != "en_US") {
-        QLocale::setDefault(_locale);
-        if(_qgcTranslatorQtLibs.load("qt_" + _locale.name(), QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
-            _app->installTranslator(&_qgcTranslatorQtLibs);
-        } else {
-            qCWarning(LocalizationLog) << "Qt lib localization for" << _locale.name() << "is not present";
-        }
-        if(_qgcTranslatorSourceCode.load(_locale, QLatin1String("qgc_source_"), "", ":/i18n")) {
-            _app->installTranslator(&_qgcTranslatorSourceCode);
-        } else {
-            qCWarning(LocalizationLog) << "Error loading source localization for" << _locale.name();
-        }
-        if(_qgcTranslatorJSON.load(_locale, QLatin1String("qgc_json_"), "", ":/i18n")) {
-            _app->installTranslator(&_qgcTranslatorJSON);
-        } else {
-            qCWarning(LocalizationLog) << "Error loading json localization for" << _locale.name();
-        }
+
+    // Carregar as traduções JSON
+    if(_qgcTranslatorJSON.load(_locale, QLatin1String("qgc_json_"), "", ":/i18n")) {
+        _app->installTranslator(&_qgcTranslatorJSON);
+    } else {
+        qCWarning(LocalizationLog) << "Error loading json localization for" << _locale.name();
     }
-    if(_qmlAppEngine)
+
+    // Atualiza todas as traduções ativas
+    if(_qmlAppEngine) {
         _qmlAppEngine->retranslate();
+    }
+
+    // Notificar mudança de idioma
     emit languageChanged(_locale);
 }
 

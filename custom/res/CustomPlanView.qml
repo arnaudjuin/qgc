@@ -572,7 +572,7 @@ Item {
 
                     ColumnLayout {
                         id:         columnHolder
-                        spacing:    ScreenTools.defaultFontPixelWidth * 0.2
+                        spacing:    ScreenTools.defaultFontPixelWidth * 0.1
                         anchors.fill:parent
 
                         QGCLabel {
@@ -581,6 +581,16 @@ Item {
                             text: qsTr("Minhas áreas")
                             color: 'black'
                             antialiasing: true
+                        }
+
+                        QGCLabel {
+                            id:                 unsavedChangedLabel
+                            Layout.fillWidth:   true
+                            wrapMode:           Text.WordWrap
+                            text:               globals.activeVehicle ?
+                                                    qsTr("Você tem alterações não salvas. Faça upload ao veículo ou salve as alterações") :
+                                                    qsTr("Você tem alterações não salvas.")
+                            visible:            _planMasterController.dirty
                         }
                         
                         Repeater {
@@ -604,23 +614,16 @@ Item {
                                 }
 
                                 onClicked: {
+                                    if (_planMasterController.containsItems) {
+                                    createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
+                                    } else {
                                     insertComplexItemAfterCurrent(modelData)
-                                    buttonSaveVisible = true
+                                    buttonSaveVisible = true}
                                 }
                             }
                         }
 
                         property string _overwriteText: qsTr("Plan overwrite")
-
-                        QGCLabel {
-                            id:                 unsavedChangedLabel
-                            Layout.fillWidth:   true
-                            wrapMode:           Text.WordWrap
-                            text:               globals.activeVehicle ?
-                                                    qsTr("You have unsaved changes. You should upload to your vehicle, or save to a file.") :
-                                                    qsTr("You have unsaved changes.")
-                            visible:            _planMasterController.dirty
-                        }
 
                         GridLayout {
                             columns:            3

@@ -11,6 +11,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Controls.Material 2.12
 
 import QGroundControl
 import QGroundControl.Controls
@@ -36,7 +37,8 @@ Rectangle {
         anchors.bottom: parent.bottom
         height:         1
         color:          "black"
-        visible:        qgcPal.globalTheme === QGCPalette.Light
+        //visible:        qgcPal.globalTheme === QGCPalette.Light
+        visible: false
     }
 
     RowLayout {
@@ -53,7 +55,7 @@ Rectangle {
             logo:                   true
             onClicked:              mainWindow.showFlyView()
         }
-
+        
         Item {
             Layout.preferredHeight: viewButtonRow.height
                 Image {
