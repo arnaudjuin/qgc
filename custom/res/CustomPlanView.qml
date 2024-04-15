@@ -583,6 +583,25 @@ Item {
                             antialiasing: true
                         }
 
+                        ListView {
+                            anchors.fill: parent
+                            model: _planMasterController.planFiles
+
+                            delegate: Item {
+                                width: parent.width
+                                height: 30
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData
+                                }
+                            }
+                        }
+
+                        Component.onCompleted: {
+                            _planMasterController.loadPlanFiles()
+                        }
+
                         QGCLabel {
                             id:                 unsavedChangedLabel
                             Layout.fillWidth:   true
@@ -594,52 +613,63 @@ Item {
                         }
                         
                         Repeater {
-    model: _missionController.complexMissionItemNames
+                            model: _missionController.complexMissionItemNames
 
-    delegate: Item {
-        width: 60
-        height: width
-        
-        anchors {
-            right: parent.right
-            bottom: parent.bottom
-            rightMargin: 5
-            bottomMargin: 5
-        }
+                            delegate: Item {
+                                width: 60
+                                height: width
 
-        QGCButton {
-                                    
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            anchors.fill: parent
+                                anchors {
+                                    right: parent.right
+                                    bottom: parent.bottom
+                                    rightMargin: 5
+                                    bottomMargin: 5
+                                }
 
-            Image {
-                 source: "/custom/img/Mais1.png"
-                 fillMode: Image.PreserveAspectFit
-                 visible: !_activeVehicle
-                 anchors.centerIn: parent                       
-                 width: parent.width * 0.6 
-                 height: width                                             
-             }      
-                                                  
+                                QGCButton {
+                                    id: botaoMais
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    anchors.fill: parent
+                                    hoverEnabled: true
 
-            background: Rectangle {
-                color: "#ff4800"
-                radius: Math.min(width, height) / 2 
-                clip: true
-                anchors.fill: parent 
-            }
+                                    Image {
+                                        id: imgMais
+                                        source: "/custom/img/Mais1.png"
+                                        fillMode: Image.PreserveAspectFit
+                                        visible: !_activeVehicle
+                                        anchors.centerIn: parent
+                                        width: parent.width * 0.6
+                                        height: width
+                                        opacity: 1.0
+                                    }
 
-            onClicked: {
-                if (_planMasterController.containsItems) {
-                createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
-                } else {
-                insertComplexItemAfterCurrent(modelData)
-                buttonSaveVisible = true}
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: imgMais.opacity = 0.7
+                                        onExited: imgMais.opacity = 1.0
+
+                                        onClicked: {
+                                        if (_planMasterController.containsItems) {
+                                            createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
+                                        } else {
+                                            insertComplexItemAfterCurrent(modelData)
+                                            buttonSaveVisible = true
+                                        }
+                                        }
+                                    }
+
+
+                                    background: Rectangle {
+                                        color: "#ff4800"
+                                        radius: Math.min(width, height) / 2
+                                        clip: true
+                                        anchors.fill: parent
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            }                        
 
                         
                         property string _overwriteText: qsTr("Plan overwrite")

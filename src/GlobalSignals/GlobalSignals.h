@@ -16,6 +16,8 @@ signals:
     void hidePanels();
     void buttonArm();
     void buttonDisarm();
+    void startMission();
+    void endMission();
 
 private:
     static GlobalSignals* _instance;
