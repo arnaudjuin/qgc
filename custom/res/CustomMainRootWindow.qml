@@ -300,7 +300,7 @@ ApplicationWindow {
                             Layout.fillWidth:   true
                             text:           qsTr("Minhas Áreas")
                             imageResource:     "/qmlimages/Plan.svg"
-                            imageColor: "transparent"
+                            imageColor:        "Black"
                             visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
                             onClicked:{
                                 if (!mainWindow.preventViewSwitch()) {
@@ -316,7 +316,7 @@ ApplicationWindow {
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
                             text:               qsTr("Configurações")
-                            imageColor:         qgcPal.text
+                            imageColor:         "Black"
                             imageResource:      "/qmlimages/Gears.svg"
                             onClicked: {
                                 if (!mainWindow.preventViewSwitch()) {
@@ -332,7 +332,7 @@ ApplicationWindow {
                             Layout.fillWidth:   true
                             text:               qsTr("Analyze Tools")
                             imageResource:      "/qmlimages/Analyze.svg"
-                            imageColor:         qgcPal.text
+                            imageColor:         "Black"
                             visible:            QGroundControl.corePlugin.showAdvancedUI
                             onClicked: {
                                 if (!mainWindow.preventViewSwitch()) {
@@ -349,7 +349,7 @@ ApplicationWindow {
                             Layout.fillWidth:   true
                             text:               qsTr("Application Settings")
                             imageResource:      "/qmlimages/Gears.svg"
-                            imageColor:         "transparent"
+                            imageColor:         "Black"
                             onClicked: {
                                 if (!mainWindow.preventViewSwitch()) {
                                     drawer.close()

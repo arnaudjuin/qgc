@@ -553,7 +553,7 @@ Item {
                 Rectangle {
                     id: exampleRectangle
                     color: '#ffffff'
-                    width: parent.width * 0.15
+                    width: parent.width * 0.2
                     height: parent.height 
                     anchors.left: parent.left 
                     anchors.top: parent.top 
@@ -594,35 +594,54 @@ Item {
                         }
                         
                         Repeater {
-                            model: _missionController.complexMissionItemNames
+    model: _missionController.complexMissionItemNames
 
-                            QGCButton {
-                                text: "+"
-                                Layout.fillWidth: false
-                                width: parent.width * 0.20 
-                                height: width 
-                                anchors.right: parent.right
-                                anchors.bottom: parent.bottom
-                                anchors.rightMargin: 5
-                                anchors. bottomMargin: 5
+    delegate: Item {
+        width: 60
+        height: width
+        
+        anchors {
+            right: parent.right
+            bottom: parent.bottom
+            rightMargin: 5
+            bottomMargin: 5
+        }
 
-                                background: Rectangle {
-                                    color: "#ff4800"
-                                    radius: height / 2 // Faz o raio ser metade da altura para tornar o Rectangle redondo
-                                    clip: true
-                                    anchors.fill: parent // Garante que o Rectangle de fundo preencha todo o espaço do botão
-                                }
+        QGCButton {
+                                    
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            anchors.fill: parent
 
-                                onClicked: {
-                                    if (_planMasterController.containsItems) {
-                                    createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
-                                    } else {
-                                    insertComplexItemAfterCurrent(modelData)
-                                    buttonSaveVisible = true}
-                                }
-                            }
+            Image {
+                 source: "/custom/img/Mais1.png"
+                 fillMode: Image.PreserveAspectFit
+                 visible: !_activeVehicle
+                 anchors.centerIn: parent                       
+                 width: parent.width * 0.6 
+                 height: width                                             
+             }      
+                                                  
+
+            background: Rectangle {
+                color: "#ff4800"
+                radius: Math.min(width, height) / 2 
+                clip: true
+                anchors.fill: parent 
+            }
+
+            onClicked: {
+                if (_planMasterController.containsItems) {
+                createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
+                } else {
+                insertComplexItemAfterCurrent(modelData)
+                buttonSaveVisible = true}
                         }
+                    }
+                }
+            }                        
 
+                        
                         property string _overwriteText: qsTr("Plan overwrite")
 
                         GridLayout {

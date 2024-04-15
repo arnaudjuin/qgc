@@ -15,6 +15,7 @@
         <file alias="CustomAppIcon.png">res/Images/CustomAppIcon.png</file>
         <file alias="list.svg">res/Images/list.svg</file>
         <file alias="logohural.png">res/Images/logohural.png</file>
+        <file alias="Mais1.png">res/Images/Mais1.png</file>
     </qresource>
     <qresource prefix="/qmlimages">
 	<file alias="PaperPlane.svg">res/Images/CustomVehicleIcon.svg</file>
