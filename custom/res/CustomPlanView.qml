@@ -597,7 +597,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        _planMasterController.loadFromFile("/home/guilherme/Desktop/CustomQGC/build/Missions/" + fileName)
+                                        _planMasterController.loadFromFile("/home/guilherme/Desktop/CustomQGC/build/Missionss/" + fileName)
                                         _planMasterController.fitViewportToItems()
                                         _missionController.setCurrentPlanViewSeqNum(0, true)
                                     }
