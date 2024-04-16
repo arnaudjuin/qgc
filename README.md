@@ -78,7 +78,7 @@ If have any problems with qmake try:
 8. Install adb
 sudo apt -y install android-tools-adb
 9. Install APK
-adb install path_to_apk to install apk in Android Devices
+adb install path_to_apk
 
 
 
