@@ -295,11 +295,6 @@ Item {
         _missionController.insertLandItem(mapCenter(), nextIndex, true /* makeCurrentItem */)
     }
 
-    function _mapCenter() {
-        var centerPoint = Qt.point(editorMap.centerViewport.left + (editorMap.centerViewport.width / 2), editorMap.centerViewport.top + (editorMap.centerViewport.height / 2))
-        return editorMap.toCoordinate(centerPoint, false /* clipToViewPort */)
-    }
-
 
     function selectNextNotReady() {
         var foundCurrent = false
@@ -563,6 +558,18 @@ Item {
                     anchors.left: parent.left 
                     anchors.top: parent.top 
 
+                    /*Component.onCompleted: {
+                        loadFilesAutomatically()
+                    }
+
+                    function loadFilesAutomatically() {
+                        if (_planMasterController.dirty) {
+                            showLoadFromFileOverwritePrompt(columnHolder._overwriteText);
+                        } else {
+                            _planMasterController.loadFromSelectedFile();
+                        }
+                    }*/
+
                     ColumnLayout {
                         id:         columnHolder
                         spacing:    ScreenTools.defaultFontPixelWidth * 0.1
@@ -578,51 +585,22 @@ Item {
 
                         ListView {
                             anchors.fill: parent
-                            model: planFilesModel
+                            model: _planMasterController.planFiles
 
-                            delegate: Rectangle {
+                            delegate: Item {
                                 width: parent.width
-                                height: 40
-                                color: "#ffffff"
-                                border.color: "#000000"
-                                border.width: 1
+                                height: 30
 
                                 Text {
-                                    text: fileName
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.left: parent.left
-                                    anchors.leftMargin: 10
-                                }
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        _planMasterController.loadFromFile("/home/guilherme/Desktop/CustomQGC/build/Missions/" + fileName)
-                                        _planMasterController.fitViewportToItems()
-                                        _missionController.setCurrentPlanViewSeqNum(0, true)
-                                    }
+                                    anchors.centerIn: parent
+                                    text: modelData
                                 }
                             }
-                        }
-
-                        ListModel {
-                            id: planFilesModel
                         }
 
                         Component.onCompleted: {
-                            planMasterController.searchPlanFiles("/home/guilherme/Desktop/CustomQGC/build/Missions")
+                            _planMasterController.loadPlanFiles()
                         }
-
-                        Connections {
-                            target: planMasterController
-                            onPlanFilesFound: {
-                                planFilesModel.clear()
-                                for (var i = 0; i < fileNames.length; ++i) {
-                                    planFilesModel.append({"fileName": fileNames[i]})
-                                }
-                            }
-                        }
-
 
                         QGCLabel {
                             id:                 unsavedChangedLabel
@@ -716,7 +694,7 @@ Item {
                                 }
                             }
 
-                            /*QGCButton {
+                            QGCButton {
                                 text:               qsTr("Save")
                                 Layout.fillWidth:   true
                                 Layout.alignment: Qt.AlignHCenter 
@@ -727,12 +705,9 @@ Item {
                                         _planMasterController.saveToCurrent()
                                     } else {
                                         _planMasterController.saveToSelectedFile()
-                                        planMasterController.searchPlanFiles("/home/guilherme/Desktop/CustomQGC/build/Missions")
                                     }
-
-                                    
                                 }
-                            }*/
+                            }
 
                             QGCButton {
                                 Layout.columnSpan:  3
@@ -820,15 +795,15 @@ Item {
                             }
                         }
                         QGCButton {
-                            text:               qsTr("Salvar")
-                            Layout.fillWidth:   true
-                            Layout.alignment: Qt.AlignHCenter 
-                            enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
-                            visible: buttonSaveVisible
-                            onClicked: {
-                                _planMasterController.saveToSelectedFile()                     
-                            }                            
-                        }
+                                text:               qsTr("Salvar")
+                                Layout.fillWidth:   true
+                                Layout.alignment: Qt.AlignHCenter 
+                                enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
+                                visible: buttonSaveVisible
+                                onClicked: {
+                                    _planMasterController.saveToSelectedFile()
+                                }
+                            }
                     }
 
                     // Mission Item Editor
@@ -1157,10 +1132,10 @@ Item {
                                 dropPanel.hide()
                             }
 
-                            /*function _mapCenter() {
+                            function _mapCenter() {
                                 var centerPoint = Qt.point(editorMap.centerViewport.left + (editorMap.centerViewport.width / 2), editorMap.centerViewport.top + (editorMap.centerViewport.height / 2))
-                                return editorMap.toCoordinate(centerPoint, false)
-                            }*/
+                                return editorMap.toCoordinate(centerPoint, false /* clipToViewPort */)
+                            }
                         }
                     }
                 }

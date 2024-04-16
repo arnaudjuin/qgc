@@ -18,7 +18,6 @@
 #include "MultiVehicleManager.h"
 #include "QGCLoggingCategory.h"
 #include "QmlObjectListModel.h"
-#include <QDir>
 
 Q_DECLARE_LOGGING_CATEGORY(PlanMasterControllerLog)
 
@@ -81,7 +80,6 @@ public:
     Q_INVOKABLE void saveToKml(const QString& filename);
     Q_INVOKABLE void removeAll(void);                       ///< Removes all from controller only, synce required to remove from vehicle
     Q_INVOKABLE void removeAllFromVehicle(void);            ///< Removes all from vehicle and controller
-    Q_INVOKABLE void openFile(const QString& filePath);
 
     MissionController*      missionController(void)     { return &_missionController; }
     GeoFenceController*     geoFenceController(void)    { return &_geoFenceController; }
@@ -121,8 +119,6 @@ signals:
     void planCreatorsChanged                (QmlObjectListModel* planCreators);
     void managerVehicleChanged              (Vehicle* managerVehicle);
     void promptForPlanUsageOnVehicleChange  (void);
-    void planFilesFound(const QStringList &fileNames);
-    void missionLoaded(double lat, double lon);
 
 private slots:
     void _activeVehicleChanged      (Vehicle* activeVehicle);
@@ -133,9 +129,6 @@ private slots:
     void _sendGeoFenceComplete      (void);
     void _sendRallyPointsComplete   (void);
     void _updatePlanCreatorsList    (void);
-
-public slots:
-    void searchPlanFiles(const QString &directoryPath);
 
 private:
     void _commonInit                (void);
