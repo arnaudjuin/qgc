@@ -81,3 +81,70 @@ void PlanMasterControllerTest::_testActiveVehicleChanged(void) {
     // we make sure it does.
     QVERIFY(spyMissionManager.checkOnlySignalByMask(missionManagerErrorSignalMask));
 }
+void PlanMasterControllerTest::_testUpdateFileList(void)
+{
+    // Create a temporary directory for testing
+    QString tempDirPath = QDir::tempPath() + "/test_directory";
+    QDir().mkpath(tempDirPath);
+
+    // Create some test files in the temporary directory
+    QFile file1(tempDirPath + "/file1.txt");
+    QVERIFY(file1.open(QIODevice::WriteOnly));
+    file1.close();
+
+    QFile file2(tempDirPath + "/file2.txt");
+    QVERIFY(file2.open(QIODevice::WriteOnly));
+    file2.close();
+
+    // Call the updateFileList function with the temporary directory path
+    _masterController->updateFileList(tempDirPath);
+
+    // Verify that the file list has been updated correctly
+    QVariantList expectedFileList;
+    QVariantMap file1Details;
+    file1Details["name"] = "file1.txt";
+    file1Details["path"] = tempDirPath + "/file1.txt";
+    expectedFileList.append(file1Details);
+    QVariantMap file2Details;
+    file2Details["name"] = "file2.txt";
+    file2Details["path"] = tempDirPath + "/file2.txt";
+    expectedFileList.append(file2Details);
+
+    QCOMPARE(_masterController->fileList(), expectedFileList);
+
+    // Clean up the temporary directory
+    QDir(tempDirPath).removeRecursively();
+}void PlanMasterControllerTest::_testUpdateFileList(void)
+{
+    // Create a temporary directory for testing
+    QString tempDirPath = QDir::tempPath() + "/test_directory";
+    QDir().mkpath(tempDirPath);
+
+    // Create some test files in the temporary directory
+    QFile file1(tempDirPath + "/file1.txt");
+    QVERIFY(file1.open(QIODevice::WriteOnly));
+    file1.close();
+
+    QFile file2(tempDirPath + "/file2.txt");
+    QVERIFY(file2.open(QIODevice::WriteOnly));
+    file2.close();
+
+    // Call the updateFileList function with the temporary directory path
+    _masterController->updateFileList(tempDirPath);
+
+    // Check if the file list has been updated correctly
+    QVariantList expectedFileList;
+    QVariantMap file1Details;
+    file1Details["name"] = "file1.txt";
+    file1Details["path"] = tempDirPath + "/file1.txt";
+    expectedFileList.append(file1Details);
+    QVariantMap file2Details;
+    file2Details["name"] = "file2.txt";
+    file2Details["path"] = tempDirPath + "/file2.txt";
+    expectedFileList.append(file2Details);
+
+    QCOMPARE(_masterController->fileList(), expectedFileList);
+
+    // Clean up the temporary directory
+    QDir(tempDirPath).removeRecursively();
+}

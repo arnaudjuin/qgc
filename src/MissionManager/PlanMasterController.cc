@@ -24,6 +24,8 @@
 #include <QDomDocument>
 #include <QJsonDocument>
 #include <QFileInfo>
+#include <QDesktopServices>
+#include <QUrl>
 
 QGC_LOGGING_CATEGORY(PlanMasterControllerLog, "PlanMasterControllerLog")
 
@@ -103,6 +105,22 @@ void PlanMasterController::startStaticActiveVehicle(Vehicle* vehicle, bool delet
     _geoFenceController.start(_flyView);
     _rallyPointController.start(_flyView);
     _activeVehicleChanged(vehicle);
+}
+
+void PlanMasterController::searchPlanFiles(const QString &directoryPath) {
+    QDir dir(directoryPath);
+    QStringList filters;
+    filters << "*.plan"; // Filtro para arquivos .plan
+    QStringList fileNames = dir.entryList(filters, QDir::Files);
+    emit planFilesFound(fileNames);
+}
+
+void PlanMasterController::openFile(const QString& filePath)
+{
+    QUrl fileUrl = QUrl::fromLocalFile(filePath);
+    if (!QDesktopServices::openUrl(fileUrl)) {
+        qWarning() << "Não foi possível abrir o arquivo:" << filePath;
+    }
 }
 
 void PlanMasterController::_activeVehicleChanged(Vehicle* activeVehicle)
