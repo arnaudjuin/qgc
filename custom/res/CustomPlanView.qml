@@ -598,7 +598,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        _planMasterController.loadFromFile("/home/lucas/Documents/Hural App Daily/Missions/" + fileName)
+                                        _planMasterController.loadFromFile("Hural App Daily/Missions" + fileName)
                                         _planMasterController.fitViewportToItems()
                                         _missionController.setCurrentPlanViewSeqNum(0, true)
                                     }
@@ -687,7 +687,7 @@ Item {
                         }
 
                         Component.onCompleted: {
-                            planMasterController.searchPlanFiles("/home/lucas/Documents/Hural App Daily/Missions")
+                            planMasterController.searchPlanFiles("Hural App Daily/Missions/")
                         }
 
                         Connections {
