@@ -569,23 +569,24 @@ Item {
                         anchors.fill:parent
 
                         QGCLabel {
-                            font.pointSize: 15
-                            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                            text: qsTr("Minhas áreas")
-                            color: 'black'
-                            antialiasing: true
-                        }
-
-                        ListView {
-                            anchors.fill: parent
-                            model: planFilesModel
-
-                            delegate: Rectangle {
-                                width: parent.width
-                                height: 40
-                                color: "#ffffff"
-                                border.color: "#000000"
-                                border.width: 1
+                                font.pointSize: 15
+                                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                                text: qsTr("Minhas áreas")
+                                color: 'black'
+                                antialiasing: true
+                                Layout.margins: { left: 30 }
+                            }
+                        
+                            ListView {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                model: planFilesModel
+                                delegate: Rectangle {
+                                    width: parent.width
+                                    height: 40
+                                    color: "#ffffff"
+                                    border.color: "#000000"
+                                    border.width: 1
 
                                 Text {
                                     text: fileName
@@ -597,7 +598,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        _planMasterController.loadFromFile("/song/Hural App Daily/Missions/" + fileName)
+                                        _planMasterController.loadFromFile("/home/lucas/Documents/Hural App Daily/Missions/" + fileName)
                                         _planMasterController.fitViewportToItems()
                                         _missionController.setCurrentPlanViewSeqNum(0, true)
                                     }
@@ -605,12 +606,88 @@ Item {
                             }
                         }
 
+                            /*Item {
+                                id: rootItem
+                                width: 57
+                                height: 30
+                                property bool mouseOver: false 
+
+                                QGCButton {
+                                    id: imageButton
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    anchors.fill: parent
+                                    background: null
+
+                                    Image {
+                                        width: 25
+                                        height: 25
+                                        source: "/custom/img/A-z.png"
+                                    }
+
+                                    onClicked: {
+                                        infoBox.visible = !infoBox.visible
+                                    }
+                                }
+
+                                Rectangle {
+                                    id: infoBox
+                                    width: 200
+                                    height: 100
+                                    color: "#ffffff"
+                                    visible: false
+                                    x: imageButton.x + imageButton.width + 1
+                                    y: rootItem.y 
+
+                                    Column {
+                                        spacing: 5
+                                        anchors.fill: parent
+                                        anchors.margins: 10
+                                        anchors.topMargin: 20
+
+                                        Text {
+                                            text: qsTr("Ordem de A-Z")
+                                            color: "#333333"
+                                            font.pointSize: 10
+                                            Layout.fillWidth: true
+                                        }
+                                        Text {
+                                            text: qsTr("Ordem de Z-A")
+                                            color: "#333333"
+                                            font.pointSize: 10
+                                            Layout.fillWidth: true
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        anchors.top: parent.top
+                                        anchors.right: parent.right
+                                        width: 30
+                                        height: 30
+                                        anchors.fill: parent
+
+                                        Rectangle {
+                                            anchors.fill: parent
+                                            color: "#ffffff"
+
+                                            Image {
+                                                source: "/custom/img/X.png"
+                                                anchors.centerIn: parent
+                                                width: 15
+                                                height: 15
+                                            }
+                                        }
+                                    }
+                                } // Fechamento de Rectangle infoBox
+                            } // Fechamento de Item rootItem
+                         // Fechamento de Row*/
+
                         ListModel {
                             id: planFilesModel
                         }
 
                         Component.onCompleted: {
-                            planMasterController.searchPlanFiles("/song/Hural App Daily/Missions")
+                            planMasterController.searchPlanFiles("/home/lucas/Documents/Hural App Daily/Missions")
                         }
 
                         Connections {
@@ -643,16 +720,16 @@ Item {
 
                                 anchors {
                                     right: parent.right
-                                    bottom: parent.bottom
+                                    //bottom: parent.bottom
                                     rightMargin: 5
-                                    bottomMargin: 5
+                                    //bottomMargin: 5
                                 }
 
                                 QGCButton {
                                     id: botaoMais
-                                    Layout.fillWidth: true
-                                    Layout.fillHeight: true
-                                    anchors.fill: parent
+                                    width: 40
+                                    height: 40
+                                    
                                     hoverEnabled: true
 
                                     Image {
@@ -716,7 +793,7 @@ Item {
                                 }
                             }
 
-                            /*QGCButton {
+                            QGCButton {
                                 text:               qsTr("Save")
                                 Layout.fillWidth:   true
                                 Layout.alignment: Qt.AlignHCenter 
@@ -732,7 +809,7 @@ Item {
 
                                     
                                 }
-                            }*/
+                            }
 
                             QGCButton {
                                 Layout.columnSpan:  3
@@ -793,6 +870,9 @@ Item {
                             width: parent.width
                             visible: QGroundControl.corePlugin.options.enablePlanViewSelector && !_utmspEnabled
                             Component.onCompleted: currentIndex = 0
+                            background: Rectangle {
+                                color: "transparent" // Defina como transparente
+                            }
                             QGCTabButton {
                                 text: qsTr("Missão")
                             }
@@ -822,6 +902,7 @@ Item {
                         QGCButton {
                             text:               qsTr("Salvar")
                             Layout.fillWidth:   true
+                            width: parent.width 
                             Layout.alignment: Qt.AlignHCenter 
                             enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
                             visible: buttonSaveVisible

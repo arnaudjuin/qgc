@@ -16,6 +16,10 @@
         <file alias="list.svg">res/Images/list.svg</file>
         <file alias="logohural.png">res/Images/logohural.png</file>
         <file alias="Mais1.png">res/Images/Mais1.png</file>
+        <file alias="A-z.png">res/Images/A-z.png</file>
+        <file alias="X.png">res/Images/X.png</file>
+        <file alias="List1.png">res/Images/List1.png</file>
+
     </qresource>
     <qresource prefix="/qmlimages">
 	<file alias="PaperPlane.svg">res/Images/CustomVehicleIcon.svg</file>
