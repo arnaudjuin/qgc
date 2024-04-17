@@ -565,7 +565,7 @@ Item {
 
                     ColumnLayout {
                         id:         columnHolder
-                        spacing:    ScreenTools.defaultFontPixelWidth * 0.1
+                        spacing:    ScreenTools.defaultFontPixelWidth * 0.2
                         anchors.fill:parent
 
                         QGCLabel {
@@ -598,7 +598,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        _planMasterController.loadFromFile("Hural App Daily//Missions" + fileName)
+                                        _planMasterController.loadFromFile("/storage/self/primary/Hural App Daily/Missions" + fileName)
                                         _planMasterController.fitViewportToItems()
                                         _missionController.setCurrentPlanViewSeqNum(0, true)
                                     }
@@ -687,7 +687,7 @@ Item {
                         }
 
                         Component.onCompleted: {
-                            planMasterController.searchPlanFiles("Hural App Daily//Missions/")
+                            planMasterController.searchPlanFiles("storage/self/primary/Hural App Daily/Missions/")
                         }
 
                         Connections {
@@ -804,7 +804,7 @@ Item {
                                         _planMasterController.saveToCurrent()
                                     } else {
                                         _planMasterController.saveToSelectedFile()
-                                        planMasterController.searchPlanFiles("Hural App Daily//Missions")
+                                        planMasterController.searchPlanFiles("/song/Hural App Daily/Missions")
                                     }
 
                                     
