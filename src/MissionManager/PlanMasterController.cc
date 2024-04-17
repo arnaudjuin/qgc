@@ -26,6 +26,9 @@
 #include <QFileInfo>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QStandardPaths>
+#include <QStringList>
+#include <QJsonObject>
 
 QGC_LOGGING_CATEGORY(PlanMasterControllerLog, "PlanMasterControllerLog")
 
@@ -107,11 +110,29 @@ void PlanMasterController::startStaticActiveVehicle(Vehicle* vehicle, bool delet
     _activeVehicleChanged(vehicle);
 }
 
-void PlanMasterController::searchPlanFiles(const QString &directoryPath) {
+void PlanMasterController::searchPlanFiles() {
+    // Define o subdiretório específico onde os arquivos .plan são esperados
+    QString subdirectory = "Hural App Daily/Missions";
+
+    // Obter o diretório padrão onde os dados da aplicação podem ser salvos
+    QString dataDirectory = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
+    // Construir o caminho completo adicionando o subdiretório ao diretório de dados
+    QString directoryPath = dataDirectory + "/" + subdirectory;
+
+    // Verificar se o diretório existe
     QDir dir(directoryPath);
+    if (!dir.exists()) {
+        qWarning() << "Diretório não encontrado:" << directoryPath;
+        return;
+    }
+
+    // Definir os filtros de busca para arquivos .plan
     QStringList filters;
-    filters << "*.plan"; // Filtro para arquivos .plan
+    filters << "*.plan";
     QStringList fileNames = dir.entryList(filters, QDir::Files);
+
+    // Emitir um sinal com os nomes dos arquivos encontrados
     emit planFilesFound(fileNames);
 }
 

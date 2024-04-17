@@ -687,7 +687,7 @@ Item {
                         }
 
                         Component.onCompleted: {
-                            planMasterController.searchPlanFiles("storage/self/primary/Hural App Daily/Missions/")
+                            planMasterController.searchPlanFiles()
                         }
 
                         Connections {
@@ -804,7 +804,7 @@ Item {
                                         _planMasterController.saveToCurrent()
                                     } else {
                                         _planMasterController.saveToSelectedFile()
-                                        planMasterController.searchPlanFiles("/song/Hural App Daily/Missions")
+                                        planMasterController.searchPlanFiles()
                                     }
 
                                     

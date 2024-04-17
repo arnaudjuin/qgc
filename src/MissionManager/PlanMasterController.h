@@ -135,7 +135,7 @@ private slots:
     void _updatePlanCreatorsList    (void);
 
 public slots:
-    void searchPlanFiles(const QString &directoryPath);
+    void searchPlanFiles();
 
 private:
     void _commonInit                (void);
