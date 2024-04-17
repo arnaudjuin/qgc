@@ -598,7 +598,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        _planMasterController.loadFromFile("Hural App Daily/Missions" + fileName)
+                                        _planMasterController.loadFromFile("Hural App Daily//Missions" + fileName)
                                         _planMasterController.fitViewportToItems()
                                         _missionController.setCurrentPlanViewSeqNum(0, true)
                                     }
@@ -687,7 +687,7 @@ Item {
                         }
 
                         Component.onCompleted: {
-                            planMasterController.searchPlanFiles("Hural App Daily/Missions/")
+                            planMasterController.searchPlanFiles("Hural App Daily//Missions/")
                         }
 
                         Connections {
@@ -780,7 +780,7 @@ Item {
                             visible:            storageSection.visible
 
                             QGCButton {
-                                text:               qsTr("Open...")
+                                text:               qsTr("Selecionar área")
                                 Layout.fillWidth:   true
                                 Layout.alignment: Qt.AlignHCenter 
                                 enabled:            !_planMasterController.syncInProgress
@@ -804,7 +804,7 @@ Item {
                                         _planMasterController.saveToCurrent()
                                     } else {
                                         _planMasterController.saveToSelectedFile()
-                                        planMasterController.searchPlanFiles("/home/guilherme/Desktop/CustomQGC/build/Missions")
+                                        planMasterController.searchPlanFiles("Hural App Daily//Missions")
                                     }
 
                                     
