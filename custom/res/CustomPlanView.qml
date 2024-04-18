@@ -561,7 +561,7 @@ Item {
                     
                     height: parent.height
                     width: {
-                        let baseWidth = _rightPanelWidth + 50;
+                        let baseWidth = _rightPanelWidth + 20;
                         if (_utmspEnabled) {
                             // Ajusta a largura adicionando um valor baseado na largura disponível
                             baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 25, 350);

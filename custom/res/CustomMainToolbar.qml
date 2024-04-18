@@ -78,13 +78,17 @@ Rectangle {
         }
 
         Item {
-        Layout.preferredHeight: viewButtonRow.height
+            Layout.preferredHeight: viewButtonRow.height
+            width: parent.width
+
             Image {
-                height: parent.height
-                width: 150 // Ajustado de 150 para 200 para fazer a imagem um pouco maior
                 source: "/custom/img/logohural.png"
-                fillMode: Image.PreserveAspectFit
-                visible: !_activeVehicle
+                fillMode: Image.PreserveAspectFit 
+                width: 82 
+                height: 82
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenterOffset: 90
             }
         }
 

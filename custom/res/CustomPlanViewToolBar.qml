@@ -58,11 +58,16 @@ Rectangle {
         
         Item {
             Layout.preferredHeight: viewButtonRow.height
-                Image {
-                height: parent.height
-                width: 150
+            width: parent.width
+
+            Image {
                 source: "/custom/img/logohural.png"
-                fillMode: Image.PreserveAspectFit
+                fillMode: Image.PreserveAspectFit 
+                width: 82 
+                height: 82
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenterOffset: 90
             }
         }
     }
