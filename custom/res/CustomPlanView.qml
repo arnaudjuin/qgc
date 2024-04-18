@@ -581,30 +581,30 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 model: planFilesModel
-                                delegate: Rectangle {
-                                    width: parent.width
-                                    height: 40
-                                    color: "#ffffff"
-                                    border.color: "#000000"
-                                    border.width: 1
+                                    delegate: Rectangle {
+                                        width: parent.width
+                                        height: 40
+                                        color: "#ffffff"
+                                        border.color: "#000000"
+                                        border.width: 1
 
-                                Text {
-                                    text: fileName
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.left: parent.left
-                                    anchors.leftMargin: 10
-                                }
+                                    Text {
+                                        text: fileName
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        anchors.left: parent.left
+                                        anchors.leftMargin: 10
+                                    }
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        _planMasterController.loadFromFile("/storage/self/primary/Hural App Daily/Missions" + fileName)
-                                        _planMasterController.fitViewportToItems()
-                                        _missionController.setCurrentPlanViewSeqNum(0, true)
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        onClicked: {
+                                            planMasterController.openFile(fileName)
+                                            _planMasterController.fitViewportToItems()
+                                            _missionController.setCurrentPlanViewSeqNum(0, true)
+                                        }
                                     }
                                 }
                             }
-                        }
 
                             /*Item {
                                 id: rootItem
@@ -705,10 +705,11 @@ Item {
                             id:                 unsavedChangedLabel
                             Layout.fillWidth:   true
                             wrapMode:           Text.WordWrap
+                            visible:false
                             text:               globals.activeVehicle ?
                                                     qsTr("Você tem alterações não salvas. Faça upload ao veículo ou salve as alterações") :
                                                     qsTr("Você tem alterações não salvas.")
-                            visible:            _planMasterController.dirty
+                            //visible:            _planMasterController.dirty
                         }
                         
                         Repeater {

@@ -123,6 +123,7 @@ signals:
     void promptForPlanUsageOnVehicleChange  (void);
     void planFilesFound(const QStringList &fileNames);
     void missionLoaded(double lat, double lon);
+    void filePathChanged(const QString& filePath);
 
 private slots:
     void _activeVehicleChanged      (Vehicle* activeVehicle);

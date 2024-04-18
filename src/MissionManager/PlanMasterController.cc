@@ -28,7 +28,6 @@
 #include <QUrl>
 #include <QStandardPaths>
 #include <QStringList>
-#include <QJsonObject>
 
 QGC_LOGGING_CATEGORY(PlanMasterControllerLog, "PlanMasterControllerLog")
 
@@ -111,38 +110,129 @@ void PlanMasterController::startStaticActiveVehicle(Vehicle* vehicle, bool delet
 }
 
 void PlanMasterController::searchPlanFiles() {
-    // Define o subdiretório específico onde os arquivos .plan são esperados
-    QString subdirectory = "Hural App Daily/Missions";
+#if defined(Q_OS_ANDROID)
+    QtAndroid::requestPermissions(QStringList("android.permission.READ_EXTERNAL_STORAGE"), [this](QtAndroid::PermissionResultMap resultHash){
+        if(resultHash["android.permission.READ_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Granted){
+            // Caminho para o diretório 'Missions' no armazenamento externo específico do aplicativo
+            QString filePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Hural App Daily/Missions";
 
-    // Obter o diretório padrão onde os dados da aplicação podem ser salvos
-    QString dataDirectory = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+            QDir dir(filePath);
+            QStringList filters;
+            filters << "*.plan"; // Filtro para arquivos .plan
+            QStringList fileNames = dir.entryList(filters, QDir::Files);
 
-    // Construir o caminho completo adicionando o subdiretório ao diretório de dados
-    QString directoryPath = dataDirectory + "/" + subdirectory;
+            if (fileNames.isEmpty()) {
+                qDebug() << "Nenhum arquivo .plan encontrado no diretório:" << filePath;
+            } else {
+                qDebug() << "Arquivos .plan encontrados:" << fileNames;
+            }
 
-    // Verificar se o diretório existe
-    QDir dir(directoryPath);
-    if (!dir.exists()) {
-        qWarning() << "Diretório não encontrado:" << directoryPath;
+            emit planFilesFound(fileNames);
+        } else {
+            emit errorMessage(tr("Access to storage permission is required to list mission files"));
+        }
+    });
+#else
+    // Implementação para outras plataformas (iOS, desktop, etc.)
+    QString filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/Hural App Daily/Missions";
+    QDir dir(filePath);
+    QStringList filters;
+    filters << "*.plan"; // Filtro para arquivos .plan
+    QStringList fileNames = dir.entryList(filters, QDir::Files);
+    emit planFilesFound(fileNames);
+#endif
+}
+
+void PlanMasterController::openFile(const QString& fileName)
+{
+    QString filePath;
+#if defined(Q_OS_ANDROID)
+    filePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Hural App Daily/Missions/" + fileName;
+#else
+    filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/Hural App Daily/Missions/" + fileName;
+#endif
+
+    QString errorString;
+    QString errorMessage = tr("Error loading Plan file (%1). %2").arg(fileName).arg("%1");
+
+    if (fileName.isEmpty()) {
         return;
     }
 
-    // Definir os filtros de busca para arquivos .plan
-    QStringList filters;
-    filters << "*.plan";
-    QStringList fileNames = dir.entryList(filters, QDir::Files);
+    QFileInfo fileInfo(filePath);
+    QFile file(filePath);
 
-    // Emitir um sinal com os nomes dos arquivos encontrados
-    emit planFilesFound(fileNames);
-}
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        errorString = file.errorString() + QStringLiteral(" ") + filePath;
+        qgcApp()->showAppMessage(errorMessage.arg(errorString));
+        return;
+    }
 
-void PlanMasterController::openFile(const QString& filePath)
-{
-    QUrl fileUrl = QUrl::fromLocalFile(filePath);
-    if (!QDesktopServices::openUrl(fileUrl)) {
-        qWarning() << "Não foi possível abrir o arquivo:" << filePath;
+    bool success = false;
+    if (fileInfo.suffix() == AppSettings::missionFileExtension) {
+        if (!_missionController.loadJsonFile(file, errorString)) {
+            qgcApp()->showAppMessage(errorMessage.arg(errorString));
+        } else {
+            success = true;
+        }
+    } else if (fileInfo.suffix() == AppSettings::waypointsFileExtension || fileInfo.suffix() == QStringLiteral("txt")) {
+        if (!_missionController.loadTextFile(file, errorString)) {
+            qgcApp()->showAppMessage(errorMessage.arg(errorString));
+        } else {
+            success = true;
+        }
+    } else {
+        QJsonDocument   jsonDoc;
+        QByteArray      bytes = file.readAll();
+
+        if (!JsonHelper::isJsonFile(bytes, jsonDoc, errorString)) {
+            qgcApp()->showAppMessage(errorMessage.arg(errorString));
+            return;
+        }
+
+        QJsonObject json = jsonDoc.object();
+        //-- Allow plugins to pre process the load
+        qgcApp()->toolbox()->corePlugin()->preLoadFromJson(this, json);
+
+        int version;
+        if (!JsonHelper::validateExternalQGCJsonFile(json, kPlanFileType, kPlanFileVersion, kPlanFileVersion, version, errorString)) {
+            qgcApp()->showAppMessage(errorMessage.arg(errorString));
+            return;
+        }
+
+        QList<JsonHelper::KeyValidateInfo> rgKeyInfo = {
+            { kJsonMissionObjectKey,        QJsonValue::Object, true },
+            { kJsonGeoFenceObjectKey,       QJsonValue::Object, true },
+            { kJsonRallyPointsObjectKey,    QJsonValue::Object, true },
+        };
+        if (!JsonHelper::validateKeys(json, rgKeyInfo, errorString)) {
+            qgcApp()->showAppMessage(errorMessage.arg(errorString));
+            return;
+        }
+
+        if (!_missionController.load(json[kJsonMissionObjectKey].toObject(), errorString) ||
+                !_geoFenceController.load(json[kJsonGeoFenceObjectKey].toObject(), errorString) ||
+                !_rallyPointController.load(json[kJsonRallyPointsObjectKey].toObject(), errorString)) {
+            qgcApp()->showAppMessage(errorMessage.arg(errorString));
+        } else {
+            //-- Allow plugins to post process the load
+            qgcApp()->toolbox()->corePlugin()->postLoadFromJson(this, json);
+            success = true;
+        }
+    }
+
+    if(success){
+        _currentPlanFile = QString::asprintf("%s/%s.%s", fileInfo.path().toLocal8Bit().data(), fileInfo.completeBaseName().toLocal8Bit().data(), AppSettings::planFileExtension);
+    } else {
+        _currentPlanFile.clear();
+    }
+    emit currentPlanFileChanged();
+
+    if (!offline()) {
+        setDirty(true);
     }
 }
+
 
 void PlanMasterController::_activeVehicleChanged(Vehicle* activeVehicle)
 {
