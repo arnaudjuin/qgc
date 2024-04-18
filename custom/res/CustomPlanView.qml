@@ -558,14 +558,19 @@ Item {
                 Rectangle {
                     id: exampleRectangle
                     color: '#ffffff'
-                    width: parent.width * 0.2
-                    height: parent.height 
-                    anchors.left: parent.left 
-                    anchors.top: parent.top 
-
+                    
+                    height: parent.height
+                    width: {
+                        let baseWidth = _rightPanelWidth + 50;
+                        if (_utmspEnabled) {
+                            // Ajusta a largura adicionando um valor baseado na largura disponível
+                            baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 25, 350);
+                        }
+                        return baseWidth; 
+                    }
                     ColumnLayout {
                         id:         columnHolder
-                        spacing:    ScreenTools.defaultFontPixelWidth * 0.2
+                        spacing:    ScreenTools.defaultFontPixelWidth * 0.1
                         anchors.fill:parent
 
                         QGCLabel {
@@ -577,110 +582,66 @@ Item {
                                 Layout.margins: { left: 30 }
                             }
                         
-                            ListView {
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                model: planFilesModel
-                                    delegate: Rectangle {
-                                        width: parent.width
-                                        height: 40
-                                        color: "#ffffff"
-                                        border.color: "#000000"
-                                        border.width: 1
-
+                        ListView {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            model: planFilesModel
+                            delegate: Rectangle {
+                                width: parent.width
+                                height: 40
+                                color: "#ffffff"
+                                border {
+                                    color: "gray"
+                                    width: 0.5
+                                }
+                                Row {
+                                    anchors.fill: parent
+                                    spacing: 10
+                                    Image {
+                                        source: imageSource
+                                        width: 19
+                                        height: 19
+                                        z: 1
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
                                     Text {
                                         text: fileName
                                         anchors.verticalCenter: parent.verticalCenter
-                                        anchors.left: parent.left
-                                        anchors.leftMargin: 10
                                     }
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onClicked: {
-                                            planMasterController.openFile(fileName)
-                                            _planMasterController.fitViewportToItems()
-                                            _missionController.setCurrentPlanViewSeqNum(0, true)
-                                        }
+                                }
+                                Button {
+                                    enabled: true
+                                    background: Rectangle {
+                                        color: "red"
+                                        radius: 5
+                                    }
+                                    Image {
+                                        source: "/custom/img/trash.png"
+                                        anchors.centerIn: parent
+                                        width: 13
+                                        height: 13
+                                    }
+                                    onClicked: {
+                                        
+                                    }
+                                    anchors.right: parent.right
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.rightMargin: 10
+                                    width: 19
+                                    height: 19
+                                }
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        planMasterController.openFile(fileName)
+                                        _planMasterController.fitViewportToItems()
+                                        _missionController.setCurrentPlanViewSeqNum(0, true)
                                     }
                                 }
                             }
+                        }
 
-                            /*Item {
-                                id: rootItem
-                                width: 57
-                                height: 30
-                                property bool mouseOver: false 
-
-                                QGCButton {
-                                    id: imageButton
-                                    Layout.fillWidth: true
-                                    Layout.fillHeight: true
-                                    anchors.fill: parent
-                                    background: null
-
-                                    Image {
-                                        width: 25
-                                        height: 25
-                                        source: "/custom/img/A-z.png"
-                                    }
-
-                                    onClicked: {
-                                        infoBox.visible = !infoBox.visible
-                                    }
-                                }
-
-                                Rectangle {
-                                    id: infoBox
-                                    width: 200
-                                    height: 100
-                                    color: "#ffffff"
-                                    visible: false
-                                    x: imageButton.x + imageButton.width + 1
-                                    y: rootItem.y 
-
-                                    Column {
-                                        spacing: 5
-                                        anchors.fill: parent
-                                        anchors.margins: 10
-                                        anchors.topMargin: 20
-
-                                        Text {
-                                            text: qsTr("Ordem de A-Z")
-                                            color: "#333333"
-                                            font.pointSize: 10
-                                            Layout.fillWidth: true
-                                        }
-                                        Text {
-                                            text: qsTr("Ordem de Z-A")
-                                            color: "#333333"
-                                            font.pointSize: 10
-                                            Layout.fillWidth: true
-                                        }
-                                    }
-
-                                    MouseArea {
-                                        anchors.top: parent.top
-                                        anchors.right: parent.right
-                                        width: 30
-                                        height: 30
-                                        anchors.fill: parent
-
-                                        Rectangle {
-                                            anchors.fill: parent
-                                            color: "#ffffff"
-
-                                            Image {
-                                                source: "/custom/img/X.png"
-                                                anchors.centerIn: parent
-                                                width: 15
-                                                height: 15
-                                            }
-                                        }
-                                    }
-                                } // Fechamento de Rectangle infoBox
-                            } // Fechamento de Item rootItem
-                         // Fechamento de Row*/
+                            
 
                         ListModel {
                             id: planFilesModel
@@ -695,22 +656,24 @@ Item {
                             onPlanFilesFound: {
                                 planFilesModel.clear()
                                 for (var i = 0; i < fileNames.length; ++i) {
-                                    planFilesModel.append({"fileName": fileNames[i]})
+                                    planFilesModel.append({"fileName": fileNames[i],
+                                    "imageSource": "/custom/img/area.png"
+                                    })
                                 }
                             }
                         }
 
 
-                        QGCLabel {
+                        /*QGCLabel {
                             id:                 unsavedChangedLabel
                             Layout.fillWidth:   true
                             wrapMode:           Text.WordWrap
-                            visible:false
+                            
                             text:               globals.activeVehicle ?
                                                     qsTr("Você tem alterações não salvas. Faça upload ao veículo ou salve as alterações") :
                                                     qsTr("Você tem alterações não salvas.")
-                            //visible:            _planMasterController.dirty
-                        }
+                            visible:            _planMasterController.dirty
+                        }*/
                         
                         Repeater {
                             model: _missionController.complexMissionItemNames
@@ -779,20 +742,22 @@ Item {
                             rowSpacing:         _margin
                             columnSpacing:      ScreenTools.defaultFontPixelWidth
                             visible:            storageSection.visible
+                            Layout.fillWidth: true 
 
-                            QGCButton {
-                                text:               qsTr("Selecionar área")
-                                Layout.fillWidth:   true
-                                Layout.alignment: Qt.AlignHCenter 
-                                enabled:            !_planMasterController.syncInProgress
-                                onClicked: {
-                                    if (_planMasterController.dirty) {
-                                        showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
-                                    } else {
-                                        _planMasterController.loadFromSelectedFile()
+                                QGCButton {
+                                    text:               qsTr("Selecionar área...")
+                                    Layout.fillWidth:   true
+                                    Layout.alignment: Qt.AlignHCenter
+                                    enabled:            !_planMasterController.syncInProgress
+                                    onClicked: {
+                                        if (_planMasterController.dirty) {
+                                            showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
+                                        } else {
+                                            _planMasterController.loadFromSelectedFile()
+                                        }
                                     }
                                 }
-                            }
+
 
                             QGCButton {
                                 text:               qsTr("Save")
@@ -805,7 +770,7 @@ Item {
                                         _planMasterController.saveToCurrent()
                                     } else {
                                         _planMasterController.saveToSelectedFile()
-                                        planMasterController.searchPlanFiles()
+                                        planMasterController.searchPlanFiles("/home/guilherme/Desktop/CustomQGC/build/Missions")
                                     }
 
                                     

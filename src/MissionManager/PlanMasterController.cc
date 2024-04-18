@@ -112,7 +112,7 @@ void PlanMasterController::startStaticActiveVehicle(Vehicle* vehicle, bool delet
 void PlanMasterController::searchPlanFiles() {
 #if defined(Q_OS_ANDROID)
       // Caminho para o diretório 'Missions' no armazenamento externo específico do aplicativo
-    QString filePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Hural App Daily/Missions";
+    QString filePath = qgcApp()->toolbox()->settingsManager()->appSettings()->missionSavePath();
     QDir dir(filePath);
     QStringList filters;
     filters << "*.plan"; // Filtro para arquivos .plan
@@ -125,7 +125,7 @@ void PlanMasterController::searchPlanFiles() {
     emit planFilesFound(fileNames);
 #else
     // Implementação para outras plataformas (iOS, desktop, etc.)
-    QString filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/Hural App Daily/Missions";
+    QString filePath = qgcApp()->toolbox()->settingsManager()->appSettings()->missionSavePath();
     QDir dir(filePath);
     QStringList filters;
     filters << "*.plan"; // Filtro para arquivos .plan
@@ -138,9 +138,9 @@ void PlanMasterController::openFile(const QString& fileName)
 {
     QString filePath;
 #if defined(Q_OS_ANDROID)
-    filePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Hural App Daily/Missions/" + fileName;
+    filePath = qgcApp()->toolbox()->settingsManager()->appSettings()->missionSavePath() + "/" + fileName;
 #else
-    filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/Hural App Daily/Missions/" + fileName;
+    filePath = qgcApp()->toolbox()->settingsManager()->appSettings()->missionSavePath() + "/" + fileName;
 #endif
 
     QString errorString;

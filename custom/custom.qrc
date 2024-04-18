@@ -19,6 +19,8 @@
         <file alias="A-z.png">res/Images/A-z.png</file>
         <file alias="X.png">res/Images/X.png</file>
         <file alias="List1.png">res/Images/List1.png</file>
+        <file alias="area.png">res/Images/area.png</file>
+        <file alias="trash.png">res/Images/trash.png</file>
 
     </qresource>
     <qresource prefix="/qmlimages">
