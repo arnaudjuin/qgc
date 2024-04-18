@@ -111,27 +111,18 @@ void PlanMasterController::startStaticActiveVehicle(Vehicle* vehicle, bool delet
 
 void PlanMasterController::searchPlanFiles() {
 #if defined(Q_OS_ANDROID)
-    QtAndroid::requestPermissions(QStringList("android.permission.READ_EXTERNAL_STORAGE"), [this](QtAndroid::PermissionResultMap resultHash){
-        if(resultHash["android.permission.READ_EXTERNAL_STORAGE"] == QtAndroid::PermissionResult::Granted){
-            // Caminho para o diretório 'Missions' no armazenamento externo específico do aplicativo
-            QString filePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Hural App Daily/Missions";
-
-            QDir dir(filePath);
-            QStringList filters;
-            filters << "*.plan"; // Filtro para arquivos .plan
-            QStringList fileNames = dir.entryList(filters, QDir::Files);
-
-            if (fileNames.isEmpty()) {
-                qDebug() << "Nenhum arquivo .plan encontrado no diretório:" << filePath;
-            } else {
-                qDebug() << "Arquivos .plan encontrados:" << fileNames;
-            }
-
-            emit planFilesFound(fileNames);
-        } else {
-            emit errorMessage(tr("Access to storage permission is required to list mission files"));
-        }
-    });
+      // Caminho para o diretório 'Missions' no armazenamento externo específico do aplicativo
+    QString filePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Hural App Daily/Missions";
+    QDir dir(filePath);
+    QStringList filters;
+    filters << "*.plan"; // Filtro para arquivos .plan
+    QStringList fileNames = dir.entryList(filters, QDir::Files);
+    if (fileNames.isEmpty()) {
+        qDebug() << "Nenhum arquivo .plan encontrado no diretório:" << filePath;
+    } else {
+        qDebug() << "Arquivos .plan encontrados:" << fileNames;
+    }
+    emit planFilesFound(fileNames);
 #else
     // Implementação para outras plataformas (iOS, desktop, etc.)
     QString filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/Hural App Daily/Missions";
