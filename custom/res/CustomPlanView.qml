@@ -39,6 +39,7 @@ Item {
     readonly property real  _toolsMargin:               ScreenTools.defaultFontPixelWidth * 0.75
     readonly property real  _radius:                    ScreenTools.defaultFontPixelWidth  * 0.5
     readonly property real  _rightPanelWidth:           Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 30)
+    readonly property real  _leftPanelWidth:             Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 30)
     readonly property var   _defaultVehicleCoordinate:  QtPositioning.coordinate(37.803784, -122.462276)
     readonly property bool  _waypointsOnlyMode:         QGroundControl.corePlugin.options.missionWaypointsOnly
 
@@ -560,14 +561,7 @@ Item {
                     color: '#ffffff'
                     
                     height: parent.height
-                    width: {
-                        let baseWidth = _rightPanelWidth + 20;
-                        if (_utmspEnabled) {
-                            // Ajusta a largura adicionando um valor baseado na largura disponível
-                            baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 25, 350);
-                        }
-                        return baseWidth; 
-                    }
+                    width: _leftPanelWidth - 20
                     ColumnLayout {
                         id:         columnHolder
                         spacing:    ScreenTools.defaultFontPixelWidth * 0.1
@@ -587,7 +581,7 @@ Item {
                             Layout.fillHeight: true
                             model: planFilesModel
                             delegate: Rectangle {
-                                width: parent.width
+                                width: exampleRectangle.width
                                 height: 40
                                 color: "#ffffff"
                                 border {
@@ -738,26 +732,29 @@ Item {
                         property string _overwriteText: qsTr("Plan overwrite")
 
                         GridLayout {
-                            columns:            3
+                            columns:            1
                             rowSpacing:         _margin
                             columnSpacing:      ScreenTools.defaultFontPixelWidth
                             visible:            storageSection.visible
-                            Layout.fillWidth: true 
+                            width: exampleRectangle.width
 
-                                QGCButton {
-                                    text:               qsTr("Selecionar área...")
-                                    Layout.fillWidth:   true
-                                    Layout.alignment: Qt.AlignHCenter
-                                    enabled:            !_planMasterController.syncInProgress
-                                    onClicked: {
-                                        if (_planMasterController.dirty) {
-                                            showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
-                                        } else {
-                                            _planMasterController.loadFromSelectedFile()
-                                        }
+                            QGCButton {
+                                text:               qsTr("Selecionar área...")
+                                width: exampleRectangle.width
+                                anchors {
+                                    bottom: parent.bottom
+                                    left: parent.left
+                                    right: parent.right
+                                }
+                                enabled:            !_planMasterController.syncInProgress
+                                onClicked: {
+                                    if (_planMasterController.dirty) {
+                                        showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
+                                    } else {
+                                        _planMasterController.loadFromSelectedFile()
                                     }
                                 }
-
+                            }
 
                             QGCButton {
                                 text:               qsTr("Save")
