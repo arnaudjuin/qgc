@@ -555,256 +555,36 @@ Item {
 
         //-----------------------------------------------------------
         // Left tool strip
-                Rectangle {
-                    id: exampleRectangle
-                    color: '#ffffff'
+            Repeater {
+                
+                model: _missionController.complexMissionItemNames
+                
+                QGCButton{
                     
-                    height: parent.height
-                    width: parent.width * 0.2 /*{
-                        let baseWidth = _rightPanelWidth - 10;
-                        if (_utmspEnabled) {
-                            // Ajusta a largura adicionando um valor baseado na largura disponível
-                            baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 25, 350);
+                    text: qsTr("Criar nova missão")
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        leftMargin: 7
+                        topMargin: 7
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onEntered: imgMais.opacity = 0.7
+                        onExited: imgMais.opacity = 1
+                        onClicked: {
+                        if (_planMasterController.containsItems) {
+                            createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
+                        } else {
+                            insertComplexItemAfterCurrent(modelData)
+                            buttonSaveVisible = true
                         }
-                        return baseWidth;
-                    }*/ 
-                    ColumnLayout {
-                        id:         columnHolder
-                        spacing:    ScreenTools.defaultFontPixelWidth * 0.1
-                        anchors.fill:parent
-
-                        QGCLabel {
-                                font.pointSize: 15
-                                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                                text: qsTr("Minhas áreas")
-                                color: 'black'
-                                antialiasing: true
-                                Layout.margins: 10
-                                //Layout.margins: { left: 30 }
-                            }
-                        
-                        ListView {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            Layout.preferredHeight: parent.height - 50
-                            model: planFilesModel
-                            clip: true
-                            delegate: Rectangle {
-                                width: exampleRectangle.width
-                                height: 40
-                                color: "#ffffff"
-                                border {
-                                    color: "gray"
-                                    width: 0.5
-                                }
-                                Row {
-                                    anchors.fill: parent
-                                    spacing: 10
-                                    Image {
-                                        source: imageSource
-                                        width: 19
-                                        height: 19
-                                        z: 1
-                                        anchors.verticalCenter: parent.verticalCenter
-                                    }
-                                    Text {
-                                        text: fileName
-                                        anchors.verticalCenter: parent.verticalCenter
-                                    }
-                                }
-                                Button {
-                                    enabled: true
-                                    background: Rectangle {
-                                        color: "red"
-                                        radius: 5
-                                    }
-                                    Image {
-                                        source: "/custom/img/trash.png"
-                                        anchors.centerIn: parent
-                                        width: 13
-                                        height: 13
-                                    }
-                                    onClicked: {
-                                        
-                                    }
-                                    anchors.right: parent.right
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.rightMargin: 10
-                                    width: 19
-                                    height: 19
-                                }
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        planMasterController.openFile(fileName)
-                                        buttonSaveVisible = true
-                                        _planMasterController.fitViewportToItems()
-                                        _missionController.setCurrentPlanViewSeqNum(0, true)
-                                    }
-                                }
-                            }
-                        }
-
-                            
-
-                        ListModel {
-                            id: planFilesModel
-                        }
-
-                        Component.onCompleted: {
-                            planMasterController.searchPlanFiles()
-                        }
-
-                        Connections {
-                            target: planMasterController
-                            onPlanFilesFound: {
-                                planFilesModel.clear()
-                                for (var i = 0; i < fileNames.length; ++i) {
-                                    planFilesModel.append({"fileName": fileNames[i],
-                                    "imageSource": "/custom/img/area.png"
-                                    })
-                                }
-                            }
-                        }
-
-
-                        /*QGCLabel {
-                            id:                 unsavedChangedLabel
-                            Layout.fillWidth:   true
-                            wrapMode:           Text.WordWrap
-                            
-                            text:               globals.activeVehicle ?
-                                                    qsTr("Você tem alterações não salvas. Faça upload ao veículo ou salve as alterações") :
-                                                    qsTr("Você tem alterações não salvas.")
-                            visible:            _planMasterController.dirty
-                        }*/
-                        
-                        Repeater {
-                            model: _missionController.complexMissionItemNames
-
-                            delegate: Item {
-                                width: 60
-                                height: width
-
-                                anchors {
-                                    right: parent.right
-                                    bottom: parent.bottom
-                                    rightMargin: 5
-                                    bottomMargin: 0
-                                }
-
-                                QGCButton {
-                                    id: botaoMais
-                                    width: 40
-                                    height: 40
-                                    
-                                    hoverEnabled: true
-
-                                    Image {
-                                        id: imgMais
-                                        source: "/custom/img/Mais1.png"
-                                        fillMode: Image.PreserveAspectFit
-                                        visible: !_activeVehicle
-                                        anchors.centerIn: parent
-                                        width: parent.width * 0.6
-                                        height: width
-                                        opacity: 1.0
-                                    }
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        onEntered: imgMais.opacity = 0.7
-                                        onExited: imgMais.opacity = 1.0
-
-                                        onClicked: {
-                                        if (_planMasterController.containsItems) {
-                                            createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
-                                        } else {
-                                            insertComplexItemAfterCurrent(modelData)
-                                            buttonSaveVisible = true
-                                        }
-                                        }
-                                    }
-
-
-                                    background: Rectangle {
-                                        color: "#ff4800"
-                                        radius: Math.min(width, height) / 2
-                                        clip: true
-                                        anchors.fill: parent
-                                    }
-                                }
-                            }
-                        }
-
-                        
-                        property string _overwriteText: qsTr("Plan overwrite")
-
-                        /*QGCButton {
-                                text:               qsTr("Selecionar área...")
-                                width: _rightPanelWidth - 10; 
-                                height: 40
-                                anchors.bottom: parent.bottom
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                enabled:            !_planMasterController.syncInProgress
-                                onClicked: {
-                                    if (_planMasterController.dirty) {
-                                        showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
-                                    } else {
-                                        _planMasterController.loadFromSelectedFile()
-                                    }
-                                }
-                            }*/
-
-
-                        GridLayout {
-                            columns:            3
-                            rowSpacing:         _margin
-                            columnSpacing:      ScreenTools.defaultFontPixelWidth
-                            visible:            storageSection.visible
-                            Layout.fillWidth: true 
-
-                                
-
-
-                            QGCButton {
-                                text:               qsTr("Save")
-                                Layout.fillWidth:   true
-                                Layout.alignment: Qt.AlignHCenter 
-                                enabled:            !_planMasterController.syncInProgress && _planMasterController.currentPlanFile !== ""
-                                visible: false
-                                onClicked: {
-                                    if(_planMasterController.currentPlanFile !== "") {
-                                        _planMasterController.saveToCurrent()
-                                    } else {
-                                        _planMasterController.saveToSelectedFile()
-                                        planMasterController.searchPlanFiles("/home/guilherme/Desktop/CustomQGC/build/Missions")
-                                    }
-
-                                    
-                                }
-                            }
-
-                            QGCButton {
-                                Layout.columnSpan:  3
-                                Layout.fillWidth:   true
-                                text:               qsTr("Save Mission Waypoints As KML...")
-                                enabled:            !_planMasterController.syncInProgress && _visualItems.count > 1
-                                visible: false
-                                onClicked: {
-                                    // First point does not count
-                                    if (_visualItems.count < 2) {
-                                        mainWindow.showMessageDialog(qsTr("KML"), qsTr("You need at least one item to create a KML."))
-                                        return
-                                    }
-                                    _planMasterController.saveKmlToSelectedFile()
-                                }
-                            }
                         }
                     }
                 }
-
+            }
+                
         //-----------------------------------------------------------
         // Right pane for mission editing controls
                 Rectangle {
