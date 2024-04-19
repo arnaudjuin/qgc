@@ -560,7 +560,7 @@ Item {
                     color: '#ffffff'
                     
                     height: parent.height
-                    width: parent.width * 0.15 /*{
+                    width: parent.width * 0.2 /*{
                         let baseWidth = _rightPanelWidth - 10;
                         if (_utmspEnabled) {
                             // Ajusta a largura adicionando um valor baseado na largura disponível
@@ -637,6 +637,7 @@ Item {
                                     anchors.fill: parent
                                     onClicked: {
                                         planMasterController.openFile(fileName)
+                                        buttonSaveVisible = true
                                         _planMasterController.fitViewportToItems()
                                         _missionController.setCurrentPlanViewSeqNum(0, true)
                                     }
