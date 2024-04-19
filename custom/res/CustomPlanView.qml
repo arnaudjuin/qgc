@@ -38,8 +38,7 @@ Item {
     readonly property real  _margin:                    ScreenTools.defaultFontPixelHeight * 0.5
     readonly property real  _toolsMargin:               ScreenTools.defaultFontPixelWidth * 0.75
     readonly property real  _radius:                    ScreenTools.defaultFontPixelWidth  * 0.5
-    readonly property real  _rightPanelWidth:           Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 30)
-    readonly property real  _leftPanelWidth:             Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 30)
+    readonly property real  _rightPanelWidth:           Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 25)
     readonly property var   _defaultVehicleCoordinate:  QtPositioning.coordinate(37.803784, -122.462276)
     readonly property bool  _waypointsOnlyMode:         QGroundControl.corePlugin.options.missionWaypointsOnly
 
@@ -561,7 +560,14 @@ Item {
                     color: '#ffffff'
                     
                     height: parent.height
-                    width: _leftPanelWidth - 20
+                    width: parent.width * 0.15 /*{
+                        let baseWidth = _rightPanelWidth - 10;
+                        if (_utmspEnabled) {
+                            // Ajusta a largura adicionando um valor baseado na largura disponível
+                            baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 25, 350);
+                        }
+                        return baseWidth;
+                    }*/ 
                     ColumnLayout {
                         id:         columnHolder
                         spacing:    ScreenTools.defaultFontPixelWidth * 0.1
@@ -573,13 +579,16 @@ Item {
                                 text: qsTr("Minhas áreas")
                                 color: 'black'
                                 antialiasing: true
-                                Layout.margins: { left: 30 }
+                                Layout.margins: 10
+                                //Layout.margins: { left: 30 }
                             }
                         
                         ListView {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
+                            Layout.preferredHeight: parent.height - 50
                             model: planFilesModel
+                            clip: true
                             delegate: Rectangle {
                                 width: exampleRectangle.width
                                 height: 40
@@ -678,9 +687,9 @@ Item {
 
                                 anchors {
                                     right: parent.right
-                                    //bottom: parent.bottom
+                                    bottom: parent.bottom
                                     rightMargin: 5
-                                    //bottomMargin: 5
+                                    bottomMargin: 0
                                 }
 
                                 QGCButton {
@@ -731,21 +740,12 @@ Item {
                         
                         property string _overwriteText: qsTr("Plan overwrite")
 
-                        GridLayout {
-                            columns:            1
-                            rowSpacing:         _margin
-                            columnSpacing:      ScreenTools.defaultFontPixelWidth
-                            visible:            storageSection.visible
-                            width: exampleRectangle.width
-
-                            QGCButton {
+                        /*QGCButton {
                                 text:               qsTr("Selecionar área...")
-                                width: exampleRectangle.width
-                                anchors {
-                                    bottom: parent.bottom
-                                    left: parent.left
-                                    right: parent.right
-                                }
+                                width: _rightPanelWidth - 10; 
+                                height: 40
+                                anchors.bottom: parent.bottom
+                                anchors.horizontalCenter: parent.horizontalCenter
                                 enabled:            !_planMasterController.syncInProgress
                                 onClicked: {
                                     if (_planMasterController.dirty) {
@@ -754,7 +754,18 @@ Item {
                                         _planMasterController.loadFromSelectedFile()
                                     }
                                 }
-                            }
+                            }*/
+
+
+                        GridLayout {
+                            columns:            3
+                            rowSpacing:         _margin
+                            columnSpacing:      ScreenTools.defaultFontPixelWidth
+                            visible:            storageSection.visible
+                            Layout.fillWidth: true 
+
+                                
+
 
                             QGCButton {
                                 text:               qsTr("Save")
@@ -843,7 +854,22 @@ Item {
                                 text:       qsTr("Área de risco")
                                 enabled:    _geoFenceController.supported
                             }
+                            
                         }
+
+
+                        QGCButton {
+                                text:               qsTr("Selecionar área...")
+                                width: rightPanel.width 
+                                enabled:            !_planMasterController.syncInProgress
+                                onClicked: {
+                                    if (_planMasterController.dirty) {
+                                        showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
+                                    } else {
+                                        _planMasterController.loadFromSelectedFile()
+                                    }
+                                }
+                            }
 
                         QGCTabBar {
                             id: layerTabBarUTMSP
