@@ -574,13 +574,12 @@ Item {
                         onEntered: imgMais.opacity = 0.7
                         onExited: imgMais.opacity = 1
                         onClicked: {
-                            if (_planMasterController.dirty) {
-                                showLoadFromFileOverwritePrompt(rightControls._overwriteText)
-
-                            } else {
-                                insertComplexItemAfterCurrent(modelData)
-                                buttonSaveVisible = true
-                            }
+                        if (_planMasterController.containsItems) {
+                            createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
+                        } else {
+                            insertComplexItemAfterCurrent(modelData)
+                            buttonSaveVisible = true
+                        }
                         }
                     }
                 }
@@ -621,33 +620,6 @@ Item {
                         anchors.right: parent.right
                         anchors.top: parent.top
 
-                        property string _overwriteText: qsTr("Plan overwrite")
-
-                        QGCButton {
-                            text:               qsTr("Selecionar área...")
-                            width: rightPanel.width 
-                            enabled:            !_planMasterController.syncInProgress
-                            onClicked: {
-                                if (_planMasterController.dirty) {
-                                    showLoadFromFileOverwritePrompt(rightControls._overwriteText)
-                                } else {
-                                    _planMasterController.loadFromSelectedFile()
-                                }
-                            }
-                        }
-                        
-                        QGCButton {
-                            text:               qsTr("Clear")
-                            Layout.fillWidth:   true
-                            width: rightPanel.width
-                            Layout.columnSpan:  2
-                            //enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress
-                            visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
-                            onClicked: {
-                                clearButtonClicked()
-                            }
-                        }
-
                         QGCTabBar {
                             id: layerTabBar
                             width: parent.width
@@ -666,6 +638,20 @@ Item {
                             
                         }
 
+
+                        QGCButton {
+                                text:               qsTr("Selecionar área...")
+                                width: rightPanel.width 
+                                enabled:            !_planMasterController.syncInProgress
+                                onClicked: {
+                                    if (_planMasterController.dirty) {
+                                        showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
+                                    } else {
+                                        _planMasterController.loadFromSelectedFile()
+                                    }
+                                }
+                            }
+
                         QGCTabBar {
                             id: layerTabBarUTMSP
                             width: parent.width
@@ -682,17 +668,6 @@ Item {
                                 text: qsTr("UTM-Adapter")
                                 visible: _utmspEnabled
                             }
-                        }
-                        QGCButton {
-                            text:               qsTr("Salvar")
-                            Layout.fillWidth:   true
-                            width: parent.width 
-                            Layout.alignment: Qt.AlignHCenter 
-                            enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
-                            visible: buttonSaveVisible
-                            onClicked: {
-                                _planMasterController.saveToSelectedFile()                     
-                            }                            
                         }
                     }
 
@@ -786,7 +761,7 @@ Item {
                 }
 
 
-       /* Component.onCompleted: {
+        Component.onCompleted: {
         GlobalSignals.showPanels.connect(function() {
             exampleRectangle.visible = true;
             rightPanelMenuBar.visible = true;
@@ -796,7 +771,7 @@ Item {
             exampleRectangle.visible = false;
             rightPanelMenuBar.visible = false;
         })
-        }*/
+        }
 
         Connections {
             target: utmspEditor
@@ -949,6 +924,8 @@ Item {
         ColumnLayout {
             id:         columnHolder
             spacing:    _margin
+
+            property string _overwriteText: qsTr("Plan overwrite")
 
             QGCLabel {
                 id:                 unsavedChangedLabel

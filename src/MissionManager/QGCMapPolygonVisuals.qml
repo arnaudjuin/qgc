@@ -586,7 +586,7 @@ Item {
         PlanEditToolbar {
             anchors.horizontalCenter:       mapControl.left
             anchors.horizontalCenterOffset: mapControl.centerViewport.left + (mapControl.centerViewport.width / 2)
-            y:                              mapControl.centerViewport.top
+            y:                              2.8
             availableWidth:                 mapControl.centerViewport.width
 
             QGCButton {
