@@ -619,6 +619,21 @@ Item {
                         anchors.right: parent.right
                         anchors.top: parent.top
 
+                        property string _overwriteText: qsTr("Plan overwrite")
+
+                        QGCButton {
+                            text:               qsTr("Selecionar área...")
+                            width: rightPanel.width 
+                            enabled:            !_planMasterController.syncInProgress
+                            onClicked: {
+                                if (_planMasterController.dirty) {
+                                    showLoadFromFileOverwritePrompt(rightControls._overwriteText)
+                                } else {
+                                    _planMasterController.loadFromSelectedFile()
+                                }
+                            }
+                        }
+
                         QGCTabBar {
                             id: layerTabBar
                             width: parent.width
@@ -637,19 +652,6 @@ Item {
                             
                         }
 
-
-                        QGCButton {
-                                text:               qsTr("Selecionar área...")
-                                width: rightPanel.width 
-                                enabled:            !_planMasterController.syncInProgress
-                                onClicked: {
-                                    if (_planMasterController.dirty) {
-                                        showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
-                                    } else {
-                                        _planMasterController.loadFromSelectedFile()
-                                    }
-                                }
-                            }
 
                         QGCTabBar {
                             id: layerTabBarUTMSP
@@ -914,6 +916,8 @@ Item {
                                          function() { _planMasterController.loadFromVehicle() })
         } else {
             _planMasterController.loadFromVehicle()
+
+
         }
     }
 
