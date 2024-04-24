@@ -578,7 +578,6 @@ Item {
                             createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
                         } else {
                             insertComplexItemAfterCurrent(modelData)
-                            buttonSaveVisible = true
                         }
                         }
                     }
