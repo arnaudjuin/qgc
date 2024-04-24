@@ -49,8 +49,8 @@ Item {
     property real _zorderSplitHandle:   QGroundControl.zOrderMapItems + 2
     property real _zorderCenterHandle:  QGroundControl.zOrderMapItems + 1   // Lowest such that drag or split takes precedence
 
-    readonly property string _polygonToolsText: qsTr("Inicie")
-    readonly property string _traceText:        qsTr("Finalize")
+    //readonly property string _polygonToolsText: qsTr("Inicie")
+    //readonly property string _traceText:        qsTr("Finalize")
 
     function addCommonVisuals() {
         if (_objMgrCommonVisuals.empty) {
@@ -197,10 +197,10 @@ Item {
         target: mapPolygon
         onTraceModeChanged: {
             if (mapPolygon.traceMode) {
-                _instructionText = _traceText
+                //_instructionText = _traceText
                 _objMgrTraceVisuals.createObject(traceMouseAreaComponent, mapControl, false)
             } else {
-                _instructionText = _polygonToolsText
+                //_instructionText = _polygonToolsText
                 _objMgrTraceVisuals.destroyObjects()
             }
         }
@@ -606,7 +606,7 @@ Item {
             }
 
             QGCButton {
-                _horizontalPadding: 0
+                _horizontalPadding: 25
                 text: mapPolygon.traceMode ? qsTr("Finalizar") : qsTr("Iniciar")
                 onClicked: {
                     if (mapPolygon.traceMode) {
@@ -622,12 +622,6 @@ Item {
                         mapPolygon.clear();
                         GlobalSignals.hidePanels()
                     }
-                }
-
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: "#ff4800" // Exemplo de cor de fundo
-                    radius: parent.height / 2 // Ajusta para uma borda mais arredondada
                 }
             }
 

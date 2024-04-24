@@ -136,6 +136,17 @@ Rectangle {
                 }
             } // Grid Column
 
+            QGCButton {
+                text:               qsTr("Salvar")
+                Layout.fillWidth:   true
+                width: parent.width 
+                Layout.alignment: Qt.AlignHCenter 
+                enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
+                onClicked: {
+                    _planMasterController.saveToSelectedFile()                     
+                }                            
+            }
+
             // Camera Tab
             CameraCalcCamera {
                 Layout.fillWidth:   true
