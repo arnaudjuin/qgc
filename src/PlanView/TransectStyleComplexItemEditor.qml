@@ -94,14 +94,15 @@ Rectangle {
                     visible:            _missionItem.cameraShots > 0 && _cameraMinTriggerInterval !== 0 && _cameraMinTriggerInterval > _missionItem.timeBetweenShots
                 }
 
-                CameraCalcGrid {
+                /*CameraCalcGrid {
                     Layout.fillWidth:               true
                     cameraCalc:                     _missionItem.cameraCalc
                     vehicleFlightIsFrontal:         true
-                    /*distanceToSurfaceLabel:         qsTr("Altitude")*/
+                    //distanceToSurfaceLabel:         qsTr("Altitude")
                     //frontalDistanceLabel:           qsTr("Trigger Dist")
-                    sideDistanceLabel:              qsTr("Largura de faixa") //_adjustedFootprintSideFact
-                }
+                    //sideDistanceLabel:              qsTr("Largura de faixa") //adjustedFootprintSide
+                }/*
+                
 
                 /*SectionHeader {
                     id:                 transectValuesHeader

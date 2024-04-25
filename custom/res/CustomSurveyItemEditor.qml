@@ -80,6 +80,31 @@ TransectStyleComplexItemEditor {
                 live: true
             }
 
+            QGCLabel {
+                text:       qsTr("Largura de faixa")
+                visible:    !forPresets
+            }
+
+            FactTextField {
+                fact:                   _missionItem.cameraCalc.adjustedFootprintSide
+                Layout.fillWidth:       true
+                onUpdated:              gridSlider.value = _missionItem.cameraCalc.adjustedFootprintSide.value
+            }
+
+            QGCSlider {
+                id:                     gridSlider
+                from:           5
+                to:           12
+                stepSize:               0.5
+                tickmarksEnabled:       false
+                Layout.fillWidth:       true
+                Layout.columnSpan:      2
+                Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                onValueChanged:         _missionItem.cameraCalc.adjustedFootprintSide.value = value
+                Component.onCompleted:  value = _missionItem.cameraCalc.adjustedFootprintSide.value
+                live: true
+            }
+
             QGCOptionsComboBox {
                 Layout.columnSpan:  2
                 Layout.fillWidth:   true
