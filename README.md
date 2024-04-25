@@ -39,7 +39,7 @@ Pre-requirements
 2.	Install QT 
 3.	Install VSCode
 4.	Clone 
-4.1. git clone --recursive -j8 -b masterclass git@github.com:hural-dynamics/rover-app.git
+4.1. git clone --recursive -j8 -b android https://github.com/hural-dynamics/rover-app.git
 
 5.	Install submodules
 
