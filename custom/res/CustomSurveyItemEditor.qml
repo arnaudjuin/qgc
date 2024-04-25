@@ -61,9 +61,23 @@ TransectStyleComplexItemEditor {
                 visible:    !forPresets
             }
             FactTextField {
-                Layout.fillWidth:   true
-                fact:               missionItem.turnAroundDistance
-                visible:            !forPresets
+                fact:                   missionItem.turnAroundDistance
+                Layout.fillWidth:       true
+                onUpdated:              turnAroundSlider.value = missionItem.turnAroundDistance.value
+            }
+
+            QGCSlider {
+                id:                     turnAroundSlider
+                from:           0
+                to:           19
+                stepSize:               0.5
+                tickmarksEnabled:       false
+                Layout.fillWidth:       true
+                Layout.columnSpan:      2
+                Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                onValueChanged:         missionItem.turnAroundDistance.value = value
+                Component.onCompleted:  value = missionItem.turnAroundDistance.value
+                live: true
             }
 
             QGCOptionsComboBox {

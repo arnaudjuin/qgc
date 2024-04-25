@@ -83,7 +83,7 @@ Rectangle {
             // Grid tab
             ColumnLayout {
                 Layout.fillWidth:   true
-                spacing:            _margin
+                //spacing:            _margin
                 visible:            tabBar.currentIndex === 0
 
                 QGCLabel {
@@ -99,15 +99,15 @@ Rectangle {
                     cameraCalc:                     _missionItem.cameraCalc
                     vehicleFlightIsFrontal:         true
                     /*distanceToSurfaceLabel:         qsTr("Altitude")*/
-                    frontalDistanceLabel:           qsTr("Trigger Dist")
-                    sideDistanceLabel:              qsTr("Largura de faixa")
+                    //frontalDistanceLabel:           qsTr("Trigger Dist")
+                    sideDistanceLabel:              qsTr("Largura de faixa") //_adjustedFootprintSideFact
                 }
 
-                SectionHeader {
+                /*SectionHeader {
                     id:                 transectValuesHeader
                     Layout.fillWidth:   true
                     text:               transectValuesHeaderName
-                }
+                }*/
 
                 Loader {
                     Layout.fillWidth:   true
@@ -124,7 +124,7 @@ Rectangle {
                     visible:            false
                 }
 
-                SectionHeader {
+                QGCLabel {
                     id:                 statsHeader
                     Layout.fillWidth:   true
                     text:               qsTr("Statistics")
@@ -132,7 +132,7 @@ Rectangle {
 
                 TransectStyleComplexItemStats {
                     Layout.fillWidth:   true
-                    visible:            statsHeader.checked
+                    //visible:            statsHeader.checked
                 }
             } // Grid Column
 

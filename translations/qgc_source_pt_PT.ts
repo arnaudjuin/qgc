@@ -16278,7 +16278,7 @@ ROTATION_NONE indica que o componente aponta na direção do voo.</translation>
     <message>
       <location filename="../src/PlanView/StructureScanEditor.qml" line="211"/>
       <source>Statistics</source>
-      <translation>Estatísticas</translation>
+      <translation>Resumo</translation>
     </message>
     <message>
       <location filename="../src/PlanView/StructureScanEditor.qml" line="219"/>
@@ -16402,7 +16402,7 @@ ROTATION_NONE indica que o componente aponta na direção do voo.</translation>
       <location filename="../src/MissionManager/SurveyComplexItem.h" line="58"/>
       <location filename="../src/MissionManager/SurveyComplexItem.h" line="59"/>
       <source>Survey</source>
-      <translation>Ajustes de polígono</translation>
+      <translation>Ajustes</translation>
     </message>
     <message>
       <location filename="../src/MissionManager/SurveyComplexItem.h" line="60"/>
@@ -16905,7 +16905,7 @@ Confirmar a alteração?</translation>
       <location filename="../src/PlanView/TransectStyleComplexItemEditor.qml" line="131"/>
       <location filename="../src/PlanView/TransectStyleComplexItemEditor.qml" line="234"/>
       <source>Statistics</source>
-      <translation>Estatísticas</translation>
+      <translation>Resumo</translation>
     </message>
     <message>
       <location filename="../src/PlanView/TransectStyleComplexItemEditor.qml" line="163"/>

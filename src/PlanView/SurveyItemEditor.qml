@@ -15,7 +15,7 @@ import QGroundControl.FlightMap
 TransectStyleComplexItemEditor {
     transectAreaDefinitionComplete: missionItem.surveyAreaPolygon.isValid
     transectAreaDefinitionHelp:     qsTr("Use the Polygon Tools to create the polygon which outlines your survey area.")
-    transectValuesHeaderName:       qsTr("Transects")
+    //transectValuesHeaderName:       qsTr("Transects")
     transectValuesComponent:        _transectValuesComponent
     presetsTransectValuesComponent: _transectValuesComponent
 
@@ -23,7 +23,7 @@ TransectStyleComplexItemEditor {
     //  property real   availableWidth    ///< Width for control
     //  property var    missionItem       ///< Mission Item for editor
 
-    property real   _margin:        ScreenTools.defaultFontPixelWidth / 2
+    //property real   _margin:        ScreenTools.defaultFontPixelWidth / 2
     property var    _missionItem:   missionItem
 
     Component {
@@ -31,8 +31,8 @@ TransectStyleComplexItemEditor {
 
         GridLayout {
             Layout.fillWidth:   true
-            columnSpacing:      _margin
-            rowSpacing:         _margin
+            /*columnSpacing:      _margin
+            rowSpacing:         _margin*/
             columns:            2
 
             QGCLabel { text: qsTr("Alinhamento") }
