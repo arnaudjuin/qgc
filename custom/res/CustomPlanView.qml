@@ -620,7 +620,7 @@ Item {
                         property string _overwriteText: qsTr("Plan overwrite")
 
                         QGCButton {
-                            text:               qsTr("Selecionar área...")
+                            text:               qsTr("Selecionar área")
                             width: rightPanel.width 
                             enabled:            !_planMasterController.syncInProgress
                             onClicked: {
