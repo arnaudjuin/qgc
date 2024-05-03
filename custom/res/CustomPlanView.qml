@@ -571,11 +571,9 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         hoverEnabled: true
-                        onEntered: imgMais.opacity = 0.7
-                        onExited: imgMais.opacity = 1
                         onClicked: {
                         if (_planMasterController.containsItems) {
-                            createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
+                            removeAllPromptDialog
                         } else {
                             insertComplexItemAfterCurrent(modelData)
                         }
@@ -863,6 +861,21 @@ Item {
             property var planCreator
 
             onAccepted: planCreator.createPlan(mapCenter)
+        }
+    }
+
+    Component {
+        id: removeAllPromptDialog
+
+        QGCSimpleMessageDialog {
+            title:      qsTr("Create Plan")
+            text:       qsTr("Are you sure you want to remove current plan and create a new plan? ")
+            buttons:    Dialog.Yes | Dialog.No
+
+            property var mapCenter
+            property var planCreator
+
+            onAccepted: insertComplexItemAfterCurrent(modelData)
         }
     }
 

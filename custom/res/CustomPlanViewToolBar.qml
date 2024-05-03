@@ -66,6 +66,7 @@ Rectangle {
                 width: 82 
                 height: 82
                 anchors.verticalCenter: parent.verticalCenter
+                visible: !_activeVehicle
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.horizontalCenterOffset: 90
             }
