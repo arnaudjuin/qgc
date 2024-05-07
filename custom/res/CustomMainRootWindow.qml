@@ -298,7 +298,7 @@ ApplicationWindow {
                         SubMenuButton {
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
-                            text:           qsTr("Minhas Áreas")
+                            text:           qsTr("Missões")
                             imageResource:     "/qmlimages/Plan.svg"
                             imageColor:        "Black"
                             visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
