@@ -27,7 +27,7 @@ message(Custom QGC Version: $${CUSTOM_QGC_VERSION})
 DEFINES += CUSTOMHEADER=\"\\\"CustomPlugin.h\\\"\"
 DEFINES += CUSTOMCLASS=CustomPlugin
 
-TARGET   = Hural App
+TARGET   = HuralApp
 DEFINES += QGC_APPLICATION_NAME='"\\\"Hural App\\\""'
 
 DEFINES += QGC_ORG_NAME=\"\\\"qgroundcontrol.org\\\"\"
