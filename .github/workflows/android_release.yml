@@ -38,7 +38,7 @@ jobs:
          - architecture: 64bits
            eabi: arm64-v8a
            arch: android_arm64_v8a
-           ARTIFACT: CustomQGroundControl64.apk
+           ARTIFACT: HuralApp.apk
 
     steps:
       - name: Checkout repo
@@ -134,5 +134,5 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@master
         with:
-          name: CustomQGroundControl64.apk  # Replace with the actual artifact name
+          name: HuralApp.apk  # Replace with the actual artifact name
 
