@@ -39,6 +39,7 @@ Item {
     readonly property real  _toolsMargin:               ScreenTools.defaultFontPixelWidth * 0.75
     readonly property real  _radius:                    ScreenTools.defaultFontPixelWidth  * 0.5
     readonly property real  _rightPanelWidth:           Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 25)
+    readonly property real  _leftTips:                  Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 25)
     readonly property var   _defaultVehicleCoordinate:  QtPositioning.coordinate(37.803784, -122.462276)
     readonly property bool  _waypointsOnlyMode:         QGroundControl.corePlugin.options.missionWaypointsOnly
 
@@ -555,32 +556,131 @@ Item {
 
         //-----------------------------------------------------------
         // Left tool strip
+        Column {
+            id: leftToolStrip
+            anchors.left: parent.left
+            spacing: 10 // Adjust spacing as needed
+            y: 2.8
+
             Repeater {
-                
                 model: _missionController.complexMissionItemNames
                 
                 QGCButton{
-                    
+                    id: criarNovaMissaoButton
                     text: qsTr("Criar nova missão")
                     anchors {
                         left: parent.left
-                        top: parent.top
+                        topMargin: 15
                         leftMargin: 7
-                        topMargin: 7
                     }
                     MouseArea {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                        if (_planMasterController.containsItems) {
-                            removeAllPromptDialog
-                        } else {
-                            insertComplexItemAfterCurrent(modelData)
-                        }
+                            if (_planMasterController.containsItems) {
+                                removeAllPromptDialog
+                            } else {
+                                insertComplexItemAfterCurrent(modelData)
+                            }
+                            leftTips.visible = !leftTips.visible; // Toggle panel visibility
                         }
                     }
                 }
             }
+            
+            Rectangle {
+                id: leftTips
+                visible: false // Initially hidden
+                width: {
+                    let baseWidth = _leftTips;
+                    if (_utmspEnabled) {
+                        baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 15, 300);
+                    }
+                    return baseWidth;
+                }
+                color: '#ffffff'
+                radius: 10 // Rounded corners
+                property int popuppadding: 10
+                height: titlePopupLabel.height + contentPopupLabel.height + 2 * popuppadding // Adjusted height
+                property int originalHeight: titlePopupLabel.height + contentPopupLabel.height + 2 * popuppadding // Adjusted originalHeight
+
+                //Posicionamento do painel
+                anchors.top: criarNovaMissaoButton.bottom
+                anchors.left: parent.left
+                anchors.leftMargin: 10 // Adjust this to ensure it doesn't stick to the screen edge
+                anchors.topMargin: 5 // Space between the button and the rectangle
+
+                RowLayout {
+                    id: leftTipsTitleBar
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: 10 // Adjust as needed
+                    height: titlePopupLabel.height
+
+                    // Minimize button
+                    QGCButton {
+                        id: minimizePopupButton
+                        property bool isMinimized: false
+                        background: null // Remove button background
+                        height: titlePopupLabel.font.pixelSize * 0.4 // Adjusted button height
+                        onClicked: {
+                            isMinimized = !isMinimized
+                            if (isMinimized) {
+                                leftTips.originalHeight = leftTips.height
+                                leftTips.height = titlePopupLabel.height + leftTips.popuppadding // Adjusted minimized height
+                            } else {
+                                leftTips.height = leftTips.originalHeight
+                            }
+                            contentPopupLabel.visible = !isMinimized
+                        }
+
+                        Label {
+                            text: minimizePopupButton.isMinimized ? ">" : " ⌄"
+                            color: "#ff4800" // Set text color to orange
+                            anchors.centerIn: parent
+                        }
+                    }
+
+                    // Title
+                    QGCLabel {
+                        id: titlePopupLabel
+                        text: "Criar nova area"
+                        color: "#ff4800"
+                        font.pixelSize: defaultFontPixelSize * 1.5 // Use pixelSize instead of pointSize
+                    }
+
+                    // Close button
+                    QGCButton{
+                        id: closePopupButton
+                        background: null // Remove button background
+                        height: titlePopupLabel.font.pixelSize * 0.4 // Adjusted button height
+                        onClicked: leftTips.visible = false
+
+                        Label {
+                            text: "-"
+                            color: "#ff4800" // Set text color to orange
+                            anchors.centerIn: parent
+                        }
+                    }
+                }
+
+                QGCLabel {
+                    id: contentPopupLabel
+                    color:"#000000"
+                    text: 'Vá com o controle até o ponto desejado conforme exibido no mapa e clique em "Marcar Ponto" para adicionar o ponto ao seu polígono.\n\nVocê também pode utilizar a posição do Rover para marcar pontos. Basta selecionar o ícone do Rover no mapa.\n\nQuando estiver terminado, clique em "Finalizar" e o polígono será concluído.\n\nUse dois dedos na tela para movimentar e também para aumentar e diminuir o zoom.'
+                    wrapMode: Text.Wrap
+                    width: leftTips.width - 2 * leftTips.popuppadding // Adjust width to account for padding
+                    horizontalAlignment: Text.AlignHCenter // Center text horizontally
+                    anchors {
+                        top: leftTipsTitleBar.bottom
+                        topMargin: leftTips.popuppadding // Add top padding
+                        horizontalCenter: parent.horizontalCenter
+                        leftMargin: leftTips.popuppadding // Add left padding
+                        rightMargin: leftTips.popuppadding // Add right padding
+                        bottomMargin: leftTips.popuppadding // Add bottom padding
+                    }
+                }
+            }
+        }
                 
         //-----------------------------------------------------------
         // Right pane for mission editing controls

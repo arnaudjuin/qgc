@@ -10,7 +10,7 @@
  */
 
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls 2.15
 import QtQuick.Layouts
 
 import QGroundControl
@@ -88,6 +88,128 @@ Item {
 
         property real leftEdgeCenterInset: visible ? x + width : 0
     }
+
+    //-------------------------------------------------------------------------
+    //-- Pop Up
+    Rectangle {
+        id: expandablePanel
+        width: parent.width * 0.2  // 20% da largura do elemento pai
+        height: isMinimized ? 40 : 200  // Altura fixa quando minimizado e quando expandido
+        color: "black"
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: 10
+        anchors.rightMargin: 10
+        radius: 10
+        property bool isMinimized: true 
+
+        // Área do cabeçalho
+        Rectangle {
+            id: headerArea
+            width: parent.width
+            height: 40
+            color: "black"
+            radius: 10
+            RowLayout {
+                anchors.fill: parent
+                spacing: parent.width * 0.02
+
+                // Botão para minimizar/maximizar
+                Button {
+                    id: toggleButton
+                    onClicked: {
+                        expandablePanel.isMinimized = !expandablePanel.isMinimized
+                        expandablePanel.height = expandablePanel.isMinimized ? headerArea.height : 200
+                    }
+                    Layout.leftMargin: parent.width * 0.02
+                    Layout.preferredWidth: parent.width * 0.08
+
+                    background: Rectangle {
+                        radius: 15
+                        color: "transparent"
+                    }
+
+                    Label {
+                        text: expandablePanel.isMinimized ? "+" : "-"
+                        font.pixelSize: Math.max(16, parent.width * 0.04)
+                        color: "white"
+                        anchors.verticalCenter: parent.verticalCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
+
+                // Título do Painel
+                Label {
+                    text: "Painel de Instrumentos"
+                    color: "#ff4800"
+                    Layout.fillWidth: true
+                    Layout.rightMargin: parent.width * 0.02
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pixelSize: Math.max(12, parent.width * 0.03)  // Garante um mínimo de 12
+                }
+            }
+        }
+
+        // Conteúdo do painel
+        Rectangle {
+            visible: !expandablePanel.isMinimized
+            anchors.top: headerArea.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            color: "black"
+            radius: 10
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+                anchors.topMargin: 10
+                anchors.bottomMargin: 10
+                spacing: -10
+
+                RowLayout {
+                    spacing: parent.width * 0.03
+                    QGCSwitch {
+                        id: switchBomb
+                    }
+                    Label {
+                        text: "Bombas"
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: Math.max(10, parent.width * 0.025)
+                    }
+                }
+
+                RowLayout {
+                    spacing: parent.width * 0.03
+                    QGCSwitch {
+                        id: switchNozzle
+                    }
+                    Label {
+                        text: "Bicos"
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: Math.max(10, parent.width * 0.025)
+                    }
+                }
+
+                RowLayout {
+                    spacing: parent.width * 0.03
+                    QGCSwitch {
+                        id: switchLight
+                    }
+                    Label {
+                        text: "Iluminação"
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: Math.max(10, parent.width * 0.025)
+                    }
+                }
+            }
+        }
+    }
+    
 
     //-------------------------------------------------------------------------
     //-- Heading Indicator

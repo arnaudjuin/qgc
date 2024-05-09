@@ -1,15 +1,5 @@
-/****************************************************************************
- *
- * (c) 2009-2020 QGROUNDCONTROL PROJECT <http://www.qgroundcontrol.org>
- *
- * QGroundControl is licensed according to the terms in the file
- * COPYING.md in the root of the source code directory.
- *
- ****************************************************************************/
-
-import QtQuick
-import QtQuick.Controls
-
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 import QGroundControl.Palette
 import QGroundControl.Controls
 import QGroundControl.ScreenTools
@@ -20,14 +10,14 @@ Switch {
     readonly property int _radius: 3
 
     QGCPalette {
-        id:                 qgcPal
-        colorGroupEnabled:  true
+        id: qgcPal
+        colorGroupEnabled: true
     }
 
     contentItem: QGCLabel {
-        text:               control.text
-        verticalAlignment:  Text.AlignVCenter
-        rightPadding:       control.indicator.width + control.spacing
+        text: control.text
+        verticalAlignment: Text.AlignVCenter
+        rightPadding: control.indicator.width + control.spacing
     }
 
     indicator: Rectangle {
@@ -36,7 +26,14 @@ Switch {
         x: control.width - width - control.rightPadding
         y: parent.height / 2 - height / 2
         radius: knob.radius
-        color: control.checked ? qgcPal.primaryButton : qgcPal.button
+        color: control.checked ? "green" : qgcPal.button
+
+        Behavior on color {
+            ColorAnimation {
+                duration: 200 // Duração da animação em milissegundos
+                easing.type: Easing.InOutQuad
+            }
+        }
 
         Rectangle {
             id: knob
@@ -44,7 +41,14 @@ Switch {
             width: ScreenTools.defaultFontPixelHeight
             height: ScreenTools.defaultFontPixelHeight
             radius: height / 2
-            color: qgcPal.buttonText
+            color: "white"
+
+            Behavior on x {
+                NumberAnimation {
+                    duration: 200 // Duração da animação em milissegundos
+                    easing.type: Easing.InOutQuad // Tipo de efeito de easing
+                }
+            }
         }
     }
 }
