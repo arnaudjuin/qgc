@@ -560,7 +560,7 @@ Item {
             id: leftToolStrip
             anchors.left: parent.left
             spacing: 10 // Adjust spacing as needed
-            y: 2.8
+            y: 3.28
 
             Repeater {
                 model: _missionController.complexMissionItemNames
@@ -594,12 +594,13 @@ Item {
                 width: {
                     let baseWidth = _leftTips;
                     if (_utmspEnabled) {
-                        baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 15, 300);
+                        baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 10, 300);
                     }
                     return baseWidth;
                 }
+                
                 color: '#ffffff'
-                radius: 10 // Rounded corners
+                radius: 5 // Rounded corners
                 property int popuppadding: 10
                 height: titlePopupLabel.height + contentPopupLabel.height + 2 * popuppadding // Adjusted height
                 property int originalHeight: titlePopupLabel.height + contentPopupLabel.height + 2 * popuppadding // Adjusted originalHeight
@@ -607,26 +608,28 @@ Item {
                 //Posicionamento do painel
                 anchors.top: criarNovaMissaoButton.bottom
                 anchors.left: parent.left
-                anchors.leftMargin: 10 // Adjust this to ensure it doesn't stick to the screen edge
+                anchors.leftMargin: 7 // Adjust this to ensure it doesn't stick to the screen edge
                 anchors.topMargin: 5 // Space between the button and the rectangle
 
                 RowLayout {
                     id: leftTipsTitleBar
+                    anchors.top: parent.top
+                    anchors.topMargin: -2.2 // Margem do topo do Rectangle, ajuste conforme necessário para alinhamento
                     anchors.horizontalCenter: parent.horizontalCenter
-                    spacing: 10 // Adjust as needed
-                    height: titlePopupLabel.height
+                    spacing: 10 // Espaçamento entre elementos
+                    height: Math.max(minimizePopupButton.height, titlePopupLabel.font.pixelSize * 1.5, closePopupButton.height) // Define uma altura comum baseada no maior dos elementos
 
-                    // Minimize button
                     QGCButton {
                         id: minimizePopupButton
                         property bool isMinimized: false
-                        background: null // Remove button background
-                        height: titlePopupLabel.font.pixelSize * 0.4 // Adjusted button height
+                        background: null // Sem fundo
+                        height: titlePopupLabel.font.pixelSize * 1.1 // Altura baseada no tamanho da fonte do título
+                        width: height // Largura igual à altura para manter proporção
                         onClicked: {
                             isMinimized = !isMinimized
                             if (isMinimized) {
                                 leftTips.originalHeight = leftTips.height
-                                leftTips.height = titlePopupLabel.height + leftTips.popuppadding // Adjusted minimized height
+                                leftTips.height = titlePopupLabel.height + leftTips.popuppadding // Altura minimizada ajustada
                             } else {
                                 leftTips.height = leftTips.originalHeight
                             }
@@ -634,34 +637,34 @@ Item {
                         }
 
                         Label {
-                            text: minimizePopupButton.isMinimized ? ">" : " ⌄"
-                            color: "#ff4800" // Set text color to orange
+                            text: minimizePopupButton.isMinimized ? "-" : "+"
+                            color: "#ff4800"
                             anchors.centerIn: parent
                         }
                     }
 
-                    // Title
                     QGCLabel {
                         id: titlePopupLabel
-                        text: "Criar nova area"
+                        text: "Instruções"
                         color: "#ff4800"
-                        font.pixelSize: defaultFontPixelSize * 1.5 // Use pixelSize instead of pointSize
+                        font.pixelSize: defaultFontPixelSize * 1.5
+                        height: parent.height // Usa a altura do parent RowLayout
                     }
 
-                    // Close button
-                    QGCButton{
+                    QGCButton {
                         id: closePopupButton
-                        background: null // Remove button background
-                        height: titlePopupLabel.font.pixelSize * 0.4 // Adjusted button height
+                        background: null // Sem fundo
+                        height: titlePopupLabel.font.pixelSize * 1.5 // Altura baseada no tamanho da fonte do título
+                        width: height // Largura igual à altura para manter proporção
                         onClicked: leftTips.visible = false
 
                         Label {
-                            text: "-"
-                            color: "#ff4800" // Set text color to orange
+                            text: "="
+                            color: "#ff4800"
                             anchors.centerIn: parent
                         }
                     }
-                }
+                }          
 
                 QGCLabel {
                     id: contentPopupLabel
@@ -681,6 +684,8 @@ Item {
                 }
             }
         }
+
+        
                 
         //-----------------------------------------------------------
         // Right pane for mission editing controls

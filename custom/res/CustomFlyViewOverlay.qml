@@ -94,13 +94,14 @@ Item {
     Rectangle {
         id: expandablePanel
         width: parent.width * 0.2  // 20% da largura do elemento pai
-        height: isMinimized ? 40 : 200  // Altura fixa quando minimizado e quando expandido
+        height: isMinimized ? 40 : 250  // Altura fixa quando minimizado e quando expandido
         color: "black"
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.topMargin: 10
         anchors.rightMargin: 10
         radius: 10
+        clip: true
         property bool isMinimized: true 
 
         // Área do cabeçalho
@@ -131,7 +132,7 @@ Item {
 
                     Label {
                         text: expandablePanel.isMinimized ? "+" : "-"
-                        font.pixelSize: Math.max(16, parent.width * 0.04)
+                        font.pixelSize: headerArea.width * 0.08
                         color: "white"
                         anchors.verticalCenter: parent.verticalCenter
                         horizontalAlignment: Text.AlignHCenter
@@ -145,7 +146,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.rightMargin: parent.width * 0.02
                     horizontalAlignment: Text.AlignHCenter
-                    font.pixelSize: Math.max(12, parent.width * 0.03)  // Garante um mínimo de 12
+                    font.pixelSize: headerArea.width * 0.08
                 }
             }
         }
@@ -162,36 +163,103 @@ Item {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 10
-                anchors.rightMargin: 10
-                anchors.topMargin: 10
-                anchors.bottomMargin: 10
+                anchors.leftMargin: 0.5
+                anchors.rightMargin: 0.5
+                anchors.topMargin: 5
+                anchors.bottomMargin: 5
                 spacing: -10
 
                 RowLayout {
                     spacing: parent.width * 0.03
                     QGCSwitch {
                         id: switchBomb
+                    
+                    }
+                    Item {
+                        width: 40  // Defina a largura igual ao switch
+                        height: 19.8 // Defina a altura igual ao switch
+
+                        QGCButton {
+                            anchors.fill: parent // Faz o botão preencher o Item
+                            text: "Auto"
+                            font.pixelSize: Math.max(10, parent.width * 0.020) // Ajusta o tamanho da fonte
+                            background: Rectangle { // Define um fundo retangular
+                                color: "#ff4800" // Cor de fundo
+                                radius: 10 // Bordas arredondadas
+                                anchors.fill: parent // Preenche todo o espaço do botão
+                            }
+                        }
                     }
                     Label {
                         text: "Bombas"
                         color: "white"
                         verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: Math.max(10, parent.width * 0.025)
+                        font.pixelSize: headerArea.width * 0.06
                     }
                 }
+
+                QGCSlider {
+                id:                     bombas
+                from:                   5
+                to:                     12
+                stepSize:               0.5
+                tickmarksEnabled:       false
+                Layout.fillWidth: false  // Não preenche toda a largura
+                Layout.preferredWidth: 100
+                Layout.columnSpan:      2
+                Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                Layout.leftMargin: 12
+                //onValueChanged:         _missionItem.cameraCalc.adjustedFootprintSide.value = value
+                //Component.onCompleted:  value = _missionItem.cameraCalc.adjustedFootprintSide.value
+                live: true
+                }
+
+
 
                 RowLayout {
                     spacing: parent.width * 0.03
                     QGCSwitch {
                         id: switchNozzle
                     }
+                    Item {
+                        width: 40  
+                        height: 19.8 
+                        
+
+                        QGCButton {
+                            property bool isClicked: false
+                            anchors.fill: parent 
+                            text: "Auto"
+                            font.pixelSize: Math.max(10, parent.width * 0.020)
+                            background: Rectangle { 
+                                color: "#ff4800"
+                                radius: 10 
+                                anchors.fill: parent
+                            }
+                        }
+                    }
                     Label {
                         text: "Bicos"
                         color: "white"
                         verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: Math.max(10, parent.width * 0.025)
+                        font.pixelSize: headerArea.width * 0.06
                     }
+                }
+
+                QGCSlider {
+                id:                     bicos
+                from:           5
+                to:           12
+                stepSize:               0.5
+                tickmarksEnabled:       false
+                Layout.fillWidth: false  // Não preenche toda a largura
+                Layout.preferredWidth: 100
+                Layout.columnSpan:      2
+                Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                Layout.leftMargin: 12
+                //onValueChanged:         _missionItem.cameraCalc.adjustedFootprintSide.value = value
+                //Component.onCompleted:  value = _missionItem.cameraCalc.adjustedFootprintSide.value
+                live: true
                 }
 
                 RowLayout {
@@ -200,10 +268,23 @@ Item {
                         id: switchLight
                     }
                     Label {
-                        text: "Iluminação"
+                        text: "Luzes"
                         color: "white"
                         verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: Math.max(10, parent.width * 0.025)
+                        font.pixelSize: headerArea.width * 0.06
+                    }
+                }
+
+                RowLayout {
+                    spacing: parent.width * 0.03
+                    QGCSwitch {
+                        id: switchBrake
+                    }
+                    Label {
+                        text: "Freio"
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: headerArea.width * 0.06
                     }
                 }
             }

@@ -105,6 +105,7 @@ TransectStyleComplexItemEditor {
                 live: true
             }
 
+
             QGCOptionsComboBox {
                 Layout.columnSpan:  2
                 Layout.fillWidth:   true
