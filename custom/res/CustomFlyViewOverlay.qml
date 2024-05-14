@@ -91,10 +91,12 @@ Item {
 
     //-------------------------------------------------------------------------
     //-- Pop Up
+
+    //-- Pop Up
     Rectangle {
         id: expandablePanel
         width: parent.width * 0.2  // 20% da largura do elemento pai
-        height: isMinimized ? 40 : 250  // Altura fixa quando minimizado e quando expandido
+        height: isMinimized ? 40 : contentArea.implicitHeight + headerArea.height  // Altura fixa quando minimizado e quando expandido
         color: "black"
         anchors.top: parent.top
         anchors.right: parent.right
@@ -120,7 +122,7 @@ Item {
                     id: toggleButton
                     onClicked: {
                         expandablePanel.isMinimized = !expandablePanel.isMinimized
-                        expandablePanel.height = expandablePanel.isMinimized ? headerArea.height : 200
+                        expandablePanel.height = expandablePanel.isMinimized ? headerArea.height : 300
                     }
                     Layout.leftMargin: parent.width * 0.02
                     Layout.preferredWidth: parent.width * 0.08
@@ -167,7 +169,82 @@ Item {
                 anchors.rightMargin: 0.5
                 anchors.topMargin: 5
                 anchors.bottomMargin: 5
-                spacing: -10
+                spacing: -2
+                Component.onCompleted: {
+                    expandablePanel.height = isMinimized ? headerArea.height : contentArea.implicitHeight + headerArea.height;
+                }
+
+                RowLayout {
+                    spacing: parent.width * 0.03
+                    QGCSwitch {
+                        id: switchBrake
+                    }
+
+                    Item {
+                        width: 40  
+                        height: 19.8 
+                        
+
+                        QGCButton {
+                            id: autoBrake
+                            property bool isActive: true
+                            anchors.fill: parent 
+                            text: "Auto"
+                            font.pixelSize: Math.max(10, parent.width * 0.020)
+                            background: Rectangle { // Define um fundo retangular
+                                color: autoBrake.isActive ? "#ff4800" : "green" // Cor do fundo
+                                radius: 10 // Bordas arredondadas
+                                anchors.fill: parent // Preenche todo o espaço do botão
+                            }
+                            onClicked: {
+                                autoBrake.isActive = !autoBrake.isActive
+                            }
+                        }
+                    }
+
+                    Label {
+                        text: "Freio"
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: headerArea.width * 0.06
+                    }
+                }
+
+                RowLayout {
+                    spacing: parent.width * 0.03
+                    QGCSwitch {
+                        id: switchLight
+                    }
+
+                    Item {
+                        width: 40  
+                        height: 19.8 
+                        
+
+                        QGCButton {
+                            id: autoLight
+                            property bool isActive: true
+                            anchors.fill: parent 
+                            text: "Auto"
+                            font.pixelSize: Math.max(10, parent.width * 0.020)
+                            background: Rectangle { // Define um fundo retangular
+                                color: autoLight.isActive ? "#ff4800" : "green" // Cor do fundo
+                                radius: 10 // Bordas arredondadas
+                                anchors.fill: parent // Preenche todo o espaço do botão
+                            }
+                            onClicked: {
+                                autoLight.isActive = !autoLight.isActive
+                            }
+                        }
+                    }
+
+                    Label {
+                        text: "Luzes"
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: headerArea.width * 0.06
+                    }
+                }
 
                 RowLayout {
                     spacing: parent.width * 0.03
@@ -180,13 +257,18 @@ Item {
                         height: 19.8 // Defina a altura igual ao switch
 
                         QGCButton {
+                            id: autoBomb
                             anchors.fill: parent // Faz o botão preencher o Item
                             text: "Auto"
                             font.pixelSize: Math.max(10, parent.width * 0.020) // Ajusta o tamanho da fonte
+                            property bool isActive: true
                             background: Rectangle { // Define um fundo retangular
-                                color: "#ff4800" // Cor de fundo
+                                color: autoBomb.isActive ? "#ff4800" : "green" // Cor do fundo
                                 radius: 10 // Bordas arredondadas
                                 anchors.fill: parent // Preenche todo o espaço do botão
+                            }
+                            onClicked: {
+                                autoBomb.isActive = !autoBomb.isActive
                             }
                         }
                     }
@@ -197,24 +279,6 @@ Item {
                         font.pixelSize: headerArea.width * 0.06
                     }
                 }
-
-                QGCSlider {
-                id:                     bombas
-                from:                   5
-                to:                     12
-                stepSize:               0.5
-                tickmarksEnabled:       false
-                Layout.fillWidth: false  // Não preenche toda a largura
-                Layout.preferredWidth: 100
-                Layout.columnSpan:      2
-                Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                Layout.leftMargin: 12
-                //onValueChanged:         _missionItem.cameraCalc.adjustedFootprintSide.value = value
-                //Component.onCompleted:  value = _missionItem.cameraCalc.adjustedFootprintSide.value
-                live: true
-                }
-
-
 
                 RowLayout {
                     spacing: parent.width * 0.03
@@ -227,14 +291,18 @@ Item {
                         
 
                         QGCButton {
-                            property bool isClicked: false
+                            id: autoNozzle
+                            property bool isActive: true
                             anchors.fill: parent 
                             text: "Auto"
                             font.pixelSize: Math.max(10, parent.width * 0.020)
-                            background: Rectangle { 
-                                color: "#ff4800"
-                                radius: 10 
-                                anchors.fill: parent
+                            background: Rectangle { // Define um fundo retangular
+                                color: autoNozzle.isActive ? "#ff4800" : "green" // Cor do fundo
+                                radius: 10 // Bordas arredondadas
+                                anchors.fill: parent // Preenche todo o espaço do botão
+                            }
+                            onClicked: {
+                                autoNozzle.isActive = !autoNozzle.isActive
                             }
                         }
                     }
@@ -246,45 +314,144 @@ Item {
                     }
                 }
 
-                QGCSlider {
-                id:                     bicos
-                from:           5
-                to:           12
-                stepSize:               0.5
-                tickmarksEnabled:       false
-                Layout.fillWidth: false  // Não preenche toda a largura
-                Layout.preferredWidth: 100
-                Layout.columnSpan:      2
-                Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                Layout.leftMargin: 12
-                //onValueChanged:         _missionItem.cameraCalc.adjustedFootprintSide.value = value
-                //Component.onCompleted:  value = _missionItem.cameraCalc.adjustedFootprintSide.value
-                live: true
+                //Vazão Slider
+                RowLayout{
+                    spacing: parent.width * 0.03
+
+                    Label{
+                    text: "Vazão"
+                    color: "white"
+                    Layout.leftMargin: 12
+                    font.pixelSize: headerArea.width * 0.06
+                    }
+
                 }
 
                 RowLayout {
                     spacing: parent.width * 0.03
-                    QGCSwitch {
-                        id: switchLight
+
+                    QGCSlider {
+                    id:                     bombas
+                    from:                   2
+                    to:                     20
+                    stepSize:               2
+                    snapMode: QGCSlider.SnapAlways 
+                    
+                    Layout.fillWidth: false  // Não preenche toda a largura
+                    Layout.preferredWidth: 100
+                    Layout.columnSpan:      2
+                    Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                    Layout.leftMargin: 12
+                    live: true
                     }
-                    Label {
-                        text: "Luzes"
-                        color: "white"
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: headerArea.width * 0.06
+
+                    Rectangle {
+                        width: 40
+                        height: bombas.height
+                        color: "#f0f0f0"  // Light grey background
+                        border.color: "#d0d0d0"
+                        border.width: 1
+                        radius: 5
+
+                        Label {
+                            text: bombas.value.toFixed(1)
+                            anchors.centerIn: parent
+                            color: "#333333"
+                        }
                     }
+                }
+                //Tamanho gota
+                RowLayout{
+                    spacing: parent.width * 0.03
+
+                    Label{
+                    text: "Tamanho da gota"
+                    color: "white"
+                    Layout.leftMargin: 12
+                    font.pixelSize: headerArea.width * 0.06
+                    }
+
                 }
 
                 RowLayout {
                     spacing: parent.width * 0.03
-                    QGCSwitch {
-                        id: switchBrake
+
+                    QGCSlider {
+                        id:                     bicos
+                        from:           1
+                        to:           3
+                        stepSize:               1 
+
+                        snapMode: QGCSlider.SnapAlways 
+                        Layout.fillWidth: false  // Não preenche toda a largura
+                        Layout.preferredWidth: 100
+                        Layout.columnSpan:      2
+                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                        Layout.leftMargin: 12
+                        live: true
                     }
-                    Label {
-                        text: "Freio"
-                        color: "white"
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: headerArea.width * 0.06
+
+                    Rectangle {
+                        
+                        width: 40
+                        height: bicos.height
+                        color: "#f0f0f0"  // Light grey background
+                        border.color: "#d0d0d0"
+                        border.width: 1
+                        radius: 5
+
+                        Label {
+                            text: bicos.value === 1 ? "Fina" :
+                            bicos.value === 2 ? "Média" : "Grossa"
+                            anchors.centerIn: parent
+                            color: "#333333"
+                        }
+                    }
+                }
+
+                RowLayout{
+                    spacing: parent.width * 0.03
+
+                    Label{
+                    text: "Velocidade"
+                    color: "white"
+                    Layout.leftMargin: 12
+                    font.pixelSize: headerArea.width * 0.06
+                    }
+
+                }
+                //Slider velocidade
+                RowLayout {
+                    spacing: parent.width * 0.03
+
+                    QGCSlider {
+                    id:                     velocidade
+                    from:                   3
+                    to:                     18
+                    stepSize:               3
+                    snapMode: QGCSlider.SnapAlways 
+                    
+                    Layout.fillWidth: false  // Não preenche toda a largura
+                    Layout.preferredWidth: 100
+                    Layout.columnSpan:      2
+                    Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                    Layout.leftMargin: 12
+                    live: true
+                    }
+
+                    Rectangle {
+                        width: 40
+                        height: velocidade.height
+                        color: "#f0f0f0"  // Light grey background
+                        border.color: "#d0d0d0"
+                        border.width: 1
+                        radius: 5
+
+                        Label {
+                            text: velocidade.value.toFixed(1)
+                            anchors.centerIn: parent
+                            color: "#333333"
+                        }
                     }
                 }
             }
@@ -337,115 +504,88 @@ Item {
         }
     }
     Rectangle {
-        id:                         headingIndicator
-        height:                     ScreenTools.defaultFontPixelHeight
-        width:                      ScreenTools.defaultFontPixelWidth * 4
-        color:                      qgcPal.windowShadeDark
-        anchors.top:                parent.top
-        visible: false
-        anchors.topMargin:          _toolsMargin
-        anchors.horizontalCenter:   parent.horizontalCenter
-        QGCLabel {
-            text:                   _heading
-            color:                  qgcPal.text
-            font.pointSize:         ScreenTools.smallFontPointSize
-            anchors.centerIn:       parent
-        }
-    }
-    Image {
-        id:                         compassArrowIndicator
-        height:                     _indicatorsHeight
-        width:                      height
-        visible: false
-        source:                     "/custom/img/compass_pointer.svg"
-        fillMode:                   Image.PreserveAspectFit
-        sourceSize.height:          height
-        anchors.top:                compassBar.bottom
-        anchors.topMargin:          -height / 2
-        anchors.horizontalCenter:   parent.horizontalCenter
-    }
 
-    Rectangle {
-        id:                     compassBackground
-        anchors.bottom:         attitudeIndicator.bottom
-        anchors.right:          attitudeIndicator.left
-        anchors.rightMargin:    -attitudeIndicator.width / 2
-        width:                  -anchors.rightMargin + compassBezel.width + (_toolsMargin * 2)
-        height:                 attitudeIndicator.height * 0.75
-        radius:                 2
-        color:                  qgcPal.window
+        id: compassBackground
+        anchors.bottom: attitudeIndicator.bottom
+        anchors.right: attitudeIndicator.left
+        anchors.rightMargin: -attitudeIndicator.width / 2
+        width: -anchors.rightMargin + compassBezel.width + (_toolsMargin * 2) * 0.75 // Reduzindo o tamanho
+        height: attitudeIndicator.height * 0.6 // Reduzindo o tamanho
+        radius: 2
+        color: qgcPal.window
 
         Rectangle {
-            id:                     compassBezel
+            id: compassBezel
             anchors.verticalCenter: parent.verticalCenter
-            anchors.leftMargin:     _toolsMargin
-            anchors.left:           parent.left
-            width:                  height
-            height:                 parent.height - (northLabelBackground.height / 2) - (headingLabelBackground.height / 2)
-            radius:                 height / 2
-            border.color:           qgcPal.text
-            border.width:           1
-            color:                  Qt.rgba(0,0,0,0)
+            anchors.leftMargin: _toolsMargin
+            anchors.left: parent.left
+            width: height // Mantém a proporção circular
+            height: parent.height - (northLabelBackground.height / 2) - (headingLabelBackground.height / 2)
+            radius: height / 2
+            border.color: qgcPal.text
+            border.width: 1
+            color: Qt.rgba(0,0,0,0)
         }
 
         Rectangle {
-            id:                         northLabelBackground
-            anchors.top:                compassBezel.top
-            anchors.topMargin:          -height / 2
-            anchors.horizontalCenter:   compassBezel.horizontalCenter
-            width:                      northLabel.contentWidth * 1.5
-            height:                     northLabel.contentHeight * 1.5
-            radius:                     ScreenTools.defaultFontPixelWidth  * 0.25
-            color:                      qgcPal.windowShade
+            id: northLabelBackground
+            anchors.top: compassBezel.top
+            anchors.topMargin: -height / 2
+            anchors.horizontalCenter: compassBezel.horizontalCenter
+            width: northLabel.contentWidth * 1.5
+            height: northLabel.contentHeight * 1.5
+            radius: ScreenTools.defaultFontPixelWidth * 0.25
+            color: qgcPal.windowShade
 
             QGCLabel {
-                id:                 northLabel
-                anchors.centerIn:   parent
-                text:               "N"
-                color:              qgcPal.text
-                font.pointSize:     ScreenTools.smallFontPointSize
+                id: northLabel
+                anchors.centerIn: parent
+                text: "N"
+                color: qgcPal.text
+                font.pointSize: ScreenTools.smallFontPointSize
             }
         }
 
         Image {
-            id:                 headingNeedle
-            anchors.centerIn:   compassBezel
-            height:             compassBezel.height * 0.75
-            width:              height
-            source:             "/custom/img/compass_needle.svg"
-            fillMode:           Image.PreserveAspectFit
-            sourceSize.height:  height
+            id: headingNeedle
+            anchors.centerIn: compassBezel
+            height: compassBezel.height * 0.75 // Ajustando a altura
+            width: height // Mantém a proporção
+            source: "/custom/img/compass_needle.svg"
+            fillMode: Image.PreserveAspectFit
+            sourceSize.height: height
             transform: [
                 Rotation {
-                    origin.x:   headingNeedle.width  / 2
-                    origin.y:   headingNeedle.height / 2
-                    angle:      _heading
+                    origin.x: headingNeedle.width / 2
+                    origin.y: headingNeedle.height / 2
+                    angle: _heading
                 }]
         }
 
         Rectangle {
-            id:                         headingLabelBackground
-            anchors.top:                compassBezel.bottom
-            anchors.topMargin:          -height / 2
-            anchors.horizontalCenter:   compassBezel.horizontalCenter
-            width:                      headingLabel.contentWidth * 1.5
-            height:                     headingLabel.contentHeight * 1.5
-            radius:                     ScreenTools.defaultFontPixelWidth  * 0.25
-            color:                      qgcPal.windowShade
+            id: headingLabelBackground
+            anchors.top: compassBezel.bottom
+            anchors.topMargin: -height / 2
+            anchors.horizontalCenter: compassBezel.horizontalCenter
+            width: headingLabel.contentWidth * 1.5
+            height: headingLabel.contentHeight * 1.5
+            radius: ScreenTools.defaultFontPixelWidth * 0.25
+            color: qgcPal.windowShade
 
             QGCLabel {
-                id:                 headingLabel
-                anchors.centerIn:   parent
-                text:               _heading
-                color:              qgcPal.text
-                font.pointSize:     ScreenTools.smallFontPointSize
+                id: headingLabel
+                anchors.centerIn: parent
+                text: _heading
+                color: qgcPal.text
+                font.pointSize: ScreenTools.smallFontPointSize
             }
         }
     }
 
     Rectangle {
         id:                     attitudeIndicator
-        anchors.bottomMargin:   _toolsMargin + parentToolInsets.bottomEdgeRightInset
+        //anchors.bottomMargin:   _toolsMargin + parentToolInsets.bottomEdgeRightInset
+        anchors.bottomMargin: 10
         anchors.rightMargin:    _toolsMargin
         anchors.bottom:         parent.bottom
         anchors.right:          parent.right

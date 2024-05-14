@@ -46,5 +46,6 @@
         <file alias="PlanView.qml">res/CustomPlanView.qml</file>
         <file alias="FlightModeIndicator.qml">res/CustomFlightModeIndicator.qml</file>
         <file alias="SurveyItemEditor.qml">res/CustomSurveyItemEditor.qml</file>
+        <file alias="QGroundControl/FlightDisplay/FlyViewBottomRightRowLayout.qml">res/CustomFlyViewBottomRightRowLayout.qml</file>
     </qresource>
 </RCC>

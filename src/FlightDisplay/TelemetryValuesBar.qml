@@ -43,7 +43,7 @@ Item {
         RowLayout {
             visible: mouseArea.containsMouse || valueArea.settingsUnlocked
 
-            /*QGCColoredImage {
+            QGCColoredImage {
                 source:             valueArea.settingsUnlocked ? "/res/LockOpen.svg" : "/res/pencil.svg"
                 mipmap:             true
                 width:              ScreenTools.minTouchPixels * 0.75
@@ -58,7 +58,7 @@ Item {
                     cursorShape:  Qt.PointingHandCursor
                     onClicked:    valueArea.settingsUnlocked = !valueArea.settingsUnlocked
                 }
-            }*/
+            }
         }
 
         HorizontalFactValueGrid {
