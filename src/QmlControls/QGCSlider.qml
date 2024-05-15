@@ -87,7 +87,7 @@ Slider {
         border.width:   1
         radius:         _radius
 
-        property real _radius: ScreenTools.isMobile ? ScreenTools.minTouchPixels / 4 : ScreenTools.defaultFontPixelHeight / 4 // Diminuiu o raio pela metade
+        property real _radius: ScreenTools.isMobile ? ScreenTools.minTouchPixels / 3 : ScreenTools.defaultFontPixelHeight / 3 // Diminuiu o raio pela metade
 
         Label {
             text:               control.value.toFixed( control.to <= 1 ? 1 : 0)
