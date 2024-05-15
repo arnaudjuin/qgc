@@ -92,10 +92,9 @@ Item {
     //-------------------------------------------------------------------------
     //-- Pop Up
 
-    //-- Pop Up
     Rectangle {
         id: expandablePanel
-        width: parent.width * 0.2  // 20% da largura do elemento pai
+        width: parent.width * 0.24 // 20% da largura do elemento pai
         height: isMinimized ? 40 : contentArea.implicitHeight + headerArea.height  // Altura fixa quando minimizado e quando expandido
         color: "black"
         anchors.top: parent.top
@@ -113,6 +112,13 @@ Item {
             height: 40
             color: "black"
             radius: 10
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    expandablePanel.isMinimized = !expandablePanel.isMinimized
+                    expandablePanel.height = expandablePanel.isMinimized ? headerArea.height : 300
+                }
+            }
             RowLayout {
                 anchors.fill: parent
                 spacing: parent.width * 0.02
@@ -338,7 +344,7 @@ Item {
                     snapMode: QGCSlider.SnapAlways 
                     
                     Layout.fillWidth: false  // Não preenche toda a largura
-                    Layout.preferredWidth: 100
+                    Layout.preferredWidth: 60
                     Layout.columnSpan:      2
                     Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
                     Layout.leftMargin: 12
@@ -346,8 +352,9 @@ Item {
                     }
 
                     Rectangle {
+                        id: ret1
                         width: 40
-                        height: bombas.height
+                        height: 14
                         color: "#f0f0f0"  // Light grey background
                         border.color: "#d0d0d0"
                         border.width: 1
@@ -357,6 +364,7 @@ Item {
                             text: bombas.value.toFixed(1)
                             anchors.centerIn: parent
                             color: "#333333"
+                            font.pixelSize: ret1.width * 0.20
                         }
                     }
                 }
@@ -384,7 +392,7 @@ Item {
 
                         snapMode: QGCSlider.SnapAlways 
                         Layout.fillWidth: false  // Não preenche toda a largura
-                        Layout.preferredWidth: 100
+                        Layout.preferredWidth: 60
                         Layout.columnSpan:      2
                         Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
                         Layout.leftMargin: 12
@@ -394,7 +402,7 @@ Item {
                     Rectangle {
                         
                         width: 40
-                        height: bicos.height
+                        height: 14
                         color: "#f0f0f0"  // Light grey background
                         border.color: "#d0d0d0"
                         border.width: 1
@@ -405,6 +413,7 @@ Item {
                             bicos.value === 2 ? "Média" : "Grossa"
                             anchors.centerIn: parent
                             color: "#333333"
+                            font.pixelSize: ret1.width * 0.20
                         }
                     }
                 }
@@ -432,7 +441,7 @@ Item {
                     snapMode: QGCSlider.SnapAlways 
                     
                     Layout.fillWidth: false  // Não preenche toda a largura
-                    Layout.preferredWidth: 100
+                    Layout.preferredWidth: 60
                     Layout.columnSpan:      2
                     Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
                     Layout.leftMargin: 12
@@ -441,7 +450,7 @@ Item {
 
                     Rectangle {
                         width: 40
-                        height: velocidade.height
+                        height: 14
                         color: "#f0f0f0"  // Light grey background
                         border.color: "#d0d0d0"
                         border.width: 1
@@ -451,12 +460,14 @@ Item {
                             text: velocidade.value.toFixed(1)
                             anchors.centerIn: parent
                             color: "#333333"
+                            font.pixelSize: ret1.width * 0.20       
                         }
                     }
                 }
             }
         }
     }
+    
     
 
     //-------------------------------------------------------------------------
@@ -508,6 +519,7 @@ Item {
         id: compassBackground
         anchors.bottom: attitudeIndicator.bottom
         anchors.right: attitudeIndicator.left
+        visible: false
         anchors.rightMargin: -attitudeIndicator.width / 2
         width: -anchors.rightMargin + compassBezel.width + (_toolsMargin * 2) * 0.75 // Reduzindo o tamanho
         height: attitudeIndicator.height * 0.6 // Reduzindo o tamanho
@@ -584,15 +596,13 @@ Item {
 
     Rectangle {
         id:                     attitudeIndicator
-        //anchors.bottomMargin:   _toolsMargin + parentToolInsets.bottomEdgeRightInset
-        anchors.bottomMargin: 10
-        anchors.rightMargin:    _toolsMargin
-        anchors.bottom:         parent.bottom
-        anchors.right:          parent.right
+        anchors.bottomMargin:   10 // Define a margem do fundo
         height:                 ScreenTools.defaultFontPixelHeight * 6
         width:                  height
         radius:                 height * 0.5
         color:                  qgcPal.windowShade
+        anchors.horizontalCenter: parent.horizontalCenter // Centraliza horizontalmente
+        anchors.bottom:         parent.bottom // Ancora na parte inferior da tela
 
         CustomAttitudeWidget {
             size:               parent.height * 0.95
