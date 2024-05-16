@@ -204,6 +204,7 @@ Item {
                             }
                             onClicked: {
                                 autoBrake.isActive = !autoBrake.isActive
+                                switchBrake.checked = false
                             }
                         }
                     }
@@ -240,6 +241,7 @@ Item {
                             }
                             onClicked: {
                                 autoLight.isActive = !autoLight.isActive
+                                switchLight.checked = false
                             }
                         }
                     }
@@ -275,6 +277,7 @@ Item {
                             }
                             onClicked: {
                                 autoBomb.isActive = !autoBomb.isActive
+                                switchBomb.checked = false
                             }
                         }
                     }
@@ -309,6 +312,7 @@ Item {
                             }
                             onClicked: {
                                 autoNozzle.isActive = !autoNozzle.isActive
+                                switchNozzle.checked = false
                             }
                         }
                     }
