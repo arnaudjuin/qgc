@@ -344,7 +344,7 @@ Item {
                     snapMode: QGCSlider.SnapAlways 
                     
                     Layout.fillWidth: false  // Não preenche toda a largura
-                    Layout.preferredWidth: 100
+                    Layout.preferredWidth: 90
                     Layout.columnSpan:      2
                     Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
                     Layout.leftMargin: 12
@@ -392,7 +392,7 @@ Item {
                         
                         snapMode: QGCSlider.SnapAlways 
                         Layout.fillWidth: false  // Não preenche toda a largura
-                        Layout.preferredWidth: 100
+                        Layout.preferredWidth: 90
                         Layout.columnSpan:      2
                         Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
                         Layout.leftMargin: 12
@@ -441,7 +441,7 @@ Item {
                     snapMode: QGCSlider.SnapAlways 
                     
                     Layout.fillWidth: false  // Não preenche toda a largura
-                    Layout.preferredWidth: 100
+                    Layout.preferredWidth: 90
                     Layout.columnSpan:      2
                     Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
                     Layout.leftMargin: 12
