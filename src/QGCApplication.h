@@ -60,6 +60,11 @@ public:
     QGCApplication(int &argc, char* argv[], bool unitTesting);
     ~QGCApplication();
 
+    static QGCApplication* app(void) { return _app; }
+
+    ///Controle dos bicos
+    Q_INVOKABLE void controlSprinklers(bool state);
+
     /// @brief Sets the persistent flag to delete all settings the next time QGroundControl is started.
     void deleteAllSettingsNextBoot(void);
 
@@ -189,6 +194,8 @@ private:
     QObject*    _rootQmlObject          ();
     void        _checkForNewVersion     ();
     void        _exitWithError          (QString errorMessage);
+    static QGCApplication* _app;
+    QQmlApplicationEngine* _qmlAppEngine; // Adicionado aqui
 
     // Overrides from QApplication
     bool compressEvent(QEvent *event, QObject *receiver, QPostEventList *postedEvents) override;

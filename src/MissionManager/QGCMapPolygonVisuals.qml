@@ -629,8 +629,7 @@ Item {
                 _horizontalPadding: 0
                 text:               qsTr("Load KML/SHP...")
                 onClicked:          kmlOrSHPLoadDialog.openForLoad()
-                //visible:            !mapPolygon.traceMode
-                visible: false
+                visible:            !mapPolygon.traceMode
             }
         }
     }

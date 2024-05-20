@@ -293,26 +293,29 @@ Item {
                     spacing: parent.width * 0.03
                     QGCSwitch {
                         id: switchNozzle
+                        onCheckedChanged: {
+                            qgcApp.controlNozzle(checked)
+                        }
                     }
                     Item {
                         width: 40  
                         height: 19.8 
                         
-
                         QGCButton {
                             id: autoNozzle
                             property bool isActive: true
                             anchors.fill: parent 
                             text: "Auto"
                             font.pixelSize: Math.max(10, parent.width * 0.020)
-                            background: Rectangle { // Define um fundo retangular
-                                color: autoNozzle.isActive ? "#ff4800" : "green" // Cor do fundo
-                                radius: 10 // Bordas arredondadas
-                                anchors.fill: parent // Preenche todo o espaço do botão
+                            background: Rectangle { 
+                                color: autoNozzle.isActive ? "#ff4800" : "green"
+                                radius: 10
+                                anchors.fill: parent 
                             }
                             onClicked: {
                                 autoNozzle.isActive = !autoNozzle.isActive
                                 switchNozzle.checked = false
+                                qgcApp.controlNozzle(autoNozzle.isActive)
                             }
                         }
                     }
