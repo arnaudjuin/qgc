@@ -23,13 +23,16 @@ TransectStyleComplexItemEditor {
     //  property real   availableWidth    ///< Width for control
     //  property var    missionItem       ///< Mission Item for editor
 
-    property real   _margin:        ScreenTools.defaultFontPixelWidth / 2
-    property var    _missionItem:   missionItem
+    property real   _margin:                ScreenTools.defaultFontPixelWidth / 2
+    property var    _missionItem:           missionItem
+    property var _activeVehicle:             QGroundControl.multiVehicleManager.activeVehicle
+    property real   _heading:               _activeVehicle   ? _activeVehicle.heading.rawValue : 0
 
     Component {
         id: _transectValuesComponent
-
+    
         GridLayout {
+            
             Layout.fillWidth:   true
             columnSpacing:      _margin
             rowSpacing:         _margin
@@ -54,6 +57,30 @@ TransectStyleComplexItemEditor {
                 onValueChanged:         missionItem.gridAngle.value = value
                 Component.onCompleted:  value = missionItem.gridAngle.value
                 live: true
+            }
+
+            QGCLabel {
+                id: headingLabel
+                function _normalize(degrees) {
+                    var a = degrees % 360
+                    if (a < 0) a += 360
+                    return a
+                }
+                
+                property int _startAngle: modelData + 180 + _heading // Use modelData no cálculo do ângulo
+                property int _angle: _normalize(_startAngle)
+            }
+
+            Text {
+                id: headingDisplay
+                text: "Graus: " + headingLabel._angle + "°"
+                color: "black"
+                font.pointSize: ScreenTools.defaultFontPointSize
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
+                Layout.columnSpan: 2
+                anchors.top: angleSlider.bottom
+                anchors.topMargin: 0
             }
 
             QGCLabel {
