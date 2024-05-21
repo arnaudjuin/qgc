@@ -120,9 +120,9 @@ Rectangle {
 
                 QGCButton {
                     Layout.alignment:   Qt.AlignHCenter
-                    text:               qsTr("Rotate Entry Point")
+                    text:               qsTr("Rotacionar ponto de entrada")
                     onClicked:          _missionItem.rotateEntryPoint()
-                    visible:            false
+                    visible:            true
                 }
 
                 QGCLabel {

@@ -73,7 +73,7 @@ TransectStyleComplexItemEditor {
 
             Text {
                 id: headingDisplay
-                text: "Graus: " + headingLabel._angle + "°"
+                text: "Heading atual: " + headingLabel._angle + "°"
                 color: "black"
                 font.pointSize: ScreenTools.defaultFontPointSize
                 Layout.fillWidth: true

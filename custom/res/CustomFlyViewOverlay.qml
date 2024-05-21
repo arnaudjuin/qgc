@@ -96,14 +96,13 @@ Item {
         width: parent.width * 0.06
         color: "black"
         anchors.left: parent.left
-        anchors.top: parent.top
         anchors.leftMargin: 10
-        anchors.topMargin: 10
+        anchors.verticalCenter: parent.verticalCenter
         radius: 10
 
         ColumnLayout {
             id: columnLayout
-            spacing: 6
+            spacing: 8
             anchors.fill: parent
             anchors.margins: 5
 

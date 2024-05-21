@@ -588,7 +588,7 @@ Item {
                 }
             }
             
-            Rectangle {
+            /*Rectangle {
                 id: leftTips
                 visible: false // Initially hidden
                 width: {
@@ -682,7 +682,7 @@ Item {
                         bottomMargin: leftTips.popuppadding // Add bottom padding
                     }
                 }
-            }
+            }*/
         }
 
         
