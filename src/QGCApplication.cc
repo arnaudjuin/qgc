@@ -22,7 +22,6 @@
 #include <QQuickWindow>
 #include <QQuickImageProvider>
 #include <QQuickStyle>
-#include <QQmlContext>
 
 #ifdef QGC_ENABLE_BLUETOOTH
 #include <QBluetoothLocalDevice>
@@ -195,31 +194,12 @@ static QObject* shapeFileHelperSingletonFactory(QQmlEngine*, QJSEngine*)
     return new ShapeFileHelper;
 }
 
-void QGCApplication::controlSprinklers(bool state) {
-    Vehicle* vehicle = _toolbox->multiVehicleManager()->activeVehicle();
-    if (vehicle) {
-        int command = MAV_CMD_USER_2; // Substitua pelo comando apropriado para sprinklers
-        float param1 = state ? 1.0f : 0.0f; // 1 para ligar, 0 para desligar
-        vehicle->sendCommand(command, true, false,
-                             param1, 0, 0, 0, 0, 0, 0);
-    } else {
-        qWarning() << "No active vehicle.";
-    }
-}
-
 QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     : QApplication          (argc, argv)
     , _runningUnitTests     (unitTesting)
 {
     _app = this;
     _msecsElapsedTime.start();
-
-   // Cria o motor QML
-    _qmlAppEngine = new QQmlApplicationEngine();
-    
-    // Registra myApp no contexto QML
-    _qmlAppEngine->rootContext()->setContextProperty("myApp", this);
-
 
 #ifdef Q_OS_LINUX
 #ifndef __mobile__

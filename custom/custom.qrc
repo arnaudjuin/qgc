@@ -21,6 +21,9 @@
         <file alias="List1.png">res/Images/List1.png</file>
         <file alias="area.png">res/Images/area.png</file>
         <file alias="trash.png">res/Images/trash.png</file>
+        <file alias="play.png">res/Images/play.png</file>
+        <file alias="pause.png">res/Images/pause.png</file>
+        <file alias="stop.png">res/Images/stop.png</file>
 
     </qresource>
     <qresource prefix="/qmlimages">
@@ -39,6 +42,9 @@
     </qresource>
     <qresource prefix="/qml">
         <file alias="QGroundControl/FlightDisplay/FlyViewCustomLayer.qml">res/CustomFlyViewOverlay.qml</file>
+        <file alias="QGroundControl/FlightDisplay/FlyView.qml">res/CustomFlyView.qml</file>
+        <file alias="QGroundControl/FlightDisplay/FlyViewMap.qml">res/CustomFlyViewMap.qml</file>
+        <file alias="QGroundControl/FlightDisplay/FlyViewWidgetLayer.qml">res/CustomFlyViewWidgetLayer.qml</file>
         <file alias="QGroundControl/FlightDisplay/FlyViewToolBar.qml">res/CustomMainToolbar.qml</file>
         <file alias="QGroundControl/FlightDisplay/FlyViewToolStripActionList.qml">res/CustomFlyViewToolStrip.qml</file>
         <file alias="MainRootWindow.qml">res/CustomMainRootWindow.qml</file>

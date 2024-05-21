@@ -90,6 +90,91 @@ Item {
     }
 
     //-------------------------------------------------------------------------
+    //Play - Pause - Stop
+
+    Rectangle {
+        width: parent.width * 0.06
+        color: "black"
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.leftMargin: 10
+        anchors.topMargin: 10
+        radius: 10
+
+        ColumnLayout {
+            id: columnLayout
+            spacing: 6
+            anchors.fill: parent
+            anchors.margins: 5
+
+            QGCButton {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 30
+                onClicked: {
+
+                }
+                
+                background: Rectangle {
+                    color: "#ff4800"
+                    radius: 10
+                }
+
+                Image {
+                    width: parent.width * 0.3
+                    height: parent.height * 0.3
+                    source: "/custom/img/play.png"
+                    fillMode: Image.PreserveAspectFit
+                    anchors.centerIn: parent
+                }
+            }
+
+            QGCButton {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 30
+                onClicked: {
+                    // Função quando clicado
+                }
+                background: Rectangle {
+                    color: "#ff4800"
+                    radius: 10
+                }
+
+                Image {
+                    width: parent.width * 0.3
+                    height: parent.height * 0.3
+                    source: "/custom/img/pause.png"
+                    fillMode: Image.PreserveAspectFit
+                    anchors.centerIn: parent
+                }
+            }
+
+            QGCButton {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 30
+                onClicked: {
+                    // Função quando clicado
+                }
+                background: Rectangle {
+                    color: "#ff4800"
+                    radius: 10
+                }
+
+                Image {
+                    width: parent.width * 0.3
+                    height: parent.height * 0.3
+                    source: "/custom/img/stop.png"
+                    fillMode: Image.PreserveAspectFit
+                    anchors.centerIn: parent
+                }
+            }
+        }
+
+        // Correção: Define a altura do Rectangle de forma dinâmica para abranger todo o conteúdo do ColumnLayout
+        height: columnLayout.implicitHeight + 10
+    }
+    
+    
+    
     //-- Pop Up
 
     Rectangle {
@@ -293,9 +378,6 @@ Item {
                     spacing: parent.width * 0.03
                     QGCSwitch {
                         id: switchNozzle
-                        onCheckedChanged: {
-                            qgcApp.controlNozzle(checked)
-                        }
                     }
                     Item {
                         width: 40  
@@ -315,7 +397,6 @@ Item {
                             onClicked: {
                                 autoNozzle.isActive = !autoNozzle.isActive
                                 switchNozzle.checked = false
-                                qgcApp.controlNozzle(autoNozzle.isActive)
                             }
                         }
                     }
