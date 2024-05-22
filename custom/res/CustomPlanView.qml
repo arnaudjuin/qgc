@@ -26,6 +26,7 @@ import QGroundControl.Controllers
 import QGroundControl.ShapeFileHelper
 import QGroundControl.FlightDisplay
 import QGroundControl.UTMSP
+import GlobalSignals 1.0
 
 
 Item {
@@ -37,7 +38,7 @@ Item {
     readonly property real  _margin:                    ScreenTools.defaultFontPixelHeight * 0.5
     readonly property real  _toolsMargin:               ScreenTools.defaultFontPixelWidth * 0.75
     readonly property real  _radius:                    ScreenTools.defaultFontPixelWidth  * 0.5
-    readonly property real  _rightPanelWidth:           Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 30)
+    readonly property real  _rightPanelWidth:           Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 25)
     readonly property var   _defaultVehicleCoordinate:  QtPositioning.coordinate(37.803784, -122.462276)
     readonly property bool  _waypointsOnlyMode:         QGroundControl.corePlugin.options.missionWaypointsOnly
 
@@ -83,6 +84,7 @@ Item {
     property bool _firstFenceLoadComplete:      false
     property bool _firstRallyLoadComplete:      false
     property bool _firstLoadComplete:           false
+    property bool buttonSaveVisible: false
 
     MapFitFunctions {
         id:                         mapFitFunctions  // The name for this id cannot be changed without breaking references outside of this code. Beware!
@@ -291,6 +293,11 @@ Item {
     function insertLandItemAfterCurrent() {
         var nextIndex = _missionController.currentPlanViewVIIndex + 1
         _missionController.insertLandItem(mapCenter(), nextIndex, true /* makeCurrentItem */)
+    }
+
+    function _mapCenter() {
+        var centerPoint = Qt.point(editorMap.centerViewport.left + (editorMap.centerViewport.width / 2), editorMap.centerViewport.top + (editorMap.centerViewport.height / 2))
+        return editorMap.toCoordinate(centerPoint, false /* clipToViewPort */)
     }
 
 
@@ -548,282 +555,324 @@ Item {
 
         //-----------------------------------------------------------
         // Left tool strip
-        ToolStrip {
-            id:                 toolStrip
-            anchors.margins:    _toolsMargin
-            anchors.left:       parent.left
-            anchors.top:        parent.top
-            z:                  QGroundControl.zOrderWidgets
-            maxHeight:          parent.height - toolStrip.y
-            title:              qsTr("Plan")
+        Column {
+            id: leftToolStrip
+            anchors.left: parent.left
+            spacing: 10 // Adjust spacing as needed
+            y: 3.28
 
-            readonly property int flyButtonIndex:       0
-            readonly property int fileButtonIndex:      1
-            readonly property int takeoffButtonIndex:   2
-            readonly property int waypointButtonIndex:  3
-            readonly property int roiButtonIndex:       4
-            readonly property int patternButtonIndex:   5
-            readonly property int landButtonIndex:      6
-            readonly property int centerButtonIndex:    7
-
-            property bool _isRallyLayer:    _editingLayer == _layerRallyPoints
-            property bool _isMissionLayer:  _editingLayer == _layerMission
-            property bool _isUtmspLayer:     _editingLayer == _layerUTMSP
-
-            ToolStripActionList {
-                id: toolStripActionList
-                model: [
-                    ToolStripAction {
-                        text:           qsTr("Fly")
-                        iconSource:     "/qmlimages/PaperPlane.svg"
-                        onTriggered:    mainWindow.popView()
-                    },
-                    ToolStripAction {
-                        text:                   qsTr("File")
-                        enabled:                !_planMasterController.syncInProgress
-                        visible:                true
-                        showAlternateIcon:      _planMasterController.dirty
-                        iconSource:             "/qmlimages/MapSync.svg"
-                        alternateIconSource:    "/qmlimages/MapSyncChanged.svg"
-                        dropPanelComponent:     syncDropPanel
-                    },
-                    ToolStripAction {
-                        text:       qsTr("Takeoff")
-                        iconSource: "/res/takeoff.svg"
-                        enabled:    _missionController.isInsertTakeoffValid
-                        visible:    (toolStrip._isMissionLayer || toolStrip._isUtmspLayer) && !_planMasterController.controllerVehicle.rover
-                        onTriggered: {
-                            toolStrip.allAddClickBoolsOff()
-                            insertTakeItemAfterCurrent()
-                            _triggerSubmit = true
-                        }
-                    },
-                    ToolStripAction {
-                        id:                 addWaypointRallyPointAction
-                        text:               _editingLayer == _layerRallyPoints ? qsTr("Rally Point") : qsTr("Waypoint")
-                        iconSource:         "/qmlimages/MapAddMission.svg"
-                        enabled:            toolStrip._isRallyLayer ? true : _missionController.flyThroughCommandsAllowed
-                        visible:            toolStrip._isRallyLayer || toolStrip._isMissionLayer || toolStrip._isUtmspLayer
-                        checkable:          true
-                    },
-                    ToolStripAction {
-                        text:               _missionController.isROIActive ? qsTr("Cancel ROI") : qsTr("ROI")
-                        iconSource:         "/qmlimages/MapAddMission.svg"
-                        enabled:            !_missionController.onlyInsertTakeoffValid
-                        visible:            toolStrip._isMissionLayer && _planMasterController.controllerVehicle.roiModeSupported
-                        checkable:          !_missionController.isROIActive
-                        onCheckedChanged:   _addROIOnClick = checked
-                        onTriggered: {
-                            if (_missionController.isROIActive) {
-                                toolStrip.allAddClickBoolsOff()
-                                insertCancelROIAfterCurrent()
-                            }
-                        }
-                        property bool myAddROIOnClick: _addROIOnClick
-                        onMyAddROIOnClickChanged: checked = _addROIOnClick
-                    },
-                    ToolStripAction {
-                        text:               _singleComplexItem ? _missionController.complexMissionItemNames[0] : qsTr("Pattern")
-                        iconSource:         "/qmlimages/MapDrawShape.svg"
-                        enabled:            _missionController.flyThroughCommandsAllowed
-                        visible:            toolStrip._isMissionLayer
-                        dropPanelComponent: _singleComplexItem ? undefined : patternDropPanel
-                        onTriggered: {
-                            toolStrip.allAddClickBoolsOff()
-                            if (_singleComplexItem) {
-                                insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0])
-                            }
-                        }
-                    },
-                    ToolStripAction {
-                        text:       _planMasterController.controllerVehicle.multiRotor ? qsTr("Return") : qsTr("Land")
-                        iconSource: "/res/rtl.svg"
-                        enabled:    _missionController.isInsertLandValid
-                        visible:    toolStrip._isMissionLayer || toolStrip._isUtmspLayer
-                        onTriggered: {
-                            toolStrip.allAddClickBoolsOff()
-                            insertLandItemAfterCurrent()
-                        }
-                    },
-                    ToolStripAction {
-                        text:               qsTr("Center")
-                        iconSource:         "/qmlimages/MapCenter.svg"
-                        enabled:            true
-                        visible:            true
-                        dropPanelComponent: centerMapDropPanel
+            Repeater {
+                model: _missionController.complexMissionItemNames
+                
+                QGCButton{
+                    id: criarNovaMissaoButton
+                    text: qsTr("Criar nova missão")
+                    anchors {
+                        left: parent.left
+                        topMargin: 15
+                        leftMargin: 7
                     }
-                ]
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: {
+                            if (_planMasterController.containsItems) {
+                                removeAllPromptDialog
+                            } else {
+                                insertComplexItemAfterCurrent(modelData)
+                            }
+                        }
+                    }
+                }
             }
+            
+            /*Rectangle {
+                id: leftTips
+                visible: false // Initially hidden
+                width: {
+                    let baseWidth = _leftTips;
+                    if (_utmspEnabled) {
+                        baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 10, 300);
+                    }
+                    return baseWidth;
+                }
+                
+                color: '#ffffff'
+                radius: 5 // Rounded corners
+                property int popuppadding: 10
+                height: titlePopupLabel.height + contentPopupLabel.height + 2 * popuppadding // Adjusted height
+                property int originalHeight: titlePopupLabel.height + contentPopupLabel.height + 2 * popuppadding // Adjusted originalHeight
 
-            model: toolStripActionList.model
+                //Posicionamento do painel
+                anchors.top: criarNovaMissaoButton.bottom
+                anchors.left: parent.left
+                anchors.leftMargin: 7 // Adjust this to ensure it doesn't stick to the screen edge
+                anchors.topMargin: 5 // Space between the button and the rectangle
 
-            function allAddClickBoolsOff() {
-                _addROIOnClick =        false
-                addWaypointRallyPointAction.checked = false
-            }
+                RowLayout {
+                    id: leftTipsTitleBar
+                    anchors.top: parent.top
+                    anchors.topMargin: -2.2 // Margem do topo do Rectangle, ajuste conforme necessário para alinhamento
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: 10 // Espaçamento entre elementos
+                    height: Math.max(minimizePopupButton.height, titlePopupLabel.font.pixelSize * 1.5, closePopupButton.height) // Define uma altura comum baseada no maior dos elementos
 
-            onDropped: allAddClickBoolsOff()
+                    QGCButton {
+                        id: minimizePopupButton
+                        property bool isMinimized: false
+                        background: null // Sem fundo
+                        height: titlePopupLabel.font.pixelSize * 1.1 // Altura baseada no tamanho da fonte do título
+                        width: height // Largura igual à altura para manter proporção
+                        onClicked: {
+                            isMinimized = !isMinimized
+                            if (isMinimized) {
+                                leftTips.originalHeight = leftTips.height
+                                leftTips.height = titlePopupLabel.height + leftTips.popuppadding // Altura minimizada ajustada
+                            } else {
+                                leftTips.height = leftTips.originalHeight
+                            }
+                            contentPopupLabel.visible = !isMinimized
+                        }
+
+                        Label {
+                            text: minimizePopupButton.isMinimized ? "-" : "+"
+                            color: "#ff4800"
+                            anchors.centerIn: parent
+                        }
+                    }
+
+                    QGCLabel {
+                        id: titlePopupLabel
+                        text: "Instruções"
+                        color: "#ff4800"
+                        font.pixelSize: defaultFontPixelSize * 1.5
+                        height: parent.height // Usa a altura do parent RowLayout
+                    }
+
+                    QGCButton {
+                        id: closePopupButton
+                        background: null // Sem fundo
+                        height: titlePopupLabel.font.pixelSize * 1.5 // Altura baseada no tamanho da fonte do título
+                        width: height // Largura igual à altura para manter proporção
+                        onClicked: leftTips.visible = false
+
+                        Label {
+                            text: "="
+                            color: "#ff4800"
+                            anchors.centerIn: parent
+                        }
+                    }
+                }          
+
+                QGCLabel {
+                    id: contentPopupLabel
+                    color:"#000000"
+                    text: 'Vá com o controle até o ponto desejado conforme exibido no mapa e clique em "Marcar Ponto" para adicionar o ponto ao seu polígono.\n\nVocê também pode utilizar a posição do Rover para marcar pontos. Basta selecionar o ícone do Rover no mapa.\n\nQuando estiver terminado, clique em "Finalizar" e o polígono será concluído.\n\nUse dois dedos na tela para movimentar e também para aumentar e diminuir o zoom.'
+                    wrapMode: Text.Wrap
+                    width: leftTips.width - 2 * leftTips.popuppadding // Adjust width to account for padding
+                    horizontalAlignment: Text.AlignHCenter // Center text horizontally
+                    anchors {
+                        top: leftTipsTitleBar.bottom
+                        topMargin: leftTips.popuppadding // Add top padding
+                        horizontalCenter: parent.horizontalCenter
+                        leftMargin: leftTips.popuppadding // Add left padding
+                        rightMargin: leftTips.popuppadding // Add right padding
+                        bottomMargin: leftTips.popuppadding // Add bottom padding
+                    }
+                }
+            }*/
         }
 
+        
+                
         //-----------------------------------------------------------
         // Right pane for mission editing controls
-        Rectangle {
-            id:                 rightPanel
-            height:             parent.height
-            width:{
-                 if(_utmspEnabled){
-                     _rightPanelWidth + ScreenTools.defaultFontPixelWidth * 21.667
-                 }
-                 else{
-                     _rightPanelWidth
-                 }
-             }
-            color:              qgcPal.window
-            opacity:            layerTabBar.visible ? 0.2 : 0
-            anchors.bottom:     parent.bottom
-            anchors.right:      parent.right
-            anchors.rightMargin: _toolsMargin
-        }
-        //-------------------------------------------------------
-        // Right Panel Controls
-        Item {
-            anchors.fill:           rightPanel
-            anchors.topMargin:      _toolsMargin
-            DeadMouseArea {
-                anchors.fill:   parent
-            }
-            Column {
-                id:                 rightControls
-                spacing:            ScreenTools.defaultFontPixelHeight * 0.5
-                anchors.left:       parent.left
-                anchors.right:      parent.right
-                anchors.top:        parent.top
-                //-------------------------------------------------------
-                // Mission Controls (Expanded)
-                QGCTabBar {
-                    id:         layerTabBar
-                    width:      parent.width
-                    visible:    QGroundControl.corePlugin.options.enablePlanViewSelector  && !_utmspEnabled
-                    Component.onCompleted: currentIndex = 0
-                    QGCTabButton {
-                        text:       qsTr("Mission")
+                Rectangle {
+                    id: rightPanel
+                    height: parent.height
+                    width: {
+                        let baseWidth = _rightPanelWidth;
+                        if (_utmspEnabled) {
+                            // Ajusta a largura adicionando um valor baseado na largura disponível
+                            baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 15, 300);
+                        }
+                        return baseWidth;
                     }
-                    QGCTabButton {
-                        text:       qsTr("Fence")
-                        enabled:    _geoFenceController.supported
-                    }
-                    QGCTabButton {
-                        text:       qsTr("Rally")
-                        enabled:    _rallyPointController.supported
-                    }
+                    color: qgcPal.window
+                    opacity: layerTabBar.visible ? 0.2 : 0
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+                    anchors.rightMargin: _toolsMargin
                 }
 
-                QGCTabBar {
-                    id:         layerTabBarUTMSP
-                    width:      parent.width
-                    visible:    QGroundControl.corePlugin.options.enablePlanViewSelector && _utmspEnabled
-                    QGCTabButton {
-                        text:       qsTr("Mission")
+                Item {
+                    id: rightPanelMenuBar
+                    anchors.fill: rightPanel
+                    anchors.topMargin: _toolsMargin
+                    DeadMouseArea {
+                        anchors.fill: parent
                     }
-                    QGCTabButton {
-                        text:       qsTr("Rally")
-                        enabled:    _rallyPointController.supported
-                    }
-                    QGCTabButton {
-                        id: utmspbutton
-                        text:       qsTr("UTM-Adapter")
-                        visible: _utmspEnabled
-                    }
-                }
-            }
-            //-------------------------------------------------------
-            // Mission Item Editor
-            Item {
-                id:                     missionItemEditor
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                anchors.top:            rightControls.bottom
-                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.bottom:         parent.bottom
-                anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
-                visible:                _editingLayer == _layerMission && !planControlColapsed
-                QGCListView {
-                    id:                 missionItemEditorListView
-                    anchors.fill:       parent
-                    spacing:            ScreenTools.defaultFontPixelHeight / 4
-                    orientation:        ListView.Vertical
-                    model:              _missionController.visualItems
-                    cacheBuffer:        Math.max(height * 2, 0)
-                    clip:               true
-                    currentIndex:       _missionController.currentPlanViewSeqNum
-                    highlightMoveDuration: 250
-                    visible:            _editingLayer == _layerMission && !planControlColapsed
-                    //-- List Elements
-                    delegate: MissionItemEditor {
-                        map:            editorMap
-                        masterController:  _planMasterController
-                        missionItem:    object
-                        width:          missionItemEditorListView.width
-                        readOnly:       false
-                        onClicked: (sequenceNumber) => { _missionController.setCurrentPlanViewSeqNum(object.sequenceNumber, false) }
-                        onRemove: {
-                            var removeVIIndex = index
-                            _missionController.removeVisualItem(removeVIIndex)
-                            if (removeVIIndex >= _missionController.visualItems.count) {
-                                removeVIIndex--
+
+                    Column {
+                        id: rightControls
+                        spacing: ScreenTools.defaultFontPixelHeight * 0.3 // Reduz o espaçamento
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+
+                        property string _overwriteText: qsTr("Plan overwrite")
+
+                        QGCButton {
+                            text:               qsTr("Selecionar missão")
+                            width: rightPanel.width 
+                            enabled:            !_planMasterController.syncInProgress
+                            onClicked: {
+                                if (_planMasterController.dirty) {
+                                    showLoadFromFileOverwritePrompt(rightControls._overwriteText)
+                                } else {
+                                    _planMasterController.loadFromSelectedFile()
+                                }
                             }
                         }
-                        onSelectNextNotReadyItem:   selectNextNotReady()
+
+                        QGCTabBar {
+                            id: layerTabBar
+                            width: parent.width
+                            visible: QGroundControl.corePlugin.options.enablePlanViewSelector && !_utmspEnabled
+                            Component.onCompleted: currentIndex = 0
+                            background: Rectangle {
+                                color: "transparent" // Defina como transparente
+                            }
+                            QGCTabButton {
+                                text: qsTr("Missão")
+                            }
+                            QGCTabButton {
+                                text:       qsTr("Área de risco")
+                                enabled:    _geoFenceController.supported
+                            }
+                            
+                        }
+
+
+                        QGCTabBar {
+                            id: layerTabBarUTMSP
+                            width: parent.width
+                            visible: QGroundControl.corePlugin.options.enablePlanViewSelector && _utmspEnabled
+                            QGCTabButton {
+                                text: qsTr("Missão")
+                            }
+                            QGCTabButton {
+                                text: qsTr("Rally")
+                                enabled: _rallyPointController.supported
+                            }
+                            QGCTabButton {
+                                id: utmspbutton
+                                text: qsTr("UTM-Adapter")
+                                visible: _utmspEnabled
+                            }
+                        }
+                    }
+
+                    // Mission Item Editor
+                    Item {
+                        id: missionItemEditor
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: rightControls.bottom
+                        anchors.topMargin: ScreenTools.defaultFontPixelHeight * 0.2 // Ajusta margem superior
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: ScreenTools.defaultFontPixelHeight * 0.2 // Ajusta margem inferior
+                        visible: _editingLayer == _layerMission && !planControlColapsed
+                        QGCListView {
+                            id:                 missionItemEditorListView
+                            anchors.fill:       parent
+                            spacing:            ScreenTools.defaultFontPixelHeight / 4
+                            orientation:        ListView.Vertical
+                            model:              _missionController.visualItems
+                            cacheBuffer:        Math.max(height * 2, 0)
+                            clip:               true
+                            currentIndex:       _missionController.currentPlanViewSeqNum
+                            highlightMoveDuration: 250
+                            visible:            _editingLayer == _layerMission && !planControlColapsed
+                            //-- List Elements
+                            delegate: MissionItemEditor {
+                                map:            editorMap
+                                masterController:  _planMasterController
+                                missionItem:    object
+                                width:          missionItemEditorListView.width
+                                readOnly:       false
+                                onClicked: (sequenceNumber) => { _missionController.setCurrentPlanViewSeqNum(object.sequenceNumber, false) }
+                                onRemove: {
+                                    var removeVIIndex = index
+                                    _missionController.removeVisualItem(removeVIIndex)
+                                    if (removeVIIndex >= _missionController.visualItems.count) {
+                                        removeVIIndex--
+                                    }
+                                }
+                                onSelectNextNotReadyItem:   selectNextNotReady()
+                            }
+                        }
+                    }
+                    // GeoFence Editor
+                    GeoFenceEditor {
+                        anchors.top:            rightControls.bottom
+                        anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
+                        anchors.bottom:         parent.bottom
+                        anchors.left:           parent.left
+                        anchors.right:          parent.right
+                        myGeoFenceController:   _geoFenceController
+                        flightMap:              editorMap
+                        visible:                _editingLayer == _layerGeoFence
+                    }
+
+                    // Rally Point Editor
+                    RallyPointEditorHeader {
+                        id:                     rallyPointHeader
+                        anchors.top:            rightControls.bottom
+                        anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
+                        anchors.left:           parent.left
+                        anchors.right:          parent.right
+                        visible:                _editingLayer == _layerRallyPoints
+                        controller:             _rallyPointController
+                    }
+                    RallyPointItemEditor {
+                        id:                     rallyPointEditor
+                        anchors.top:            rallyPointHeader.bottom
+                        anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
+                        anchors.left:           parent.left
+                        anchors.right:          parent.right
+                        visible:                _editingLayer == _layerRallyPoints && _rallyPointController.points.count
+                        rallyPoint:             _rallyPointController.currentRallyPoint
+                        controller:             _rallyPointController
+                    }
+                    UTMSPAdapterEditor{
+                        id: utmspEditor
+                        enabled:                 _utmspEnabled
+                        anchors.top:             rightControls.bottom
+                        anchors.topMargin:       ScreenTools.defaultFontPixelHeight * 0.25
+                        anchors.bottom:          parent.bottom
+                        anchors.left:            parent.left
+                        anchors.right:           parent.right
+                        currentMissionItems:     _visualItems
+                        myGeoFenceController:    _geoFenceController
+                        flightMap:               editorMap
+                        visible:                 _editingLayer == _layerUTMSP
+                        triggerSubmitButton:     _triggerSubmit
+                        resetRegisterFlightPlan: _resetRegisterFlightPlan
                     }
                 }
-            }
-            // GeoFence Editor
-            GeoFenceEditor {
-                anchors.top:            rightControls.bottom
-                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.bottom:         parent.bottom
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                myGeoFenceController:   _geoFenceController
-                flightMap:              editorMap
-                visible:                _editingLayer == _layerGeoFence
-            }
 
-            // Rally Point Editor
-            RallyPointEditorHeader {
-                id:                     rallyPointHeader
-                anchors.top:            rightControls.bottom
-                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                visible:                _editingLayer == _layerRallyPoints
-                controller:             _rallyPointController
-            }
-            RallyPointItemEditor {
-                id:                     rallyPointEditor
-                anchors.top:            rallyPointHeader.bottom
-                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                visible:                _editingLayer == _layerRallyPoints && _rallyPointController.points.count
-                rallyPoint:             _rallyPointController.currentRallyPoint
-                controller:             _rallyPointController
-            }
-            UTMSPAdapterEditor{
-                id: utmspEditor
-                enabled:                 _utmspEnabled
-                anchors.top:             rightControls.bottom
-                anchors.topMargin:       ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.bottom:          parent.bottom
-                anchors.left:            parent.left
-                anchors.right:           parent.right
-                currentMissionItems:     _visualItems
-                myGeoFenceController:    _geoFenceController
-                flightMap:               editorMap
-                visible:                 _editingLayer == _layerUTMSP
-                triggerSubmitButton:     _triggerSubmit
-                resetRegisterFlightPlan: _resetRegisterFlightPlan
-            }
+
+        Component.onCompleted: {
+        GlobalSignals.showPanels.connect(function() {
+            exampleRectangle.visible = true;
+            rightPanelMenuBar.visible = true;
+        })
+
+        GlobalSignals.hidePanels.connect(function() {
+            exampleRectangle.visible = false;
+            rightPanelMenuBar.visible = false;
+        })
         }
 
         Connections {
@@ -851,7 +900,8 @@ Item {
             readonly property string _licenseString: QGroundControl.elevationProviderNotice
 
             id:                         licenseLabel
-            visible:                    terrainStatus.visible && _licenseString !== ""
+            //visible:                    terrainStatus.visible && _licenseString !== ""
+            visible: false
             anchors.bottom:             terrainStatus.top
             anchors.horizontalCenter:   terrainStatus.horizontalCenter
             anchors.bottomMargin:       ScreenTools.defaultFontPixelWidth * 0.5
@@ -868,7 +918,8 @@ Item {
             anchors.bottom:     parent.bottom
             height:             ScreenTools.defaultFontPixelHeight * 7
             missionController:  _missionController
-            visible:            _internalVisible && _editingLayer === _layerMission && QGroundControl.corePlugin.options.showMissionStatus
+            //visible:            _internalVisible && _editingLayer === _layerMission && QGroundControl.corePlugin.options.showMissionStatus
+            visible: false
 
             onSetCurrentSeqNum: _missionController.setCurrentPlanViewSeqNum(seqNum, true)
 
@@ -890,6 +941,7 @@ Item {
             terrainButtonVisible:   _editingLayer === _layerMission
             terrainButtonChecked:   terrainStatus.visible
             onTerrainButtonClicked: terrainStatus.toggleVisible()
+            visible: false
         }
     }
 
@@ -912,6 +964,21 @@ Item {
             property var planCreator
 
             onAccepted: planCreator.createPlan(mapCenter)
+        }
+    }
+
+    Component {
+        id: removeAllPromptDialog
+
+        QGCSimpleMessageDialog {
+            title:      qsTr("Create Plan")
+            text:       qsTr("Are you sure you want to remove current plan and create a new plan? ")
+            buttons:    Dialog.Yes | Dialog.No
+
+            property var mapCenter
+            property var planCreator
+
+            onAccepted: insertComplexItemAfterCurrent(modelData)
         }
     }
 
@@ -965,6 +1032,8 @@ Item {
                                          function() { _planMasterController.loadFromVehicle() })
         } else {
             _planMasterController.loadFromVehicle()
+
+
         }
     }
 
@@ -1047,10 +1116,10 @@ Item {
                                 dropPanel.hide()
                             }
 
-                            function _mapCenter() {
+                            /*function _mapCenter() {
                                 var centerPoint = Qt.point(editorMap.centerViewport.left + (editorMap.centerViewport.width / 2), editorMap.centerViewport.top + (editorMap.centerViewport.height / 2))
-                                return editorMap.toCoordinate(centerPoint, false /* clipToViewPort */)
-                            }
+                                return editorMap.toCoordinate(centerPoint, false)
+                            }*/
                         }
                     }
                 }
