@@ -585,7 +585,7 @@ Item {
 
         PlanEditToolbar {
             anchors.horizontalCenter:       mapControl.left
-            anchors.horizontalCenterOffset: mapControl.centerViewport.left + (mapControl.centerViewport.width / 2)
+            anchors.horizontalCenterOffset: mapControl.centerViewport.left + (mapControl.centerViewport.width / 1.5)
 
             availableWidth:                 mapControl.centerViewport.width
 

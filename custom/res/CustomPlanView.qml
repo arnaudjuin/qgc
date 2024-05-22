@@ -39,7 +39,6 @@ Item {
     readonly property real  _toolsMargin:               ScreenTools.defaultFontPixelWidth * 0.75
     readonly property real  _radius:                    ScreenTools.defaultFontPixelWidth  * 0.5
     readonly property real  _rightPanelWidth:           Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 25)
-    readonly property real  _leftTips:                  Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 25)
     readonly property var   _defaultVehicleCoordinate:  QtPositioning.coordinate(37.803784, -122.462276)
     readonly property bool  _waypointsOnlyMode:         QGroundControl.corePlugin.options.missionWaypointsOnly
 
@@ -582,7 +581,6 @@ Item {
                             } else {
                                 insertComplexItemAfterCurrent(modelData)
                             }
-                            leftTips.visible = !leftTips.visible; // Toggle panel visibility
                         }
                     }
                 }
