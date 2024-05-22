@@ -138,21 +138,6 @@
 
 #include "QGCMapEngine.h"
 
-class FinishVideoInitialization : public QRunnable
-{
-public:
-  FinishVideoInitialization(VideoManager* manager)
-      : _manager(manager)
-  {}
-
-  void run () {
-      _manager->_initVideo();
-  }
-
-private:
-  VideoManager* _manager;
-};
-
 
 QGCApplication* QGCApplication::_app = nullptr;
 

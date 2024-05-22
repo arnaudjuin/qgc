@@ -8,17 +8,12 @@
  ****************************************************************************/
 
 
-#ifndef VideoManager_H
-#define VideoManager_H
+#pragma once
 
-#include <QObject>
-#include <QTimer>
-#include <QTime>
-#include <QUrl>
+#include <QtCore/QSize>
+#include <QtCore/QRunnable>
+#include <QtCore/QLoggingCategory>
 
-#include "QGCMAVLink.h"
-#include "QGCLoggingCategory.h"
-#include "VideoReceiver.h"
 #include "QGCToolbox.h"
 #include "SubtitleWriter.h"
 
@@ -27,10 +22,12 @@ Q_DECLARE_LOGGING_CATEGORY(VideoManagerLog)
 class VideoSettings;
 class Vehicle;
 class Joystick;
+class VideoReceiver;
 
 class VideoManager : public QGCTool
 {
     Q_OBJECT
+    Q_MOC_INCLUDE("VideoReceiver.h")
 
 public:
     VideoManager    (QGCApplication* app, QGCToolbox* toolbox);
@@ -173,4 +170,17 @@ protected:
     Vehicle*                _activeVehicle          = nullptr;
 };
 
-#endif
+class FinishVideoInitialization : public QRunnable
+{
+public:
+    explicit FinishVideoInitialization(VideoManager* manager)
+        : _manager(manager)
+    {}
+
+    void run () {
+        _manager->_initVideo();
+    }
+
+private:
+    VideoManager* _manager = nullptr;
+};

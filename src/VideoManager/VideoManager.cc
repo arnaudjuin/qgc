@@ -7,33 +7,31 @@
  *
  ****************************************************************************/
 
-
-#include <QQmlContext>
-#include <QQmlEngine>
-#include <QSettings>
-#include <QUrl>
-#include <QDir>
-#include <QQuickWindow>
-
-#ifndef QGC_DISABLE_UVC
-#include <QMediaDevices>
-#include <QCameraDevice>
-#endif
-
-#include "ScreenToolsController.h"
+#include "QGCApplication.h"
 #include "VideoManager.h"
 #include "QGCToolbox.h"
 #include "QGCCorePlugin.h"
 #include "MultiVehicleManager.h"
-#include "Settings/SettingsManager.h"
+#include "SettingsManager.h"
 #include "Vehicle.h"
 #include "QGCCameraManager.h"
+#include "QGCLoggingCategory.h"
+#include <QtQml/QQmlEngine>
+#include "VideoReceiver.h"
 
 #if defined(QGC_GST_STREAMING)
 #include "GStreamer.h"
 #include "VideoSettings.h"
+#include <QtCore/QDir>
 #else
 #include "GLVideoItemStub.h"
+#endif
+
+#ifndef QGC_DISABLE_UVC
+#include <QtMultimedia/QMediaDevices>
+#include <QtMultimedia/QCameraDevice>
+#include <QtCore/QPermissions>
+#include <QtQuick/QQuickWindow>
 #endif
 
 QGC_LOGGING_CATEGORY(VideoManagerLog, "VideoManagerLog")
@@ -53,7 +51,7 @@ VideoManager::VideoManager(QGCApplication* app, QGCToolbox* toolbox)
 #if !defined(QGC_GST_STREAMING)
     static bool once = false;
     if (!once) {
-        qmlRegisterType<GLVideoItemStub>("org.freedesktop.gstreamer.GLVideoItem", 1, 0, "GstGLVideoItem");
+        qmlRegisterType<GLVideoItemStub>("org.freedesktop.gstreamer.Qt6GLVideoItem", 1, 0, "GstGLQt6VideoItem");
         once = true;
     }
 #endif
@@ -865,7 +863,7 @@ VideoManager::_setActiveVehicle(Vehicle* vehicle)
     if(_activeVehicle) {
         disconnect(_activeVehicle->vehicleLinkManager(), &VehicleLinkManager::communicationLostChanged, this, &VideoManager::_communicationLostChanged);
         if(_activeVehicle->cameraManager()) {
-            QGCCameraControl* pCamera = _activeVehicle->cameraManager()->currentCameraInstance();
+            auto pCamera = _activeVehicle->cameraManager()->currentCameraInstance();
             if(pCamera) {
                 pCamera->stopStream();
             }
@@ -877,7 +875,7 @@ VideoManager::_setActiveVehicle(Vehicle* vehicle)
         connect(_activeVehicle->vehicleLinkManager(), &VehicleLinkManager::communicationLostChanged, this, &VideoManager::_communicationLostChanged);
         if(_activeVehicle->cameraManager()) {
             connect(_activeVehicle->cameraManager(), &QGCCameraManager::streamChanged, this, &VideoManager::_restartAllVideos);
-            QGCCameraControl* pCamera = _activeVehicle->cameraManager()->currentCameraInstance();
+            auto pCamera = _activeVehicle->cameraManager()->currentCameraInstance();
             if(pCamera) {
                 pCamera->resumeStream();
             }

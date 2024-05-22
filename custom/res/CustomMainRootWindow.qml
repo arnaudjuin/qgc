@@ -128,7 +128,7 @@ ApplicationWindow {
     }
 
     function showTool(toolTitle, toolSource, toolIcon) {
-        toolDrawer.backIcon     = flyView.visible ? "/qmlimages/Home.svg" : "/qmlimages/Home.svg"
+        toolDrawer.backIcon     = flyView.visible ? "/qmlimages/PaperPlane.svg" : "/qmlimages/Plan.svg"
         toolDrawer.toolTitle    = toolTitle
         toolDrawer.toolSource   = toolSource
         toolDrawer.toolIcon     = toolIcon
@@ -140,7 +140,7 @@ ApplicationWindow {
     }
 
     function showVehicleSetupTool(setupPage = "") {
-        showTool(qsTr("Configurações"), "SetupView.qml", "/qmlimages/Gears.svg")
+        showTool(qsTr("Vehicle Setup"), "SetupView.qml", "/qmlimages/Gears.svg")
         if (setupPage !== "") {
             toolDrawerLoader.item.showNamedComponentPanel(setupPage)
         }
@@ -292,8 +292,6 @@ ApplicationWindow {
                         id:             innerLayout
                         Layout.margins: toolSelectDialog._margins
                         spacing:        ScreenTools.defaultFontPixelWidth
-                        signal displayPreFlightChecklist
-                        property bool   _viewer3DEnabled:        QGroundControl.settingsManager.viewer3DSettings.enabled.rawValue
 
                         SubMenuButton {
                             height:             toolSelectDialog._toolButtonHeight
@@ -316,7 +314,7 @@ ApplicationWindow {
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
                             text:               qsTr("Configurações")
-                            imageColor:         "Black"
+                            imageColor:         "black"
                             imageResource:      "/qmlimages/Gears.svg"
                             onClicked: {
                                 if (!mainWindow.preventViewSwitch()) {
@@ -332,7 +330,7 @@ ApplicationWindow {
                             Layout.fillWidth:   true
                             text:               qsTr("Analyze Tools")
                             imageResource:      "/qmlimages/Analyze.svg"
-                            imageColor:         "Black"
+                            imageColor:         "black"
                             visible:            QGroundControl.corePlugin.showAdvancedUI
                             onClicked: {
                                 if (!mainWindow.preventViewSwitch()) {
@@ -342,14 +340,13 @@ ApplicationWindow {
                             }
                         }
 
-
                         SubMenuButton {
                             id:                 settingsButton
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
                             text:               qsTr("Application Settings")
                             imageResource:      "/qmlimages/Gears.svg"
-                            imageColor:         "Black"
+                            imageColor:         "black"
                             onClicked: {
                                 if (!mainWindow.preventViewSwitch()) {
                                     drawer.close()
@@ -735,7 +732,7 @@ ApplicationWindow {
         function calcXPosition() {
             if (indicatorItem) {
                 var xCenter = indicatorItem.mapToItem(mainWindow.contentItem, indicatorItem.width / 2, 0).x
-                return Math.max(_margins, xCenter - (contentItem.implicitWidth / 2))
+                return Math.max(_margins, Math.min(xCenter - (contentItem.implicitWidth / 2), mainWindow.contentItem.width - contentItem.implicitWidth - _margins - (indicatorDrawer.padding * 2) - (ScreenTools.defaultFontPixelHeight / 2)))
             } else {
                 return _margins
             }
