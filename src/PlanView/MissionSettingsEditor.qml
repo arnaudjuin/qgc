@@ -16,7 +16,7 @@ Rectangle {
     id:                 valuesRect
     width:              availableWidth
     height:             valuesColumn.height + (_margin * 2)
-    color:              "blue"
+    color:              qgcPal.windowShadeDark
     visible:            missionItem.isCurrentItem
     radius:             _radius
 
