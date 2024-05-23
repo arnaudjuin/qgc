@@ -228,9 +228,12 @@ Item {
             id:          uploadButton
             text:        _controllerDirty ? qsTr("Upload Required") : qsTr("Upload")
             enabled:     _utmspEnabled ? !_controllerSyncInProgress && responseFlag : !_controllerSyncInProgress
-            visible:     !_controllerOffline && !_controllerSyncInProgress
+            visible:     true//HACK HURAL 
             primary:     _controllerDirty
             onClicked: {
+                console.log(_controllerOffline,"_controllerOffline")
+                console.log(_controllerSyncInProgress,"_controllerSyncInProgress")
+
                 if (_utmspEnabled) {
                     QGroundControl.utmspManager.utmspVehicle.triggerActivationStatusBar(true);
                     UTMSPStateStorage.removeFlightPlanState = true

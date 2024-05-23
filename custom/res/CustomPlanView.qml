@@ -1039,7 +1039,6 @@ Item {
 
     Component {
         id: syncDropPanel
-
         ColumnLayout {
             id:         columnHolder
             spacing:    _margin
@@ -1201,7 +1200,7 @@ Item {
             RowLayout {
                 Layout.fillWidth:   true
                 spacing:            _margin
-                visible:            vehicleSection.visible
+                visible:            true//vehicleSection.visible
 
                 QGCButton {
                     text:               qsTr("Upload")
