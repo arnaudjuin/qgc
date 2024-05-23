@@ -17,10 +17,27 @@ import QGroundControl
 import QGroundControl.Controls
 import QGroundControl.Palette
 import QGroundControl.ScreenTools
-
+import QGroundControl.FactSystem    1.0
+import QGroundControl.FactControls  1.0
 import Custom.Widgets
+import QGroundControl.Controllers
 
 Item {
+        property bool _initialDownloadComplete: _activeVehicle ? _activeVehicle.initialConnectComplete : true
+
+     Loader {
+        id: controllerLoader
+        active: _initialDownloadComplete // This loader becomes active when _initialDownloadComplete is tråue
+        sourceComponent: factPanelControllerComponent
+    }
+
+    Component {
+        id: factPanelControllerComponent
+        FactPanelController {
+            // Initialize your FactPanelController here
+        }
+    }
+
     property var parentToolInsets                       // These insets tell you what screen real estate is available for positioning the controls in your overlay
     property var totalToolInsets:   _totalToolInsets    // The insets updated for the custom overlay additions
     property var mapControl
@@ -305,6 +322,9 @@ Item {
                     spacing: parent.width * 0.03
                     QGCSwitch {
                         id: switchLight
+                        onClicked: {
+                            factLights.fact.value=!factLights.fact.value
+                        }
                     }
 
                     Item {
@@ -326,6 +346,7 @@ Item {
                             onClicked: {
                                 autoLight.isActive = !autoLight.isActive
                                 switchLight.checked = false
+                                factLights.fact.value=false     
                             }
                         }
                     }
@@ -335,6 +356,13 @@ Item {
                         color: "white"
                         verticalAlignment: Text.AlignVCenter
                         font.pixelSize: headerArea.width * 0.06
+                    }
+                    FactCheckBox {
+                        id:factLights
+                        visible:false
+                        fact:               controllerLoader.item.getParameterFact(-1, "lights")
+                        Layout.fillWidth:   true
+                        scale : ScreenTools.isMobile ? 0.5 : 0.8
                     }
                 }
 
@@ -377,6 +405,9 @@ Item {
                     spacing: parent.width * 0.03
                     QGCSwitch {
                         id: switchNozzle
+                        onClicked: {
+                            factNozzle.fact.value=!factNozzle.fact.value
+                        }
                     }
                     Item {
                         width: 40  
@@ -395,6 +426,7 @@ Item {
                             }
                             onClicked: {
                                 autoNozzle.isActive = !autoNozzle.isActive
+                                factNozzle.fact.value=false
                                 switchNozzle.checked = false
                             }
                         }
@@ -404,6 +436,13 @@ Item {
                         color: "white"
                         verticalAlignment: Text.AlignVCenter
                         font.pixelSize: headerArea.width * 0.06
+                    }
+                    FactCheckBox {
+                        id:factNozzle
+                        visible:false
+                        fact:               controllerLoader.item.getParameterFact(-1, "nozzle")
+                        Layout.fillWidth:   true
+                        scale : ScreenTools.isMobile ? 0.5 : 0.8
                     }
                 }
 
