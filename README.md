@@ -51,6 +51,7 @@ Pre-requirements
 
 6.	Build 
 If have any problems with qmake try: 
+
 6.1 nano ~/.bashrc
 6.2 export PATH="/opt/Qt/6.6.2/gcc_64/bin/:$PATH"
 6.3 source ~/.bashrc
