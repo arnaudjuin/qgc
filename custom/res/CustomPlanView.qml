@@ -566,121 +566,17 @@ Item {
                 
                 QGCButton{
                     id: criarNovaMissaoButton
-                    text: qsTr("Criar nova missão")
+                    text: qsTr("Create new mission")  //Actually we are using this button to create a new mission with pattern mode, because we didn't get it how can we use Trace Mode in the correct way
                     anchors {
                         left: parent.left
                         topMargin: 15
                         leftMargin: 7
                     }
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onClicked: {
-                            if (_planMasterController.containsItems) {
-                                removeAllPromptDialog
-                            } else {
-                                insertComplexItemAfterCurrent(modelData)
-                            }
-                        }
+                    onClicked: {
+                        insertComplexItemAfterCurrent(modelData)
                     }
                 }
             }
-            
-            /*Rectangle {
-                id: leftTips
-                visible: false // Initially hidden
-                width: {
-                    let baseWidth = _leftTips;
-                    if (_utmspEnabled) {
-                        baseWidth += Math.min(ScreenTools.defaultFontPixelWidth * 10, 300);
-                    }
-                    return baseWidth;
-                }
-                
-                color: '#ffffff'
-                radius: 5 // Rounded corners
-                property int popuppadding: 10
-                height: titlePopupLabel.height + contentPopupLabel.height + 2 * popuppadding // Adjusted height
-                property int originalHeight: titlePopupLabel.height + contentPopupLabel.height + 2 * popuppadding // Adjusted originalHeight
-
-                //Posicionamento do painel
-                anchors.top: criarNovaMissaoButton.bottom
-                anchors.left: parent.left
-                anchors.leftMargin: 7 // Adjust this to ensure it doesn't stick to the screen edge
-                anchors.topMargin: 5 // Space between the button and the rectangle
-
-                RowLayout {
-                    id: leftTipsTitleBar
-                    anchors.top: parent.top
-                    anchors.topMargin: -2.2 // Margem do topo do Rectangle, ajuste conforme necessário para alinhamento
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    spacing: 10 // Espaçamento entre elementos
-                    height: Math.max(minimizePopupButton.height, titlePopupLabel.font.pixelSize * 1.5, closePopupButton.height) // Define uma altura comum baseada no maior dos elementos
-
-                    QGCButton {
-                        id: minimizePopupButton
-                        property bool isMinimized: false
-                        background: null // Sem fundo
-                        height: titlePopupLabel.font.pixelSize * 1.1 // Altura baseada no tamanho da fonte do título
-                        width: height // Largura igual à altura para manter proporção
-                        onClicked: {
-                            isMinimized = !isMinimized
-                            if (isMinimized) {
-                                leftTips.originalHeight = leftTips.height
-                                leftTips.height = titlePopupLabel.height + leftTips.popuppadding // Altura minimizada ajustada
-                            } else {
-                                leftTips.height = leftTips.originalHeight
-                            }
-                            contentPopupLabel.visible = !isMinimized
-                        }
-
-                        Label {
-                            text: minimizePopupButton.isMinimized ? "-" : "+"
-                            color: "#ff4800"
-                            anchors.centerIn: parent
-                        }
-                    }
-
-                    QGCLabel {
-                        id: titlePopupLabel
-                        text: "Instruções"
-                        color: "#ff4800"
-                        font.pixelSize: defaultFontPixelSize * 1.5
-                        height: parent.height // Usa a altura do parent RowLayout
-                    }
-
-                    QGCButton {
-                        id: closePopupButton
-                        background: null // Sem fundo
-                        height: titlePopupLabel.font.pixelSize * 1.5 // Altura baseada no tamanho da fonte do título
-                        width: height // Largura igual à altura para manter proporção
-                        onClicked: leftTips.visible = false
-
-                        Label {
-                            text: "="
-                            color: "#ff4800"
-                            anchors.centerIn: parent
-                        }
-                    }
-                }          
-
-                QGCLabel {
-                    id: contentPopupLabel
-                    color:"#000000"
-                    text: 'Vá com o controle até o ponto desejado conforme exibido no mapa e clique em "Marcar Ponto" para adicionar o ponto ao seu polígono.\n\nVocê também pode utilizar a posição do Rover para marcar pontos. Basta selecionar o ícone do Rover no mapa.\n\nQuando estiver terminado, clique em "Finalizar" e o polígono será concluído.\n\nUse dois dedos na tela para movimentar e também para aumentar e diminuir o zoom.'
-                    wrapMode: Text.Wrap
-                    width: leftTips.width - 2 * leftTips.popuppadding // Adjust width to account for padding
-                    horizontalAlignment: Text.AlignHCenter // Center text horizontally
-                    anchors {
-                        top: leftTipsTitleBar.bottom
-                        topMargin: leftTips.popuppadding // Add top padding
-                        horizontalCenter: parent.horizontalCenter
-                        leftMargin: leftTips.popuppadding // Add left padding
-                        rightMargin: leftTips.popuppadding // Add right padding
-                        bottomMargin: leftTips.popuppadding // Add bottom padding
-                    }
-                }
-            }*/
         }
 
         
@@ -723,7 +619,7 @@ Item {
                         property string _overwriteText: qsTr("Plan overwrite")
 
                         QGCButton {
-                            text:               qsTr("Selecionar missão")
+                            text:               qsTr("Select Mission")
                             width: rightPanel.width 
                             enabled:            !_planMasterController.syncInProgress
                             onClicked: {
@@ -744,10 +640,10 @@ Item {
                                 color: "transparent" // Defina como transparente
                             }
                             QGCTabButton {
-                                text: qsTr("Missão")
+                                text: qsTr("Mision")
                             }
                             QGCTabButton {
-                                text:       qsTr("Área de risco")
+                                text:       qsTr("Geo fence")
                                 enabled:    _geoFenceController.supported
                             }
                             
@@ -759,7 +655,7 @@ Item {
                             width: parent.width
                             visible: QGroundControl.corePlugin.options.enablePlanViewSelector && _utmspEnabled
                             QGCTabButton {
-                                text: qsTr("Missão")
+                                text: qsTr("Mission")
                             }
                             QGCTabButton {
                                 text: qsTr("Rally")
@@ -1037,9 +933,10 @@ Item {
         }
     }
 
+
+//We are not using sync drop panel, just using some functionallities 
     Component {
         id: syncDropPanel
-
         ColumnLayout {
             id:         columnHolder
             spacing:    _margin
@@ -1201,7 +1098,7 @@ Item {
             RowLayout {
                 Layout.fillWidth:   true
                 spacing:            _margin
-                visible:            vehicleSection.visible
+                visible:            true//vehicleSection.visible
 
                 QGCButton {
                     text:               qsTr("Upload")

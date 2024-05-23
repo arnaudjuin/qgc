@@ -17,10 +17,27 @@ import QGroundControl
 import QGroundControl.Controls
 import QGroundControl.Palette
 import QGroundControl.ScreenTools
-
+import QGroundControl.FactSystem    1.0
+import QGroundControl.FactControls  1.0
 import Custom.Widgets
+import QGroundControl.Controllers
 
 Item {
+    property bool _initialDownloadComplete: _activeVehicle ? _activeVehicle.initialConnectComplete : true
+
+    Loader {
+        id: controllerLoader
+        active: _initialDownloadComplete // This loader becomes active when _initialDownloadComplete is tråue
+        sourceComponent: factPanelControllerComponent
+    }
+
+    Component {
+        id: factPanelControllerComponent
+        FactPanelController {
+            // Initialize your FactPanelController here
+        }
+    }
+
     property var parentToolInsets                       // These insets tell you what screen real estate is available for positioning the controls in your overlay
     property var totalToolInsets:   _totalToolInsets    // The insets updated for the custom overlay additions
     property var mapControl
@@ -187,7 +204,7 @@ Item {
         anchors.rightMargin: 10
         radius: 10
         clip: true
-        property bool isMinimized: true 
+        property bool isMinimized: true
 
         // Área do cabeçalho
         Rectangle {
@@ -271,14 +288,14 @@ Item {
                     }
 
                     Item {
-                        width: 40  
-                        height: 19.8 
+                        width: 40
+                        height: 19.8
                         
 
                         QGCButton {
                             id: autoBrake
                             property bool isActive: true
-                            anchors.fill: parent 
+                            anchors.fill: parent
                             text: "Auto"
                             font.pixelSize: Math.max(10, parent.width * 0.020)
                             background: Rectangle { // Define um fundo retangular
@@ -305,17 +322,20 @@ Item {
                     spacing: parent.width * 0.03
                     QGCSwitch {
                         id: switchLight
+                        onClicked: {
+                            factLights.fact.value=!factLights.fact.value
+                        }
                     }
 
                     Item {
-                        width: 40  
-                        height: 19.8 
+                        width: 40
+                        height: 19.8
                         
 
                         QGCButton {
                             id: autoLight
                             property bool isActive: true
-                            anchors.fill: parent 
+                            anchors.fill: parent
                             text: "Auto"
                             font.pixelSize: Math.max(10, parent.width * 0.020)
                             background: Rectangle { // Define um fundo retangular
@@ -326,6 +346,7 @@ Item {
                             onClicked: {
                                 autoLight.isActive = !autoLight.isActive
                                 switchLight.checked = false
+                                factLights.fact.value=false
                             }
                         }
                     }
@@ -336,13 +357,20 @@ Item {
                         verticalAlignment: Text.AlignVCenter
                         font.pixelSize: headerArea.width * 0.06
                     }
+                    FactCheckBox {
+                        id:factLights
+                        visible:false
+                        fact:               controllerLoader.item.getParameterFact(-1, "lights")
+                        Layout.fillWidth:   true
+                        scale : ScreenTools.isMobile ? 0.5 : 0.8
+                    }
                 }
 
                 RowLayout {
                     spacing: parent.width * 0.03
                     QGCSwitch {
                         id: switchBomb
-                    
+
                     }
                     Item {
                         width: 40  // Defina a largura igual ao switch
@@ -377,24 +405,28 @@ Item {
                     spacing: parent.width * 0.03
                     QGCSwitch {
                         id: switchNozzle
+                        onClicked: {
+                            factNozzle.fact.value=!factNozzle.fact.value
+                        }
                     }
                     Item {
-                        width: 40  
-                        height: 19.8 
+                        width: 40
+                        height: 19.8
                         
                         QGCButton {
                             id: autoNozzle
                             property bool isActive: true
-                            anchors.fill: parent 
+                            anchors.fill: parent
                             text: "Auto"
                             font.pixelSize: Math.max(10, parent.width * 0.020)
-                            background: Rectangle { 
+                            background: Rectangle {
                                 color: autoNozzle.isActive ? "#ff4800" : "green"
                                 radius: 10
-                                anchors.fill: parent 
+                                anchors.fill: parent
                             }
                             onClicked: {
                                 autoNozzle.isActive = !autoNozzle.isActive
+                                factNozzle.fact.value=false
                                 switchNozzle.checked = false
                             }
                         }
@@ -405,6 +437,13 @@ Item {
                         verticalAlignment: Text.AlignVCenter
                         font.pixelSize: headerArea.width * 0.06
                     }
+                    FactCheckBox {
+                        id:factNozzle
+                        visible:false
+                        fact:               controllerLoader.item.getParameterFact(-1, "nozzle")
+                        Layout.fillWidth:   true
+                        scale : ScreenTools.isMobile ? 0.5 : 0.8
+                    }
                 }
 
                 //Vazão Slider
@@ -412,10 +451,10 @@ Item {
                     spacing: parent.width * 0.03
 
                     Label{
-                    text: "Vazão"
-                    color: "white"
-                    Layout.leftMargin: 12
-                    font.pixelSize: headerArea.width * 0.06
+                        text: "Vazão"
+                        color: "white"
+                        Layout.leftMargin: 12
+                        font.pixelSize: headerArea.width * 0.06
                     }
 
                 }
@@ -424,18 +463,18 @@ Item {
                     spacing: parent.width * 0.03
 
                     QGCSlider {
-                    id:                     bombas
-                    from:                   2
-                    to:                     20
-                    stepSize:               2
-                    snapMode: QGCSlider.SnapAlways 
-                    
-                    Layout.fillWidth: false  // Não preenche toda a largura
-                    Layout.preferredWidth: 90
-                    Layout.columnSpan:      2
-                    Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                    Layout.leftMargin: 12
-                    live: true
+                        id:                     bombas
+                        from:                   2
+                        to:                     20
+                        stepSize:               2
+                        snapMode: QGCSlider.SnapAlways
+
+                        Layout.fillWidth: false  // Não preenche toda a largura
+                        Layout.preferredWidth: 90
+                        Layout.columnSpan:      2
+                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                        Layout.leftMargin: 12
+                        live: true
                     }
 
                     Rectangle {
@@ -460,10 +499,10 @@ Item {
                     spacing: parent.width * 0.03
 
                     Label{
-                    text: "Tamanho da gota"
-                    color: "white"
-                    Layout.leftMargin: 12
-                    font.pixelSize: headerArea.width * 0.06
+                        text: "Tamanho da gota"
+                        color: "white"
+                        Layout.leftMargin: 12
+                        font.pixelSize: headerArea.width * 0.06
                     }
 
                 }
@@ -475,9 +514,9 @@ Item {
                         id:                     bicos
                         from:           1
                         to:           3
-                        stepSize:               1 
+                        stepSize:               1
                         
-                        snapMode: QGCSlider.SnapAlways 
+                        snapMode: QGCSlider.SnapAlways
                         Layout.fillWidth: false  // Não preenche toda a largura
                         Layout.preferredWidth: 90
                         Layout.columnSpan:      2
@@ -497,7 +536,7 @@ Item {
 
                         Label {
                             text: bicos.value === 1 ? "Fina" :
-                            bicos.value === 2 ? "Média" : "Grossa"
+                                                      bicos.value === 2 ? "Média" : "Grossa"
                             anchors.centerIn: parent
                             color: "#333333"
                             font.pixelSize: ret1.width * 0.20
@@ -509,30 +548,34 @@ Item {
                     spacing: parent.width * 0.03
 
                     Label{
-                    text: "Velocidade"
-                    color: "white"
-                    Layout.leftMargin: 12
-                    font.pixelSize: headerArea.width * 0.06
+                        text: "Velocidade"
+                        color: "white"
+                        Layout.leftMargin: 12
+                        font.pixelSize: headerArea.width * 0.06
                     }
 
                 }
-                //Slider velocidade
+                //Speed Slider
                 RowLayout {
                     spacing: parent.width * 0.03
 
                     QGCSlider {
-                    id:                     velocidade
-                    from:                   3
-                    to:                     18
-                    stepSize:               3
-                    snapMode: QGCSlider.SnapAlways 
-                    
-                    Layout.fillWidth: false  // Não preenche toda a largura
-                    Layout.preferredWidth: 90
-                    Layout.columnSpan:      2
-                    Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                    Layout.leftMargin: 12
-                    live: true
+                        id:                     speed
+                        from:                   3
+                        to:                     18
+                        stepSize:               3
+                        snapMode: QGCSlider.SnapAlways
+
+                        Layout.fillWidth: false  // Não preenche toda a largura
+                        Layout.preferredWidth: 90
+                        Layout.columnSpan:      2
+                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                        Layout.leftMargin: 12
+                        live: true
+                        onValueChanged: {
+                            factSpeed.fact.value = speed.value;
+                        }
+
                     }
 
                     Rectangle {
@@ -544,11 +587,18 @@ Item {
                         radius: 5
 
                         Label {
-                            text: velocidade.value.toFixed(1)
+                            text: speed.value.toFixed(1)
                             anchors.centerIn: parent
                             color: "#333333"
-                            font.pixelSize: ret1.width * 0.20       
+                            font.pixelSize: ret1.width * 0.20
                         }
+                    }
+                    FactCheckBox {
+                        id:factSpeed
+                        visible:false
+                        fact:               controllerLoader.item.getParameterFact(-1, "speed")
+                        Layout.fillWidth:   true
+                        scale : ScreenTools.isMobile ? 0.5 : 0.8
                     }
                 }
             }

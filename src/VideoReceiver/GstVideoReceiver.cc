@@ -15,11 +15,11 @@
  */
 
 #include "GstVideoReceiver.h"
-#include "QGCLoggingCategory.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QUrl>
-#include <QtCore/QDateTime>
+#include <QDebug>
+#include <QUrl>
+#include <QDateTime>
+#include <QSysInfo>
 
 QGC_LOGGING_CATEGORY(VideoReceiverLog, "VideoReceiverLog")
 
@@ -717,21 +717,18 @@ GstVideoReceiver::_filterParserCaps(GstElement* bin, GstPad* pad, GstElement* el
 
     GstCaps* filter;
 
-    GstStructure* structure;
-
-    structure = gst_caps_get_structure(srcCaps, 0);
-    if(gst_structure_has_name(structure, "video/x-h265")){
-        filter = gst_caps_from_string("video/x-h265");
-        if (gst_caps_can_intersect(srcCaps, filter)) {
-            sinkCaps = gst_caps_from_string("video/x-h265,stream-format=hvc1");
-        }
-        gst_caps_unref(filter);
-        filter = nullptr;
-    } else if(gst_structure_has_name(structure, "video/x-h264")){
-        filter = gst_caps_from_string("video/x-h264");
+    if ((filter = gst_caps_from_string("video/x-h264")) != nullptr) {
         if (gst_caps_can_intersect(srcCaps, filter)) {
             sinkCaps = gst_caps_from_string("video/x-h264,stream-format=avc");
         }
+
+        gst_caps_unref(filter);
+        filter = nullptr;
+    } else if ((filter = gst_caps_from_string("video/x-h265")) != nullptr) {
+        if (gst_caps_can_intersect(srcCaps, filter)) {
+            sinkCaps = gst_caps_from_string("video/x-h265,stream-format=hvc1");
+        }
+
         gst_caps_unref(filter);
         filter = nullptr;
     }

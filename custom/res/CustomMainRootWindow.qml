@@ -296,7 +296,7 @@ ApplicationWindow {
                         SubMenuButton {
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
-                            text:           qsTr("Missões")
+                            text:           qsTr("Missions")
                             imageResource:     "/qmlimages/Plan.svg"
                             imageColor:        "Black"
                             visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
@@ -313,7 +313,7 @@ ApplicationWindow {
                             id:                 setupButton
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
-                            text:               qsTr("Configurações")
+                            text:               qsTr("Settings")
                             imageColor:         "black"
                             imageResource:      "/qmlimages/Gears.svg"
                             onClicked: {

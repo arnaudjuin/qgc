@@ -14,11 +14,10 @@
  *   @author Gus Grubba <gus@auterion.com>
  */
 
+#include <QDebug>
+
 #include "GStreamer.h"
 #include "GstVideoReceiver.h"
-#include "QGCLoggingCategory.h"
-
-#include <QtCore/QDebug>
 
 QGC_LOGGING_CATEGORY(GStreamerLog, "GStreamerLog")
 QGC_LOGGING_CATEGORY(GStreamerAPILog, "GStreamerAPILog")
@@ -66,7 +65,7 @@ static void qt_gst_log(GstDebugCategory * category,
     object_info = nullptr;
 }
 
-#if defined(Q_OS_IOS)
+#if defined(__ios__)
 #include "gst_ios_init.h"
 #endif
 
@@ -74,7 +73,7 @@ static void qt_gst_log(GstDebugCategory * category,
 
 G_BEGIN_DECLS
 // The static plugins we use
-#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+#if defined(__android__) || defined(__ios__)
     GST_PLUGIN_STATIC_DECLARE(coreelements);
     GST_PLUGIN_STATIC_DECLARE(playback);
     GST_PLUGIN_STATIC_DECLARE(libav);
@@ -89,9 +88,9 @@ G_BEGIN_DECLS
     GST_PLUGIN_STATIC_DECLARE(mpegtsdemux);
     GST_PLUGIN_STATIC_DECLARE(opengl);
     GST_PLUGIN_STATIC_DECLARE(tcp);
-#if defined(Q_OS_ANDROID)
+#if defined(__android__)
     GST_PLUGIN_STATIC_DECLARE(androidmedia);
-#elif defined(Q_OS_IOS)
+#elif defined(__ios__)
     GST_PLUGIN_STATIC_DECLARE(applemedia);
 #endif
 #endif
@@ -193,7 +192,7 @@ GStreamer::initialize(int argc, char* argv[], int debuglevel)
     }
 
     // Initialize GStreamer
-#if defined(Q_OS_IOS)
+#if defined(__ios__)
     //-- iOS specific initialization
     gst_ios_pre_init();
 #endif
@@ -205,7 +204,7 @@ GStreamer::initialize(int argc, char* argv[], int debuglevel)
     }
 
     // The static plugins we use
-#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+#if defined(__android__) || defined(__ios__)
     GST_PLUGIN_STATIC_REGISTER(coreelements);
     GST_PLUGIN_STATIC_REGISTER(playback);
     GST_PLUGIN_STATIC_REGISTER(libav);
@@ -221,14 +220,14 @@ GStreamer::initialize(int argc, char* argv[], int debuglevel)
     GST_PLUGIN_STATIC_REGISTER(opengl);
     GST_PLUGIN_STATIC_REGISTER(tcp);
 
-#if defined(Q_OS_ANDROID)
+#if defined(__android__)
     GST_PLUGIN_STATIC_REGISTER(androidmedia);
-#elif defined(Q_OS_IOS)
+#elif defined(__ios__)
     GST_PLUGIN_STATIC_REGISTER(applemedia);
 #endif
 #endif
 
-#if defined(Q_OS_IOS)
+#if defined(__ios__)
     gst_ios_post_init();
 #endif
 

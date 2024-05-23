@@ -15,12 +15,13 @@
 
 #pragma once
 
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QTimer>
-#include <QtCore/QThread>
-#include <QtCore/QWaitCondition>
-#include <QtCore/QMutex>
-#include <QtCore/QQueue>
+#include "QGCLoggingCategory.h"
+#include <QTimer>
+#include <QThread>
+#include <QWaitCondition>
+#include <QMutex>
+#include <QQueue>
+#include <QQuickItem>
 
 #include "VideoReceiver.h"
 
