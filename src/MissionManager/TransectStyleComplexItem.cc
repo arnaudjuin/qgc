@@ -1291,6 +1291,7 @@ void TransectStyleComplexItem::_buildAndAppendMissionItems(QList<MissionItem*>& 
             } else {
                 _appendWaypoint(items, missionItemParent, seqNum, mavFrame, 0 /* holdTime */, coordInfo.coord);
             }
+            _appendStartSpray(items, missionItemParent, seqNum);
             break;
         case CoordTypeSurveyExit:
             bool lastSurveyExit = coordIndex == _rgFlightPathCoordInfo.count() - 1;
@@ -1309,10 +1310,39 @@ void TransectStyleComplexItem::_buildAndAppendMissionItems(QList<MissionItem*>& 
             } else {
                 _appendWaypoint(items, missionItemParent, seqNum, mavFrame, 0 /* holdTime */, coordInfo.coord);
             }
+            _appendStopSpray(items, missionItemParent, seqNum);
             break;
         }
     }
 }
+void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QObject* missionItemParent, int &seqNum)
+{
+    /*MissionItem* item = new MissionItem(seqNum++,
+                                        MAV_CMD_DO_SPRAYER,
+                                        MAV_FRAME_MISSION,
+                                        1,                                           // Enable sprayer
+                                        0, 0, 0, 0, 0, 0,                             // not used
+                                        true,                                        // autoContinue
+                                        false,                                       // isCurrentItem
+                                        missionItemParent);*/ 
+    //items.append(item);
+    qDebug() << "Spray start";
+}
+
+void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObject* missionItemParent, int& seqNum)
+{
+/*     MissionItem* item = new MissionItem(seqNum++,
+                                        MAV_CMD_DO_SPRAYER,
+                                        MAV_FRAME_MISSION,
+                                        0,                                           // Disable sprayer
+                                        0, 0, 0, 0, 0, 0,                            // not used
+                                        true,                                        // autoContinue
+                                        false,                                       // isCurrentItem
+                                        missionItemParent); */
+    //items.append(item);
+    qDebug() << "Spray stop";
+}
+
 
 void TransectStyleComplexItem::_appendLoadedMissionItems(QList<MissionItem*>& items, QObject* missionItemParent)
 {

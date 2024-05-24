@@ -145,6 +145,8 @@ protected:
     double  _triggerDistance                (void) const;
     bool    _hasTurnaround                  (void) const;
     double  _turnAroundDistance             (void) const;
+    void    _appendStartSpray               (QList<MissionItem*>& items, QObject* missionItemParent, int& seqNum);
+    void    _appendStopSpray                (QList<MissionItem*>& items, QObject* missionItemParent, int& seqNum);
     void    _appendWaypoint                 (QList<MissionItem*>& items, QObject* missionItemParent, int& seqNum, MAV_FRAME mavFrame, float holdTime, const QGeoCoordinate& coordinate);
     void    _appendSinglePhotoCapture       (QList<MissionItem*>& items, QObject* missionItemParent, int& seqNum);
     void    _appendConditionGate            (QList<MissionItem*>& items, QObject* missionItemParent, int& seqNum, MAV_FRAME mavFrame, const QGeoCoordinate& coordinate);
