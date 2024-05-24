@@ -356,8 +356,9 @@ void QGCApplication::_exitWithError(QString errorMessage)
 void QGCApplication::setLanguage()
 {
     // Define a localidade fixa como Português do Brasil
-    _locale = QLocale(QLocale::English, QLocale::UnitedStates);
+    _locale = QLocale(QLocale::Portuguese, QLocale::Portugal);
     qDebug() << "Locale set to:" << _locale.name();
+
     // Configura o idioma padrão
     QLocale::setDefault(_locale);
 
