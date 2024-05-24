@@ -560,7 +560,7 @@ Item {
                     spacing: parent.width * 0.03
 
                     QGCSlider {
-                        id:                     speed
+                        id:                     velocidade
                         from:                   3
                         to:                     18
                         stepSize:               3
@@ -573,7 +573,7 @@ Item {
                         Layout.leftMargin: 12
                         live: true
                         onValueChanged: {
-                            factSpeed.fact.value = speed.value;
+                            factSpeed.fact.value = velocidade.value;
                         }
 
                     }
