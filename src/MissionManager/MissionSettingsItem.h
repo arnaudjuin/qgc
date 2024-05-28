@@ -71,8 +71,8 @@ public:
     bool            isStandaloneCoordinate      (void) const final { return false; }
     bool            specifiesCoordinate         (void) const final;
     bool            specifiesAltitudeOnly       (void) const final { return false; }
-    QString         commandDescription          (void) const final { return tr("Parâmetros da missão"); }
-    QString         commandName                 (void) const final { return tr("Parâmetros da missão"); }
+    QString         commandDescription          (void) const final { return tr("Parâmetros da missão1"); }
+    QString         commandName                 (void) const final { return tr("Parâmetros da missão2"); }
     QString         abbreviation                (void) const final;
     QGeoCoordinate  coordinate                  (void) const final { return _plannedHomePositionCoordinate; } // Includes altitude
     QGeoCoordinate  exitCoordinate              (void) const final { return _plannedHomePositionCoordinate; }
