@@ -17,7 +17,7 @@ Rectangle {
     width:              availableWidth
     height:             valuesColumn.height + (_margin * 2)
     color:              qgcPal.windowShadeDark
-    visible:            missionItem.isCurrentItem
+    visible:            true 
     radius:             _radius
 
     property var    _masterControler:               masterController
@@ -39,6 +39,10 @@ Rectangle {
     property bool   _showFlightSpeed:               true//!_controllerVehicle.vtol && !_simpleMissionStart && !_controllerVehicle.apmFirmware //HACK
     property bool   _allowFWVehicleTypeSelection:   _noMissionItemsAdded && !globals.activeVehicle
 
+    //Hural VARS FOR TRACING
+    property bool _editTracing: false
+    property bool isTraced: false
+    property var polygonItem: null
     readonly property string _firmwareLabel:    qsTr("Firmware")
     readonly property string _vehicleLabel:     qsTr("Vehicle")
     readonly property real  _margin:            ScreenTools.defaultFontPixelWidth / 2
@@ -55,6 +59,73 @@ Rectangle {
             }
         }
     }
+                QGCHoverButton {
+                id: buttonDraw
+                Layout.fillWidth: true
+                width: ScreenTools.isMobile ? 55 : 100
+                height: width
+                radius: ScreenTools.defaultFontPixelWidth / 2
+                fontPointSize: ScreenTools.smallFontPointSize
+                autoExclusive: true
+
+                imageSource: "/qmlimages/MapDrawShape.svg"
+                text: "Trace"
+                checked: _editTracing
+
+                onClicked: {
+                    _editTracing = !_editTracing;
+                    {
+                        for (var i = 0; i < _missionController.visualItems.count; i++) {
+                            if (_missionController.visualItems.get(i).surveyAreaPolygon && !_missionController.visualItems.get(i).surveyAreaPolygon.traceMode) {
+                                _missionController.removeVisualItem(i);
+                                polygonItem = null;
+                            }
+                        }
+                        if (!isTraced) {
+                            var currentIndex = _missionController.visualItems.count;
+                            polygonItem = _missionController.visualItems.get(currentIndex - 1);
+                            if (!isTraced)
+                                insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
+                            polygonItem = _missionController.visualItems.get(currentIndex);
+                            if (factSpacing && factSpacing.fact)
+                                factSpacing.fact.value = 2;
+                            QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value = 2;
+                            if (polygonItem)polygonItem.cameraCalc.adjustedFootprintSide.value = 2;
+                            if (polygonItem.surveyAreaPolygon.traceMode) {
+                                if (polygonItem.surveyAreaPolygon.count < 3) {
+                                    _restorePreviousVertices(polygonItem);
+                                }
+                                isTraced = true;
+                                polygonItem.surveyAreaPolygon.traceMode = false;
+                            }
+                            if (!polygonItem.surveyAreaPolygon.traceMode && _editTracing) {
+                                polygonItem.surveyAreaPolygon.traceMode = true;
+                                _saveCurrentVertices(polygonItem);
+                                polygonItem.surveyAreaPolygon.clear();
+                                isTraced = true;
+                            }
+                        } else {
+                            if (polygonItem && polygonItem.surveyAreaPolygon && polygonItem.surveyAreaPolygon.traceMode)
+                                polygonItem.surveyAreaPolygon.traceMode = false;
+                        }
+                    }
+                    function _saveCurrentVertices(polygonItem) {
+                        _savedVertices = [];
+                        for (var i = 0; i < polygonItem.surveyAreaPolygon.count; i++) {
+                            _savedVertices.push(polygonItem.surveyAreaPolygon.vertexCoordinate(i));
+                        }
+                    }
+                    function _restorePreviousVertices() {
+                        polygonItem.surveyAreaPolygon.beginReset();
+                        polygonItem.surveyAreaPolygon.clear();
+                        for (var i = 0; i < _savedVertices.length; i++) {
+                            polygonItem.surveyAreaPolygon.appendVertex(_savedVertices[i]);
+                        }
+                        polygonItem.surveyAreaPolygon.endReset();
+                    }
+                }
+            }
+
 
     ColumnLayout {
         id:                 valuesColumn
@@ -66,7 +137,7 @@ Rectangle {
 
         QGCLabel {
             text:           qsTr("All Altitudes")
-            visible: false
+            visible: true
             font.pointSize: ScreenTools.smallFontPointSize
         }
         MouseArea {
