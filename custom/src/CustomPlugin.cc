@@ -351,3 +351,21 @@ QQmlApplicationEngine* CustomPlugin::createQmlApplicationEngine(QObject* parent)
     qmlEngine->addImportPath("qrc:/Custom/Widgets");
     return qmlEngine;
 }
+bool CustomPlugin::mavlinkMessage(Vehicle* vehicle, LinkInterface* link, mavlink_message_t message)
+{
+    Q_UNUSED(vehicle);
+    Q_UNUSED(link);
+    Q_UNUSED(message);
+
+    if(message.msgid == MAVLINK_MSG_ID_SERVO_OUTPUT_RAW){
+      mavlink_servo_output_raw_t servoOutputRaw;
+      mavlink_msg_servo_output_raw_decode(&message, &servoOutputRaw);
+      _sprayPumpState = QString::number(servoOutputRaw.servo9_raw);
+
+      /* _sprayState = QString("Yo"); */
+      qDebug()<< _sprayPumpState; 
+      emit(sprayPumpStateChanged());
+    }
+
+    return true;
+}

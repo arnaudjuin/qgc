@@ -367,6 +367,18 @@ Item {
                 }
 
                 RowLayout {
+                                                      QGCLabel {
+                        id:         pumpValue2
+                        visible:                    true
+                        color:                      "white"
+                        text:                       "test"
+                    }
+                            QGCLabel {
+                        id:         pumpValue
+                        visible:                    true
+                        color:                      "white"
+                        text:                       _activeVehicle ? QGroundControl.corePlugin.sprayPumpState : ""
+                    }
                     spacing: parent.width * 0.03
                     QGCSwitch {
                         id: switchBomb
@@ -417,7 +429,7 @@ Item {
                             id: autoNozzle
                             property bool isActive: true
                             anchors.fill: parent
-                            text: "Auto"
+                            text: "Auto test"
                             font.pixelSize: Math.max(10, parent.width * 0.020)
                             background: Rectangle {
                                 color: autoNozzle.isActive ? "#ff4800" : "green"
@@ -425,9 +437,16 @@ Item {
                                 anchors.fill: parent
                             }
                             onClicked: {
-                                autoNozzle.isActive = !autoNozzle.isActive
-                                factNozzle.fact.value=false
-                                switchNozzle.checked = false
+                         
+                                console.log("Test.");
+                                _activeVehicle.sendCommand(
+                                    1,
+                                    183,  
+                                    true,  
+                                    9,  
+                                    1100  
+                                );
+                                console.log("Bicos foram desligados automaticamente.");
                             }
                         }
                     }
@@ -444,6 +463,7 @@ Item {
                         Layout.fillWidth:   true
                         scale : ScreenTools.isMobile ? 0.5 : 0.8
                     }
+      
                 }
 
                 //Vazão Slider
