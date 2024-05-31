@@ -62,8 +62,8 @@ Rectangle {
 
             Image {
                 source: "/custom/img/logohural.png"
-                fillMode: Image.PreserveAspectFit 
-                width: 82 
+                fillMode: Image.PreserveAspectFit
+                width: 82
                 height: 82
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -85,11 +85,11 @@ Rectangle {
     }
 
     PlanToolBarIndicators {
-            id:                 toolIndicators
-            anchors.right:parent.right
-            anchors.top:        parent.top
-            anchors.bottom:     parent.bottom
-        }
+        id:                 toolIndicators
+        anchors.right:parent.right
+        anchors.top:        parent.top
+        anchors.bottom:     parent.bottom
+    }
 
     // Small parameter download progress bar
     Rectangle {

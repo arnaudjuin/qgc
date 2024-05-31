@@ -54,5 +54,6 @@
         <file alias="SurveyItemEditor.qml">res/CustomSurveyItemEditor.qml</file>
         <file alias="QGroundControl/FlightDisplay/FlyViewBottomRightRowLayout.qml">res/CustomFlyViewBottomRightRowLayout.qml</file>
         <file alias="MissionSettingsEditor.qml">res/CustomMissionSettingsEditor.qml</file>
+        <file alias="QGroundControl/Controls/MissionItemEditor.qml">res/CustomMissionItemEditor.qml</file>
     </qresource>
 </RCC>

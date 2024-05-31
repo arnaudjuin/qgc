@@ -18,7 +18,6 @@ Rectangle {
     FactPanelController {
         id: controller
     }
-    width: availableWidth + 50
     height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 27 : ScreenTools.defaultFontPixelHeight * 42
     color: qgcPal.windowShadeDark
     radius: _radius
@@ -118,6 +117,7 @@ Rectangle {
                     }
                     _planMasterController.saveToSelectedFile();
                     _confirmationStart = true;
+                    mainWindow.showFlyView()
                 }
 
                 function insertBoundariesToFile() {
@@ -148,15 +148,15 @@ Rectangle {
                 title: qsTr("Select Polygon File")
 
                 onAcceptedForLoad: file => {
-                    var currentIndex = _missionController.visualItems.count;
-                    polygonItem = _missionController.visualItems.get(currentIndex - 1);
-                    if (!isTraced)
-                        insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
-                    polygonItem = _missionController.visualItems.get(currentIndex);
-                    polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
-                    mapFitFunctions.fitMapViewportToMissionItems();
-                    close();
-                }
+                                       var currentIndex = _missionController.visualItems.count;
+                                       polygonItem = _missionController.visualItems.get(currentIndex - 1);
+                                       if (!isTraced)
+                                       insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
+                                       polygonItem = _missionController.visualItems.get(currentIndex);
+                                       polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
+                                       mapFitFunctions.fitMapViewportToMissionItems();
+                                       close();
+                                   }
             }
             QGCButton {
                 scale: ScreenTools.isMobile ? 0.8 : 0.8
@@ -164,15 +164,15 @@ Rectangle {
                 Layout.fillWidth: true
                 onClicked: {
                     mainWindow.showMessageDialog(qsTr("Clear"), qsTr("Are you sure you want to remove all mission items and clear the mission from the vehicle?"), Dialog.Yes | Dialog.Cancel, function () {
-                            polygonItem = null;
-                            _editTracing = false;   
-                            // Remove all visualItems one by one
-                            for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
-                                _missionController.removeVisualItem(i);
-                            }
-                            isTraced = false;
-                            _missionController.setCurrentPlanViewSeqNum(0, true);
-                        });
+                        polygonItem = null;
+                        _editTracing = false;
+                        // Remove all visualItems one by one
+                        for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
+                            _missionController.removeVisualItem(i);
+                        }
+                        isTraced = false;
+                        _missionController.setCurrentPlanViewSeqNum(0, true);
+                    });
                 }
             }
             QGCButton {
@@ -207,7 +207,7 @@ Rectangle {
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
 
             QGCButton {
-                  id: buttonDraw
+                id: buttonDraw
                 width: ScreenTools.isMobile ? 55 : 100
                 height: width
 
@@ -228,12 +228,12 @@ Rectangle {
                             }
                         }
                         if (!isTraced) {
-                                                console.log("Trace button clicked 1");
+                            console.log("Trace button clicked 1");
                             var currentIndex = _missionController.visualItems.count;
                             polygonItem = _missionController.visualItems.get(currentIndex - 1);
                             if (!isTraced)
                                 insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
-                                                    console.log("Trace button clicked 2");
+                            console.log("Trace button clicked 2");
                             polygonItem = _missionController.visualItems.get(currentIndex);
                             if (polygonItem.surveyAreaPolygon.traceMode) {
                                 if (polygonItem.surveyAreaPolygon.count < 3) {
@@ -268,8 +268,23 @@ Rectangle {
                         polygonItem.surveyAreaPolygon.endReset();
                     }
                 }
-            }
 
+            }
+            QGCButton {
+                id: buttonTravelWP
+                width: ScreenTools.isMobile ? 55 : 100
+                height: width
+                text: "Travel WP"
+                checked: _addWaypointOnClick
+                onClicked: {
+                    if (polygonItem) {
+                        polygonItem.surveyAreaPolygon.traceMode = false;
+                        _editTracing = false;
+                    }
+                    _addWaypointOnClickSpray = false;
+                    _addWaypointOnClick = !_addWaypointOnClick;
+                }
+            }
 
 
         }
@@ -293,256 +308,15 @@ Rectangle {
         height: parent.height - valuesHeader.height - sep.height
         color: qgcPal.windowShadeDark
         ScrollView {
-            Layout.fillWidth: true
-            contentWidth: width // Set the content width to the width of the ScrollView to prevent horizontal scrolling
-            anchors.fill: parent
+
             ColumnLayout {
                 id: valuesColumn
                 implicitHeight: 2000// or sum up individual implicit heights of children if more precise control is needed
 
                 visible: !_confirmationStart && !_textFieldSave && !loadChoice
-                anchors.margins: _margin
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: sep.bottom
-                spacing: _margin
-  
+      
 
                 Row {
-
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 9 : ScreenTools.defaultFontPixelWidth * 15
-                    QGCLabel {
-                        text: qsTr("Travel Height")
-                        anchors.topMargin: 1 // Adjust this value to move the text lower
-                        font.family: ScreenTools.demiboldFontFamily
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                    FactTextField {
-                        fact: QGroundControl.settingsManager.appSettings.offlineEditingAltitude
-                        showUnits: true
-                        showHelp: false
-                        width: ScreenTools.isMobile ? 60 : 100
-                    }
-                }
-                Row {
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
-                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
-                    QGCButton {
-                        scale: ScreenTools.isMobile ? 0.9 : 1
-                        height: parent.height
-                        width: height
-                        text: "-"
-                        anchors.verticalCenter: parent.verticalCenter
-                        onClicked: QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value - 0.5, QGroundControl.settingsManager.appSettings.offlineEditingAltitude.max), QGroundControl.settingsManager.appSettings.offlineEditingAltitude.min)
-                    }
-                    Slider {
-                        id: travelHeight
-                        property bool _loadComplete: false
-                        from: QGroundControl.settingsManager.appSettings.offlineEditingAltitude.min
-                        to: QGroundControl.settingsManager.appSettings.offlineEditingAltitude.max
-                        stepSize: 0.5
-                        width: ScreenTools.isMobile ? 100 : 200
-                        value: factTravelHeight.fact.value
-                        onValueChanged: {
-                            QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value = travelHeight.value;
-                        }
-                    }
-
-                    FactTextFieldSlider {
-                        id: factTravelHeight
-                        visible: false
-                        fact: controller.getParameterFact(-1, "SU_TRAVEL_ALT")
-                    }
-
-                    QGCButton {
-                        scale: ScreenTools.isMobile ? 0.9 : 1
-                        height: parent.height
-                        width: height
-                        text: "+"
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        onClicked: QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingAltitude.value + 0.5, QGroundControl.settingsManager.appSettings.offlineEditingAltitude.max), QGroundControl.settingsManager.appSettings.offlineEditingAltitude.min)
-                    }
-                }
-
-                Row {
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 9 : ScreenTools.defaultFontPixelWidth * 15
-                    width: parent.width
-
-                    QGCLabel {
-                        text: qsTr("Spray Height")
-                        font.family: ScreenTools.demiboldFontFamily
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.topMargin: 1 // Adjust this value to move the text lower
-                    }
-
-                    FactTextField {
-                        fact: QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight
-                        showUnits: true
-                        showHelp: false
-                        width: ScreenTools.isMobile ? 60 : 100
-                    }
-                }
-                Row {
-                    width: parent.width * 1.5
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
-                    QGCButton {
-                        scale: ScreenTools.isMobile ? 0.9 : 1
-                        height: parent.height
-                        width: height
-                        text: "-"
-                        anchors.verticalCenter: parent.verticalCenter
-                        onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value - 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.max), QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.min)
-                    }
-                    Slider {
-                        id: sprayHeight
-                        property bool _loadComplete: false
-                        from: QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.min
-                        to: QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.max
-                        stepSize: 0.5
-                        width: ScreenTools.isMobile ? 100 : 200
-                        value: factSprayHeight.fact.value
-
-                        onValueChanged: {
-                            QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value = sprayHeight.value;
-                        }
-                    }
-                    FactTextFieldSlider {
-                        id: factSprayHeight
-                        visible: false
-                        fact: controller.getParameterFact(-1, "SU_SPRAY_ALT")
-                    }
-
-                    QGCButton {
-                        scale: ScreenTools.isMobile ? 0.9 : 1
-                        height: parent.height
-                        width: height
-                        text: "+"
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.value + 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.max), QGroundControl.settingsManager.appSettings.offlineEditingSprayerHeight.min)
-                    }
-                }
-
-                Row {
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 9 : ScreenTools.defaultFontPixelWidth * 15
-
-                    QGCLabel {
-                        text: qsTr("Spray Volume")
-                        font.family: ScreenTools.demiboldFontFamily
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.topMargin: 1 // Adjust this value to move the text lower
-                    }
-                    FactTextField {
-                        fact: QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume
-                        showUnits: true
-                        showHelp: false
-                        width: ScreenTools.isMobile ? 60 : 100
-                    }
-                }
-                Row {
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
-                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
-                    QGCButton {
-                        scale: ScreenTools.isMobile ? 0.9 : 1
-                        height: parent.height
-                        width: height
-                        text: "-"
-                        anchors.verticalCenter: parent.verticalCenter
-                        onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value - 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.max), QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.min)
-                    }
-                    Slider {
-                        id: sprayVolume
-                        property bool _loadComplete: false
-                        from: QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.min
-                        to: QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.max
-                        stepSize: 0.5
-                        width: ScreenTools.isMobile ? 100 : 200
-                        value: factSprayVolume.fact.value
-
-                        onValueChanged: {
-                            QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value = sprayVolume.value;
-                        }
-                    }
-                    FactTextFieldSlider {
-                        id: factSprayVolume
-                        visible: false
-                        fact: controller.getParameterFact(-1, "SU_SPRY_VOL")
-                    }
-
-                    QGCButton {
-                        scale: ScreenTools.isMobile ? 0.9 : 1
-                        height: parent.height
-                        width: height
-                        text: "+"
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.value + 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.max), QGroundControl.settingsManager.appSettings.offlineEditingSprayerVolume.min)
-                    }
-                }
-                Row {
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 9 : ScreenTools.defaultFontPixelWidth * 15
-                    QGCLabel {
-                        text: qsTr("Spray Speed")
-                        anchors.topMargin: 1 // Adjust this value to move the text lower
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.family: ScreenTools.demiboldFontFamily
-                    }
-                    FactTextFieldSlider {
-                        id: factSpraySpeed
-                        visible: false
-                        fact: controller.getParameterFact(-1, "SU_SPRY_FLT_SPD")
-                    }
-                    FactTextField {
-                        fact: QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow
-                        showUnits: true
-                        showHelp: false
-                        width: ScreenTools.isMobile ? 60 : 100
-                    }
-                }
-                Row {
-                    width: parent.width * 1.5
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
-                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
-                    QGCButton {
-                        scale: ScreenTools.isMobile ? 0.9 : 1
-                        height: parent.height
-                        width: height
-                        text: "-"
-                        anchors.verticalCenter: parent.verticalCenter
-                        onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value - 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max), QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min)
-                    }
-                    Slider {
-                        id: spraySpeed
-                        property bool _loadComplete: false
-                        from: QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min
-                        to: QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max
-                        stepSize: 0.5
-                        //TO DO SUIND
-                        //tickmarksEnabled:   true
-                        width: ScreenTools.isMobile ? 100 : 200
-                        value: factSpraySpeed.fact.value
-                        onValueChanged: {
-                            QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value = spraySpeed.value;
-                        }
-                    }
-
-                    QGCButton {
-                        scale: ScreenTools.isMobile ? 0.9 : 1
-                        height: parent.height
-                        width: height
-                        text: "+"
-                        anchors.verticalCenter: parent.verticalCenter
-                        onClicked: QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value = Math.max(Math.min(QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.value + 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.max), QGroundControl.settingsManager.appSettings.offlineEditingSprayerFlow.min)
-                    }
-                }
-                Row {
-
                     width: parent.width
                     spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 12 : ScreenTools.defaultFontPixelWidth * 18
 
@@ -587,7 +361,7 @@ Rectangle {
                         from: QGroundControl.settingsManager.appSettings.offlineEditingSpacing.min
                         to: QGroundControl.settingsManager.appSettings.offlineEditingSpacing.max
                         stepSize: 0.5
-                        width: ScreenTools.isMobile ? 100 : 200
+                        width: ScreenTools.isMobile ? 100 : 100
                         value: polygonItem ? QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value : factSpacing.fact.value
 
                         Component.onCompleted: {
@@ -661,7 +435,7 @@ Rectangle {
                         from: 0
                         to: 180
                         stepSize: 1
-                        width: ScreenTools.isMobile ? 100 : 200
+                        width: ScreenTools.isMobile ? 100 : 100
 
                         Component.onCompleted: {
                             QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = 0;
@@ -732,7 +506,7 @@ Rectangle {
                 onClicked: {
                     _confirmationStart = false;
                     _planMasterController.upload();
-                    mainWindow.popView();
+                    mainWindow.showFlyView()
                 }
             }
         }

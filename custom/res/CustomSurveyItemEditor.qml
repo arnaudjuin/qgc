@@ -30,7 +30,7 @@ TransectStyleComplexItemEditor {
 
     Component {
         id: _transectValuesComponent
-    
+
         GridLayout {
             
             Layout.fillWidth:   true
@@ -173,10 +173,10 @@ TransectStyleComplexItemEditor {
         title:          qsTr("Select Polygon File")
 
         onAcceptedForLoad: (file) => {
-            missionItem.surveyAreaPolygon.loadKMLOrSHPFile(file)
-            missionItem.resetState = false
-            //editorMap.mapFitFunctions.fitMapViewportTomissionItems()
-            close()
-        }
+                               missionItem.surveyAreaPolygon.loadKMLOrSHPFile(file)
+                               missionItem.resetState = false
+                               //editorMap.mapFitFunctions.fitMapViewportTomissionItems()
+                               close()
+                           }
     }
 }

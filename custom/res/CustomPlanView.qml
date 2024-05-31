@@ -35,7 +35,7 @@ Item {
     readonly property real  _margin:                    ScreenTools.defaultFontPixelHeight * 0.5
     readonly property real  _toolsMargin:               ScreenTools.defaultFontPixelWidth * 0.75
     readonly property real  _radius:                    ScreenTools.defaultFontPixelWidth  * 0.5
-    readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 13) :  Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 18)
+    readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 13) :  500
     readonly property var   _defaultVehicleCoordinate:  QtPositioning.coordinate(37.803784, -122.462276)
     readonly property bool  _waypointsOnlyMode:         QGroundControl.corePlugin.options.missionWaypointsOnly
 
@@ -256,7 +256,7 @@ Item {
     }
     function insertSimpleItemAfterCurrentTravel(coordinate) {
         var nextIndex = _missionController.currentPlanViewVIIndex + 1
-        _missionController.insertSimpleMissionItemTravel(coordinate, nextIndex, true /* makeCurrentItem */)
+        _missionController.insertSimpleMissionItem(coordinate, nextIndex, true /* makeCurrentItem */)
     }
 
     function insertSimpleItemAfterCurrentSpray(coordinate) {
@@ -325,7 +325,7 @@ Item {
     }
 
     PlanViewToolBar {
-        id: planToolBar
+        id:                     planToolBar
     }
 
     Item {
@@ -410,7 +410,11 @@ Item {
             }
 
 
-
+            // Add lines between waypoints
+            MissionLineView {
+                model:              _missionController.waypointFlightPathSegments
+                opacity:            _editingLayer == _layerMission ? 1 : editorMap._nonInteractiveOpacity
+            }
             // Direction arrows in waypoint lines
             MapItemView {
                 model: _editingLayer == _layerMission ? _missionController.directionArrows : undefined
@@ -563,9 +567,9 @@ Item {
         Rectangle {
             height:                 parent.height
             id:                 rightPanel
-            width:              _rightPanelWidth  * 2
-            color:              qgcPal.window
-            opacity:            planExpanded.visible ? 0.2 : 0
+            width:              _rightPanelWidth
+            color:               qgcPal.windowShadeDark
+            opacity:             1
             anchors.bottom:     parent.bottom
             anchors.left:      parent.left
             anchors.rightMargin: _toolsMargin
@@ -616,70 +620,51 @@ Item {
                 anchors.bottom:         parent.bottom
                 visible:                _editingLayer == _layerMission && !planControlColapsed
 
-                ListView {
-                    onContentYChanged: {
-                        // Lock the scroll position to the top
-                        if (contentY !== 0) {
-                            contentY = 0;
-                        }
-                    }
-                    Rectangle {
-                        visible:    false
-                        id:         planExpanded
-                        width:      parent.width
-                        height:     (!planControlColapsed || !_airspaceEnabled) ? bar.height + ScreenTools.defaultFontPixelHeight : 0
-                        color:      qgcPal.missionItemEditor
-                        radius:     _radius
-                        //visible:    (!planControlColapsed || !_airspaceEnabled) && QGroundControl.corePlugin.options.enablePlanViewSelector
 
-                        Item {
-                            height:             bar.height
-                            anchors.left:       parent.left
-                            anchors.right:      parent.rightf
-                            anchors.margins:    ScreenTools.defaultFontPixelWidth
-                            anchors.verticalCenter: parent.verticalCenter
-                            
-                            QGCTabBar {
-                        
-                                id:             bar
-                                width:          parent.width
-                                anchors.centerIn: parent
-                                Component.onCompleted: {
-                                    currentIndex = 0
-                                }
-                            }
-                            QGCTabButton {
-                                text:       qsTr("Mission")
-                            }
-                            QGCTabButton {
-                                text:       qsTr("Fence")
-                                //enabled:    _geoFenceController.supported
-                                //TODO SUIND
-                                enabled:    false
+                Rectangle {
+                    visible:    false
+                    id:         planExpanded
+                    width:      parent.width
+                    height:     (!planControlColapsed || !_airspaceEnabled) ? bar.height + ScreenTools.defaultFontPixelHeight : 0
+                    color:      qgcPal.missionItemEditor
+                    radius:     _radius
+                    //visible:    (!planControlColapsed || !_airspaceEnabled) && QGroundControl.corePlugin.options.enablePlanViewSelector
+
+                    Item {
+                        height:             bar.height
+                        anchors.left:       parent.left
+                        anchors.right:      parent.rightf
+                        anchors.margins:    ScreenTools.defaultFontPixelWidth
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        QGCTabBar {
+
+                            id:             bar
+                            width:          parent.width
+                            anchors.centerIn: parent
+                            Component.onCompleted: {
+                                currentIndex = 0
                             }
                         }
-                    }
-                    
-                    id:                 missionItemEditorListView
-                    anchors.fill:       parent
-                    spacing:            ScreenTools.defaultFontPixelHeight / 4
-                    orientation:        ListView.Vertical
-                    model:              _missionController.visualItems
-                    cacheBuffer:        Math.max(height * 2, 0)
-                    clip:               true
-                    currentIndex:       _missionController.currentPlanViewSeqNum
-                    highlightMoveDuration: 250
-                    visible:            _editingLayer == _layerMission && !planControlColapsed
-                    //-- List Elements
-                    delegate: MissionItemEditor {
-                        map:            editorMap
-                        masterController:  _planMasterController
-                        missionItem:    object
-                        //nextMissionItem: _missionController.visualItems
-                        width:          missionItemEditorListView.width
-                        readOnly:       false
+                        QGCTabButton {
+                            text:       qsTr("Mission")
+                        }
+                        QGCTabButton {
+                            text:       qsTr("Fence")
+                            //enabled:    _geoFenceController.supported
+                            //TODO SUIND
+                            enabled:    false
+                        }
                     }
                 }
+
+
+                Loader {
+                    id:                 editorLoader
+                    source:              "qrc:/qml/MissionSettingsEditor.qml"
+                    property var    masterController:   _planMasterController
+                }
+                
             }
             /*             // GeoFence Editor
             GeoFenceEditor {

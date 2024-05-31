@@ -52,7 +52,7 @@ RowLayout {
 
             onClicked: {
                 mainWindow.showIndicatorDrawer(drawerComponent, control)
-            
+
             }
 
         }
@@ -87,7 +87,7 @@ RowLayout {
             property var  activeVehicle:            QGroundControl.multiVehicleManager.activeVehicle
             property var  flightModeSettings:       QGroundControl.settingsManager.flightModeSettings
             property var  hiddenFlightModesFact:    null
-            property var  hiddenFlightModesList:    [] 
+            property var  hiddenFlightModesList:    []
 
             Component.onCompleted: {
                 if (activeVehicle.px4Firmware) {

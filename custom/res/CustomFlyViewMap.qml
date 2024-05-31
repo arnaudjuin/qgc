@@ -133,18 +133,18 @@ FlightMap {
     // used for detecting if the vehicle has flown under the instrument panel, virtual joystick etc
     function _insetCornerRects() {
         var rects = {
-        "topleft":      Qt.rect(0,0,
-                               toolInsets.leftEdgeTopInset,
-                               toolInsets.topEdgeLeftInset),
-        "topright":     Qt.rect(_root.width-toolInsets.rightEdgeTopInset,0,
-                               toolInsets.rightEdgeTopInset,
-                               toolInsets.topEdgeRightInset),
-        "bottomleft":   Qt.rect(0,_root.height-toolInsets.bottomEdgeLeftInset,
-                               toolInsets.leftEdgeBottomInset,
-                               toolInsets.bottomEdgeLeftInset),
-        "bottomright":  Qt.rect(_root.width-toolInsets.rightEdgeBottomInset,_root.height-toolInsets.bottomEdgeRightInset,
-                               toolInsets.rightEdgeBottomInset,
-                               toolInsets.bottomEdgeRightInset)}
+            "topleft":      Qt.rect(0,0,
+                                    toolInsets.leftEdgeTopInset,
+                                    toolInsets.topEdgeLeftInset),
+            "topright":     Qt.rect(_root.width-toolInsets.rightEdgeTopInset,0,
+                                    toolInsets.rightEdgeTopInset,
+                                    toolInsets.topEdgeRightInset),
+            "bottomleft":   Qt.rect(0,_root.height-toolInsets.bottomEdgeLeftInset,
+                                    toolInsets.leftEdgeBottomInset,
+                                    toolInsets.bottomEdgeLeftInset),
+            "bottomright":  Qt.rect(_root.width-toolInsets.rightEdgeBottomInset,_root.height-toolInsets.bottomEdgeRightInset,
+                                    toolInsets.rightEdgeBottomInset,
+                                    toolInsets.bottomEdgeRightInset)}
         return rects
     }
 
@@ -625,21 +625,21 @@ FlightMap {
                     }
                     globals.guidedControllerFlyView.confirmAction(globals.guidedControllerFlyView.actionSetEstimatorOrigin, clickMenu.coord)
                 }
-            }        
+            }
         }
     }
 
     onMapClicked: (mouse) => {
-        if (!globals.guidedControllerFlyView.guidedUIVisible && 
-            (globals.guidedControllerFlyView.showGotoLocation || globals.guidedControllerFlyView.showOrbit || globals.guidedControllerFlyView.showROI || globals.guidedControllerFlyView.showSetHome || globals.guidedControllerFlyView.showSetEstimatorOrigin)) {
-            orbitMapCircle.hide()
-            gotoLocationItem.hide()
-            var clickCoord = _root.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
-            clickMenu.coord = clickCoord
-            clickMenu.setCoordinates(mouse.x, mouse.y)
-            clickMenu.open()
-        }
-    }
+                      if (!globals.guidedControllerFlyView.guidedUIVisible &&
+                          (globals.guidedControllerFlyView.showGotoLocation || globals.guidedControllerFlyView.showOrbit || globals.guidedControllerFlyView.showROI || globals.guidedControllerFlyView.showSetHome || globals.guidedControllerFlyView.showSetEstimatorOrigin)) {
+                          orbitMapCircle.hide()
+                          gotoLocationItem.hide()
+                          var clickCoord = _root.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
+                          clickMenu.coord = clickCoord
+                          clickMenu.setCoordinates(mouse.x, mouse.y)
+                          clickMenu.open()
+                      }
+                  }
 
     MapScale {
         id:                 mapScale

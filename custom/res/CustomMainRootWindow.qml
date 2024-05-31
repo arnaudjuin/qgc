@@ -211,9 +211,9 @@ ApplicationWindow {
         for (var index=0; index<QGroundControl.multiVehicleManager.vehicles.count; index++) {
             if (QGroundControl.multiVehicleManager.vehicles.get(index).parameterManager.pendingWrites) {
                 mainWindow.showMessageDialog(closeDialogTitle,
-                    qsTr("You have pending parameter updates to a vehicle. If you close you will lose changes. Are you sure you want to close?"),
-                    Dialog.Yes | Dialog.No,
-                    function() { checkForActiveConnections() })
+                                             qsTr("You have pending parameter updates to a vehicle. If you close you will lose changes. Are you sure you want to close?"),
+                                             Dialog.Yes | Dialog.No,
+                                             function() { checkForActiveConnections() })
                 return
             }
         }
@@ -223,27 +223,27 @@ ApplicationWindow {
     function checkForActiveConnections() {
         if (QGroundControl.multiVehicleManager.activeVehicle) {
             mainWindow.showMessageDialog(closeDialogTitle,
-                qsTr("There are still active connections to vehicles. Are you sure you want to exit?"),
-                Dialog.Yes | Dialog.No,
-                function() { finishCloseProcess() })
+                                         qsTr("There are still active connections to vehicles. Are you sure you want to exit?"),
+                                         Dialog.Yes | Dialog.No,
+                                         function() { finishCloseProcess() })
         } else {
             finishCloseProcess()
         }
     }
 
     onClosing: (close) => {
-        if (!_forceClose) {
-            close.accepted = false
-            checkForUnsavedMission()
-        }
-    }
+                   if (!_forceClose) {
+                       close.accepted = false
+                       checkForUnsavedMission()
+                   }
+               }
 
     background: Rectangle {
         anchors.fill:   parent
         color:          QGroundControl.globalPalette.window
     }
 
-    FlyView { 
+    FlyView {
         id:                     flyView
         anchors.fill:           parent
         utmspSendActTrigger:    _utmspSendActTrigger
@@ -385,18 +385,18 @@ ApplicationWindow {
                                     anchors.fill:       parent
 
                                     onClicked: (mouse) => {
-                                        console.log("clicked")
-                                        if (mouse.modifiers & Qt.ControlModifier) {
-                                            QGroundControl.corePlugin.showTouchAreas = !QGroundControl.corePlugin.showTouchAreas
-                                            showTouchAreasNotification.open()
-                                        } else if (ScreenTools.isMobile || mouse.modifiers & Qt.ShiftModifier) {
-                                            if(!QGroundControl.corePlugin.showAdvancedUI) {
-                                                advancedModeOnConfirmation.open()
-                                            } else {
-                                                advancedModeOffConfirmation.open()
-                                            }
-                                        }
-                                    }
+                                                   console.log("clicked")
+                                                   if (mouse.modifiers & Qt.ControlModifier) {
+                                                       QGroundControl.corePlugin.showTouchAreas = !QGroundControl.corePlugin.showTouchAreas
+                                                       showTouchAreasNotification.open()
+                                                   } else if (ScreenTools.isMobile || mouse.modifiers & Qt.ShiftModifier) {
+                                                       if(!QGroundControl.corePlugin.showAdvancedUI) {
+                                                           advancedModeOnConfirmation.open()
+                                                       } else {
+                                                           advancedModeOffConfirmation.open()
+                                                       }
+                                                   }
+                                               }
 
                                     // This allows you to change this on mobile
                                     onPressAndHold: {
@@ -774,7 +774,7 @@ ApplicationWindow {
                     anchors.centerIn:   parent
                     text:               ">"
                     color:              QGroundControl.globalPalette.buttonText
-                }  
+                }
 
                 QGCMouseArea {
                     fillItem: parent
@@ -847,17 +847,17 @@ ApplicationWindow {
     }
 
     Connections{
-         target: activationbar
-         function onActivationTriggered(value){
-              _utmspSendActTrigger= value
-         }
+        target: activationbar
+        function onActivationTriggered(value){
+            _utmspSendActTrigger= value
+        }
     }
 
     UTMSPActivationStatusBar{
-         id:                         activationbar
-         activationStartTimestamp:  _startTimeStamp
-         activationApproval:        _showVisible && QGroundControl.utmspManager.utmspVehicle.vehicleActivation
-         flightID:                  _flightID
-         anchors.fill:              parent
+        id:                         activationbar
+        activationStartTimestamp:  _startTimeStamp
+        activationApproval:        _showVisible && QGroundControl.utmspManager.utmspVehicle.vehicleActivation
+        flightID:                  _flightID
+        anchors.fill:              parent
     }
 }

@@ -83,8 +83,8 @@ Rectangle {
 
             Image {
                 source: "/custom/img/logohural.png"
-                fillMode: Image.PreserveAspectFit 
-                width: 82 
+                fillMode: Image.PreserveAspectFit
+                width: 82
                 height: 82
                 anchors.verticalCenter: parent.verticalCenter
                 visible: !_activeVehicle
@@ -102,9 +102,9 @@ Rectangle {
     }
 
     MainStatusIndicator {
-            anchors.right:parent.right 
-            visible: false
-        }
+        anchors.right:parent.right
+        visible: false
+    }
 
     QGCFlickable {
         id: toolsFlickable

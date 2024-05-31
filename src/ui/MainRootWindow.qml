@@ -294,7 +294,19 @@ ApplicationWindow {
                         id:             innerLayout
                         Layout.margins: toolSelectDialog._margins
                         spacing:        ScreenTools.defaultFontPixelWidth
+                        SubMenuButton {
+                            id:                 viewButton
+                            height:             toolSelectDialog._toolButtonHeight
+                            Layout.fillWidth:   true
+                            text:               !flyView.visible ? "Fly" : "Plan"
+                            imageColor:         qgcPal.text
+                            imageResource:      !flyView.visible ? "/qmlimages/PaperPlane.svg" : "/qmlimages/Plan.svg"
+                            onClicked: {
+                                 flyView.visible ?   mainWindow.showPlanView() :  mainWindow.showFlyView() 
+                                                                     drawer.close()
 
+                            }
+                        }
                         SubMenuButton {
                             id:                 setupButton
                             height:             toolSelectDialog._toolButtonHeight
