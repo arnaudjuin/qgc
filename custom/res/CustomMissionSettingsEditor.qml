@@ -14,16 +14,28 @@ import QGroundControl.FactControls 1.0
 
 // Editor for Mission Settings
 Rectangle {
+    // Define properties
+    property var myGeoFenceController
+    property var _flightMap
     id: valuesRect
+
+    // Controller for managing facts
     FactPanelController {
         id: controller
     }
-    height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 27 : ScreenTools.defaultFontPixelHeight * 42
+
+    // Set height based on whether the screen is mobile
+    height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 45 : ScreenTools.defaultFontPixelHeight * 50
+
+    // Background color and corner radius
     color: qgcPal.windowShadeDark
     radius: _radius
+
+    // Array to save vertices
     property var _savedVertices: []
 
-    property var _masterControler: masterController
+    // Mission and controller-related properties
+    property var _masterControler
     property var _missionController: _masterControler.missionController
     property var _controllerVehicle: _masterControler.controllerVehicle
     property bool _vehicleHasHomePosition: _controllerVehicle.homePosition.isValid
@@ -31,37 +43,56 @@ Rectangle {
     property bool _showHoverSpeed: _controllerVehicle.multiRotor || _controllerVehicle.vtol
     property bool _multipleFirmware: !QGroundControl.singleFirmwareSupport
     property bool _multipleVehicleTypes: !QGroundControl.singleVehicleSupport
+
+    // Layout-related properties
     property real _fieldWidth: ScreenTools.defaultFontPixelWidth * 16
     property bool _mobile: ScreenTools.isMobile
+
+    // File save path and extension
     property var _savePath: QGroundControl.settingsManager.appSettings.missionSavePath
     property var _fileExtension: QGroundControl.settingsManager.appSettings.missionFileExtension
+
+    // App settings
     property var _appSettings: QGroundControl.settingsManager.appSettings
     property bool _waypointsOnlyMode: QGroundControl.corePlugin.options.missionWaypointsOnly
     property bool _showCameraSection: (_waypointsOnlyMode || QGroundControl.corePlugin.showAdvancedUI) && !_controllerVehicle.apmFirmware
     property bool _simpleMissionStart: QGroundControl.corePlugin.options.showSimpleMissionStart
     property bool _showFlightSpeed: !_controllerVehicle.vtol && !_simpleMissionStart && !_controllerVehicle.apmFirmware
-    property bool _allowFWVehicleTypeSelection: _noMissionItemsAdded && !globals.activeVehicle
+
+    // Various boolean flags
+    property bool _allowFWVehicleTypeSelection: false
     property bool _confirmationStart: false
     property bool loadChoice: false
     property bool _textFieldSave: false
     property bool _editTracing: false
     property bool isTraced: false
+
+    // Labels and margins
     readonly property string _firmwareLabel: qsTr("Firmware")
     readonly property string _vehicleLabel: qsTr("Vehicle")
     readonly property real _margin: ScreenTools.defaultFontPixelWidth / 2
+
+    // Polygon item
     property var polygonItem: null
+
+    // QGCPalette for UI colors
     QGCPalette {
         id: qgcPal
     }
+
+    // File dialog controller
     QGCFileDialogController {
         id: fileController
     }
+
+    // Altitude mode dialog component
     Component {
         id: altModeDialogComponent
         AltModeDialog {
         }
     }
 
+    // Connections for vehicle property changes
     Connections {
         target: _controllerVehicle
         function onSupportsTerrainFrameChanged() {
@@ -70,16 +101,20 @@ Rectangle {
             }
         }
     }
+
+    // Layout for the main UI elements
     ColumnLayout {
         id: valuesHeader
-        implicitHeight: 500   // or sum up individual implicit heights of children if more precise control is needed
 
+        // Visibility based on flags
         visible: !_confirmationStart && !_textFieldSave && !loadChoice
         anchors.margins: _margin
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
         spacing: _margin
+
+        // Row for the toolbar and tab bar
         Row {
             QGCToolBarButton {
                 id: currentButton
@@ -87,14 +122,34 @@ Rectangle {
                 logo: true
                 onClicked: mainWindow.showToolSelectDialog()
             }
+            QGCTabBar {
+                id: bar
+                width: 200
+                height: 50
+                anchors.topMargin: 50
+                anchors.leftMargin: 100
+                Component.onCompleted: {
+                    currentIndex = 1
+                }
+                QGCTabButton {
+                    text: qsTr("Mission")
+                }
+                QGCTabButton {
+                    text: qsTr("Fence")
+                }
+            }
         }
+
+        // Row for mission buttons
         Row {
+            visible: bar.currentIndex == 0
             width: parent.width
-            spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 0.5 : ScreenTools.defaultFontPixelWidth * 2
+            spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 0.5 : ScreenTools.defaultFontPixelWidth * 5
+
+            // Undo button
             QGCButton {
-                scale: ScreenTools.isMobile ? 0.8 : 0.8
+                scale: ScreenTools.isMobile ? 0.8 : 1
                 text: "Undo Last"
-                Layout.fillWidth: true
                 onClicked: {
                     var lastIndex = _missionController.visualItems.count - 1;
                     if (lastIndex > 0) {
@@ -105,11 +160,11 @@ Rectangle {
                 }
             }
 
+            // Start button
             QGCButton {
-                scale: ScreenTools.isMobile ? 0.8 : 0.8
+                scale: ScreenTools.isMobile ? 0.8 : 1
                 text: "Start"
                 primary: true
-                Layout.fillWidth: true
                 onClicked: {
                     if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
@@ -117,17 +172,17 @@ Rectangle {
                     }
                     _planMasterController.saveToSelectedFile();
                     _confirmationStart = true;
-                    mainWindow.showFlyView()
                 }
 
+                // Function to insert boundaries to file
                 function insertBoundariesToFile() {
                     var nextIndex = _missionController.currentPlanViewVIIndex + 1;
-                    // Loop through each boundary in the QVariantList
                     for (var i = 0; i < polygonItem.boundaries.length; i++) {
-                        // Insert each boundary at the subsequent index
-                        _missionController.insertSimpleMissionItemBoundary(polygonItem.boundaries[i], nextIndex + i, false /* makeCurrentItem */);
+                        _missionController.insertSimpleMissionItemBoundary(polygonItem.boundaries[i], nextIndex + i, false);
                     }
                 }
+
+                // Animation for button opacity
                 PropertyAnimation on opacity {
                     easing.type: Easing.OutQuart
                     from: 0.5
@@ -139,34 +194,40 @@ Rectangle {
                 }
             }
         }
+
+        // Row for additional mission buttons
         Row {
+            visible: bar.currentIndex == 0
             width: parent.width
-            Layout.topMargin: _margin * 1// Add this line to set the top margin for the first Row
-            spacing: 0.1   // Set a small spacing value to reduce horizontal gaps
+            Layout.topMargin: _margin * 1
+            spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 0.5 : ScreenTools.defaultFontPixelWidth * 5
+
+            // File dialog for loading KML or SHP files
             KMLOrSHPFileDialog {
                 id: kmlOrSHPLoadDialog
                 title: qsTr("Select Polygon File")
 
                 onAcceptedForLoad: file => {
-                                       var currentIndex = _missionController.visualItems.count;
-                                       polygonItem = _missionController.visualItems.get(currentIndex - 1);
-                                       if (!isTraced)
-                                       insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
-                                       polygonItem = _missionController.visualItems.get(currentIndex);
-                                       polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
-                                       mapFitFunctions.fitMapViewportToMissionItems();
-                                       close();
-                                   }
+                    var currentIndex = _missionController.visualItems.count;
+                    polygonItem = _missionController.visualItems.get(currentIndex - 1);
+                    if (!isTraced)
+                        insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
+                    polygonItem = _missionController.visualItems.get(currentIndex);
+                    polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
+                    mapFitFunctions.fitMapViewportToMissionItems();
+                    close();
+                }
             }
+
+            // Clear button
             QGCButton {
-                scale: ScreenTools.isMobile ? 0.8 : 0.8
+                scale: ScreenTools.isMobile ? 0.8 : 1
                 text: "Clear"
                 Layout.fillWidth: true
                 onClicked: {
                     mainWindow.showMessageDialog(qsTr("Clear"), qsTr("Are you sure you want to remove all mission items and clear the mission from the vehicle?"), Dialog.Yes | Dialog.Cancel, function () {
                         polygonItem = null;
                         _editTracing = false;
-                        // Remove all visualItems one by one
                         for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
                             _missionController.removeVisualItem(i);
                         }
@@ -175,24 +236,25 @@ Rectangle {
                     });
                 }
             }
+
+            // Load button
             QGCButton {
                 id: loadButton
-                scale: ScreenTools.isMobile ? 0.8 : 0.8
+                scale: ScreenTools.isMobile ? 0.8 : 1
                 text: "Load"
                 Layout.fillWidth: true
-
                 onClicked: {
                     loadChoice = true;
                 }
             }
 
+            // Save button
             QGCButton {
                 text: qsTr("Save")
-                scale: ScreenTools.isMobile ? 0.8 : 0.8
+                scale: ScreenTools.isMobile ? 0.8 : 1
                 Layout.fillWidth: true
                 enabled: !_planMasterController.syncInProgress
                 onClicked: {
-                    dropPanelSave.hide();
                     if (_planMasterController.currentPlanFile !== "") {
                         _planMasterController.saveToCurrent();
                     } else {
@@ -202,94 +264,109 @@ Rectangle {
             }
         }
 
+        // Row for trace and add waypoint buttons
         Row {
+            visible: bar.currentIndex == 0
             width: parent.width
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
 
-            QGCButton {
-                id: buttonDraw
-                width: ScreenTools.isMobile ? 55 : 100
-                height: width
+      
 
-                text: "Trace"
 
-                onClicked: {
-                    console.log("Trace button clicked");
-                    dropPanelLoad.hide();
-                    dropPanelSave.hide();
-                    _editTracing = !_editTracing;
-                    _addWaypointOnClick = false;
-                    _addWaypointOnClickSpray = false;
-                    {
+        // Trace button
+        QGCButton {
+            id: buttonDraw
+            text: "Trace"
+            onClicked: {
+                // Toggle the _editTracing property
+                _editTracing = !_editTracing;
+                // Disable adding waypoints on click
+                _addWaypointOnClick = false;
+
+                {
+                    // Check if the mission controller exists
+                    if (_missionController) {
+                        // Loop through all visual items in the mission controller
                         for (var i = 0; i < _missionController.visualItems.count; i++) {
+                            // Check if the visual item has a surveyAreaPolygon and its traceMode is false
                             if (_missionController.visualItems.get(i).surveyAreaPolygon && !_missionController.visualItems.get(i).surveyAreaPolygon.traceMode) {
+                                // Remove the visual item
                                 _missionController.removeVisualItem(i);
+                                // Reset the polygonItem to null
                                 polygonItem = null;
                             }
                         }
-                        if (!isTraced) {
-                            console.log("Trace button clicked 1");
-                            var currentIndex = _missionController.visualItems.count;
-                            polygonItem = _missionController.visualItems.get(currentIndex - 1);
-                            if (!isTraced)
-                                insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
-                            console.log("Trace button clicked 2");
-                            polygonItem = _missionController.visualItems.get(currentIndex);
-                            if (polygonItem.surveyAreaPolygon.traceMode) {
-                                if (polygonItem.surveyAreaPolygon.count < 3) {
-                                    _restorePreviousVertices(polygonItem);
-                                }
-                                isTraced = true;
-                                polygonItem.surveyAreaPolygon.traceMode = false;
-                            }
-                            if (!polygonItem.surveyAreaPolygon.traceMode && _editTracing) {
-                                polygonItem.surveyAreaPolygon.traceMode = true;
-                                _saveCurrentVertices(polygonItem);
-                                polygonItem.surveyAreaPolygon.clear();
-                                isTraced = true;
-                            }
-                        } else {
-                            if (polygonItem && polygonItem.surveyAreaPolygon && polygonItem.surveyAreaPolygon.traceMode)
-                                polygonItem.surveyAreaPolygon.traceMode = false;
-                        }
                     }
-                    function _saveCurrentVertices(polygonItem) {
-                        _savedVertices = [];
-                        for (var i = 0; i < polygonItem.surveyAreaPolygon.count; i++) {
-                            _savedVertices.push(polygonItem.surveyAreaPolygon.vertexCoordinate(i));
+                    
+                    // Check if tracing has not been started yet
+                    if (!isTraced) {
+                        // Get the index of the last visual item
+                        var currentIndex = _missionController.visualItems.count;
+                        // Retrieve the last visual item as polygonItem
+                        polygonItem = _missionController.visualItems.get(currentIndex - 1);
+                        
+                        // Insert a complex mission item if it hasn't been traced yet
+                        if (!isTraced)
+                            insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
+
+                        // Get the current visual item as polygonItem
+                        polygonItem = _missionController.visualItems.get(currentIndex);
+                        
+                        // If the polygonItem exists, set its camera footprint side value
+                        if (polygonItem) 
+                            polygonItem.cameraCalc.adjustedFootprintSide.value = 2;
+
+                        // Check if the polygon's traceMode is enabled
+                        if (polygonItem.surveyAreaPolygon.traceMode) {
+                            // If the polygon has fewer than 3 vertices, restore previous vertices
+                            if (polygonItem.surveyAreaPolygon.count < 3) {
+                                _restorePreviousVertices(polygonItem);
+                            }
+                            // Mark tracing as started
+                            isTraced = true;
+                            // Disable traceMode
+                            polygonItem.surveyAreaPolygon.traceMode = false;
                         }
-                    }
-                    function _restorePreviousVertices() {
-                        polygonItem.surveyAreaPolygon.beginReset();
-                        polygonItem.surveyAreaPolygon.clear();
-                        for (var i = 0; i < _savedVertices.length; i++) {
-                            polygonItem.surveyAreaPolygon.appendVertex(_savedVertices[i]);
+
+                        // Enable traceMode if tracing is being edited
+                        if (!polygonItem.surveyAreaPolygon.traceMode && _editTracing) {
+                            polygonItem.surveyAreaPolygon.traceMode = true;
+                            // Save the current vertices
+                            _saveCurrentVertices(polygonItem);
+                            // Clear the current polygon vertices
+                            polygonItem.surveyAreaPolygon.clear();
+                            // Mark tracing as started
+                            isTraced = true;
                         }
-                        polygonItem.surveyAreaPolygon.endReset();
+                    } else {
+                        // If tracing was already started, disable traceMode
+                        if (polygonItem && polygonItem.surveyAreaPolygon && polygonItem.surveyAreaPolygon.traceMode)
+                            polygonItem.surveyAreaPolygon.traceMode = false;
                     }
                 }
-
             }
+        }
+
+
+            // Add waypoint button
             QGCButton {
-                id: buttonTravelWP
-                width: ScreenTools.isMobile ? 55 : 100
-                height: width
-                text: "Travel WP"
+                id: buttonTravel
+                text: "Add waypoint"
                 checked: _addWaypointOnClick
                 onClicked: {
                     if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
                     }
-                    _addWaypointOnClickSpray = false;
                     _addWaypointOnClick = !_addWaypointOnClick;
                 }
             }
-
-
         }
     }
+
+    // Separator line
     Rectangle {
+        visible: bar.currentIndex == 0
         id: sep
         anchors.top: valuesHeader.bottom
         anchors.left: parent.left
@@ -299,103 +376,28 @@ Rectangle {
         color: qgcPal.text
     }
 
+    // ScrollView for mission settings
     Rectangle {
+        visible: bar.currentIndex == 0
         id: valuesRect2
-        anchors.topMargin: 5  // Reduced top margin, adjust the value as needed
-
+        anchors.topMargin: 5
+        width: ScreenTools.isMobile ? 300 : 400
         anchors.top: sep.bottom
-        width: parent.width
         height: parent.height - valuesHeader.height - sep.height
         color: qgcPal.windowShadeDark
         ScrollView {
-
+            anchors.fill: parent
             ColumnLayout {
                 id: valuesColumn
-                implicitHeight: 2000// or sum up individual implicit heights of children if more precise control is needed
+                implicitHeight: 2000
 
                 visible: !_confirmationStart && !_textFieldSave && !loadChoice
-      
+                anchors.margins: _margin
+                anchors.left: parent.left
+                anchors.top: sep.bottom
+                spacing: _margin
 
-                Row {
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 12 : ScreenTools.defaultFontPixelWidth * 18
-
-                    QGCLabel {
-                        text: qsTr("Spacing")
-                        font.family: ScreenTools.demiboldFontFamily
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.topMargin: 1 // Adjust this value to move the text lower
-                    }
-                    FactTextFieldSlider {
-                        id: factSpacing
-                        visible: false
-                        fact: controller.getParameterFact(-1, "SU_SPRY_WIDTH")
-                    }
-                    FactTextField {
-                        fact: QGroundControl.settingsManager.appSettings.offlineEditingSpacing
-                        showUnits: true
-                        showHelp: false
-                        width: ScreenTools.isMobile ? 60 : 100
-                    }
-                }
-                Row {
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
-                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
-                    QGCButton {
-                        scale: ScreenTools.isMobile ? 0.9 : 1
-                        height: parent.height
-                        width: height
-                        text: "-"
-                        anchors.verticalCenter: parent.verticalCenter
-                        onClicked: {
-                            factSpacing.fact.value = Math.max(Math.min(factSpacing.fact.value - 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSpacing.max), QGroundControl.settingsManager.appSettings.offlineEditingSpacing.min);
-                            QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value = factSpacing.fact.value;
-                            polygonItem.cameraCalc.adjustedFootprintSide.value = factSpacing.fact.value;
-                            spacing.value = factSpacing.fact.value;
-                        }
-                    }
-                    Slider {
-                        id: spacing
-                        property bool _loadComplete: false
-                        from: QGroundControl.settingsManager.appSettings.offlineEditingSpacing.min
-                        to: QGroundControl.settingsManager.appSettings.offlineEditingSpacing.max
-                        stepSize: 0.5
-                        width: ScreenTools.isMobile ? 100 : 100
-                        value: polygonItem ? QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value : factSpacing.fact.value
-
-                        Component.onCompleted: {
-                            // Ensure the slider value is initialized only once on component completion
-                            polygonItem.cameraCalc.adjustedFootprintSide.value = 2;
-                            QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value = 2.0;
-                            factSpacing.fact.value = spacing.value = 2;
-                            _loadComplete = true;
-                        }
-
-                        onValueChanged: {
-                            // Update the value of the FactSlider when the Slider value changes
-                            factSpacing.fact.value = spacing.value;
-                            QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value = spacing.value;
-                            if (polygonItem)
-                                polygonItem.cameraCalc.adjustedFootprintSide.value = spacing.value;
-                        }
-                    }
-
-                    QGCButton {
-                        scale: ScreenTools.isMobile ? 0.9 : 1
-                        height: parent.height
-                        width: height
-                        text: "+"
-                        anchors.verticalCenter: parent.verticalCenter
-                        onClicked: {
-                            factSpacing.fact.value = Math.max(Math.min(factSpacing.fact.value + 0.5, QGroundControl.settingsManager.appSettings.offlineEditingSpacing.max), QGroundControl.settingsManager.appSettings.offlineEditingSpacing.min);
-                            QGroundControl.settingsManager.appSettings.offlineEditingSpacing.value = factSpacing.fact.value;
-                            polygonItem.cameraCalc.adjustedFootprintSide.value = factSpacing.fact.value;
-                            spacing.value = factSpacing.fact.value;
-                        }
-                    }
-                }
-
+                // Row for angle setting
                 Row {
                     width: parent.width
                     spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 13.5 : ScreenTools.defaultFontPixelWidth * 20
@@ -403,7 +405,7 @@ Rectangle {
                         text: qsTr("Angle")
                         font.family: ScreenTools.demiboldFontFamily
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.topMargin: 1 // Adjust this value to move the text lower
+                        anchors.topMargin: 1
                     }
                     FactTextField {
                         fact: QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce
@@ -412,6 +414,8 @@ Rectangle {
                         width: ScreenTools.isMobile ? 60 : 100
                     }
                 }
+
+                // Row for angle adjustment
                 Row {
                     width: parent.width * 1.5
                     spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
@@ -421,8 +425,6 @@ Rectangle {
                         height: parent.height
                         width: height
                         text: "-"
-                        anchors.verticalCenter: parent.verticalCenter
-
                         onClicked: {
                             polygonItem.gridAngle.value = Math.max(Math.min(QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value - 1, 180), 0);
                             QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = polygonItem.gridAngle.value;
@@ -435,25 +437,20 @@ Rectangle {
                         from: 0
                         to: 180
                         stepSize: 1
-                        width: ScreenTools.isMobile ? 100 : 100
-
+                        width: ScreenTools.isMobile ? 100 : 150
                         Component.onCompleted: {
                             QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = 0;
                         }
-
                         onValueChanged: {
                             polygonItem.gridAngle.value = value;
                             QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = value;
                         }
                     }
-
                     QGCButton {
                         scale: ScreenTools.isMobile ? 0.9 : 1
                         height: parent.height
                         width: height
                         text: "+"
-                        anchors.verticalCenter: parent.verticalCenter
-
                         onClicked: {
                             polygonItem.gridAngle.value = Math.max(Math.min(polygonItem.gridAngle.value + 1, 180), 0);
                             QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = polygonItem.gridAngle.value;
@@ -461,6 +458,8 @@ Rectangle {
                         }
                     }
                 }
+
+                // Button to rotate entry point
                 QGCButton {
                     text: qsTr("Rotate entry point")
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -473,9 +472,11 @@ Rectangle {
             }
         }
     }
+
+    // Column for mission start confirmation
     Column {
         id: confirmationColumn
-        visible: _confirmationStart
+        visible: _confirmationStart && bar.currentIndex == 0
         anchors.margins: _margin
         anchors.left: parent.left
         anchors.right: parent.right
@@ -499,7 +500,6 @@ Rectangle {
                     _confirmationStart = false;
                 }
             }
-
             QGCButton {
                 text: "Yes"
                 Layout.fillWidth: true
@@ -516,7 +516,6 @@ Rectangle {
             anchors.right: parent.right
             text: qsTr("Statistics")
         }
-
         Row {
             QGCLabel {
                 text: qsTr("Trigger Distance")
@@ -524,9 +523,11 @@ Rectangle {
             // QGCLabel { text: polygonItem.cameraCalc.adjustedFootprintSide.valueString + " " + QGroundControl.appSettingsDistanceUnitsString }
         }
     }
+
+    // Column for file load choice
     Column {
         id: loadChoiceColumn
-        visible: loadChoice
+        visible: loadChoice && bar.currentIndex == 0
         anchors.margins: _margin
         anchors.left: parent.left
         anchors.right: parent.right
@@ -545,7 +546,6 @@ Rectangle {
                     kmlOrSHPLoadDialog.openForLoad();
                 }
             }
-
             QGCButton {
                 text: "Mission"
                 Layout.fillWidth: true
@@ -565,5 +565,24 @@ Rectangle {
             }
         }
     }
+
+    // Rectangle for GeoFence editor
+    Rectangle {
+        visible: bar.currentIndex == 1
+        id: geo
+        anchors.topMargin: 5
+        anchors.top: sep.bottom
+        height: 500
+        width: ScreenTools.isMobile ? 300 : 400
+        color: qgcPal.windowShadeDark
+        GeoFenceEditor {
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            visible: bar.currentIndex == 1
+            myGeoFenceController: _planMasterController.geoFenceController
+            flightMap: _flightMap
+        }
+    }
 }
-// Rectangle

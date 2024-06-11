@@ -295,19 +295,17 @@ ApplicationWindow {
                         signal displayPreFlightChecklist
                         property bool   _viewer3DEnabled:        QGroundControl.settingsManager.viewer3DSettings.enabled.rawValue
 
-                        SubMenuButton {
+       
+                            SubMenuButton {
+                            id:                 viewButton
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
-                            text:           qsTr("Missões")
-                            imageResource:     "/qmlimages/Plan.svg"
-                            imageColor:        "Black"
-                            visible:            !QGroundControl.corePlugin.options.combineSettingsAndSetup
-                            onClicked:{
-                                if (!mainWindow.preventViewSwitch()) {
-                                    mainWindow.closeIndicatorDrawer()
-                                    mainWindow.showPlanView()
-                                    viewer3DWindow.close()
-                                }
+                            text:               !flyView.visible ? "Fly" : "Plan"
+                            imageColor:         qgcPal.text
+                            imageResource:      !flyView.visible ? "/qmlimages/PaperPlane.svg" : "/qmlimages/Plan.svg"
+                            onClicked: {
+                                 flyView.visible ?   mainWindow.showPlanView() :  mainWindow.showFlyView() 
+                                drawer.close()
                             }
                         }
 

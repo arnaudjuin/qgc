@@ -430,7 +430,7 @@ VisualMissionItem* MissionController::insertCancelROIMissionItem(int visualItemI
 VisualMissionItem* MissionController::insertComplexMissionItem(QString itemName, QGeoCoordinate mapCenterCoordinate, int visualItemIndex, bool makeCurrentItem)
 {
     ComplexMissionItem* newItem = nullptr;
-
+    qDebug()<<"here";
     if (itemName == SurveyComplexItem::name) {
         newItem = new SurveyComplexItem(_masterController, _flyView, QString() /* kmlFile */);
         newItem->setCoordinate(mapCenterCoordinate);
