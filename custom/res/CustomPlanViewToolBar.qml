@@ -55,21 +55,6 @@ Rectangle {
             logo:                   true
             onClicked:              mainWindow.showFlyView()
         }
-        
-        Item {
-            Layout.preferredHeight: viewButtonRow.height
-            width: parent.width
-
-            Image {
-                source: "/custom/img/logohural.png"
-                fillMode: Image.PreserveAspectFit
-                width: 82
-                height: 82
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.horizontalCenterOffset: 90
-            }
-        }
     }
 
     QGCFlickable {

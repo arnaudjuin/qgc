@@ -329,7 +329,7 @@ Item {
         id:             panel
         anchors.left:   parent.left
         anchors.right:  parent.right
-        anchors.top:    parent.top
+        anchors.top:    planToolBar.bottom
         anchors.bottom: parent.bottom
 
         FlightMap {
@@ -360,16 +360,16 @@ Item {
             }
 
             onMapClicked: (mouse) => {
-                              // Take focus to close any previous editing
-                              editorMap.focus = true
-                              var coordinate = editorMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
-                              coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
-                              coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
-                              coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
-                                  if (_addWaypointOnClick) {
-                                      insertSimpleItemAfterCurrentTravel(coordinate)
-                                  }
-                              }
+            // Take focus to close any previous editing
+            editorMap.focus = true
+            var coordinate = editorMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
+            coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
+            coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
+            coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
+                if (_addWaypointOnClick) {
+                    insertSimpleItemAfterCurrentTravel(coordinate)
+                }
+            }
                           
 
             // Add the mission item visuals to the map
@@ -477,7 +477,7 @@ Item {
             width:              _rightPanelWidth
             color:               qgcPal.windowShadeDark
             anchors.bottom:     parent.bottom
-            anchors.left:      parent.left
+            anchors.right:      parent.right
             anchors.rightMargin: _toolsMargin
             y: 0
         }

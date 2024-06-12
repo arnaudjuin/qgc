@@ -123,22 +123,6 @@ Item {
                 font.pointSize:     ScreenTools.smallFontPointSize
             }
 
-            QGCLabel { text: qsTr("Alt diff:"); font.pointSize: _dataFontSize; }
-            QGCLabel {
-                text:                   _altDifferenceText
-                font.pointSize:         _dataFontSize
-                Layout.minimumWidth:    _mediumValueWidth
-            }
-
-            Item { width: 1; height: 1 }
-
-            QGCLabel { text: qsTr("Azimuth:"); font.pointSize: _dataFontSize; }
-            QGCLabel {
-                text:                   _azimuthText
-                font.pointSize:         _dataFontSize
-                Layout.minimumWidth:    _smallValueWidth
-            }
-
             Item { width: 1; height: 1 }
 
             QGCLabel { text: qsTr("Dist prev WP:"); font.pointSize: _dataFontSize; }
@@ -146,13 +130,6 @@ Item {
                 text:                   _distanceText
                 font.pointSize:         _dataFontSize
                 Layout.minimumWidth:    _largeValueWidth
-            }
-
-            QGCLabel { text: qsTr("Gradient:"); font.pointSize: _dataFontSize; }
-            QGCLabel {
-                text:                   _gradientText
-                font.pointSize:         _dataFontSize
-                Layout.minimumWidth:    _mediumValueWidth
             }
 
             Item { width: 1; height: 1 }
@@ -222,34 +199,6 @@ Item {
             }
 
             Item { width: 1; height: 1 }
-        }
-
-        QGCButton {
-            id:          uploadButton
-            text:        _controllerDirty ? qsTr("Upload Required") : qsTr("Upload")
-            enabled:     _utmspEnabled ? !_controllerSyncInProgress && responseFlag : !_controllerSyncInProgress
-            visible:     true//HACK HURAL 
-            primary:     _controllerDirty
-            onClicked: {
-                console.log(_controllerOffline,"_controllerOffline")
-                console.log(_controllerSyncInProgress,"_controllerSyncInProgress")
-
-                if (_utmspEnabled) {
-                    QGroundControl.utmspManager.utmspVehicle.triggerActivationStatusBar(true);
-                    UTMSPStateStorage.removeFlightPlanState = true
-                }
-                _planMasterController.upload();
-            }
-
-            PropertyAnimation on opacity {
-                easing.type:    Easing.OutQuart
-                from:           0.5
-                to:             1
-                loops:          Animation.Infinite
-                running:        _controllerDirty && !_controllerSyncInProgress
-                alwaysRunToEnd: true
-                duration:       2000
-            }
         }
     }
 }
