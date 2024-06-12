@@ -63,18 +63,23 @@ public:
     bool                    adjustSettingMetaData           (const QString& settingsGroup, FactMetaData& metaData) final;
     void                    paletteOverride                 (QString colorName, QGCPalette::PaletteColorInfo_t& colorInfo) final;
     QQmlApplicationEngine*  createQmlApplicationEngine      (QObject* parent) final;
-    Q_PROPERTY(QString sprayPumpState READ sprayPumpState NOTIFY sprayPumpStateChanged)
+    Q_PROPERTY(QString sprayPumpState READ sprayPumpState NOTIFY sprayPumpStateChanged);
+    Q_PROPERTY(QString sprayNozzleState READ sprayNozzleState NOTIFY sprayNozzleStateChanged)
 
     void                    setToolbox                      (QGCToolbox* toolbox);
 
     // Override mavlinkMessage to access mavlink traffic
     bool mavlinkMessage(Vehicle* vehicle, LinkInterface* link, mavlink_message_t message);
     QString sprayPumpState() const { return _sprayPumpState; }
+    QString sprayNozzleState() const { return _sprayNozzleState; }
 
 signals:
     void sprayPumpStateChanged();
+    void sprayNozzleStateChanged();
+
 protected:
     QString _sprayPumpState = QString("Pump");
+    QString _sprayNozzleState = QString("Nozzle");
 
 private slots:
     void _advancedChanged(bool advanced);

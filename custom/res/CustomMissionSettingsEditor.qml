@@ -118,9 +118,9 @@ Rectangle {
         Row {
             QGCToolBarButton {
                 id: currentButton
-                icon.source: "/res/QGCLogoFull"
+                icon.source: "/qmlimages/Home.svg"
                 logo: true
-                onClicked: mainWindow.showToolSelectDialog()
+                onClicked: mainWindow.showFlyView()
             }
             QGCTabBar {
                 id: bar
