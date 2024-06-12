@@ -472,14 +472,16 @@ Item {
         //-----------------------------------------------------------
 
         Rectangle {
-            height:                 parent.height
-            id:                 rightPanel
-            width:              _rightPanelWidth
-            color:               qgcPal.windowShadeDark
-            anchors.bottom:     parent.bottom
-            anchors.right:      parent.right
-            anchors.rightMargin: _toolsMargin
-            y: 0
+            height: parent.height
+            id: rightPanel
+            width: _rightPanelWidth - 30
+            color: "grey"
+            opacity: 0.5
+            //color: qgcPal.windowShadeDark
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            visible: true
         }
 
         //-------------------------------------------------------

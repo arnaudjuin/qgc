@@ -71,6 +71,7 @@ Rectangle {
     readonly property string _firmwareLabel: qsTr("Firmware")
     readonly property string _vehicleLabel: qsTr("Vehicle")
     readonly property real _margin: ScreenTools.defaultFontPixelWidth / 2
+    readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 34 :  ScreenTools.defaultFontPixelWidth * 50
 
     // Polygon item
     property var polygonItem: null
@@ -116,26 +117,132 @@ Rectangle {
 
         // Row for the toolbar and tab bar
         Row {
-            QGCToolBarButton {
+            Layout.leftMargin: _margin -5
+            Layout.topMargin: _margin -5
+            /*QGCToolBarButton {
                 id: currentButton
                 icon.source: "/qmlimages/Home.svg"
                 logo: true
-                onClicked: mainWindow.showFlyView()
-            }
+                onClicked: mainWindow.showToolSelectDialog()
+            }*/
             QGCTabBar {
                 id: bar
-                width: 200
-                height: 50
-                anchors.topMargin: 50
-                anchors.leftMargin: 100
+                width: _rightPanelWidth - 32
+                background: null
                 Component.onCompleted: {
                     currentIndex = 0
                 }
                 QGCTabButton {
                     text: qsTr("Mission")
+                    height: 35
                 }
                 QGCTabButton {
                     text: qsTr("Fence")
+                    height: 35
+                }
+            }
+        }
+        // Row for trace and add waypoint buttons
+        Row {
+            visible: bar.currentIndex == 0
+            spacing: ScreenTools.defaultFontPixelWidth * 1.5
+            //Layout.leftMargin: _margin + 12
+
+            // Trace button
+            RoundButton {
+                width: _rightPanelWidth - 36
+                height: ScreenTools.isMobile ? 28 : 28
+                id: buttonDraw
+                text: "Trace"
+                onClicked: {
+                    // Toggle the _editTracing property
+                    _editTracing = !_editTracing;
+                    // Disable adding waypoints on click
+                    _addWaypointOnClick = false;
+
+                    {
+                        // Check if the mission controller exists
+                        if (_missionController) {
+                            // Loop through all visual items in the mission controller
+                            for (var i = 0; i < _missionController.visualItems.count; i++) {
+                                // Check if the visual item has a surveyAreaPolygon and its traceMode is false
+                                if (_missionController.visualItems.get(i).surveyAreaPolygon && !_missionController.visualItems.get(i).surveyAreaPolygon.traceMode) {
+                                    // Remove the visual item
+                                    _missionController.removeVisualItem(i);
+                                    // Reset the polygonItem to null
+                                    polygonItem = null;
+                                }
+                            }
+                        }
+
+                        // Check if tracing has not been started yet
+                        if (!isTraced) {
+                            // Get the index of the last visual item
+                            var currentIndex = _missionController.visualItems.count;
+                            // Retrieve the last visual item as polygonItem
+                            polygonItem = _missionController.visualItems.get(currentIndex - 1);
+
+                            // Insert a complex mission item if it hasn't been traced yet
+                            if (!isTraced)
+                                insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
+
+                            // Get the current visual item as polygonItem
+                            polygonItem = _missionController.visualItems.get(currentIndex);
+
+                            // If the polygonItem exists, set its camera footprint side value
+                            if (polygonItem) 
+                                polygonItem.cameraCalc.adjustedFootprintSide.value = 2;
+
+                            // Check if the polygon's traceMode is enabled
+                            if (polygonItem.surveyAreaPolygon.traceMode) {
+                                // If the polygon has fewer than 3 vertices, restore previous vertices
+                                if (polygonItem.surveyAreaPolygon.count < 3) {
+                                    _restorePreviousVertices(polygonItem);
+                                }
+                                // Mark tracing as started
+                                isTraced = true;
+                                // Disable traceMode
+                                polygonItem.surveyAreaPolygon.traceMode = false;
+                            }
+
+                            // Enable traceMode if tracing is being edited
+                            if (!polygonItem.surveyAreaPolygon.traceMode && _editTracing) {
+                                polygonItem.surveyAreaPolygon.traceMode = true;
+                                // Save the current vertices
+                                _saveCurrentVertices(polygonItem);
+                                // Clear the current polygon vertices
+                                polygonItem.surveyAreaPolygon.clear();
+                                // Mark tracing as started
+                                isTraced = true;
+                            }
+                        } else {
+                            // If tracing was already started, disable traceMode
+                            if (polygonItem && polygonItem.surveyAreaPolygon && polygonItem.surveyAreaPolygon.traceMode)
+                                polygonItem.surveyAreaPolygon.traceMode = false;
+                        }
+                    }
+                }
+            }   
+        }
+        // Add waypoint button
+        Row {
+            visible: bar.currentIndex == 0
+            width: parent.width
+            //spacing: ScreenTools.defaultFontPixelWidth * 1.5
+            //Layout.leftMargin: _margin + 12
+            
+            RoundButton {
+                id: buttonTravel
+                width: _rightPanelWidth - 36
+                height: ScreenTools.isMobile ? 28 : 28
+                text: "Add wayopoint"
+                checked: _addWaypointOnClick
+                onClicked: {
+                    if (polygonItem) {
+                        polygonItem.surveyAreaPolygon.traceMode = false;
+                        _editTracing = false;
+                    }
+                    _addWaypointOnClick = !_addWaypointOnClick;
                 }
             }
         }
@@ -144,12 +251,14 @@ Rectangle {
         Row {
             visible: bar.currentIndex == 0
             width: parent.width
-            spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 0.5 : ScreenTools.defaultFontPixelWidth * 5
+            //Layout.leftMargin: _margin + 12
+            spacing: ScreenTools.defaultFontPixelWidth * 1.5
 
             // Undo button
-            QGCButton {
-                scale: ScreenTools.isMobile ? 0.8 : 1
-                text: "Undo Last"
+            RoundButton {
+                width: ScreenTools.isMobile ?  80 : 28
+                height: ScreenTools.isMobile ? 28 : 28
+                text: "Undo"
                 onClicked: {
                     var lastIndex = _missionController.visualItems.count - 1;
                     if (lastIndex > 0) {
@@ -159,12 +268,96 @@ Rectangle {
                     _missionController.removeVisualItem(lastIndex);
                 }
             }
+            
+            // Clear button
+            RoundButton {
+                width: ScreenTools.isMobile ? 80 : 28
+                height: ScreenTools.isMobile ? 28 : 28
+                text: "Clear"
+                Layout.fillWidth: true
+                onClicked: {
+                    mainWindow.showMessageDialog(qsTr("Clear"), qsTr("Are you sure you want to remove all mission items and clear the mission from the vehicle?"), Dialog.Yes | Dialog.Cancel, function () {
+                        polygonItem = null;
+                        _editTracing = false;
+                        for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
+                            _missionController.removeVisualItem(i);
+                        }
+                        isTraced = false;
+                        _missionController.setCurrentPlanViewSeqNum(0, true);
+                    });
+                }
+            }
+        }
+
+        // Row for additional mission buttons
+        Row {
+            visible: bar.currentIndex == 0
+            width: parent.width
+            //Layout.topMargin: _margin * 1
+            spacing: ScreenTools.defaultFontPixelWidth * 1.5
+            //Layout.leftMargin: _margin + 12
+
+            // File dialog for loading KML or SHP files
+            KMLOrSHPFileDialog {
+                id: kmlOrSHPLoadDialog
+                title: qsTr("Select Polygon File")
+
+                onAcceptedForLoad: file => {
+                    var currentIndex = _missionController.visualItems.count;
+                    polygonItem = _missionController.visualItems.get(currentIndex - 1);
+                    if (!isTraced)
+                        insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
+                    polygonItem = _missionController.visualItems.get(currentIndex);
+                    polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
+                    mapFitFunctions.fitMapViewportToMissionItems();
+                    close();
+                }
+            }
+
+            
+
+            // Load button
+            RoundButton {
+                width: ScreenTools.isMobile ? 80 : 28
+                height: ScreenTools.isMobile ? 28 : 28
+                id: loadButton
+                text: "Load"
+                Layout.fillWidth: true
+                onClicked: {
+                    loadChoice = true;
+                }
+            }
+
+            // Save button
+            RoundButton {
+                text: qsTr("Save")
+                width: ScreenTools.isMobile ? 80 : 28
+                height: ScreenTools.isMobile ? 28 : 28
+                Layout.fillWidth: true
+                enabled: !_planMasterController.syncInProgress
+                onClicked: {
+                    if (_planMasterController.currentPlanFile !== "") {
+                        _planMasterController.saveToCurrent();
+                    } else {
+                        _planMasterController.saveToSelectedFile();
+                    }
+                }
+            }
+        }
+        //Row for start button
+        Row {
+            visible: bar.currentIndex == 0
+            width: parent.width
+            Layout.topMargin: _margin * 1
+            spacing: ScreenTools.defaultFontPixelWidth * 1.5
+            //Layout.leftMargin: _margin + 12
 
             // Start button
-            QGCButton {
-                scale: ScreenTools.isMobile ? 0.8 : 1
+            RoundButton {
+                width: _rightPanelWidth - 36
+                height: ScreenTools.isMobile ? 28 : 28
                 text: "Start"
-                primary: true
+                //primary: true
                 onClicked: {
                     if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
@@ -193,175 +386,10 @@ Rectangle {
                     duration: 2000
                 }
             }
+
         }
-
-        // Row for additional mission buttons
-        Row {
-            visible: bar.currentIndex == 0
-            width: parent.width
-            Layout.topMargin: _margin * 1
-            spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 0.5 : ScreenTools.defaultFontPixelWidth * 5
-
-            // File dialog for loading KML or SHP files
-            KMLOrSHPFileDialog {
-                id: kmlOrSHPLoadDialog
-                title: qsTr("Select Polygon File")
-
-                onAcceptedForLoad: file => {
-                    var currentIndex = _missionController.visualItems.count;
-                    polygonItem = _missionController.visualItems.get(currentIndex - 1);
-                    if (!isTraced)
-                        insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
-                    polygonItem = _missionController.visualItems.get(currentIndex);
-                    polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
-                    mapFitFunctions.fitMapViewportToMissionItems();
-                    close();
-                }
-            }
-
-            // Clear button
-            QGCButton {
-                scale: ScreenTools.isMobile ? 0.8 : 1
-                text: "Clear"
-                Layout.fillWidth: true
-                onClicked: {
-                    mainWindow.showMessageDialog(qsTr("Clear"), qsTr("Are you sure you want to remove all mission items and clear the mission from the vehicle?"), Dialog.Yes | Dialog.Cancel, function () {
-                        polygonItem = null;
-                        _editTracing = false;
-                        for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
-                            _missionController.removeVisualItem(i);
-                        }
-                        isTraced = false;
-                        _missionController.setCurrentPlanViewSeqNum(0, true);
-                    });
-                }
-            }
-
-            // Load button
-            QGCButton {
-                id: loadButton
-                scale: ScreenTools.isMobile ? 0.8 : 1
-                text: "Load"
-                Layout.fillWidth: true
-                onClicked: {
-                    loadChoice = true;
-                }
-            }
-
-            // Save button
-            QGCButton {
-                text: qsTr("Save")
-                scale: ScreenTools.isMobile ? 0.8 : 1
-                Layout.fillWidth: true
-                enabled: !_planMasterController.syncInProgress
-                onClicked: {
-                    if (_planMasterController.currentPlanFile !== "") {
-                        _planMasterController.saveToCurrent();
-                    } else {
-                        _planMasterController.saveToSelectedFile();
-                    }
-                }
-            }
-        }
-
-        // Row for trace and add waypoint buttons
-        Row {
-            visible: bar.currentIndex == 0
-            width: parent.width
-            spacing: ScreenTools.defaultFontPixelWidth * 1.5
-
-      
-
-
-        // Trace button
-        QGCButton {
-            id: buttonDraw
-            text: "Trace"
-            onClicked: {
-                // Toggle the _editTracing property
-                _editTracing = !_editTracing;
-                // Disable adding waypoints on click
-                _addWaypointOnClick = false;
-
-                {
-                    // Check if the mission controller exists
-                    if (_missionController) {
-                        // Loop through all visual items in the mission controller
-                        for (var i = 0; i < _missionController.visualItems.count; i++) {
-                            // Check if the visual item has a surveyAreaPolygon and its traceMode is false
-                            if (_missionController.visualItems.get(i).surveyAreaPolygon && !_missionController.visualItems.get(i).surveyAreaPolygon.traceMode) {
-                                // Remove the visual item
-                                _missionController.removeVisualItem(i);
-                                // Reset the polygonItem to null
-                                polygonItem = null;
-                            }
-                        }
-                    }
-                    
-                    // Check if tracing has not been started yet
-                    if (!isTraced) {
-                        // Get the index of the last visual item
-                        var currentIndex = _missionController.visualItems.count;
-                        // Retrieve the last visual item as polygonItem
-                        polygonItem = _missionController.visualItems.get(currentIndex - 1);
-                        
-                        // Insert a complex mission item if it hasn't been traced yet
-                        if (!isTraced)
-                            insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
-
-                        // Get the current visual item as polygonItem
-                        polygonItem = _missionController.visualItems.get(currentIndex);
-                        
-                        // If the polygonItem exists, set its camera footprint side value
-                        if (polygonItem) 
-                            polygonItem.cameraCalc.adjustedFootprintSide.value = 2;
-
-                        // Check if the polygon's traceMode is enabled
-                        if (polygonItem.surveyAreaPolygon.traceMode) {
-                            // If the polygon has fewer than 3 vertices, restore previous vertices
-                            if (polygonItem.surveyAreaPolygon.count < 3) {
-                                _restorePreviousVertices(polygonItem);
-                            }
-                            // Mark tracing as started
-                            isTraced = true;
-                            // Disable traceMode
-                            polygonItem.surveyAreaPolygon.traceMode = false;
-                        }
-
-                        // Enable traceMode if tracing is being edited
-                        if (!polygonItem.surveyAreaPolygon.traceMode && _editTracing) {
-                            polygonItem.surveyAreaPolygon.traceMode = true;
-                            // Save the current vertices
-                            _saveCurrentVertices(polygonItem);
-                            // Clear the current polygon vertices
-                            polygonItem.surveyAreaPolygon.clear();
-                            // Mark tracing as started
-                            isTraced = true;
-                        }
-                    } else {
-                        // If tracing was already started, disable traceMode
-                        if (polygonItem && polygonItem.surveyAreaPolygon && polygonItem.surveyAreaPolygon.traceMode)
-                            polygonItem.surveyAreaPolygon.traceMode = false;
-                    }
-                }
-            }
-        }
-
-
-            // Add waypoint button
-            QGCButton {
-                id: buttonTravel
-                text: "Add waypoint"
-                checked: _addWaypointOnClick
-                onClicked: {
-                    if (polygonItem) {
-                        polygonItem.surveyAreaPolygon.traceMode = false;
-                        _editTracing = false;
-                    }
-                    _addWaypointOnClick = !_addWaypointOnClick;
-                }
-            }
-        }
+        
+        
     }
 
     // Separator line
