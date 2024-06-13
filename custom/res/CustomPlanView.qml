@@ -386,6 +386,7 @@ Item {
 
             // Add lines between waypoints
             MissionLineView {
+                showSpecialVisual:  true
                 model:              _missionController.waypointFlightPathSegments
             }
             // Direction arrows in waypoint lines
@@ -399,7 +400,7 @@ Item {
                     z:              QGroundControl.zOrderWaypointLines + 1
                 }
             }
-
+    
             // Incomplete segment lines
             MapItemView {
                 model: _missionController.incompleteComplexItemLines

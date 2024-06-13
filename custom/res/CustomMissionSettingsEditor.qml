@@ -14,6 +14,8 @@ import QGroundControl.FactControls 1.0
 
 // Editor for Mission Settings
 Rectangle {
+    property var    _activeVehicle:       QGroundControl.multiVehicleManager.activeVehicle ? QGroundControl.multiVehicleManager.activeVehicle : QGroundControl.multiVehicleManager.offlineEditingVehicle
+
     // Define properties
     property var myGeoFenceController
     property var _flightMap
@@ -551,6 +553,62 @@ Rectangle {
                         }
                     }
                 }
+
+
+                //Row for turnaround setting
+                Row {
+                    width: parent.width
+                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 13.5 : ScreenTools.defaultFontPixelWidth * 20
+                    QGCLabel {
+                        text: qsTr("Speed")
+                        font.family: ScreenTools.demiboldFontFamily
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.topMargin: 1 // Adjust this value to move the text lower
+                    }
+                }
+
+                //Row for turnaround adjustment
+                Row {
+                    width: parent.width * 1.5
+                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
+                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
+                    
+                    QGCSlider {
+                        id: speedSlider
+                        property bool _loadComplete: false
+                        from: 0
+                        to: 7
+                        stepSize: 0.5
+                        width: ScreenTools.isMobile ? 100 : 100
+
+                        /*Component.onCompleted: {
+                            QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = 0;
+                        }*/
+
+                        onValueChanged:   {
+                        // Define the command parameters
+                        var command = 178; // Command ID for changing speed
+                        var speedType = 1; // 1 for ground speed
+                        var speed = 10.0; // Target speed in m/s
+                        var throttle = -1; // Throttle setting (not used, set to -1)
+                        var relative = 0; // Absolute or relative (not used, set to 0)
+
+                        // Send the command to the active vehicle
+                        _activeVehicle.sendCommand(command, speedType, value, throttle, relative);
+                        //We send the value
+                         QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed = value;
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
+
 
                 // Button to rotate entry point
                 QGCButton {
