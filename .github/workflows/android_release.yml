@@ -8,6 +8,7 @@ on:
       - 'Stable*'
       - 'android*'
       - 'androidFieldTest'
+      - 'ui/Features'
     tags:
       - 'v*'
     paths-ignore:
