@@ -417,9 +417,11 @@ Rectangle {
         color: qgcPal.windowShadeDark
         ScrollView {
             anchors.fill: parent
+            contentWidth: width // Set the content width to the width of the ScrollView to prevent horizontal scrolling
+
             ColumnLayout {
                 id: valuesColumn
-                implicitHeight: 2000
+                implicitHeight: 3000
 
                 visible: !_confirmationStart && !_textFieldSave && !loadChoice
                 anchors.margins: _margin
@@ -573,30 +575,35 @@ Rectangle {
                     spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
                     anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
                     
+/*             QGCCheckBox {
+                id:         flightSpeedCheckBox
+                text:       qsTr("Flight speed")
+                visible:    _showFlightSpeed
+                checked:    _missionController.visualItems.get(0).speedSection.specifyFlightSpeed
+                onClicked:   _missionController.visualItems.get(0).speedSection.specifyFlightSpeed = checked
+            } */
+            FactTextField {
+                id:                factFlightSpeed
+                fact:               _missionController.visualItems.get(0).speedSection.flightSpeed
+                visible:            truegit add
+                enabled:            flightSpeedCheckBox.checked
+            }
+                                
                     QGCSlider {
-                        id: speedSlider
+                        id: flightSpeedSlider
                         property bool _loadComplete: false
                         from: 0
                         to: 7
                         stepSize: 0.5
                         width: ScreenTools.isMobile ? 100 : 100
+                        value:factFlightSpeed.fact.value
 
                         /*Component.onCompleted: {
                             QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = 0;
                         }*/
 
-                        onValueChanged:   {
-                        // Define the command parameters
-                        var command = 178; // Command ID for changing speed
-                        var speedType = 1; // 1 for ground speed
-                        var speed = 10.0; // Target speed in m/s
-                        var throttle = -1; // Throttle setting (not used, set to -1)
-                        var relative = 0; // Absolute or relative (not used, set to 0)
-
-                        // Send the command to the active vehicle
-                        _activeVehicle.sendCommand(command, speedType, value, throttle, relative);
-                        //We send the value
-                         QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed = value;
+                        onValueChanged: {
+                            factFlightSpeed.fact.value = value;
                         }
                     }
                 }
@@ -612,8 +619,8 @@ Rectangle {
 
                 // Button to rotate entry point
                 QGCButton {
+                    visible:false // TODO RENDER VISIBILITY AGAIN
                     text: qsTr("Rotate entry point")
-                    anchors.horizontalCenter: parent.horizontalCenter
                     onClicked: polygonItem.rotateEntryPoint()
                 }
 

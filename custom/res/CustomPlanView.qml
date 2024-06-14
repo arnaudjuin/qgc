@@ -387,7 +387,7 @@ Item {
             // Add lines between waypoints
             MissionLineView {
                 showSpecialVisual:  true
-                model:              _missionController.waypointFlightPathSegments
+                model:              _missionController.simpleFlightPathSegments
             }
             // Direction arrows in waypoint lines
             MapItemView {
