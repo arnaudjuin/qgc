@@ -15,6 +15,7 @@ import QGroundControl.FactControls 1.0
 // Editor for Mission Settings
 Rectangle {
     property var    _activeVehicle:       QGroundControl.multiVehicleManager.activeVehicle ? QGroundControl.multiVehicleManager.activeVehicle : QGroundControl.multiVehicleManager.offlineEditingVehicle
+
     // Define properties
     property var myGeoFenceController
     property var _flightMap
@@ -150,13 +151,7 @@ Rectangle {
             //Layout.leftMargin: _margin + 12
 
             // Trace button
-            QGCButton {
-                background: Rectangle {
-                    color: "#ff4800"  
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
-                }
+            RoundButton {
                 width: _rightPanelWidth - 36
                 height: ScreenTools.isMobile ? 28 : 28
                 id: buttonDraw
@@ -190,8 +185,7 @@ Rectangle {
                             polygonItem = _missionController.visualItems.get(currentIndex - 1);
 
                             // Insert a complex mission item if it hasn't been traced yet
-                            if (!isTraced)
-                                insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
+                            insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
 
                             // Get the current visual item as polygonItem
                             polygonItem = _missionController.visualItems.get(currentIndex);
@@ -238,13 +232,7 @@ Rectangle {
             //spacing: ScreenTools.defaultFontPixelWidth * 1.5
             //Layout.leftMargin: _margin + 12
             
-            QGCButton {
-                background: Rectangle {
-                color: "#ff4800"  
-                radius: 14  
-                border.color: "white"  
-                anchors.fill: parent  
-                }
+            RoundButton {
                 id: buttonTravel
                 width: _rightPanelWidth - 36
                 height: ScreenTools.isMobile ? 28 : 28
@@ -268,13 +256,7 @@ Rectangle {
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
 
             // Undo button
-            QGCButton {
-                background: Rectangle {
-                color: "#ff4800"  
-                radius: 14  
-                border.color: "white"  
-                anchors.fill: parent  
-                }
+            RoundButton {
                 width: ScreenTools.isMobile ?  80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
                 text: "Undo"
@@ -289,13 +271,7 @@ Rectangle {
             }
             
             // Clear button
-            QGCButton {
-                background: Rectangle {
-                color: "#ff4800"  
-                radius: 14  
-                border.color: "white"  
-                anchors.fill: parent  
-                }
+            RoundButton {
                 width: ScreenTools.isMobile ? 80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
                 text: "Clear"
@@ -342,13 +318,7 @@ Rectangle {
             
 
             // Load button
-            QGCButton {
-                background: Rectangle {
-                color: "#ff4800"  
-                radius: 14  
-                border.color: "white"  
-                anchors.fill: parent  
-                }
+            RoundButton {
                 width: ScreenTools.isMobile ? 80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
                 id: loadButton
@@ -360,13 +330,7 @@ Rectangle {
             }
 
             // Save button
-            QGCButton {
-                background: Rectangle {
-                color: "#ff4800"  
-                radius: 14  
-                border.color: "white"  
-                anchors.fill: parent  
-                }
+            RoundButton {
                 text: qsTr("Save")
                 width: ScreenTools.isMobile ? 80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
@@ -390,17 +354,11 @@ Rectangle {
             //Layout.leftMargin: _margin + 12
 
             // Start button
-            QGCButton {
-                background: Rectangle {
-                color: "lightgreen"  
-                radius: 14  
-                border.color: "white"  
-                anchors.fill: parent  
-                }
+            RoundButton {
                 width: _rightPanelWidth - 36
                 height: ScreenTools.isMobile ? 28 : 28
                 text: "Start"
-                primary: true
+                //primary: true
                 onClicked: {
                     if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
@@ -448,228 +406,324 @@ Rectangle {
     }
 
     // ScrollView for mission settings
-   Rectangle {
-    visible: bar.currentIndex == 0
-    id: valuesRect2
-    anchors.topMargin: 5
-    width: ScreenTools.isMobile ? 300 : 400
-    anchors.top: sep.bottom
-    height: parent.height - valuesHeader.height - sep.height
-    color: "transparent"
+    Rectangle {
+        visible: bar.currentIndex == 0
+        id: valuesRect2
+        anchors.topMargin: 5
+        width: ScreenTools.isMobile ? 300 : 400
+        anchors.top: sep.bottom
+        height: parent.height - valuesHeader.height - sep.height
+        color: "transparent"
 
-    ScrollView {
-        anchors.fill: parent
-        ColumnLayout {
-            id: valuesColumn
-            implicitHeight: 2000
+        ScrollView {
+            anchors.fill: parent
+            contentWidth: width
+            clip: true
 
-            visible: !_confirmationStart && !_textFieldSave && !loadChoice
-            anchors.margins: _margin
-            anchors.left: parent.left
-            anchors.top: sep.bottom
-            spacing: _margin
+            ColumnLayout {
+                id: valuesColumn
+                //implicitHeight: 3000
 
-            // Row for angle setting
-            RowLayout {
-                width: parent.width
-                spacing: ScreenTools.defaultFontPixelWidth * 2
-                QGCLabel {
-                    text: qsTr("Angle")
-                    font.family: ScreenTools.demiboldFontFamily
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.fillWidth: true
-                }
-                FactTextField {
-                    fact: QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce
-                    showUnits: true
-                    showHelp: false
-                    width: ScreenTools.isMobile ? 60 : 60  // Ajuste a largura
-                    height: ScreenTools.isMobile ? 30 : 30  // Ajuste a altura
-                    Layout.alignment: Qt.AlignRight
-                }
-            }
+                visible: !_confirmationStart && !_textFieldSave && !loadChoice
+                spacing: _margin
 
-            // Row for angle adjustment
-            RowLayout {
-                width: parent.width * 1.5
-                spacing: ScreenTools.defaultFontPixelWidth * 2
-                anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
+                // Row for angle setting
+                RowLayout {
+                    width: parent.width
+                    spacing: ScreenTools.defaultFontPixelWidth * 2
 
-                QGCSlider {
-                    id: angle
-                    property bool _loadComplete: false
-                    from: 0
-                    to: 180
-                    stepSize: 1
-                    width: parent.width - 30  // Ajuste a largura do slider
-
-                    Component.onCompleted: {
-                        QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = 0;
+                    QGCLabel {
+                        text: qsTr("Angle")
+                        font.family: ScreenTools.demiboldFontFamily
+                        Layout.alignment: Qt.AlignLeft
+                        Layout.fillWidth: true
                     }
 
-                    onValueChanged: {
-                        polygonItem.gridAngle.value = value;
-                        QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = value;
+                    FactTextField {
+                        id: factAngle
+                        visible: false
+                        fact: QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce
+                        showUnits: true
+                        showHelp: false
+                        width: ScreenTools.isMobile ? 60 : 60  // Ajuste a largura
+                        height: ScreenTools.isMobile ? 30 : 30  // Ajuste a altura
+                        Layout.alignment: Qt.AlignRight
+                        onTextChanged: {
+                            labelAngle.text = factAngle.text;
+                            angleSlider.value = factAngle.fact.value;
+                        }
                     }
                 }
-            }
 
-            // Row for spacing setting
-            RowLayout {
-                width: parent.width
-                spacing: ScreenTools.defaultFontPixelWidth * 2
-                QGCLabel {
-                    text: qsTr("Spacing")
-                    font.family: ScreenTools.demiboldFontFamily
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.fillWidth: true
-                }
-                FactTextField {
-                    fact: polygonItem.cameraCalc.adjustedFootprintSide
-                    showUnits: true
-                    showHelp: false
-                    width: ScreenTools.isMobile ? 60 : 60  // Ajuste a largura
-                    height: ScreenTools.isMobile ? 30 : 30  // Ajuste a altura
-                    Layout.alignment: Qt.AlignRight
-                }
-            }
+                // Row for angle adjustment
+                RowLayout {
+                    width: parent.width
+                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
+                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
 
-            // Row for spacing adjustment
-            RowLayout {
-                width: parent.width * 1.5
-                spacing: ScreenTools.defaultFontPixelWidth * 2
-                anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
+                    QGCSlider {
+                        id: angleSlider
+                        property bool _loadComplete: false
+                        from: 0
+                        to: 180
+                        stepSize: 1
+                        width: parent.width - 30  // Ajuste a largura do slider
 
-                QGCSlider {
-                    id: spacing
-                    property bool _loadComplete: false
-                    from: 5
-                    to: 12
-                    stepSize: 0.5
-                    width: _rightPanelWidth - 30  // Ajuste a largura do slider
+                        Component.onCompleted: {
+                            QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = 0;
+                        }
 
-                    onValueChanged: {
-                        polygonItem.cameraCalc.adjustedFootprintSide.value = value;
+                        onValueChanged: {
+                            polygonItem.gridAngle.value = value;
+                            QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = value;
+                        }
+                    }
+
+                    Rectangle {
+                        width: 40
+                        height: 20
+                        color: "#f0f0f0"  // Light grey background
+                        border.color: "#d0d0d0"
+                        border.width: 1
+                        radius: 5
+                        Layout.alignment: Qt.AlignRight
+
+                        TextInput {
+                            id: labelAngle
+                            text: factSpacing.text
+                            anchors.centerIn: parent
+                            color: "#333333"
+                            font.pixelSize: 12
+                            horizontalAlignment: TextInput.AlignHCenter
+                            verticalAlignment: TextInput.AlignVCenter
+
+                            // Update the factFlightSpeed text when the user edits the TextInput
+                            onEditingFinished: {
+                                factAngle.text = labelAngle.text;
+                                angleSlider.value = parseFloat(labelAngle.text);
+                            }
+                        }
                     }
                 }
-            }
 
-            // Row for turnaround setting
-            RowLayout {
-                width: parent.width
-                spacing: ScreenTools.defaultFontPixelWidth * 2
-                QGCLabel {
-                    text: qsTr("Turnaround Dist")
-                    font.family: ScreenTools.demiboldFontFamily
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.fillWidth: true
-                }
-                FactTextField {
-                    fact: polygonItem.turnAroundDistance
-                    showUnits: true
-                    showHelp: false
-                    width: ScreenTools.isMobile ? 30 : 60  // Ajuste a largura
-                    height: ScreenTools.isMobile ? 20 : 30  // Ajuste a altura
-                    Layout.alignment: Qt.AlignRight
-                }
-            }
+                // Row for spacing setting
+                RowLayout {
+                    width: parent.width
+                    spacing: ScreenTools.defaultFontPixelWidth * 2
 
-             // Row for turnaround adjustment
-            RowLayout {
-                width: parent.width * 1.5
-                spacing: ScreenTools.defaultFontPixelWidth * 2
-                anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
+                    QGCLabel {
+                        text: qsTr("Spacing")
+                        font.family: ScreenTools.demiboldFontFamily
+                        Layout.alignment: Qt.AlignLeft
+                        Layout.fillWidth: true
+                    }
 
-                QGCSlider {
-                    id: turnAround
-                    property bool _loadComplete: false
-                    from: 0
-                    to: 19
-                    stepSize: 0.5
-                    width: parent.width - 30  // Ajuste a largura do slider
-
-                    onValueChanged: {
-                        polygonItem.turnAroundDistance.value = value;
+                    FactTextField {
+                        id: factSpacing
+                        visible: false
+                        fact: polygonItem.cameraCalc.adjustedFootprintSide
+                        showUnits: true
+                        showHelp: false
+                        width: ScreenTools.isMobile ? 60 : 60  // Ajuste a largura
+                        height: ScreenTools.isMobile ? 30 : 30  // Ajuste a altura
+                        Layout.alignment: Qt.AlignRight
+                        onTextChanged: {
+                            labelSpacing.text = factSpacing.text;
+                            spacingSlider.value = factSpacing.fact.value;
+                        }
                     }
                 }
-            }
 
-            RowLayout {
+                // Row for spacing adjustment
+                RowLayout {
+                    width: parent.width
+                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
+                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
+
+                    QGCSlider {
+                        id: spacingSlider
+                        property bool _loadComplete: false
+                        from: 5
+                        to: 12
+                        stepSize: 0.5
+                        width: _rightPanelWidth - 30  // Ajuste a largura do slider
+
+                        onValueChanged: {
+                            polygonItem.cameraCalc.adjustedFootprintSide.value = value;
+                        }
+                    }
+
+                    Rectangle {
+                        width: 40
+                        height: 20
+                        color: "#f0f0f0"  // Light grey background
+                        border.color: "#d0d0d0"
+                        border.width: 1
+                        radius: 5
+                        Layout.alignment: Qt.AlignRight
+
+                        TextInput {
+                            id: labelSpacing
+                            text: factSpacing.text
+                            anchors.centerIn: parent
+                            color: "#333333"
+                            font.pixelSize: 12
+                            horizontalAlignment: TextInput.AlignHCenter
+                            verticalAlignment: TextInput.AlignVCenter
+
+                            // Update the factFlightSpeed text when the user edits the TextInput
+                            onEditingFinished: {
+                                factSpacing.text = labelSpacing.text;
+                                spacingSlider.value = parseFloat(labelSpacing.text);
+                            }
+                        }
+                    }
+                }
+
+                // Row for turnaround setting
+                RowLayout {
+                    width: parent.width
+                    spacing: ScreenTools.defaultFontPixelWidth * 2
+
+                    QGCLabel {
+                        text: qsTr("Turnaround Dist")
+                        font.family: ScreenTools.demiboldFontFamily
+                        Layout.alignment: Qt.AlignLeft
+                        Layout.fillWidth: true
+                    }
+                }
+
+                // Row for turnaround adjustment
+                RowLayout {
+                    width: parent.width
+                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
+                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
+
+                    QGCSlider {
+                        id: turnAroundSlider
+                        property bool _loadComplete: false
+                        from: 0
+                        to: 19
+                        stepSize: 0.5
+                        width: parent.width - 30  // Ajuste a largura do slider
+
+                        onValueChanged: {
+                            polygonItem.turnAroundDistance.value = value;
+                        }
+                    }
+
+                    FactTextField {
+                        id: factTurnaround
+                        visible: false
+                        fact: polygonItem.turnAroundDistance
+                        Layout.alignment: Qt.AlignRight
+                        onTextChanged: {
+                            labelTurnaround.text = factTurnaround.text;
+                            turnAroundSlider.value = factTurnaround.fact.value;
+                        }
+                    }
+
+                    Rectangle {
+                        width: 40
+                        height: 20
+                        color: "#f0f0f0"  // Light grey background
+                        border.color: "#d0d0d0"
+                        border.width: 1
+                        radius: 5
+                        Layout.alignment: Qt.AlignRight
+
+                        TextInput {
+                            id: labelTurnaround
+                            text: factTurnaround.text
+                            anchors.centerIn: parent
+                            color: "#333333"
+                            font.pixelSize: 12
+                            horizontalAlignment: TextInput.AlignHCenter
+                            verticalAlignment: TextInput.AlignVCenter
+
+                            // Update the factFlightSpeed text when the user edits the TextInput
+                            onEditingFinished: {
+                                factTurnaround.text = labelTurnaround.text;
+                                turnAroundSlider.value = parseFloat(labelTurnaround.text);
+                            }
+                        }
+                    }
+                }
+
+                RowLayout {
                     width: parent.width
                     spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 13.5 : ScreenTools.defaultFontPixelWidth * 20
                     QGCLabel {
                         text: qsTr("Speed")
                         font.family: ScreenTools.demiboldFontFamily
                         Layout.alignment: Qt.AlignLeft
-                        //anchors.verticalCenter: parent.verticalCenter
                         Layout.fillWidth: true
-                        //anchors.topMargin: 1 // Adjust this value to move the text lower
                     }
-
-                    FactTextField {
-                    //fact: polygonItem.turnAroundDistance
-                    showUnits: true
-                    showHelp: false
-                    width: ScreenTools.isMobile ? 30 : 60  // Ajuste a largura
-                    height: ScreenTools.isMobile ? 20 : 30  // Ajuste a altura
-                    Layout.alignment: Qt.AlignRight
-                }
-
                 }
 
                 //Row for speed settings
                 RowLayout {
-                    width: parent.width * 1.5
+                    width: parent.width
                     spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
                     anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
 
                     QGCSlider {
-                        id: speedSlider
+                        id: flightSpeedSlider
                         property bool _loadComplete: false
                         from: 0
                         to: 7
                         stepSize: 0.5
                         width: _rightPanelWidth - 30
+                        value: factFlightSpeed.fact.value
 
-                        /*Component.onCompleted: {
-                            QGroundControl.settingsManager.appSettings.batteryPercentRemainingAnnounce.value = 0;
-                        }*/
+                        onValueChanged: {
+                            factFlightSpeed.fact.value = value;
+                        }
+                    }
 
-                        onValueChanged:   {
-                        // Define the command parameters
-                        var command = 178; // Command ID for changing speed
-                        var speedType = 1; // 1 for ground speed
-                        var speed = 10.0; // Target speed in m/s
-                        var throttle = -1; // Throttle setting (not used, set to -1)
-                        var relative = 0; // Absolute or relative (not used, set to 0)
+                    Rectangle {
+                        width: 40
+                        height: 20
+                        color: "#f0f0f0"  // Light grey background
+                        border.color: "#d0d0d0"
+                        border.width: 1
+                        radius: 5
+                        Layout.alignment: Qt.AlignRight
 
-                        // Send the command to the active vehicle
-                        _activeVehicle.sendCommand(command, speedType, value, throttle, relative);
-                        //We send the value
-                         QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed = value;
+                        TextInput {
+                            id: labelSpeed
+                            text: factFlightSpeed.text
+                            anchors.centerIn: parent
+                            color: "#333333"
+                            font.pixelSize: 12
+                            horizontalAlignment: TextInput.AlignHCenter
+                            verticalAlignment: TextInput.AlignVCenter
+
+                            // Update the factFlightSpeed text when the user edits the TextInput
+                            onEditingFinished: {
+                                factFlightSpeed.text = labelSpeed.text;
+                                flightSpeedSlider.value = parseFloat(labelSpeed.text);
+                            }
+                        }
+                    }
+
+                    FactTextField {
+                        id: factFlightSpeed
+                        fact: _missionController.visualItems.get(0).speedSection.flightSpeed
+                        visible: false
+                        enabled: flightSpeedCheckBox.checked
+                        onTextChanged: {
+                            labelSpeed.text = factFlightSpeed.text;
+                            flightSpeedSlider.value = factFlightSpeed.fact.value;
                         }
                     }
                 }
 
-                Row {
-                    visible: bar.currentIndex == 0
-                    width: parent.width
-                    Layout.topMargin: _margin * 1
-                    spacing: ScreenTools.defaultFontPixelWidth * 1.5
-                    // Button to rotate entry point
-                    QGCButton {
-                        background: Rectangle {
-                        color: "#ff4800"  
-                        radius: 14  
-                        border.color: "white"  
-                        anchors.fill: parent  
-                        }
-                        width: _rightPanelWidth - 36
-                        height: ScreenTools.isMobile ? 28 : 28
-                        text: qsTr("Rotate entry point")
-                        //anchors.horizontalCenter: parent.horizontalCenter
-                        onClicked: polygonItem.rotateEntryPoint()
-                    }
+                // Button to rotate entry point
+                QGCButton {
+                    visible: false // TODO RENDER VISIBILITY AGAIN
+                    text: qsTr("Rotate entry point")
+                    onClicked: polygonItem.rotateEntryPoint()
                 }
 
                 Row {
@@ -678,6 +732,7 @@ Rectangle {
             }
         }
     }
+
 
     // Column for mission start confirmation
     Column {
