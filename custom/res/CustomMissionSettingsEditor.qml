@@ -585,7 +585,7 @@ Rectangle {
             FactTextField {
                 id:                factFlightSpeed
                 fact:               _missionController.visualItems.get(0).speedSection.flightSpeed
-                visible:            truegit add
+                visible:            true
                 enabled:            flightSpeedCheckBox.checked
             }
                                 
