@@ -41,7 +41,7 @@ Map {
     property var    _activeVehicle:             QGroundControl.multiVehicleManager.activeVehicle
     property var    _activeVehicleCoordinate:   _activeVehicle ? _activeVehicle.coordinate : QtPositioning.coordinate()
     property real   _heading:               _activeVehicle   ? _activeVehicle.heading.rawValue : 0
-    bearing : _heading ? _heading : 90
+    //bearing : _heading ? _heading : 90
     // MAP ORIENTATION FOLLOWING THE VEHICLE
     
     function setVisibleRegion(region) {
