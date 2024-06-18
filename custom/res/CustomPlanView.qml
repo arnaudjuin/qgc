@@ -27,6 +27,7 @@ import QGroundControl.ShapeFileHelper
 import Qt.labs.folderlistmodel 2.1
 
 Item {
+    id: _root
 
     property bool planControlColapsed: false
 
@@ -34,7 +35,7 @@ Item {
     readonly property real  _margin:                    ScreenTools.defaultFontPixelHeight * 0.5
     readonly property real  _toolsMargin:               ScreenTools.defaultFontPixelWidth * 0.75
     readonly property real  _radius:                    ScreenTools.defaultFontPixelWidth  * 0.5
-    readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 34 :  ScreenTools.defaultFontPixelWidth * 50
+    readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 13) :  500
     readonly property var   _defaultVehicleCoordinate:  QtPositioning.coordinate(37.803784, -122.462276)
     readonly property bool  _waypointsOnlyMode:         QGroundControl.corePlugin.options.missionWaypointsOnly
 
@@ -46,11 +47,11 @@ Item {
     property bool   _lightWidgetBorders:                editorMap.isSatelliteMap
     property bool   _addROIOnClick:                     false
     property bool   _singleComplexItem:                 _missionController.complexMissionItemNames.length === 1
-    property int    _editingLayer:                      0
-    property int    _toolStripBottom:                   0
+    property int    _editingLayer:                      bar.currentIndex ? _layers[bar.currentIndex] : _layerMission
+    property int    _toolStripBottom:                   toolStrip.height + toolStrip.y
     property var    _appSettings:                       QGroundControl.settingsManager.appSettings
     property var    _planViewSettings:                  QGroundControl.settingsManager.planViewSettings
-    property bool   _pcdromptForPlanUsageShowing:         false
+    property bool   _promptForPlanUsageShowing:         false
     property bool   _addWaypointOnClick:                false
     property bool   _addWaypointOnClickSpray:          false
     readonly property var       _layers:                [_layerMission, _layerGeoFence, _layerRallyPoints]
@@ -85,7 +86,9 @@ Item {
         if(visible) {
             editorMap.zoomLevel = QGroundControl.flightMapZoom
             editorMap.center    = QGroundControl.flightMapPosition
-
+            if (!_planMasterController.containsItems) {
+                toolStrip.simulateClick(toolStrip.fileButtonIndex)
+            }
         }
     }
 
@@ -329,7 +332,7 @@ Item {
         id:             panel
         anchors.left:   parent.left
         anchors.right:  parent.right
-        anchors.top:    planToolBar.bottom
+        anchors.top:    parent.top
         anchors.bottom: parent.bottom
 
         FlightMap {
@@ -343,7 +346,10 @@ Item {
             zoomLevel:                  QGroundControl.flightMapZoom
             center:                     QGroundControl.flightMapPosition
 
-            property real _leftToolWidth:       0
+            // This is the center rectangle of the map which is not obscured by tools
+            property rect centerViewport:   Qt.rect(_leftToolWidth + _margin,  _margin, editorMap.width - _leftToolWidth - _rightToolWidth - (_margin * 2), (terrainStatus.visible ? terrainStatus.y : height - _margin) - _margin)
+
+            property real _leftToolWidth:       toolStrip.x + toolStrip.width
             property real _rightToolWidth:      rightPanel.width + rightPanel.anchors.rightMargin
             property real _nonInteractiveOpacity:  0.5
 
@@ -360,29 +366,49 @@ Item {
             }
 
             onMapClicked: (mouse) => {
-            // Take focus to close any previous editing
-            editorMap.focus = true
-            var coordinate = editorMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
-            coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
-            coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
-            coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
-                if (_addWaypointOnClick) {
-                    insertSimpleItemAfterCurrentTravel(coordinate)
-                }
-            }
-                          
+                              // Take focus to close any previous editing
+                              editorMap.focus = true
+                              var coordinate = editorMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
+                              coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
+                              coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
+                              coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
+
+                              switch (_editingLayer) {
+                                  case _layerMission:
+                                  if (_addWaypointOnClick) {
+                                      insertSimpleItemAfterCurrentTravel(coordinate)
+                                  }
+                                  if (_addWaypointOnClickSpray) {
+                                      insertSimpleItemAfterCurrentSpray(coordinate)
+                                  }
+
+                                  else if (_addROIOnClick) {
+                                      insertROIAfterCurrent(coordinate)
+                                      _addROIOnClick = false
+                                  }
+
+                                  break
+                                  case _layerRallyPoints:
+                                  if (_rallyPointController.supported && addWaypointRallyPointAction.checked) {
+                                      _rallyPointController.addPoint(coordinate)
+                                  }
+                                  break
+                              }
+                          }
 
             // Add the mission item visuals to the map
             Repeater {
                 model: _missionController.visualItems
                 delegate: MissionItemMapVisual {
                     map:         editorMap
+                    opacity:     _editingLayer == _layerMission ? 1 : editorMap._nonInteractiveOpacity
                     interactive: true
                     vehicle:     _planMasterController.controllerVehicle
 
                     onClicked:(sequenceNumber) => { _missionController.setCurrentPlanViewSeqNum(sequenceNumber, false) }
                 }
             }
+
 
             // Add lines between waypoints
             MissionLineView {
@@ -391,7 +417,7 @@ Item {
             }
             // Direction arrows in waypoint lines
             MapItemView {
-                model:  _missionController.directionArrows 
+                model: _editingLayer == _layerMission ? _missionController.directionArrows : undefined
 
                 delegate: MapLineArrow {
                     fromCoord:      object ? object.coordinate1 : undefined
@@ -400,7 +426,7 @@ Item {
                     z:              QGroundControl.zOrderWaypointLines + 1
                 }
             }
-    
+
             // Incomplete segment lines
             MapItemView {
                 model: _missionController.incompleteComplexItemLines
@@ -410,6 +436,7 @@ Item {
                     line.width: 1
                     line.color: "red"
                     z:          QGroundControl.zOrderWaypointLines
+                    opacity:    _editingLayer == _layerMission ? 1 : editorMap._nonInteractiveOpacity
                 }
             }
 
@@ -419,7 +446,7 @@ Item {
                 anchorPoint.x:  sourceItem.width / 2
                 anchorPoint.y:  sourceItem.height / 2
                 z:              QGroundControl.zOrderWaypointLines + 1
-                visible:        true
+                visible:        _editingLayer == _layerMission
 
                 sourceItem: SplitIndicator {
                     onClicked:  _missionController.insertSimpleMissionItem(splitSegmentItem.coordinate,
@@ -467,10 +494,74 @@ Item {
                 interactive:            true
                 homePosition:           _missionController.plannedHomePosition
                 planView:               true
+                opacity:                _editingLayer != _layerGeoFence ? editorMap._nonInteractiveOpacity : 1
+            }
+
+            RallyPointMapVisuals {
+                map:                    editorMap
+                myRallyPointController: _rallyPointController
+                interactive:            true
+                planView:               true
+                opacity:                _editingLayer != _layerRallyPoints ? editorMap._nonInteractiveOpacity : 1
             }
         }
 
         //-----------------------------------------------------------
+        // Left tool strip
+        ToolStrip {
+            visible:            false
+            id:                 toolStrip
+            anchors.margins:    _toolsMargin
+            anchors.left:       parent.left
+            anchors.top:        parent.top
+            z:                  QGroundControl.zOrderWidgets
+            maxHeight:          parent.height - toolStrip.y
+            title:              qsTr("Plan")
+
+            readonly property int flyButtonIndex:       0
+            readonly property int fileButtonIndex:      1
+            readonly property int takeoffButtonIndex:   2
+            readonly property int waypointButtonIndex:  3
+            readonly property int roiButtonIndex:       4
+            readonly property int patternButtonIndex:   5
+            readonly property int landButtonIndex:      6
+            readonly property int centerButtonIndex:    7
+
+            property bool _isRallyLayer:    _editingLayer == _layerRallyPoints
+            property bool _isMissionLayer:  _editingLayer == _layerMission
+
+            ToolStripActionList {
+                id: toolStripActionList
+                model: [
+                    ToolStripAction {
+                        text:                   qsTr("File")
+                        enabled:                !_planMasterController.syncInProgress
+                        visible:                false
+                        showAlternateIcon:      _planMasterController.dirty
+                        iconSource:             "/qmlimages/MapSync.svg"
+                        alternateIconSource:    "/qmlimages/MapSyncChanged.svg"
+                        dropPanelComponent:     syncDropPanel
+                    },
+                    ToolStripAction {
+                        text:               qsTr("Center")
+                        iconSource:         "/qmlimages/MapCenter.svg"
+                        enabled:            true
+                        visible:            false
+                        dropPanelComponent: centerMapDropPanel
+                    }
+                ]
+            }
+
+            model: toolStripActionList.model
+
+            function allAddClickBoolsOff() {
+                _addROIOnClick =        false
+                addWaypointRallyPointAction.checked = false
+            }
+
+            onDropped: allAddClickBoolsOff()
+        }
+
 
         Rectangle {
             height: parent.height
@@ -517,6 +608,55 @@ Item {
                 }
             }
         }
+    
+
+        
+
+        QGCLabel {
+            // Elevation provider notice on top of terrain plot
+            readonly property string _licenseString: QGroundControl.elevationProviderNotice
+
+            id:                         licenseLabel
+            visible:                    terrainStatus.visible && _licenseString !== ""
+            anchors.bottom:             terrainStatus.top
+            anchors.horizontalCenter:   terrainStatus.horizontalCenter
+            anchors.bottomMargin:       ScreenTools.defaultFontPixelWidth * 0.5
+            font.pointSize:             ScreenTools.smallFontPointSize
+            text:                       qsTr("Powered by %1").arg(_licenseString)
+        }
+
+        TerrainStatus {
+            id:                 terrainStatus
+            anchors.margins:    _toolsMargin
+            anchors.leftMargin: 0
+            anchors.left:       mapScale.left
+            anchors.right:      rightPanel.left
+            anchors.bottom:     parent.bottom
+            height:             ScreenTools.defaultFontPixelHeight * 7
+            missionController:  _missionController
+            visible:           false
+
+            onSetCurrentSeqNum: _missionController.setCurrentPlanViewSeqNum(seqNum, true)
+
+            property bool _internalVisible: _planViewSettings.showMissionItemStatus.rawValue
+
+            function toggleVisible() {
+                _internalVisible = !_internalVisible
+                _planViewSettings.showMissionItemStatus.rawValue = _internalVisible
+            }
+        }
+
+        MapScale {
+            id:                     mapScale
+            anchors.margins:        _toolsMargin
+            anchors.bottom:         terrainStatus.visible ? terrainStatus.top : parent.bottom
+            anchors.left:           toolStrip.y + toolStrip.height + _toolsMargin > mapScale.y ? toolStrip.right: parent.left
+            mapControl:             editorMap
+            buttonsOnLeft:          true
+            terrainButtonVisible:   _editingLayer === _layerMission
+            terrainButtonChecked:   terrainStatus.visible
+            onTerrainButtonClicked: terrainStatus.toggleVisible()
+        }
     }
 
     function showLoadFromFileOverwritePrompt(title) {
@@ -549,8 +689,441 @@ Item {
                                      function() { _planMasterController.removeAllFromVehicle(); _missionController.setCurrentPlanViewSeqNum(0, true) })
     }
 
+    //- ToolStrip DropPanel Components
+
+    Component {
+        id: centerMapDropPanel
+
+        CenterMapDropPanel {
+            map:            editorMap
+            fitFunctions:   mapFitFunctions
+        }
+    }
+
+    Component {
+        id: patternDropPanel
+
+        ColumnLayout {
+            spacing:    ScreenTools.defaultFontPixelWidth * 0.5
+
+            QGCLabel { text: qsTr("Create complex pattern:") }
+
+            Repeater {
+                model: _missionController.complexMissionItemNames
+
+                QGCButton {
+                    text:               modelData
+                    Layout.fillWidth:   true
+
+                    onClicked: {
+                        insertComplexItemAfterCurrent(modelData)
+                        dropPanel.hide()
+                    }
+                }
+            }
+        } // Column
+    }
+
+    function downloadClicked(title) {
+        if (_planMasterController.dirty) {
+            mainWindow.showMessageDialog(title,
+                                         qsTr("You have unsaved/unsent changes. Loading from the Vehicle will lose these changes. Are you sure you want to load from the Vehicle?"),
+                                         Dialog.Yes | Dialog.Cancel,
+                                         function() { _planMasterController.loadFromVehicle() })
+        } else {
+            _planMasterController.loadFromVehicle()
+        }
+    }
+    Component {
+        id: syncDropPanelSave
+
+        ColumnLayout {
+            id:         columnHolder
+            spacing:    _margin
+
+            SectionHeader {
+                id:                 storageSection
+                Layout.fillWidth:   true
+                text:               qsTr("Storage")
+            }
+
+            GridLayout {
+                columns:            3
+                rowSpacing:         _margin
+                columnSpacing:      ScreenTools.defaultFontPixelWidth
+                visible:            storageSection.visible
+
+                /*                 QGCButton {
+                    text:               qsTr("New...")
+                    Layout.fillWidth:   true
+                    onClicked:  {
+                        dropPanelSave.hide()
+                                                    createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
+                            //mainWindow.showComponentDialog(removeAllPromptDialog, qsTr("New Plan"), mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.No)
+
+
+                    }
+                } */
+
+                QGCButton {
+                    text:               qsTr("Open...")
+                    Layout.fillWidth:   true
+                    enabled:            !_planMasterController.syncInProgress
+                    onClicked: {
+                        dropPanelSave.hide()
+                        if (_planMasterController.dirty) {
+                            showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
+                        } else {
+                            _planMasterController.loadFromSelectedFile()
+                        }
+                    }
+                }
+
+                QGCButton {
+                    text:               qsTr("Save")
+                    Layout.fillWidth:   true
+                    enabled:            !_planMasterController.syncInProgress
+                    onClicked: {
+                        dropPanelSave.hide()
+                        if(_planMasterController.currentPlanFile !== "") {
+                            _planMasterController.saveToCurrent()
+                        } else {
+                            _planMasterController.saveToSelectedFile()
+                        }
+                    }
+                }
+
+                QGCButton {
+                    text:               qsTr("Save As...")
+                    Layout.fillWidth:   true
+                    enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
+                    onClicked: {
+                        dropPanel.hide()
+                        _planMasterController.saveToSelectedFile()
+                    }
+                }
+
+                QGCButton {
+                    Layout.columnSpan:  3
+                    Layout.fillWidth:   true
+                    text:               qsTr("Save Mission Waypoints As KML...")
+                    enabled:            !_planMasterController.syncInProgress && _visualItems.count > 1
+                    onClicked: {
+                        // First point does not count
+                        if (_visualItems.count < 2) {
+                            mainWindow.showMessageDialog(qsTr("KML"), qsTr("You need at least one item to create a KML."))
+                            return
+                        }
+                        dropPanel.hide()
+                        _planMasterController.saveKmlToSelectedFile()
+                    }
+                }
+            }
+
+            
+        }
+    }
+    DropPanel {
+        id:         dropPanelLoad
+        toolStrip:  _root
+    }
+    DropPanel {
+        id:         dropPanelSave
+        toolStrip:  _root
+    }
+
+    Component {
+        id: syncDropPanelLoad
+
+        ColumnLayout {
+            id:         columnHolder
+            spacing:    _margin
+
+            property string _overwriteText: (_editingLayer == _layerMission) ? qsTr("Mission overwrite") : ((_editingLayer == _layerGeoFence) ? qsTr("GeoFence overwrite") : qsTr("Rally Points overwrite"))
+
+            QGCLabel {
+                id:                 unsavedChangedLabel
+                Layout.fillWidth:   true
+                wrapMode:           Text.WordWrap
+                text:               activeVehicle ?
+                                        qsTr("You have unsaved changes. You should upload to your vehicle, or save to a file.") :
+                                        qsTr("You have unsaved changes.")
+                visible:            _planMasterController.dirty
+            }
+
+
+            SectionHeader {
+                id:                 createSection
+                Layout.fillWidth:   true
+                text:               qsTr("Load Missions")
+                showSpacer:         false
+            }
 
 
 
 
+            
+            GridView {
+                width: 600
+                height: 300
+
+                model: FolderListModel {
+                    id: folderModel
+                    folder:  QGroundControl.settingsManager.appSettings.missionSavePath
+                    nameFilters: ["*"] // Display all files; you can specify filters as needed
+                }
+
+                delegate: Item {
+
+                    Rectangle {
+                        id : button
+                        width:  ScreenTools.defaultFontPixelHeight * 5
+                        height: planCreatorNameLabel.y + planCreatorNameLabel.height
+                        color:  button.pressed || button.highlighted ? qgcPal.buttonHighlight : qgcPal.button
+
+                        property bool highlighted: mouseArea.containsMouse
+                        property bool pressed:     mouseArea.pressed
+                        anchors.margins: 10
+
+
+                        Image {
+                            id:                 planCreatorImage
+                            anchors.left:       parent.left
+                            anchors.right:      parent.right
+                            source:             "/qmlimages/MapSyncBlack.svg"
+                            sourceSize.width:   parent.width
+                            fillMode:           Image.PreserveAspectFit
+                            mipmap:             true
+                        }
+
+                        QGCLabel {
+                            id:                     planCreatorNameLabel
+                            anchors.top:            planCreatorImage.bottom
+                            anchors.left:           parent.left
+                            anchors.right:          parent.right
+                            horizontalAlignment:    Text.AlignHCenter
+                            text:                   model.fileName
+                            color:                  white //button.pressed || button.highlighted ? qgcPal.buttonHighlightText : qgcPal.buttonText
+                        }
+
+                        QGCMouseArea {
+                            id:                 mouseArea
+                            anchors.fill:       parent
+                            hoverEnabled:       true
+                            preventStealing:    true
+                            onClicked:          {
+                                dropPanelLoad.hide()
+                                _planMasterController.loadFromFile(model.filePath)
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: syncDropPanel
+
+        ColumnLayout {
+            id:         columnHolder
+            spacing:    _margin
+
+            property string _overwriteText: qsTr("Plan overwrite")
+
+            QGCLabel {
+                id:                 unsavedChangedLabel
+                Layout.fillWidth:   true
+                wrapMode:           Text.WordWrap
+                text:               globals.activeVehicle ?
+                                        qsTr("You have unsaved changes. You should upload to your vehicle, or save to a file.") :
+                                        qsTr("You have unsaved changes.")
+                visible:            _planMasterController.dirty
+            }
+
+            SectionHeader {
+                id:                 createSection
+                Layout.fillWidth:   true
+                text:               qsTr("Create Plan")
+                showSpacer:         false
+            }
+
+            GridLayout {
+                columns:            2
+                columnSpacing:      _margin
+                rowSpacing:         _margin
+                Layout.fillWidth:   true
+                visible:            createSection.visible
+
+                Repeater {
+                    model: _planMasterController.planCreators
+
+                    Rectangle {
+                        id:     button
+                        width:  ScreenTools.defaultFontPixelHeight * 7
+                        height: planCreatorNameLabel.y + planCreatorNameLabel.height
+                        color:  button.pressed || button.highlighted ? qgcPal.buttonHighlight : qgcPal.button
+
+                        property bool highlighted: mouseArea.containsMouse
+                        property bool pressed:     mouseArea.pressed
+
+                        Image {
+                            id:                 planCreatorImage
+                            anchors.left:       parent.left
+                            anchors.right:      parent.right
+                            source:             object.imageResource
+                            sourceSize.width:   width
+                            fillMode:           Image.PreserveAspectFit
+                            mipmap:             true
+                        }
+
+                        QGCLabel {
+                            id:                     planCreatorNameLabel
+                            anchors.top:            planCreatorImage.bottom
+                            anchors.left:           parent.left
+                            anchors.right:          parent.right
+                            horizontalAlignment:    Text.AlignHCenter
+                            text:                   object.name
+                            color:                  button.pressed || button.highlighted ? qgcPal.buttonHighlightText : qgcPal.buttonText
+                        }
+
+                        QGCMouseArea {
+                            id:                 mouseArea
+                            anchors.fill:       parent
+                            hoverEnabled:       true
+                            preventStealing:    true
+                            onClicked:          {
+                                if (_planMasterController.containsItems) {
+                                    createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
+                                } else {
+                                    object.createPlan(_mapCenter())
+                                }
+                                dropPanel.hide()
+                            }
+
+                            function _mapCenter() {
+                                var centerPoint = Qt.point(editorMap.centerViewport.left + (editorMap.centerViewport.width / 2), editorMap.centerViewport.top + (editorMap.centerViewport.height / 2))
+                                return editorMap.toCoordinate(centerPoint, false /* clipToViewPort */)
+                            }
+                        }
+                    }
+                }
+            }
+
+            SectionHeader {
+                id:                 storageSection
+                Layout.fillWidth:   true
+                text:               qsTr("Storage")
+            }
+
+            GridLayout {
+                columns:            3
+                rowSpacing:         _margin
+                columnSpacing:      ScreenTools.defaultFontPixelWidth
+                visible:            storageSection.visible
+
+                QGCButton {
+                    text:               qsTr("Open...")
+                    Layout.fillWidth:   true
+                    enabled:            !_planMasterController.syncInProgress
+                    onClicked: {
+                        dropPanel.hide()
+                        if (_planMasterController.dirty) {
+                            showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
+                        } else {
+                            _planMasterController.loadFromSelectedFile()
+                        }
+                    }
+                }
+
+                QGCButton {
+                    text:               qsTr("Save")
+                    Layout.fillWidth:   true
+                    enabled:            !_planMasterController.syncInProgress && _planMasterController.currentPlanFile !== ""
+                    onClicked: {
+                        dropPanel.hide()
+                        if(_planMasterController.currentPlanFile !== "") {
+                            _planMasterController.saveToCurrent()
+                        } else {
+                            _planMasterController.saveToSelectedFile()
+                        }
+                    }
+                }
+
+                QGCButton {
+                    text:               qsTr("Save As...")
+                    Layout.fillWidth:   true
+                    enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
+                    onClicked: {
+                        dropPanel.hide()
+                        _planMasterController.saveToSelectedFile()
+                    }
+                }
+
+                QGCButton {
+                    Layout.columnSpan:  3
+                    Layout.fillWidth:   true
+                    text:               qsTr("Save Mission Waypoints As KML...")
+                    enabled:            !_planMasterController.syncInProgress && _visualItems.count > 1
+                    onClicked: {
+                        // First point does not count
+                        if (_visualItems.count < 2) {
+                            mainWindow.showMessageDialog(qsTr("KML"), qsTr("You need at least one item to create a KML."))
+                            return
+                        }
+                        dropPanel.hide()
+                        _planMasterController.saveKmlToSelectedFile()
+                    }
+                }
+            }
+
+            SectionHeader {
+                id:                 vehicleSection
+                Layout.fillWidth:   true
+                text:               qsTr("Vehicle")
+            }
+
+            RowLayout {
+                Layout.fillWidth:   true
+                spacing:            _margin
+                visible:            vehicleSection.visible
+
+                QGCButton {
+                    text:               qsTr("Upload")
+                    Layout.fillWidth:   true
+                    enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress && _planMasterController.containsItems
+                    visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
+                    onClicked: {
+                        dropPanel.hide()
+                        _planMasterController.upload()
+                    }
+                }
+
+                QGCButton {
+                    text:               qsTr("Download")
+                    Layout.fillWidth:   true
+                    enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress
+                    visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
+
+                    onClicked: {
+                        dropPanel.hide()
+                        downloadClicked(columnHolder._overwriteText)
+                    }
+                }
+
+                QGCButton {
+                    text:               qsTr("Clear")
+                    Layout.fillWidth:   true
+                    Layout.columnSpan:  2
+                    enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress
+                    visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
+                    onClicked: {
+                        dropPanel.hide()
+                        clearButtonClicked()
+                    }
+                }
+            }
+        }
+    }
 }

@@ -163,20 +163,7 @@ Rectangle {
                     _addWaypointOnClick = false;
 
                     {
-                        // Check if the mission controller exists
-                        if (_missionController) {
-                            // Loop through all visual items in the mission controller
-                            for (var i = 0; i < _missionController.visualItems.count; i++) {
-                                // Check if the visual item has a surveyAreaPolygon and its traceMode is false
-                                if (_missionController.visualItems.get(i).surveyAreaPolygon && !_missionController.visualItems.get(i).surveyAreaPolygon.traceMode) {
-                                    // Remove the visual item
-                                    _missionController.removeVisualItem(i);
-                                    // Reset the polygonItem to null
-                                    polygonItem = null;
-                                }
-                            }
-                        }
-
+            
                         // Check if tracing has not been started yet
                         if (!isTraced) {
                             // Get the index of the last visual item

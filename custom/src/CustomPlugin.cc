@@ -371,3 +371,13 @@ bool CustomPlugin::mavlinkMessage(Vehicle* vehicle, LinkInterface* link, mavlink
 
     return true;
 }
+void CustomPlugin::setResumeState(bool state)
+{
+    _resumeState = state;
+    emit resumeStateChanged();
+}
+void CustomPlugin::setAutoState(bool state)
+{
+    _autoState = state;
+    emit autoStateChanged();
+}

@@ -65,19 +65,28 @@ public:
     QQmlApplicationEngine*  createQmlApplicationEngine      (QObject* parent) final;
     Q_PROPERTY(QString sprayPumpState READ sprayPumpState NOTIFY sprayPumpStateChanged);
     Q_PROPERTY(QString sprayNozzleState READ sprayNozzleState NOTIFY sprayNozzleStateChanged)
-
+    Q_PROPERTY(bool resumeState READ resumeState NOTIFY resumeStateChanged)
+    Q_PROPERTY(bool autoState READ autoState NOTIFY autoStateChanged)
     void                    setToolbox                      (QGCToolbox* toolbox);
 
     // Override mavlinkMessage to access mavlink traffic
     bool mavlinkMessage(Vehicle* vehicle, LinkInterface* link, mavlink_message_t message);
     QString sprayPumpState() const { return _sprayPumpState; }
     QString sprayNozzleState() const { return _sprayNozzleState; }
+    bool resumeState() const { return _resumeState; }
+    bool autoState() const { return _autoState; }
+    void setResumeState(const bool);
+    void setAutoState(const bool);
 
 signals:
     void sprayPumpStateChanged();
     void sprayNozzleStateChanged();
+    void resumeStateChanged();
+    void autoStateChanged();
 
 protected:
+    bool _resumeState = false;
+    bool _autoState = false;
     QString _sprayPumpState = QString("Pump");
     QString _sprayNozzleState = QString("Nozzle");
 
