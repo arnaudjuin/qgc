@@ -151,7 +151,13 @@ Rectangle {
             //Layout.leftMargin: _margin + 12
 
             // Trace button
-            RoundButton {
+            QGCButton {
+                background: Rectangle {
+                    color: "#ffffff"  
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
                 width: _rightPanelWidth - 36
                 height: ScreenTools.isMobile ? 28 : 28
                 id: buttonDraw
@@ -219,7 +225,13 @@ Rectangle {
             //spacing: ScreenTools.defaultFontPixelWidth * 1.5
             //Layout.leftMargin: _margin + 12
             
-            RoundButton {
+            QGCButton {
+                background: Rectangle {
+                    color: _addWaypointOnClick ? "#595757" : "#ffffff" // When clicked turns light grey
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
                 id: buttonTravel
                 width: _rightPanelWidth - 36
                 height: ScreenTools.isMobile ? 28 : 28
@@ -231,6 +243,7 @@ Rectangle {
                         _editTracing = false;
                     }
                     _addWaypointOnClick = !_addWaypointOnClick;
+                    buttonTravel.color = _addWaypointOnClick ? "#d3d3d3" : "#ffffff"; // Change background color
                 }
             }
         }
@@ -243,7 +256,13 @@ Rectangle {
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
 
             // Undo button
-            RoundButton {
+            QGCButton {
+                background: Rectangle {
+                    color: "#ffffff"  
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
                 width: ScreenTools.isMobile ?  80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
                 text: "Undo"
@@ -258,7 +277,13 @@ Rectangle {
             }
             
             // Clear button
-            RoundButton {
+            QGCButton {
+                background: Rectangle {
+                    color: "#ffffff"  
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
                 width: ScreenTools.isMobile ? 80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
                 text: "Clear"
@@ -305,7 +330,13 @@ Rectangle {
             
 
             // Load button
-            RoundButton {
+            QGCButton {
+                background: Rectangle {
+                    color: "#ffffff"  
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
                 width: ScreenTools.isMobile ? 80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
                 id: loadButton
@@ -317,7 +348,13 @@ Rectangle {
             }
 
             // Save button
-            RoundButton {
+            QGCButton {
+                background: Rectangle {
+                    color: "#ffffff"  
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
                 text: qsTr("Save")
                 width: ScreenTools.isMobile ? 80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
@@ -341,7 +378,13 @@ Rectangle {
             //Layout.leftMargin: _margin + 12
 
             // Start button
-            RoundButton {
+            QGCButton {
+                background: Rectangle {
+                    color: "#99ff8a"  
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
                 width: _rightPanelWidth - 36
                 height: ScreenTools.isMobile ? 28 : 28
                 text: "Start"
@@ -703,13 +746,28 @@ Rectangle {
                             flightSpeedSlider.value = factFlightSpeed.fact.value;
                         }
                     }
-                }
+                }   
 
                 // Button to rotate entry point
-                QGCButton {
-                    visible: false // TODO RENDER VISIBILITY AGAIN
-                    text: qsTr("Rotate entry point")
-                    onClicked: polygonItem.rotateEntryPoint()
+                Row {
+                    visible: bar.currentIndex == 0
+                    width: parent.width
+                    Layout.topMargin: _margin * 4
+                    Layout.leftMargin: _margin * 1
+                    spacing: ScreenTools.defaultFontPixelWidth * 1.5
+                    QGCButton {
+                        background: Rectangle {
+                        color: "#ff4800"
+                        radius: 14
+                        border.color: "white"
+                        anchors.fill: parent
+                        }
+                        width: _rightPanelWidth - 36
+                        height: ScreenTools.isMobile ? 28 : 28
+                        text: qsTr("Rotate entry point")
+                        //anchors.horizontalCenter: parent.horizontalCenter
+                        onClicked: polygonItem.rotateEntryPoint()
+                    }
                 }
 
                 Row {
