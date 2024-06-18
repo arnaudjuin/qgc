@@ -405,15 +405,14 @@ Rectangle {
         ScrollView {
             anchors.fill: parent
             contentWidth: width
-            clip: true
 
             ColumnLayout {
                 id: valuesColumn
-                //implicitHeight: 3000
+                implicitHeight: 50000
+                anchors.top: sep.bottom
 
                 visible: !_confirmationStart && !_textFieldSave && !loadChoice
                 spacing: _margin
-
                 // Row for angle setting
                 RowLayout {
                     width: parent.width
@@ -714,7 +713,7 @@ Rectangle {
                 }
 
                 Row {
-                    height: 50
+                    height: 500
                 }
             }
         }

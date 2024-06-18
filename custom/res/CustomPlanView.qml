@@ -373,35 +373,19 @@ Item {
                               coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
                               coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
 
-                              switch (_editingLayer) {
-                                  case _layerMission:
                                   if (_addWaypointOnClick) {
                                       insertSimpleItemAfterCurrentTravel(coordinate)
                                   }
-                                  if (_addWaypointOnClickSpray) {
-                                      insertSimpleItemAfterCurrentSpray(coordinate)
-                                  }
-
-                                  else if (_addROIOnClick) {
-                                      insertROIAfterCurrent(coordinate)
-                                      _addROIOnClick = false
-                                  }
-
-                                  break
-                                  case _layerRallyPoints:
-                                  if (_rallyPointController.supported && addWaypointRallyPointAction.checked) {
-                                      _rallyPointController.addPoint(coordinate)
-                                  }
-                                  break
+                                
                               }
-                          }
-
+                          
+    
             // Add the mission item visuals to the map
             Repeater {
                 model: _missionController.visualItems
                 delegate: MissionItemMapVisual {
                     map:         editorMap
-                    opacity:     _editingLayer == _layerMission ? 1 : editorMap._nonInteractiveOpacity
+                    opacity:     1
                     interactive: true
                     vehicle:     _planMasterController.controllerVehicle
 
@@ -417,7 +401,7 @@ Item {
             }
             // Direction arrows in waypoint lines
             MapItemView {
-                model: _editingLayer == _layerMission ? _missionController.directionArrows : undefined
+                model:  _missionController.directionArrows 
 
                 delegate: MapLineArrow {
                     fromCoord:      object ? object.coordinate1 : undefined
@@ -436,7 +420,7 @@ Item {
                     line.width: 1
                     line.color: "red"
                     z:          QGroundControl.zOrderWaypointLines
-                    opacity:    _editingLayer == _layerMission ? 1 : editorMap._nonInteractiveOpacity
+                    opacity:     1 
                 }
             }
 
@@ -446,7 +430,7 @@ Item {
                 anchorPoint.x:  sourceItem.width / 2
                 anchorPoint.y:  sourceItem.height / 2
                 z:              QGroundControl.zOrderWaypointLines + 1
-                visible:        _editingLayer == _layerMission
+                visible:        true
 
                 sourceItem: SplitIndicator {
                     onClicked:  _missionController.insertSimpleMissionItem(splitSegmentItem.coordinate,
@@ -494,7 +478,7 @@ Item {
                 interactive:            true
                 homePosition:           _missionController.plannedHomePosition
                 planView:               true
-                opacity:                _editingLayer != _layerGeoFence ? editorMap._nonInteractiveOpacity : 1
+                opacity:                1
             }
 
             RallyPointMapVisuals {
@@ -502,7 +486,7 @@ Item {
                 myRallyPointController: _rallyPointController
                 interactive:            true
                 planView:               true
-                opacity:                _editingLayer != _layerRallyPoints ? editorMap._nonInteractiveOpacity : 1
+                opacity:                1
             }
         }
 
@@ -653,7 +637,7 @@ Item {
             anchors.left:           toolStrip.y + toolStrip.height + _toolsMargin > mapScale.y ? toolStrip.right: parent.left
             mapControl:             editorMap
             buttonsOnLeft:          true
-            terrainButtonVisible:   _editingLayer === _layerMission
+            terrainButtonVisible:   true
             terrainButtonChecked:   terrainStatus.visible
             onTerrainButtonClicked: terrainStatus.toggleVisible()
         }
