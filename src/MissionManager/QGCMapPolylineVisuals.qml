@@ -358,6 +358,7 @@ Item {
                 onClicked:          kmlLoadDialog.openForLoad()
                 visible:            !mapPolyline.traceMode
             }
+
         }
     }
 

@@ -43,6 +43,7 @@ Item {
     property var    _savedVertices:             [ ]
     property bool   _savedCircleMode
     property bool   _isVertexBeingDragged:      false
+    property int    _lastVertexIndex:           -1
 
     property real _zorderDragHandle:    QGroundControl.zOrderMapItems + 3   // Highest to prevent splitting when items overlap
     property real _zorderSplitHandle:   QGroundControl.zOrderMapItems + 2
@@ -201,6 +202,9 @@ Item {
                 _instructionText = _polygonToolsText
                 _objMgrTraceVisuals.destroyObjects()
             }
+        }
+        onVertexAdded: {
+            _lastVertexIndex = mapPolygon.count - 1
         }
     }
 
@@ -627,9 +631,14 @@ Item {
                 onClicked:          kmlOrSHPLoadDialog.openForLoad()
             }
             QGCButton {
-                visible:            mapPolygon.traceMode
-                text:               qsTr("Undo vertice...")
-                onClicked:           mapPolygon.removeVertex(menu._removeVertexIndex)
+                visible:            mapPolygon.traceMode && mapPolygon.count > 3 
+                text:               qsTr("Remove last vertex")
+                onClicked: {
+                    if (mapPolygon.count > 0 && _lastVertexIndex >= 0) {
+                        mapPolygon.removeVertex(_lastVertexIndex)
+                        _lastVertexIndex = mapPolygon.count - 1
+                    }
+                }
             }
         }
     }
@@ -646,6 +655,7 @@ Item {
             onClicked: (mouse) => {
                 if (mouse.button === Qt.LeftButton && _root.interactive) {
                     mapPolygon.appendVertex(mapControl.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */))
+                    _lastVertexIndex = mapPolygon.count - 1
                 }
             }
         }
@@ -723,4 +733,3 @@ Item {
         }
     }
 }
-

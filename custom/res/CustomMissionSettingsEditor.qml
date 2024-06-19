@@ -152,16 +152,18 @@ Rectangle {
 
             // Trace button
             QGCButton {
-                background: Rectangle {
-                    color: "#ffffff"  
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
-                }
+
                 width: _rightPanelWidth - 36
                 height: ScreenTools.isMobile ? 28 : 28
                 id: buttonDraw
                 text: "Trace"
+                checked: _editTracing
+                               background: Rectangle {
+                    color: _editTracing ? "#595757" : "#ffffff" // When clicked turns light grey
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
                 onClicked: {
                     // Toggle the _editTracing property
                     _editTracing = !_editTracing;
@@ -235,7 +237,7 @@ Rectangle {
                 id: buttonTravel
                 width: _rightPanelWidth - 36
                 height: ScreenTools.isMobile ? 28 : 28
-                text: "Add wayopoint"
+                text: "Add waypoint"
                 checked: _addWaypointOnClick
                 onClicked: {
                     if (polygonItem) {
@@ -247,6 +249,28 @@ Rectangle {
                 }
             }
         }
+                Row {
+            visible: bar.currentIndex == 0
+            width: parent.width
+            //spacing: ScreenTools.defaultFontPixelWidth * 1.5
+            //Layout.leftMargin: _margin + 12
+            
+            QGCButton {
+                id: buttonsetwp
+                width: _rightPanelWidth - 36
+                height: ScreenTools.isMobile ? 28 : 28
+                text: "Set last waypoint as vehicle position"
+                onClicked: {
+                var currentIndex = _missionController.visualItems.count;
+                // Retrieve the last visual item as waypointItem
+                var  waypointItem= _missionController.visualItems.get(currentIndex - 1);
+                waypointItem.coordinate = _activeVehicle.coordinate
+
+                }
+            }
+        }
+
+
 
         // Row for mission buttons
         Row {
@@ -361,6 +385,10 @@ Rectangle {
                 Layout.fillWidth: true
                 enabled: !_planMasterController.syncInProgress
                 onClicked: {
+                                        if (polygonItem) {
+                        polygonItem.surveyAreaPolygon.traceMode = false;
+                        _editTracing = false;
+                    }
                     if (_planMasterController.currentPlanFile !== "") {
                         _planMasterController.saveToCurrent();
                     } else {
@@ -809,6 +837,10 @@ Rectangle {
                 text: "Yes"
                 Layout.fillWidth: true
                 onClicked: {
+                                        if (polygonItem) {
+                        polygonItem.surveyAreaPolygon.traceMode = false;
+                        _editTracing = false;
+                    }
                     _confirmationStart = false;
                     _planMasterController.upload();
                     mainWindow.showFlyView()
@@ -822,11 +854,15 @@ Rectangle {
             text: qsTr("Statistics")
         }
         Row {
-            QGCLabel {
-                text: qsTr("Trigger Distance")
-            }
-            // QGCLabel { text: polygonItem.cameraCalc.adjustedFootprintSide.valueString + " " + QGroundControl.appSettingsDistanceUnitsString }
-        }
+
+                    QGCLabel {
+                        visible:polygonItem
+                        text: qsTr("Survey Area:")
+                    }
+                    QGCLabel {
+                        visible: polygonItem
+                        QGCLabel { visible : polygonItem; text: QGroundControl.unitsConversion.squareMetersToAppSettingsAreaUnits(polygonItem.coveredArea/10000).toFixed(2) + " " +  "hA"}
+                    }        }
     }
 
     // Column for file load choice
