@@ -47,7 +47,7 @@ Item {
     property bool   _lightWidgetBorders:                editorMap.isSatelliteMap
     property bool   _addROIOnClick:                     false
     property bool   _singleComplexItem:                 _missionController.complexMissionItemNames.length === 1
-    property int    _editingLayer:                      bar.currentIndex ? _layers[bar.currentIndex] : _layerMission
+    property int    _editingLayer:                      0
     property int    _toolStripBottom:                   toolStrip.height + toolStrip.y
     property var    _appSettings:                       QGroundControl.settingsManager.appSettings
     property var    _planViewSettings:                  QGroundControl.settingsManager.planViewSettings
@@ -538,12 +538,7 @@ Item {
 
             model: toolStripActionList.model
 
-            function allAddClickBoolsOff() {
-                _addROIOnClick =        false
-                addWaypointRallyPointAction.checked = false
-            }
 
-            onDropped: allAddClickBoolsOff()
         }
 
 
@@ -568,31 +563,66 @@ Item {
             DeadMouseArea {
                 anchors.fill:   parent
             }
-
-            Column {
-                id:                 rightControls
-                spacing:            ScreenTools.defaultFontPixelHeight * 0.5
-                anchors.left:       parent.left
-                anchors.top:        parent.top
-            }
-            //-------------------------------------------------------
-            // Our Custem Item Editor
             Item {
                 id:                     missionItemEditor
                 anchors.left:           parent.left
                 anchors.right:          parent.right
-                anchors.top:            rightControls.bottom
+                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
                 anchors.bottom:         parent.bottom
-                visible:                true
+                anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
+                anchors.top:            parent.top
+                QGCListView {
+                    id:                 missionItemEditorListView
+                    anchors.fill:       parent
+                    spacing:            ScreenTools.defaultFontPixelHeight / 4
+                    orientation:        ListView.Vertical
+                    model:              _missionController.visualItems
+                    cacheBuffer:        Math.max(height * 2, 0)
+                    clip:               true
+                    currentIndex:       _missionController.currentPlanViewSeqNum
+                    highlightMoveDuration: 250
+                     //-- List Elements
+                    delegate: MissionItemEditor {
+                        map:            editorMap
+                        masterController:  _planMasterController
+                        missionItem:    object
+                        width:          missionItemEditorListView.width
+                        readOnly:       false
+                        onClicked: (sequenceNumber) => { _missionController.setCurrentPlanViewSeqNum(object.sequenceNumber, false) }
+                        onRemove: {
+                            var removeVIIndex = index
+                            _missionController.removeVisualItem(removeVIIndex)
+                            if (removeVIIndex >= _missionController.visualItems.count) {
+                                removeVIIndex--
+                            }
+                        }
+                        onSelectNextNotReadyItem:   selectNextNotReady()
+                    } 
+                }
+            }
+            //-------------------------------------------------------
+            // Our Custem Item Editor
+            Item {
+                id:                     missionSettingsItemEditor
+                anchors.left:           parent.left
+                anchors.right:          parent.right
+                anchors.bottom:         parent.bottom
+                anchors.top:            missionItemEditor.top
+                height:500
+
 
                 MissionSettingsEditor {
+                    visible:            true
                     id:                 editorLoader
                     _flightMap : editorMap
                     _masterControler    : _planMasterController
                 }
             }
+                        // Mission Item Editor
+
+
         }
-    
+      //-------------------------------------------------------
 
         
 
