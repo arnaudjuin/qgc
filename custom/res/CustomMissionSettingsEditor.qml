@@ -27,7 +27,7 @@ Rectangle {
     }
 
     // Set height based on whether the screen is mobile
-    height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 45 : ScreenTools.defaultFontPixelHeight * 50
+   // height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 45 : ScreenTools.defaultFontPixelHeight * 50
 
     // Background color and corner radius
     color: qgcPal.windowShadeDark

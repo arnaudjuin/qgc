@@ -543,15 +543,14 @@ Item {
 
 
         Rectangle {
-            height: parent.height
             id: rightPanel
             width: _rightPanelWidth - 30
             color: "grey"
+            height: parent.height
             opacity: 0.5
             //color: qgcPal.windowShadeDark
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.bottom: parent.bottom
             visible: true
         }
 
@@ -563,14 +562,31 @@ Item {
             DeadMouseArea {
                 anchors.fill:   parent
             }
+
+            //-------------------------------------------------------
+            // Our Custem Item Editor
+            Item {
+                id:                     missionSettingsItemEditor
+                anchors.left:           parent.left
+                anchors.right:          parent.right
+                anchors.top:            missionItemEditor.top
+                height:500
+
+
+                MissionSettingsEditor {
+                    visible:            true
+                    id:                 editorLoader
+                    _flightMap : editorMap
+                    _masterControler    : _planMasterController
+                }
+            }
+            //Scroll Area Items
             Item {
                 id:                     missionItemEditor
                 anchors.left:           parent.left
                 anchors.right:          parent.right
                 anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.bottom:         parent.bottom
                 anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.top:            parent.top
                 QGCListView {
                     id:                 missionItemEditorListView
                     anchors.fill:       parent
@@ -600,26 +616,6 @@ Item {
                     } 
                 }
             }
-            //-------------------------------------------------------
-            // Our Custem Item Editor
-            Item {
-                id:                     missionSettingsItemEditor
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                anchors.bottom:         parent.bottom
-                anchors.top:            missionItemEditor.top
-                height:500
-
-
-                MissionSettingsEditor {
-                    visible:            true
-                    id:                 editorLoader
-                    _flightMap : editorMap
-                    _masterControler    : _planMasterController
-                }
-            }
-                        // Mission Item Editor
-
 
         }
       //-------------------------------------------------------
