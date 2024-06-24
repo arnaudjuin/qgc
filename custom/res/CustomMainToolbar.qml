@@ -22,6 +22,7 @@ import QGroundControl.MultiVehicleManager
 import QGroundControl.ScreenTools
 import QGroundControl.Controllers
 import GlobalSignals 1.0
+import QGroundControl.FlightDisplay
 
 Rectangle {
     id:     _root
@@ -100,6 +101,20 @@ Rectangle {
             visible:            _activeVehicle && _communicationLost
         }
     }
+
+    /*RowLayout {
+        //visible: false
+        anchors.right: parent.right // Anchor the RowLayout to the right side of the parent
+        TelemetryValuesBar {
+            Layout.alignment:   Qt.AlignBottom
+            extraWidth:         instrumentPanel.extraValuesWidth
+        }
+
+        FlyViewInstrumentPanel {
+            id:         instrumentPanel
+            visible:    QGroundControl.corePlugin.options.flyView.showInstrumentPanel && _showSingleVehicleUI
+        }
+    }*/
 
     MainStatusIndicator {
         anchors.right:parent.right

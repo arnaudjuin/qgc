@@ -27,9 +27,8 @@ Item {
         id:         backgroundRect
         width:      control.width + extraWidth
         height:     control.height
-        color:      qgcPal.window
+        color:      "transparent"
         radius:     ScreenTools.defaultFontPixelWidth / 2
-        opacity:    0.75
     }
 
     //DeadMouseArea { anchors.fill: parent }

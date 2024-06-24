@@ -325,6 +325,7 @@ Rectangle {
                         for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
                             _missionController.removeVisualItem(i);
                         }
+                        _planMasterController.removeAllFromVehicle();
                         isTraced = false;
                         _missionController.setCurrentPlanViewSeqNum(0, true);
                     });
