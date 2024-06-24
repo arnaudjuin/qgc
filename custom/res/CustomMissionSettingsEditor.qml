@@ -313,12 +313,14 @@ Rectangle {
                 text: "Clear"
                 Layout.fillWidth: true
                 onClicked: {
+                    
                     mainWindow.showMessageDialog(qsTr("Clear"), qsTr("Are you sure you want to remove all mission items and clear the mission from the vehicle?"), Dialog.Yes | Dialog.Cancel, function () {
                         polygonItem = null;
                         _editTracing = false;
                         for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
                             _missionController.removeVisualItem(i);
                         }
+                        _planMasterController.removeAllFromVehicle();
                         isTraced = false;
                         _missionController.setCurrentPlanViewSeqNum(0, true);
                     });
