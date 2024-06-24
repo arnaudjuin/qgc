@@ -482,7 +482,7 @@ Item {
             confirmDialog.title = pauseTitle
             confirmDialog.message = pauseMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showPause })
-            guidedValueSlider.visible = true
+            //guidedValueSlider.visible = true
             break;
         case actionMVPause:
             confirmDialog.title = mvPauseTitle

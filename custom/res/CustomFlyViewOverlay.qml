@@ -109,32 +109,35 @@ Item {
     //-------------------------------------------------------------------------
     //Play - Pause - Stop
 
-    Rectangle {
+    //-------------------------------------------------------------------------
+        //Play - Pause - Stop
+    
+        Rectangle {
         width: parent.width * 0.06
         color: "black"
         anchors.left: parent.left
         anchors.leftMargin: 10
         anchors.verticalCenter: parent.verticalCenter
         radius: 10
-
+    
         ColumnLayout {
             id: columnLayout
             spacing: 8
             anchors.fill: parent
             anchors.margins: 5
-
+    
             QGCButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30
                 onClicked: {
-
+                    guidedActionsController.confirmAction(guidedActionsController.actionStartMission)
                 }
                 
                 background: Rectangle {
                     color: "#ff4800"
                     radius: 10
                 }
-
+    
                 Image {
                     width: parent.width * 0.3
                     height: parent.height * 0.3
@@ -143,18 +146,18 @@ Item {
                     anchors.centerIn: parent
                 }
             }
-
+    
             QGCButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30
                 onClicked: {
-                    // Função quando clicado
+                    guidedActionsController.confirmAction(guidedActionsController.actionPause)
                 }
                 background: Rectangle {
                     color: "#ff4800"
                     radius: 10
                 }
-
+    
                 Image {
                     width: parent.width * 0.3
                     height: parent.height * 0.3
@@ -163,18 +166,18 @@ Item {
                     anchors.centerIn: parent
                 }
             }
-
+    
             QGCButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30
                 onClicked: {
-                    // Função quando clicado
+                    guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop)
                 }
                 background: Rectangle {
                     color: "#ff4800"
                     radius: 10
                 }
-
+    
                 Image {
                     width: parent.width * 0.3
                     height: parent.height * 0.3
@@ -184,7 +187,7 @@ Item {
                 }
             }
         }
-
+    
         // Correção: Define a altura do Rectangle de forma dinâmica para abranger todo o conteúdo do ColumnLayout
         height: columnLayout.implicitHeight + 10
     }
