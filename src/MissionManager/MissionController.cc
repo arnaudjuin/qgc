@@ -2370,6 +2370,7 @@ void MissionController::setCurrentPlanViewSeqNum(int sequenceNumber, bool force)
 
         _splitSegment =                 nullptr;
         _currentPlanViewItem  =         nullptr;
+        qDebug()<<"set";
         _currentPlanViewSeqNum =        -1;
         _currentPlanViewVIIndex =       -1;
         _onlyInsertTakeoffValid =       !_planViewSettings->takeoffItemNotRequired()->rawValue().toBool() && _visualItems->count() == 1; // First item must be takeoff
@@ -2452,6 +2453,8 @@ void MissionController::setCurrentPlanViewSeqNum(int sequenceNumber, bool force)
             if (currentSeqNumber == sequenceNumber) {
                 pVI->setIsCurrentItem(true);
                 pVI->setHasCurrentChildItem(false);
+
+                qDebug()<< "setCurrentPlanViewSeqNum: Found current item"<<currentSeqNumber;
 
                 _currentPlanViewItem  = pVI;
                 _currentPlanViewSeqNum = sequenceNumber;

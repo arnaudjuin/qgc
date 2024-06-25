@@ -157,8 +157,6 @@ Item {
         Component.onCompleted: {
             _planMasterController.start()
             _missionController.setCurrentPlanViewSeqNum(0, true)
-            globals.planMasterControllerPlanView = _planMasterController
-            insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
         }
 
         onPromptForPlanUsageOnVehicleChange: {
@@ -325,6 +323,7 @@ Item {
     }
 
     PlanViewToolBar {
+        planMasterController:   _planMasterController
         id:                     planToolBar
     }
 
@@ -559,6 +558,7 @@ Item {
         Item {
             anchors.fill:           rightPanel
             anchors.left:       parent.left
+            anchors.top : parent.top
             DeadMouseArea {
                 anchors.fill:   parent
             }
@@ -569,8 +569,8 @@ Item {
                 id:                     missionSettingsItemEditor
                 anchors.left:           parent.left
                 anchors.right:          parent.right
-                anchors.top:            missionItemEditor.top
-                height:500
+                anchors.top:            rightPanel.top
+                height:200
 
 
                 MissionSettingsEditor {
@@ -587,6 +587,8 @@ Item {
                 anchors.right:          parent.right
                 anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
                 anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
+                height:500
+                anchors.top:            missionSettingsItemEditor.bottom
                 QGCListView {
                     id:                 missionItemEditorListView
                     anchors.fill:       parent

@@ -14,6 +14,7 @@ import QGroundControl.Palette
 
 /// Mission item edit control
 Rectangle {
+    visible:        missionItem.sequenceNumber !== 0
     id:             _root
     height:         50
     color:          qgcPal.windowShade
