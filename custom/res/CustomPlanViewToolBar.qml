@@ -26,7 +26,9 @@ Rectangle {
     height: ScreenTools.toolbarHeight
     color:  "#ff4800"
 
-    property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
+    property var    planMasterController
+    property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
+    property real   _controllerProgressPct: planMasterController.missionController.progressPct
 
     QGCPalette { id: qgcPal }
 
@@ -70,10 +72,10 @@ Rectangle {
     }
 
     PlanToolBarIndicators {
-        id:                 toolIndicators
-        anchors.right:parent.right
-        anchors.top:        parent.top
-        anchors.bottom:     parent.bottom
+        id: toolIndicators
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
     }
 
     // Small parameter download progress bar
