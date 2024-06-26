@@ -475,14 +475,9 @@ Rectangle {
         height: parent.height - valuesHeader.height - sep.height
         color: "transparent"
 
-        ScrollView {
-            anchors.fill: parent
-            contentWidth: width
-
+  
             ColumnLayout {
                 id: valuesColumn
-                implicitHeight: 50000
-                anchors.top: sep.bottom
 
                 visible: !_confirmationStart && !_textFieldSave && !loadChoice
                 spacing: _margin
@@ -800,11 +795,9 @@ Rectangle {
                     }
                 }
 
-                Row {
-                    height: 500
-                }
+         
             }
-        }
+        
     }
 
 
