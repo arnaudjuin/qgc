@@ -15,7 +15,7 @@ import QGroundControl.Controls
 import QGroundControl.FlightDisplay
 
 RowLayout {
-    visible: false
+    //visible: false
     TelemetryValuesBar {
         Layout.alignment:   Qt.AlignBottom
         extraWidth:         instrumentPanel.extraValuesWidth

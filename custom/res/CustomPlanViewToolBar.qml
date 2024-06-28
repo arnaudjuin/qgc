@@ -29,7 +29,7 @@ Rectangle {
     property var    planMasterController
     property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
     property real   _controllerProgressPct: planMasterController.missionController.progressPct
-
+    
     QGCPalette { id: qgcPal }
 
     /// Bottom single pixel divider
@@ -72,10 +72,11 @@ Rectangle {
     }
 
     PlanToolBarIndicators {
-        id: toolIndicators
+        id:                     toolIndicators
+        anchors.top:            parent.top
+        anchors.bottom:         parent.bottom
         anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
+        planMasterController:   _root.planMasterController
     }
 
     // Small parameter download progress bar

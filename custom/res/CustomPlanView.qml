@@ -157,8 +157,8 @@ Item {
         Component.onCompleted: {
             _planMasterController.start()
             _missionController.setCurrentPlanViewSeqNum(0, true)
-            globals.planMasterControllerPlanView = _planMasterController
-            insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
+            //globals.planMasterControllerPlanView = _planMasterController
+            //insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
         }
 
         onPromptForPlanUsageOnVehicleChange: {
@@ -325,6 +325,7 @@ Item {
     }
 
     PlanViewToolBar {
+        planMasterController: _planMasterController
         id:                     planToolBar
     }
 
@@ -565,6 +566,7 @@ Item {
         Item {
             anchors.fill:           rightPanel
             anchors.left:       parent.left
+            anchors.top: parent.top
             DeadMouseArea {
                 anchors.fill:   parent
             }
