@@ -685,7 +685,7 @@ Item {
                     FactCheckBox {
                         id:factSpeed
                         visible:false
-                        fact:               controllerLoader.item.getParameterFact(-1, "speed")
+                        //fact:               controllerLoader.item.getParameterFact(-1, "speed")
                         Layout.fillWidth:   true
                         scale : ScreenTools.isMobile ? 0.5 : 0.8
                     }

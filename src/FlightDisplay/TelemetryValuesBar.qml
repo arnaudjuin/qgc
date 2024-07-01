@@ -27,7 +27,8 @@ Item {
         id:         backgroundRect
         width:      control.width + extraWidth
         height:     control.height
-        color:      "transparent"
+        color:      "white"
+        opacity: 0.5
         radius:     ScreenTools.defaultFontPixelWidth / 2
     }
 
