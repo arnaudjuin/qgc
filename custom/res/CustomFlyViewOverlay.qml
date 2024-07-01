@@ -107,9 +107,6 @@ Item {
     }
 
     //-------------------------------------------------------------------------
-    //Play - Pause - Stop
-
-    //-------------------------------------------------------------------------
         //Play - Pause - Stop
     
         Rectangle {
@@ -151,7 +148,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30
                 onClicked: {
-                    guidedActionsController.confirmAction(guidedActionsController.actionPause)
+                    guidedActionsController.confirmAction(guidedActionsController.actionMVPause)
                 }
                 background: Rectangle {
                     color: "#ff4800"

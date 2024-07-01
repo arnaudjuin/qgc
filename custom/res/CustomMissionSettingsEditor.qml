@@ -276,6 +276,32 @@ Rectangle {
             }
         }
 
+        Row {
+            visible: bar.currentIndex == 0
+            width: parent.width
+            //spacing: ScreenTools.defaultFontPixelWidth * 1.5
+            //Layout.leftMargin: _margin + 12
+            
+            QGCButton {
+                background: Rectangle {
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
+                id: buttonsetvertex
+                width: _rightPanelWidth - (_margin + 3)
+                height: ScreenTools.isMobile ? 28 : 28
+                text: "Set last vertex as vehicle position"
+                onClicked: {
+                var currentIndex = _missionController.visualItems.count;
+                // Retrieve the last visual item as Vertex
+                var vertexItem = _missionController.visualItems.get(currentIndex - 1);
+                vertexItem.coordinate = _activeVehicle.coordinate
+
+                }
+            }
+        }
+
 
 
         // Row for mission buttons
@@ -774,7 +800,7 @@ Rectangle {
                         id: flightSpeedSlider
                         property bool _loadComplete: false
                         from: 0
-                        to: 7
+                        to: 15
                         stepSize: 0.5
                         width: _rightPanelWidth 
                         value: factFlightSpeed.fact.value
