@@ -174,6 +174,8 @@ Rectangle {
             
                         // Check if tracing has not been started yet
                         if (!isTraced) {
+                            isTraced = true;
+
                             // Get the index of the last visual item
                             var currentIndex = _missionController.visualItems.count;
                             // Retrieve the last visual item as polygonItem
@@ -214,7 +216,10 @@ Rectangle {
                         } else {
                             // If tracing was already started, disable traceMode
                             if (polygonItem && polygonItem.surveyAreaPolygon && polygonItem.surveyAreaPolygon.traceMode)
+                            {
                                 polygonItem.surveyAreaPolygon.traceMode = false;
+                            }
+                        isTraced=false;
                         }
                     }
                 }
@@ -463,6 +468,17 @@ Rectangle {
         Layout.fillWidth: true
         height: 1
         color: qgcPal.text
+    }
+
+      Timer {
+        interval: 100 // We update the polygonItem every 100ms based on the currentPlanViewVIIndex
+        repeat: true
+        running: true
+        onTriggered: {
+            if ( _missionController.visualItems.get(_missionController.currentPlanViewVIIndex ).surveyAreaPolygon)
+            polygonItem =_missionController.visualItems.get(_missionController.currentPlanViewVIIndex )
+
+        }
     }
 
     // ScrollView for mission settings
