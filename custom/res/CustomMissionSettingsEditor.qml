@@ -472,14 +472,19 @@ Rectangle {
         anchors.topMargin: 5
         width: ScreenTools.isMobile ? 300 : 400
         anchors.top: sep.bottom
-        height: parent.height - valuesHeader.height - sep.height
+        height: 100
         color: "transparent"
 
   
-            ColumnLayout {
-                id: valuesColumn
+        ScrollView {
+            contentWidth: width
+                        anchors.fill: parent
 
+                        ColumnLayout {
+                id: valuesColumn
+                                implicitHeight: 5000
                 visible: !_confirmationStart && !_textFieldSave && !loadChoice
+                anchors.top:sep.bottom
                 spacing: _margin
                 // Row for angle setting
                 RowLayout {
@@ -794,10 +799,13 @@ Rectangle {
                         onClicked: polygonItem.rotateEntryPoint()
                     }
                 }
+                Row{
+                    height:1000
+                }
 
          
             }
-        
+        }
     }
 
 
