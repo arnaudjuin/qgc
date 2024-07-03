@@ -14,10 +14,9 @@ import QGroundControl.Palette
 
 /// Mission item edit control
 Rectangle {
-    visible:        missionItem.sequenceNumber !== 0
     id:             _root
-    height:         50
-    color:          qgcPal.windowShade
+    height:         editorLoader.visible ? (editorLoader.y + editorLoader.height + _innerMargin) : (topRowLayout.y + topRowLayout.height + _margin)
+    color:          _currentItem ? qgcPal.missionItemEditor : qgcPal.windowShade
     radius:         _radius
     opacity:        _currentItem ? 1.0 : 0.7
     border.width:   _readyForSave ? 0 : 2
@@ -271,7 +270,7 @@ Rectangle {
     }
 
 */
-/* 
+
     Loader {
         id:                 editorLoader
         anchors.margins:    _innerMargin
@@ -283,5 +282,5 @@ Rectangle {
         property var    masterController:   _masterController
         property real   availableWidth:     _root.width - (anchors.margins * 2) ///< How wide the editor should be
         property var    editorRoot:         _root
-    } */
+    }
 } // Rectangle

@@ -13,6 +13,7 @@ add_custom_target(PlanViewQml
 		MissionItemMapVisual.qml
 		MissionItemStatus.qml
 		MissionSettingsEditor.qml
+		MissionPanel.qml
 		PlanEditToolbar.qml
 		PlanToolBarIndicators.qml
 		PlanView.qml

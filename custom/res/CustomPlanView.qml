@@ -570,12 +570,12 @@ Item {
                 anchors.left:           parent.left
                 anchors.right:          parent.right
                 anchors.top:            rightPanel.top
-                height:500
+                height:250
 
 
-                MissionSettingsEditor {
+                MissionPanel {
                     visible:            true
-                    id:                 editorLoader
+                    id:                 missionPanel
                     _flightMap : editorMap
                     _masterControler    : _planMasterController
                 }
@@ -587,8 +587,9 @@ Item {
                 anchors.right:          parent.right
                 anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
                 anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
-                height:200
-                anchors.top:            missionSettingsItemEditor.bottom
+                anchors.top:            missionPanel.bottom
+                height:600
+                anchors.bottom:         parent.bottom
                 QGCListView {
                     id:                 missionItemEditorListView
                     anchors.fill:       parent
