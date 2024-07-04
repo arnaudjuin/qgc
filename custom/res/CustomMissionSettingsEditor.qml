@@ -108,26 +108,6 @@ Rectangle {
             Layout.fillWidth:   true
         }
 
-        GridLayout {
-            Layout.fillWidth:   true
-            columnSpacing:      ScreenTools.defaultFontPixelWidth
-            rowSpacing:         columnSpacing
-            columns:            2
-
-            QGCCheckBox {
-                id:         flightSpeedCheckBox
-                text:       qsTr("Flight speed")
-                visible:    _showFlightSpeed
-                checked:    missionItem.speedSection.specifyFlightSpeed
-                onClicked:   missionItem.speedSection.specifyFlightSpeed = checked
-            }
-            FactTextField {
-                Layout.fillWidth:   true
-                fact:               missionItem.speedSection.flightSpeed
-                visible:            _showFlightSpeed
-                enabled:            flightSpeedCheckBox.checked
-            }
-        }
 
         Column {
             Layout.fillWidth:   true
@@ -167,116 +147,78 @@ Rectangle {
                 columns:        2
                 visible:        vehicleInfoSectionHeader.visible && vehicleInfoSectionHeader.checked
 
-                QGCLabel {
-                    text:               _firmwareLabel
-                    Layout.fillWidth:   true
-                    visible:            _multipleFirmware
-                }
-                FactComboBox {
-                    fact:                   QGroundControl.settingsManager.appSettings.offlineEditingFirmwareClass
-                    indexModel:             false
-                    Layout.preferredWidth:  _fieldWidth
-                    visible:                _multipleFirmware && _allowFWVehicleTypeSelection
-                }
-                QGCLabel {
-                    text:       _controllerVehicle.firmwareTypeString
-                    visible:    _multipleFirmware && !_allowFWVehicleTypeSelection
+                RowLayout {
+                    width: parent.width
+                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 13.5 : ScreenTools.defaultFontPixelWidth * 20
+                    QGCLabel {
+                        text: qsTr("Speed")
+                        font.family: ScreenTools.demiboldFontFamily
+                        Layout.alignment: Qt.AlignLeft
+                        Layout.fillWidth: true
+                    }
                 }
 
-                QGCLabel {
-                    text:               _vehicleLabel
-                    Layout.fillWidth:   true
-                    visible:            _multipleVehicleTypes
-                }
-                FactComboBox {
-                    fact:                   QGroundControl.settingsManager.appSettings.offlineEditingVehicleClass
-                    indexModel:             false
-                    Layout.preferredWidth:  _fieldWidth
-                    visible:                _multipleVehicleTypes && _allowFWVehicleTypeSelection
-                }
-                QGCLabel {
-                    text:       _controllerVehicle.vehicleTypeString
-                    visible:    _multipleVehicleTypes && !_allowFWVehicleTypeSelection
-                }
+                //Row for speed settings
+                RowLayout {
+                    width: parent.width
+                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
+                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
 
-                QGCLabel {
-                    Layout.columnSpan:      2
-                    Layout.alignment:       Qt.AlignHCenter
-                    Layout.fillWidth:       true
-                    wrapMode:               Text.WordWrap
-                    font.pointSize:         ScreenTools.smallFontPointSize
-                    text:                   qsTr("The following speed values are used to calculate total mission time. They do not affect the flight speed for the mission.")
-                    visible:                _showCruiseSpeed || _showHoverSpeed
-                }
+                    QGCSlider {
+                        id: flightSpeedSlider
+                        property bool _loadComplete: false
+                        from: 0
+                        to: 7
+                        stepSize: 0.5
+                        width: _rightPanelWidth - 30
+                        value: factFlightSpeed.fact.value
 
-                QGCLabel {
-                    text:               qsTr("Cruise speed")
-                    visible:            _showCruiseSpeed
-                    Layout.fillWidth:   true
-                }
-                FactTextField {
-                    fact:                   QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed
-                    visible:                _showCruiseSpeed
-                    Layout.preferredWidth:  _fieldWidth
-                }
+                        onValueChanged: {
+                            factFlightSpeed.fact.value = value;
+                        }
+                    }
 
-                QGCLabel {
-                    text:               qsTr("Hover speed")
-                    visible:            _showHoverSpeed
-                    Layout.fillWidth:   true
-                }
-                FactTextField {
-                    fact:                   QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
-                    visible:                _showHoverSpeed
-                    Layout.preferredWidth:  _fieldWidth
-                }
+                    Rectangle {
+                        width: 40
+                        height: 20
+                        color: "#f0f0f0"  // Light grey background
+                        border.color: "#d0d0d0"
+                        border.width: 1
+                        radius: 5
+                        Layout.alignment: Qt.AlignRight
+
+                        TextInput {
+                            id: labelSpeed
+                            text: factFlightSpeed.text
+                            anchors.centerIn: parent
+                            color: "#333333"
+                            font.pixelSize: 12
+                            horizontalAlignment: TextInput.AlignHCenter
+                            verticalAlignment: TextInput.AlignVCenter
+
+                            // Update the factFlightSpeed text when the user edits the TextInput
+                            onEditingFinished: {
+                                factFlightSpeed.text = labelSpeed.text;
+                                flightSpeedSlider.value = parseFloat(labelSpeed.text);
+                            }
+                        }
+                    }
+
+                    FactTextField {
+                        id: factFlightSpeed
+                        fact: _missionController.visualItems.get(0).speedSection.flightSpeed
+                        visible: false
+                        enabled: flightSpeedCheckBox.checked
+                        onTextChanged: {
+                            labelSpeed.text = factFlightSpeed.text;
+                            flightSpeedSlider.value = factFlightSpeed.fact.value;
+                        }
+                    }
+                }   
+               
             } // GridLayout
 
-            SectionHeader {
-                id:             plannedHomePositionSection
-                anchors.left:   parent.left
-                anchors.right:  parent.right
-                text:           qsTr("Launch Position")
-                visible:        !_vehicleHasHomePosition
-                checked:        false
-            }
 
-            Column {
-                anchors.left:   parent.left
-                anchors.right:  parent.right
-                spacing:        _margin
-                visible:        plannedHomePositionSection.checked && !_vehicleHasHomePosition
-
-                GridLayout {
-                    anchors.left:   parent.left
-                    anchors.right:  parent.right
-                    columnSpacing:  ScreenTools.defaultFontPixelWidth
-                    rowSpacing:     columnSpacing
-                    columns:        2
-
-                    QGCLabel {
-                        text: qsTr("Altitude")
-                    }
-                    FactTextField {
-                        fact:               missionItem.plannedHomePositionAltitude
-                        Layout.fillWidth:   true
-                    }
-                }
-
-                QGCLabel {
-                    width:                  parent.width
-                    wrapMode:               Text.WordWrap
-                    font.pointSize:         ScreenTools.smallFontPointSize
-                    text:                   qsTr("Actual position set by vehicle at flight time.")
-                    horizontalAlignment:    Text.AlignHCenter
-                }
-
-                QGCButton {
-                    text:                       qsTr("Set To Map Center")
-                    onClicked:                  missionItem.coordinate = map.center
-                    anchors.horizontalCenter:   parent.horizontalCenter
-                }
-            }
         } // Column
     } // Column
 } // Rectangle
