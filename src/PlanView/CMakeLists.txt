@@ -33,5 +33,6 @@ add_custom_target(PlanViewQml
 		TransectStyleMapVisuals.qml
 		VTOLLandingPatternEditor.qml
 		VTOLLandingPatternMapVisual.qml
+		MissionPanel.qml
 )
 

@@ -11,16 +11,16 @@ import QGroundControl.Controls
 import QGroundControl.FactControls
 import QGroundControl.Palette
 
-
 /// Mission item edit control
 Rectangle {
     id:             _root
+    width:          parent.width - 20  // Ajuste a largura para evitar o corte
+    height:         editorLoader.visible ? (editorLoader.y + editorLoader.height + _innerMargin) : (topRowLayout.y + topRowLayout.height + _margin)
     color:          _currentItem ? qgcPal.missionItemEditor : qgcPal.windowShade
     radius:         _radius
     opacity:        _currentItem ? 1.0 : 0.7
     border.width:   _readyForSave ? 0 : 2
     border.color:   qgcPal.warningText
-    height:         editorLoader.visible ? (editorLoader.y + editorLoader.height + _innerMargin) : (topRowLayout.y + topRowLayout.height + _margin) + 100
 
     property var    map                 ///< Map control
     property var    masterController
@@ -79,9 +79,10 @@ Rectangle {
         id:                 topRowLayout
         anchors.margins:    _margin
         anchors.left:       parent.left
+        anchors.right:      parent.right  // Certifique-se de que o Row esteja ancorado à direita
         anchors.top:        parent.top
         spacing:            _margin
-        visible :false
+
         Rectangle {
             id:                     notReadyForSaveIndicator
             anchors.verticalCenter: parent.verticalCenter
@@ -136,7 +137,7 @@ Rectangle {
 
                 property real _padding: ScreenTools.comboBoxPadding
 
-                QGCLabel { text: missionItem.commandName + ":" }
+                QGCLabel { text: missionItem.commandName }
 
                 QGCColoredImage {
                     height:             ScreenTools.defaultFontPixelWidth
@@ -161,16 +162,24 @@ Rectangle {
                     vehicle:                    masterController.controllerVehicle
                     missionItem:                _root.missionItem
                     map:                        _root.map
-                    // FIXME: Disabling fly through commands doesn't work since you may need to change from an RTL to something else
                     flyThroughCommandsAllowed:  true //_missionController.flyThroughCommandsAllowed
                 }
             }
         }
 
-
+        QGCLabel {
+            id:                     commandLabel
+            anchors.verticalCenter: parent.verticalCenter
+            width:                  commandPicker.width
+            height:                 commandPicker.height
+            visible:                !missionItem.isCurrentItem || !missionItem.isSimpleItem || _waypointsOnlyMode || missionItem.isTakeoffItem
+            verticalAlignment:      Text.AlignVCenter
+            text:                   missionItem.commandName
+            color:                  _outerTextColor
+        }
     }
 
-    QGCColoredImage {
+   QGCColoredImage {
         id:                     hamburger
         anchors.margins:        _margin
         anchors.right:          parent.right
@@ -179,7 +188,7 @@ Rectangle {
         height:                 _hamburgerSize
         sourceSize.height:      _hamburgerSize
         source:                 "qrc:/qmlimages/Hamburger.svg"
-        visible:                false
+        visible:                missionItem.isCurrentItem && missionItem.sequenceNumber !== 0
         color:                  qgcPal.text
 
         QGCMouseArea {
@@ -266,12 +275,13 @@ Rectangle {
         id:                 editorLoader
         anchors.margins:    _innerMargin
         anchors.left:       parent.left
+        anchors.right:      parent.right  // Ancorar à direita do pai
         anchors.top:        topRowLayout.bottom
-        source:              "qrc:/qml/MissionSettingsEditor.qml"
-        visible:            true
+        source:             missionItem.editorQml
+        visible:            _currentItem
 
         property var    masterController:   _masterController
         property real   availableWidth:     _root.width - (anchors.margins * 2) ///< How wide the editor should be
         property var    editorRoot:         _root
     }
-} // Rectangle
+}

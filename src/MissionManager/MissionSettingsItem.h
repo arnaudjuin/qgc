@@ -72,7 +72,7 @@ public:
     bool            specifiesCoordinate         (void) const final;
     bool            specifiesAltitudeOnly       (void) const final { return false; }
     QString         commandDescription          (void) const final { return tr("Parâmetros da missão1"); }
-    QString         commandName                 (void) const final { return tr("Parâmetros da missão2"); }
+    QString         commandName                 (void) const final { return tr("Mission Settings"); } //Nome dos parâmetros
     QString         abbreviation                (void) const final;
     QGeoCoordinate  coordinate                  (void) const final { return _plannedHomePositionCoordinate; } // Includes altitude
     QGeoCoordinate  exitCoordinate              (void) const final { return _plannedHomePositionCoordinate; }

@@ -35,7 +35,7 @@ Item {
     readonly property real  _margin:                    ScreenTools.defaultFontPixelHeight * 0.5
     readonly property real  _toolsMargin:               ScreenTools.defaultFontPixelWidth * 0.75
     readonly property real  _radius:                    ScreenTools.defaultFontPixelWidth  * 0.5
-    readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 25) :  500
+    readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 34) :  500
     readonly property var   _defaultVehicleCoordinate:  QtPositioning.coordinate(37.803784, -122.462276)
     readonly property bool  _waypointsOnlyMode:         QGroundControl.corePlugin.options.missionWaypointsOnly
 
@@ -47,7 +47,7 @@ Item {
     property bool   _lightWidgetBorders:                editorMap.isSatelliteMap
     property bool   _addROIOnClick:                     false
     property bool   _singleComplexItem:                 _missionController.complexMissionItemNames.length === 1
-    property int    _editingLayer:                      bar.currentIndex ? _layers[bar.currentIndex] : _layerMission
+    property int    _editingLayer:                      0
     property int    _toolStripBottom:                   toolStrip.height + toolStrip.y
     property var    _appSettings:                       QGroundControl.settingsManager.appSettings
     property var    _planViewSettings:                  QGroundControl.settingsManager.planViewSettings
@@ -157,8 +157,6 @@ Item {
         Component.onCompleted: {
             _planMasterController.start()
             _missionController.setCurrentPlanViewSeqNum(0, true)
-            //globals.planMasterControllerPlanView = _planMasterController
-            //insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
         }
 
         onPromptForPlanUsageOnVehicleChange: {
@@ -325,7 +323,7 @@ Item {
     }
 
     PlanViewToolBar {
-        planMasterController: _planMasterController
+        planMasterController:   _planMasterController
         id:                     planToolBar
     }
 
@@ -539,62 +537,97 @@ Item {
 
             model: toolStripActionList.model
 
-            function allAddClickBoolsOff() {
-                _addROIOnClick =        false
-                addWaypointRallyPointAction.checked = false
-            }
 
-            onDropped: allAddClickBoolsOff()
         }
 
 
         Rectangle {
-            height: parent.height
             id: rightPanel
             width: _rightPanelWidth
             color: "grey"
+            height: parent.height
             opacity: 0.5
             //color: qgcPal.windowShadeDark
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.bottom: parent.bottom
             visible: true
         }
 
         //-------------------------------------------------------
         // Custom Panel Controls
         Item {
-            anchors.fill:           rightPanel
-            anchors.left:       parent.left
-            anchors.top: parent.top
+            anchors.fill: rightPanel
+            anchors.left: parent.left
+            anchors.top : parent.top
+
             DeadMouseArea {
-                anchors.fill:   parent
+                anchors.fill: parent
             }
 
-            Column {
-                id:                 rightControls
-                spacing:            ScreenTools.defaultFontPixelHeight * 0.5
-                anchors.left:       parent.left
-                anchors.top:        parent.top
-            }
             //-------------------------------------------------------
             // Our Custem Item Editor
             Item {
-                id:                     missionItemEditor
+                id:                     missionSettingsItemEditor
                 anchors.left:           parent.left
                 anchors.right:          parent.right
-                anchors.top:            rightControls.bottom
-                anchors.bottom:         parent.bottom
-                visible:                true
+                anchors.top:            rightPanel.top
+                height:250
 
-                MissionSettingsEditor {
-                    id:                 editorLoader
+
+                MissionPanel {
+                    visible:            true
+                    id:                 missionPanel
                     _flightMap : editorMap
                     _masterControler    : _planMasterController
                 }
             }
+            //Scroll Area Items
+            Item {
+                //Propriedades
+                id:                     missionItemEditor
+                height: parent.height - missionSettingsItemEditor.height
+
+                //Ancoras
+                anchors.left:           parent.left
+                anchors.right:          parent.right
+                anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
+                anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
+                anchors.top:            missionPanel.bottom
+                anchors.bottom:         parent.bottom
+
+                QGCListView {
+                    id:                 missionItemEditorListView
+                    anchors.fill:       parent
+                    width: parent.width
+                    spacing:            ScreenTools.defaultFontPixelHeight / 2
+                    orientation:        ListView.Vertical
+                    model:              _missionController.visualItems
+                    cacheBuffer:        Math.max(height * 2, 0)
+                    clip:               true
+                    currentIndex:       _missionController.currentPlanViewSeqNum
+                    highlightMoveDuration: 250
+                     //-- List Elements
+                    delegate: MissionItemEditor {
+                        map:            editorMap
+                        masterController:  _planMasterController
+                        missionItem:    object
+                        width:          missionItemEditorListView.width
+                        readOnly:       false
+                        onClicked: (sequenceNumber) => { _missionController.setCurrentPlanViewSeqNum(object.sequenceNumber, false) }
+                        onRemove: {
+                            var removeVIIndex = index
+                            _missionController.removeVisualItem(removeVIIndex)
+                            if (removeVIIndex >= _missionController.visualItems.count) {
+                                removeVIIndex--
+                            }
+                        }
+                        onSelectNextNotReadyItem:   selectNextNotReady()
+                    } 
+                }
+            }
+
         }
-    
+      //-------------------------------------------------------
 
         
 
