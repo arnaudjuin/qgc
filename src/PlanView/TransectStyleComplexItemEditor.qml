@@ -78,6 +78,7 @@ Rectangle {
             TransectStyleComplexItemTabBar {
                 id:                 tabBar
                 Layout.fillWidth:   true
+                visible: false
             }
 
             // Grid tab

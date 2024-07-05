@@ -254,30 +254,54 @@ Rectangle {
                 }
             }
         }
-                Row {
+
+        // Row for mission buttons
+
+        Row {
             visible: bar.currentIndex == 0
             width: parent.width
-            //spacing: ScreenTools.defaultFontPixelWidth * 1.5
             //Layout.leftMargin: _margin + 12
-            
+            spacing: ScreenTools.defaultFontPixelWidth * 1
             QGCButton {
-                id: buttonsetwp
-                width: _rightPanelWidth - (_margin + 3)
+                background: Rectangle {
+                    color: "#ffffff"  
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
+                id: buttonsetvtx
+                width: (_rightPanelWidth / 2) - ScreenTools.defaultFontPixelWidth * 1
                 height: ScreenTools.isMobile ? 28 : 28
-                text: "Set last waypoint as vehicle position"
+                text: "Rover VT"
+                onClicked: {
+                var currentIndex = _missionController.visualItems.count;
+                // Retrieve the last visual item as vertexItem
+                var  vertexItem= _missionController.visualItems.get(currentIndex - 1);
+
+                vertexItem.coordinate = _activeVehicle.coordinate
+                }
+            }
+
+            QGCButton {
+                background: Rectangle {
+                    color: "#ffffff"  
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
+                id: buttonsetwp
+                width: (_rightPanelWidth / 2) - ScreenTools.defaultFontPixelWidth * 1
+                height: ScreenTools.isMobile ? 28 : 28
+                text: "Rover WP"
                 onClicked: {
                 var currentIndex = _missionController.visualItems.count;
                 // Retrieve the last visual item as waypointItem
                 var  waypointItem= _missionController.visualItems.get(currentIndex - 1);
                 waypointItem.coordinate = _activeVehicle.coordinate
-
                 }
             }
         }
 
-
-
-        // Row for mission buttons
         Row {
             visible: bar.currentIndex == 0
             width: parent.width
@@ -331,6 +355,7 @@ Rectangle {
                     });
                 }
             }
+
         }
 
         // Row for additional mission buttons

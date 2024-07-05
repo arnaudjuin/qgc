@@ -153,6 +153,13 @@ ApplicationWindow {
         }
     }
 
+    function showCalibrationTool(settingsPage = "") {
+        showTool(qsTr("Calibration Settings"), "CalibrationSettings.qml", "/res/QGCLogoWhite")
+        if (settingsPage !== "") {
+            toolDrawerLoader.item.showSettingsPage(settingsPage)
+        }
+    }
+
     //-------------------------------------------------------------------------
     //-- Global simple message dialog
 
@@ -352,6 +359,21 @@ ApplicationWindow {
                                 if (!mainWindow.preventViewSwitch()) {
                                     drawer.close()
                                     mainWindow.showSettingsTool()
+                                }
+                            }
+                        }
+
+                        SubMenuButton {
+                            id:                 calibrationButton
+                            height:             toolSelectDialog._toolButtonHeight
+                            Layout.fillWidth:   true
+                            text:               qsTr("Steering Settings")
+                            imageResource:      "/qmlimages/RC.svg"
+                            imageColor:         "Black"
+                            onClicked: {
+                                if (!mainWindow.preventViewSwitch()) {
+                                    drawer.close()
+                                    mainWindow.showCalibrationTool()
                                 }
                             }
                         }

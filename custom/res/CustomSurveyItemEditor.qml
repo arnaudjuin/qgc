@@ -60,32 +60,7 @@ TransectStyleComplexItemEditor {
             }
 
             QGCLabel {
-                id: headingLabel
-                function _normalize(degrees) {
-                    var a = degrees % 360
-                    if (a < 0) a += 360
-                    return a
-                }
-                
-                property int _startAngle: modelData + 180 + _heading // Use modelData no cálculo do ângulo
-                property int _angle: _normalize(_startAngle)
-            }
-
-            Text {
-                id: headingDisplay
-                text: "Heading atual: " + headingLabel._angle + "°"
-                color: "black"
-                font.pointSize: ScreenTools.defaultFontPointSize
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-                Layout.columnSpan: 2
-                anchors.top: angleSlider.bottom
-                anchors.topMargin: 0
-            }
-
-            QGCLabel {
                 text:       qsTr("Turnaround dist")
-                visible:    !forPresets
             }
             FactTextField {
                 fact:                   missionItem.turnAroundDistance
@@ -120,7 +95,7 @@ TransectStyleComplexItemEditor {
 
             QGCSlider {
                 id:                     gridSlider
-                from:           5
+                from:           6
                 to:           12
                 stepSize:               0.5
                 tickmarksEnabled:       false

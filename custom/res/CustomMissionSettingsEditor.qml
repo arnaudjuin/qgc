@@ -115,7 +115,7 @@ Rectangle {
                         id: flightSpeedSlider
                         property bool _loadComplete: false
                         from: 0
-                        to: 7
+                        to: 15
                         stepSize: 0.5
                         Layout.fillWidth: true
                         value: factFlightSpeed.fact.value
@@ -164,7 +164,7 @@ Rectangle {
                 }
 
                 //Vazão
-                RowLayout {
+                /*RowLayout {
                     width: parent.width
                     spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 13.5 : ScreenTools.defaultFontPixelWidth * 20
                     QGCLabel {
@@ -239,7 +239,7 @@ Rectangle {
                             vazaoSlider.value = factVazao.fact.value;
                         }
                     }
-                }
+                }*/
                 
                    
                
