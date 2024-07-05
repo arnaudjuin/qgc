@@ -19,6 +19,7 @@ Rectangle {
     color:              qgcPal.windowShadeDark
     visible:            missionItem.isCurrentItem
     radius:             _radius
+    property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
 
     property var    _masterControler:               masterController
     property var    _missionController:             _masterControler.missionController
@@ -214,8 +215,139 @@ Rectangle {
                             flightSpeedSlider.value = factFlightSpeed.fact.value;
                         }
                     }
+                }
+                                RowLayout {
+
+                    /*QGCLabel {
+                        id: pumpValue2
+                        visible: true
+                        color: "white"
+                        text: "test"
+                    }
+                    QGCLabel {
+                        id: pumpValue
+                        visible: true
+                        color: "white"
+                        text: _activeVehicle ? QGroundControl.corePlugin.sprayPumpState : ""
+                    }*/
+
+                    spacing: parent.width * 0.03
+                    QGCSwitch {
+                        id: switchBomb
+                        onCheckedChanged: {
+                            if (switchBomb.checked) {
+                                var pwmValue = bomba.value === 1 ? 1600 : (bomba.value === 2 ? 1500 : 1200);
+                                //console.log("Switch ligado. Enviando PWM " + pwmValue + ".");
+                                _activeVehicle.sendCommand(
+                                    1,      // component
+                                    183,    // command
+                                    true,   // confirmation
+                                    8,      // param1
+                                    pwmValue // param2
+                                );
+                            } else {
+                                //console.log("Switch desligado. Enviando para Bomba PWM 1051.");
+                                _activeVehicle.sendCommand(
+                                    1,      // component
+                                    183,    // command
+                                    true,   // confirmation
+                                    8,      // param1
+                                    1051    // param2
+                                );
+                            }
+                        }
+
+
+                    }
+                    Item {
+                        width: 40  // Defina a largura igual ao switch
+                        height: 19.8 // Defina a altura igual ao switch
+
+                        QGCButton {
+                            id: autoBomb
+                            anchors.fill: parent // Faz o botão preencher o Item
+                            text: "Auto"
+                            font.pixelSize: Math.max(10, parent.width * 0.020) // Ajusta o tamanho da fonte
+                            property bool isActive: true
+                            background: Rectangle { // Define um fundo retangular
+                                color: autoBomb.isActive ? "#ff4800" : "green" // Cor do fundo
+                                radius: 10 // Bordas arredondadas
+                                anchors.fill: parent // Preenche todo o espaço do botão
+                            }
+                            onClicked: {
+                                autoBomb.isActive = !autoBomb.isActive
+                                switchBomb.checked = false
+                            }
+                        }
+                    }
+                    Label {
+                        text: "Bombas"
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: headerArea.width * 0.06
+                    }
                 }   
-               
+                               //Vazão Slider
+                RowLayout{
+                    spacing: parent.width * 0.03
+
+                    Label{
+                        text: "Vazão"
+                        color: "white"
+                        Layout.leftMargin: 12
+                        font.pixelSize: headerArea.width * 0.06
+                    }
+
+                }
+
+                RowLayout {
+                    spacing: parent.width * 0.03
+
+                    QGCSlider {
+                        id:                     bomba
+                        from:                   1
+                        to:                     3
+                        stepSize:               1
+                        snapMode: QGCSlider.SnapAlways
+
+                        Layout.fillWidth: false  // Não preenche toda a largura
+                        Layout.preferredWidth: 90
+                        Layout.columnSpan:      2
+                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                        Layout.leftMargin: 12
+                        live: true
+                        onValueChanged: {
+                            if (switchBomb.checked) {
+                                var pwmValue = bomba.value === 1 ? 1600 : (bomba.value === 2 ? 1400 : 1200);
+                                //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
+                                _activeVehicle.sendCommand(
+                                    1,      // component
+                                    183,    // command
+                                    true,   // confirmation
+                                    8,      // param1
+                                    pwmValue // param2
+                                );
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        id: ret1
+                        width: 40
+                        height: 14
+                        color: "#f0f0f0"  // Light grey background
+                        border.color: "#d0d0d0"
+                        border.width: 1
+                        radius: 5
+
+                        Label {
+                            text: bomba.value === 1 ? "Alta" : bomba.value === 2 ? "Média" : "Baixa"
+                            anchors.centerIn: parent
+                            color: "#333333"
+                            font.pixelSize: ret1.width * 0.20
+                        }
+                    }
+                }
             } // GridLayout
 
 
