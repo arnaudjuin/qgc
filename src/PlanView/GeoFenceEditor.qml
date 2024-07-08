@@ -11,7 +11,7 @@ import QGroundControl.FactControls
 
 QGCFlickable {
     id:             root
-    contentHeight:  geoFenceEditorRect.height
+    contentHeight:  1000
     clip:           true
 
     property var    myGeoFenceController

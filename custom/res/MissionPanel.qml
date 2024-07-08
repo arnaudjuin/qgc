@@ -27,7 +27,7 @@ Rectangle {
     }
 
     // Set height based on whether the screen is mobile
-   // height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 45 : ScreenTools.defaultFontPixelHeight * 50
+    // height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 45 : ScreenTools.defaultFontPixelHeight * 50
 
     // Background color and corner radius
     color: qgcPal.windowShadeDark
@@ -158,11 +158,11 @@ Rectangle {
                 id: buttonDraw
                 text: "Trace"
                 checked: _editTracing
-                               background: Rectangle {
+                background: Rectangle {
                     color: _editTracing ? "#595757" : "#ffffff" // When clicked turns light grey
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
+                    radius: 14
+                    border.color: "white"
+                    anchors.fill: parent
                 }
                 onClicked: {
                     // Toggle the _editTracing property
@@ -171,7 +171,7 @@ Rectangle {
                     _addWaypointOnClick = false;
 
                     {
-            
+
                         // Check if tracing has not been started yet
                         if (!isTraced) {
                             isTraced = true;
@@ -188,7 +188,7 @@ Rectangle {
                             polygonItem = _missionController.visualItems.get(currentIndex);
 
                             // If the polygonItem exists, set its camera footprint side value
-                            if (polygonItem) 
+                            if (polygonItem)
                                 polygonItem.cameraCalc.adjustedFootprintSide.value = 2;
 
                             // Check if the polygon's traceMode is enabled
@@ -219,11 +219,11 @@ Rectangle {
                             {
                                 polygonItem.surveyAreaPolygon.traceMode = false;
                             }
-                        isTraced=false;
+                            isTraced=false;
                         }
                     }
                 }
-            }   
+            }
         }
         // Add waypoint button
         Row {
@@ -235,9 +235,9 @@ Rectangle {
             QGCButton {
                 background: Rectangle {
                     color: _addWaypointOnClick ? "#595757" : "#ffffff" // When clicked turns light grey
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
+                    radius: 14
+                    border.color: "white"
+                    anchors.fill: parent
                 }
                 id: buttonTravel
                 width: _rightPanelWidth - 36
@@ -254,7 +254,7 @@ Rectangle {
                 }
             }
         }
-                Row {
+        Row {
             visible: bar.currentIndex == 0
             width: parent.width
             //spacing: ScreenTools.defaultFontPixelWidth * 1.5
@@ -266,10 +266,10 @@ Rectangle {
                 height: ScreenTools.isMobile ? 28 : 28
                 text: "Set last waypoint as vehicle position"
                 onClicked: {
-                var currentIndex = _missionController.visualItems.count;
-                // Retrieve the last visual item as waypointItem
-                var  waypointItem= _missionController.visualItems.get(currentIndex - 1);
-                waypointItem.coordinate = _activeVehicle.coordinate
+                    var currentIndex = _missionController.visualItems.count;
+                    // Retrieve the last visual item as waypointItem
+                    var  waypointItem= _missionController.visualItems.get(currentIndex - 1);
+                    waypointItem.coordinate = _activeVehicle.coordinate
 
                 }
             }
@@ -287,10 +287,10 @@ Rectangle {
             // Undo button
             QGCButton {
                 background: Rectangle {
-                    color: "#ffffff"  
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
+                    color: "#ffffff"
+                    radius: 14
+                    border.color: "white"
+                    anchors.fill: parent
                 }
                 width: ScreenTools.isMobile ?  80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
@@ -308,10 +308,10 @@ Rectangle {
             // Clear button
             QGCButton {
                 background: Rectangle {
-                    color: "#ffffff"  
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
+                    color: "#ffffff"
+                    radius: 14
+                    border.color: "white"
+                    anchors.fill: parent
                 }
                 width: ScreenTools.isMobile ? 80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
@@ -347,15 +347,15 @@ Rectangle {
                 title: qsTr("Select Polygon File")
 
                 onAcceptedForLoad: file => {
-                    var currentIndex = _missionController.visualItems.count;
-                    polygonItem = _missionController.visualItems.get(currentIndex - 1);
-                    if (!isTraced)
-                        insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
-                    polygonItem = _missionController.visualItems.get(currentIndex);
-                    polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
-                    mapFitFunctions.fitMapViewportToMissionItems();
-                    close();
-                }
+                                       var currentIndex = _missionController.visualItems.count;
+                                       polygonItem = _missionController.visualItems.get(currentIndex - 1);
+                                       if (!isTraced)
+                                       insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
+                                       polygonItem = _missionController.visualItems.get(currentIndex);
+                                       polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
+                                       mapFitFunctions.fitMapViewportToMissionItems();
+                                       close();
+                                   }
             }
 
             
@@ -363,10 +363,10 @@ Rectangle {
             // Load button
             QGCButton {
                 background: Rectangle {
-                    color: "#ffffff"  
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
+                    color: "#ffffff"
+                    radius: 14
+                    border.color: "white"
+                    anchors.fill: parent
                 }
                 width: ScreenTools.isMobile ? 80 : 28
                 height: ScreenTools.isMobile ? 28 : 28
@@ -381,10 +381,10 @@ Rectangle {
             // Save button
             QGCButton {
                 background: Rectangle {
-                    color: "#ffffff"  
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
+                    color: "#ffffff"
+                    radius: 14
+                    border.color: "white"
+                    anchors.fill: parent
                 }
                 text: qsTr("Save")
                 width: ScreenTools.isMobile ? 80 : 28
@@ -392,7 +392,7 @@ Rectangle {
                 Layout.fillWidth: true
                 enabled: !_planMasterController.syncInProgress
                 onClicked: {
-                                        if (polygonItem) {
+                    if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
                     }
@@ -415,10 +415,10 @@ Rectangle {
             // Start button
             QGCButton {
                 background: Rectangle {
-                    color: "#99ff8a"  
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
+                    color: "#99ff8a"
+                    radius: 14
+                    border.color: "white"
+                    anchors.fill: parent
                 }
                 width: _rightPanelWidth - 36
                 height: ScreenTools.isMobile ? 28 : 28
@@ -470,13 +470,13 @@ Rectangle {
         color: qgcPal.text
     }
 
-      Timer {
+    Timer {
         interval: 100 // We update the polygonItem every 100ms based on the currentPlanViewVIIndex
         repeat: true
         running: true
         onTriggered: {
-            if ( _missionController.visualItems.get(_missionController.currentPlanViewVIIndex ).surveyAreaPolygon)
-            polygonItem =_missionController.visualItems.get(_missionController.currentPlanViewVIIndex )
+            if (_missionController && _missionController.visualItems.get(_missionController.currentPlanViewVIIndex ).surveyAreaPolygon)
+                polygonItem =_missionController.visualItems.get(_missionController.currentPlanViewVIIndex )
 
         }
     }
@@ -511,7 +511,7 @@ Rectangle {
                 text: "Yes"
                 Layout.fillWidth: true
                 onClicked: {
-                                        if (polygonItem) {
+                    if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
                     }
@@ -529,14 +529,14 @@ Rectangle {
         }
         Row {
 
-                    QGCLabel {
-                        visible:polygonItem
-                        text: qsTr("Survey Area:")
-                    }
-                    QGCLabel {
-                        visible: polygonItem
-                        QGCLabel { visible : polygonItem; text: QGroundControl.unitsConversion.squareMetersToAppSettingsAreaUnits(polygonItem.coveredArea/10000).toFixed(2) + " " +  "hA"}
-                    }        }
+            QGCLabel {
+                visible:polygonItem
+                text: qsTr("Survey Area:")
+            }
+            QGCLabel {
+                visible: polygonItem
+                QGCLabel { visible : polygonItem; text: QGroundControl.unitsConversion.squareMetersToAppSettingsAreaUnits(polygonItem.coveredArea/10000).toFixed(2) + " " +  "hA"}
+            }        }
     }
 
     // Column for file load choice

@@ -10,8 +10,7 @@ import QGroundControl.Vehicle
 import QGroundControl.Controls
 import QGroundControl.FactControls
 import QGroundControl.Palette
-
-
+import QGroundControl.Controllers
 /// Mission item edit control
 Rectangle {
     id:             _root
@@ -52,6 +51,25 @@ Rectangle {
         id: qgcPal
         colorGroupEnabled: enabled
     }
+    // Display the MissionPanel
+    Rectangle{
+        color: "transparent"
+        height: 200
+
+
+        Item {
+            id: missionPanelContainer
+            anchors.fill: parent
+
+            Loader {
+                visible :  missionItem.sequenceNumber == 0
+                id:                 missionPanelContainerLoader
+                source:             "qrc:/qml/MissionPanel.qml";
+                property var    masterController:   _missionController
+                property var _flightMap : map
+            }
+        }
+    }
 
     FocusScope {
         id:             currentItemScope
@@ -79,7 +97,7 @@ Rectangle {
         id:                 topRowLayout
         anchors.margins:    _margin
         anchors.left:       parent.left
-        anchors.top:        parent.top
+        anchors.top:        missionItem.sequenceNumber == 0 ? missionPanelContainer.bottom : parent.top
         spacing:            _margin
 
         Rectangle {
@@ -179,7 +197,7 @@ Rectangle {
         }
     }
 
-   QGCColoredImage {
+    QGCColoredImage {
         id:                     hamburger
         anchors.margins:        _margin
         anchors.right:          parent.right
@@ -269,7 +287,8 @@ Rectangle {
         color:                  qgcPal.warningText
     }
 
-*/
+*/                
+
 
     Loader {
         id:                 editorLoader

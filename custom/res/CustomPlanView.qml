@@ -372,13 +372,13 @@ Item {
                               coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
                               coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
 
-                                  if (_addWaypointOnClick) {
-                                      insertSimpleItemAfterCurrentTravel(coordinate)
-                                  }
-                                
+                              if (_addWaypointOnClick) {
+                                  insertSimpleItemAfterCurrentTravel(coordinate)
                               }
-                          
-    
+
+                          }
+
+
             // Add the mission item visuals to the map
             Repeater {
                 model: _missionController.visualItems
@@ -400,7 +400,7 @@ Item {
             }
             // Direction arrows in waypoint lines
             MapItemView {
-                model:  _missionController.directionArrows 
+                model:  _missionController.directionArrows
 
                 delegate: MapLineArrow {
                     fromCoord:      object ? object.coordinate1 : undefined
@@ -419,7 +419,7 @@ Item {
                     line.width: 1
                     line.color: "red"
                     z:          QGroundControl.zOrderWaypointLines
-                    opacity:     1 
+                    opacity:     1
                 }
             }
 
@@ -587,7 +587,7 @@ Item {
                 anchors.right:          parent.right
                 anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
                 anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.top:            missionPanel.bottom
+                anchors.top:            missionSettingsItemEditor.bottom
                 height:600
                 anchors.bottom:         parent.bottom
                 QGCListView {
@@ -600,7 +600,7 @@ Item {
                     clip:               true
                     currentIndex:       _missionController.currentPlanViewSeqNum
                     highlightMoveDuration: 250
-                     //-- List Elements
+                    //-- List Elements
                     delegate: MissionItemEditor {
                         map:            editorMap
                         masterController:  _planMasterController
@@ -616,12 +616,12 @@ Item {
                             }
                         }
                         onSelectNextNotReadyItem:   selectNextNotReady()
-                    } 
+                    }
                 }
             }
 
         }
-      //-------------------------------------------------------
+        //-------------------------------------------------------
 
         
 

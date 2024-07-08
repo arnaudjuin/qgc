@@ -1327,6 +1327,9 @@ void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QOb
                                         missionItemParent);*/ 
     //items.append(item);
     qDebug() << "Spray start";
+        qDebug() << qgcApp()->toolbox()->settingsManager()->appSettings()->offlineEditingHoverSpeed() << "flow speed";
+
+    
 }
 
 void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObject* missionItemParent, int& seqNum)
@@ -1341,6 +1344,7 @@ void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObj
                                         missionItemParent); */
     //items.append(item);
     qDebug() << "Spray stop";
+    qDebug() << qgcApp()->toolbox()->settingsManager()->appSettings()->offlineEditingHoverSpeed() << "flow speed";
 }
 
 
