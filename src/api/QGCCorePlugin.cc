@@ -276,13 +276,13 @@ void QGCCorePlugin::factValueGridCreateDefaultSettings(const QString& defaultSet
     column      = factValueGrid.columns()->value<QmlObjectListModel*>(includeFWValues ? 3 : 2);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
-    value->setFact("Vehicle", "FlightTime");
+    value->setFact("Vehicle", "Heading");
     value->setIcon("timer.svg");
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(false);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
-    value->setFact("Vehicle", "FlightDistance");
+    value->setFact("Vehicle", "Roll");
     value->setIcon("travel-walk.svg");
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(true);

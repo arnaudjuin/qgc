@@ -193,372 +193,256 @@ Item {
     
     //-- Pop Up
 
+   // Cabeçalho que abre e fecha o painel
     Rectangle {
-        id: expandablePanel
-        width: parent.width * 0.24 // 20% da largura do elemento pai
-        height: isMinimized ? 40 : contentArea.implicitHeight + headerArea.height  // Altura fixa quando minimizado e quando expandido
-        color: "black"
-        anchors.top: parent.top
+        id: header
+        width: 180
+        height: 30
         anchors.right: parent.right
-        anchors.topMargin: 10
         anchors.rightMargin: 10
-        radius: 10
-        clip: true
-        property bool isMinimized: true
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        color: "white"
+        border.color: "gray"
+        radius: 3
 
-        // Área do cabeçalho
-        Rectangle {
-            id: headerArea
-            width: parent.width
-            height: 40
-            color: "black"
-            radius: 10
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    expandablePanel.isMinimized = !expandablePanel.isMinimized
-                    expandablePanel.height = expandablePanel.isMinimized ? headerArea.height : 300
-                }
-            }
-            RowLayout {
-                anchors.fill: parent
-                spacing: parent.width * 0.02
-
-                // Botão para minimizar/maximizar
-                Button {
-                    id: toggleButton
-                    onClicked: {
-                        expandablePanel.isMinimized = !expandablePanel.isMinimized
-                        expandablePanel.height = expandablePanel.isMinimized ? headerArea.height : 300
-                    }
-                    Layout.leftMargin: parent.width * 0.02
-                    Layout.preferredWidth: parent.width * 0.08
-
-                    background: Rectangle {
-                        radius: 15
-                        color: "transparent"
-                    }
-
-                    Label {
-                        text: expandablePanel.isMinimized ? "+" : "-"
-                        font.pixelSize: headerArea.width * 0.08
-                        color: "white"
-                        anchors.verticalCenter: parent.verticalCenter
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-                }
-
-                // Título do Painel
-                Label {
-                    text: "Painel de Instrumentos"
-                    color: "#ff4800"
-                    Layout.fillWidth: true
-                    Layout.rightMargin: parent.width * 0.02
-                    horizontalAlignment: Text.AlignHCenter
-                    font.pixelSize: headerArea.width * 0.08
-                }
-            }
+        // Imagem para a seta
+        Image {
+            source: "/custom/img/rightarrow.svg"  // Caminho da imagem da seta
+            width: 15  // Ajuste o tamanho conforme necessário
+            height: 15  // Ajuste o tamanho conforme necessário
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.leftMargin: 5
+            rotation: panel.visible ? 90 : 0
+            transformOrigin: Item.Center
         }
 
-        // Conteúdo do painel
-        Rectangle {
-            visible: !expandablePanel.isMinimized
-            anchors.top: headerArea.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
+        Text {
+            font.pixelSize: 12
+            text: "Painel de Instrumentos"
+            anchors.centerIn: parent
             color: "black"
-            radius: 10
+        }
 
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 0.5
-                anchors.rightMargin: 0.5
-                anchors.topMargin: 5
-                anchors.bottomMargin: 5
-                spacing: -2
-                Component.onCompleted: {
-                    expandablePanel.height = isMinimized ? headerArea.height : contentArea.implicitHeight + headerArea.height;
+        MouseArea {
+            anchors.fill: parent
+            onClicked: panel.visible = !panel.visible
+        }
+    }
+
+    // Definição do Panel
+    Rectangle {
+        id: panel
+        width: 180
+        height: 220
+        anchors.top: header.bottom
+        anchors.left: header.left
+        color: "#80FFFFFF" // Cinza meio transparente
+        border.color: "gray"
+        radius: 3
+        visible: false
+
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.leftMargin: 5
+            anchors.rightMargin: 5
+            anchors.topMargin: 5
+            anchors.bottomMargin: 5
+            spacing: 1
+
+            RowLayout {
+                spacing: 2
+                QGCSwitch {
+                    id: switchBrake
+                    width: 25
+                    height: 18
                 }
 
-                RowLayout {
-                    spacing: parent.width * 0.03
-                    QGCSwitch {
-                        id: switchBrake
-                    }
+                Item {
+                    width: 35
+                    height: 18
 
-                    Item {
-                        width: 40
-                        height: 19.8
-                        
-
-                        QGCButton {
-                            id: autoBrake
-                            property bool isActive: true
+                    QGCButton {
+                        id: autoBrake
+                        property bool isActive: true
+                        anchors.fill: parent
+                        text: "Auto"
+                        font.pixelSize: 10
+                        background: Rectangle {
+                            color: autoBrake.isActive ? "#ff4800" : "green"
+                            radius: 10
                             anchors.fill: parent
-                            text: "Auto"
-                            font.pixelSize: Math.max(10, parent.width * 0.020)
-                            background: Rectangle { // Define um fundo retangular
-                                color: autoBrake.isActive ? "#ff4800" : "green" // Cor do fundo
-                                radius: 10 // Bordas arredondadas
-                                anchors.fill: parent // Preenche todo o espaço do botão
-                            }
-                            onClicked: {
-                                autoBrake.isActive = !autoBrake.isActive
-                                switchBrake.checked = false
-                            }
                         }
-                    }
-
-                    Label {
-                        text: "Freio"
-                        color: "white"
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: headerArea.width * 0.06
-                    }
-                }
-
-                RowLayout {
-                    spacing: parent.width * 0.03
-                    QGCSwitch {
-                        id: switchLight
                         onClicked: {
-                            factLights.fact.value=!factLights.fact.value
+                            autoBrake.isActive = !autoBrake.isActive
+                            switchBrake.checked = false
                         }
                     }
+                }
 
-                    Item {
-                        width: 40
-                        height: 19.8
-                        
+                Item {
+                    width: 5 // Espaçamento entre o botão "Auto" e a label
+                }
 
-                        QGCButton {
-                            id: autoLight
-                            property bool isActive: true
+                Label {
+                    text: "Freio"
+                    color: "black"
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 10
+                }
+            }
+
+            RowLayout {
+                spacing: 2
+                QGCSwitch {
+                    id: switchLight
+                    width: 25
+                    height: 18
+                }
+
+                Item {
+                    width: 35
+                    height: 18
+
+                    QGCButton {
+                        id: autoLight
+                        property bool isActive: true
+                        anchors.fill: parent
+                        text: "Auto"
+                        font.pixelSize: 10
+                        background: Rectangle {
+                            color: autoLight.isActive ? "#ff4800" : "green"
+                            radius: 10
                             anchors.fill: parent
-                            text: "Auto"
-                            font.pixelSize: Math.max(10, parent.width * 0.020)
-                            background: Rectangle { // Define um fundo retangular
-                                color: autoLight.isActive ? "#ff4800" : "green" // Cor do fundo
-                                radius: 10 // Bordas arredondadas
-                                anchors.fill: parent // Preenche todo o espaço do botão
-                            }
-                            onClicked: {
-                                autoLight.isActive = !autoLight.isActive
-                                switchLight.checked = false
-                                factLights.fact.value=false
-                            }
                         }
-                    }
-
-                    Label {
-                        text: "Luzes"
-                        color: "white"
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: headerArea.width * 0.06
+                        onClicked: {
+                            autoLight.isActive = !autoLight.isActive
+                            switchLight.checked = false
+                        }
                     }
                 }
 
-                RowLayout {
-
-                    /*QGCLabel {
-                        id: pumpValue2
-                        visible: true
-                        color: "white"
-                        text: "test"
-                    }
-                    QGCLabel {
-                        id: pumpValue
-                        visible: true
-                        color: "white"
-                        text: _activeVehicle ? QGroundControl.corePlugin.sprayPumpState : ""
-                    }*/
-
-                    spacing: parent.width * 0.03
-                    QGCSwitch {
-                        id: switchBomb
-                        onCheckedChanged: {
-                            if (switchBomb.checked) {
-                                var pwmValue = bomba.value === 1 ? 1600 : (bomba.value === 2 ? 1500 : 1200);
-                                //console.log("Switch ligado. Enviando PWM " + pwmValue + ".");
-                                _activeVehicle.sendCommand(
-                                    1,      // component
-                                    183,    // command
-                                    true,   // confirmation
-                                    8,      // param1
-                                    pwmValue // param2
-                                );
-                            } else {
-                                //console.log("Switch desligado. Enviando para Bomba PWM 1051.");
-                                _activeVehicle.sendCommand(
-                                    1,      // component
-                                    183,    // command
-                                    true,   // confirmation
-                                    8,      // param1
-                                    1051    // param2
-                                );
-                            }
-                        }
-
-
-                    }
-                    Item {
-                        width: 40  // Defina a largura igual ao switch
-                        height: 19.8 // Defina a altura igual ao switch
-
-                        QGCButton {
-                            id: autoBomb
-                            anchors.fill: parent // Faz o botão preencher o Item
-                            text: "Auto"
-                            font.pixelSize: Math.max(10, parent.width * 0.020) // Ajusta o tamanho da fonte
-                            property bool isActive: true
-                            background: Rectangle { // Define um fundo retangular
-                                color: autoBomb.isActive ? "#ff4800" : "green" // Cor do fundo
-                                radius: 10 // Bordas arredondadas
-                                anchors.fill: parent // Preenche todo o espaço do botão
-                            }
-                            onClicked: {
-                                autoBomb.isActive = !autoBomb.isActive
-                                switchBomb.checked = false
-                            }
-                        }
-                    }
-                    Label {
-                        text: "Bombas"
-                        color: "white"
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: headerArea.width * 0.06
-                    }
+                Item {
+                    width: 5 // Espaçamento entre o botão "Auto" e a label
                 }
 
-                RowLayout {
+                Label {
+                    text: "Luzes"
+                    color: "black"
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 10
+                }
+            }
 
-                    /*QGCLabel {
-                        id: nozzleValue2
-                        visible: true
-                        color: "white"
-                        text: "test"
-                    }
-                    QGCLabel {
-                        id: nozzleValue
-                        visible: true
-                        color: "white"
-                        text: _activeVehicle ? QGroundControl.corePlugin.sprayNozzleState : ""
-                    }*/
+            RowLayout {
+                spacing: 2
+                QGCSwitch {
+                    id: switchBomb
+                    width: 25
+                    height: 18
+                }
+                Item {
+                    width: 35
+                    height: 18
 
-                    spacing: parent.width * 0.03
-                        QGCSwitch {
-                            id: switchNozzle
-                            onCheckedChanged: {
-                                if (switchNozzle.checked) {
-                                    var pwmValue = bicos.value === 1 ? 1800 : (bicos.value === 2 ? 1500 : 1200);
-                                    //console.log("Switch ligado. Enviando PWM " + pwmValue + ".");
-                                    _activeVehicle.sendCommand(
-                                        1,      // component
-                                        183,    // command
-                                        true,   // confirmation
-                                        9,      // param1
-                                        pwmValue // param2
-                                    );
-                                } else {
-                                    //console.log("Switch desligado. Enviando PWM 1051.");
-                                    _activeVehicle.sendCommand(
-                                        1,      // component
-                                        183,    // command
-                                        true,   // confirmation
-                                        9,      // param1
-                                        1051    // param2
-                                    );
-                                }
-                            }
-                        }
-                    Item {
-                        width: 40
-                        height: 19.8
-                        
-                        QGCButton {
-                            id: autoNozzle
-                            property bool isActive: true
+                    QGCButton {
+                        id: autoBomb
+                        anchors.fill: parent
+                        text: "Auto"
+                        font.pixelSize: 10
+                        property bool isActive: true
+                        background: Rectangle {
+                            color: autoBomb.isActive ? "#ff4800" : "green"
+                            radius: 10
                             anchors.fill: parent
-                            text: "Auto"
-                            font.pixelSize: Math.max(10, parent.width * 0.020)
-                            background: Rectangle {
-                                color: autoNozzle.isActive ? "#ff4800" : "green"
-                                radius: 10
-                                anchors.fill: parent
-                            }
-                            onClicked: {
-                         
-                                //console.log("Test.");
-                                _activeVehicle.sendCommand(
-                                    1,
-                                    183,  
-                                    true,  
-                                    9,  
-                                    1100  
-                                );
-                                //console.log("Bicos foram desligados automaticamente.");
-                            }
+                        }
+                        onClicked: {
+                            autoBomb.isActive = !autoBomb.isActive
+                            switchBomb.checked = false
                         }
                     }
-                    Label {
-                        text: "Bicos"
-                        color: "white"
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: headerArea.width * 0.06
-                    }
-      
                 }
 
-                //Vazão Slider
-                RowLayout{
-                    spacing: parent.width * 0.03
+                Item {
+                    width: 5 // Espaçamento entre o botão "Auto" e a label
+                }
 
-                    Label{
-                        text: "Vazão"
-                        color: "white"
-                        Layout.leftMargin: 12
-                        font.pixelSize: headerArea.width * 0.06
+                Label {
+                    text: "Bombas"
+                    color: "black"
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 10
+                }
+            }
+
+            RowLayout {
+                spacing: 2
+                QGCSwitch {
+                    id: switchNozzle
+                    width: 25
+                    height: 18
+                }
+                Item {
+                    width: 35
+                    height: 18
+
+                    QGCButton {
+                        id: autoNozzle
+                        property bool isActive: true
+                        anchors.fill: parent
+                        text: "Auto"
+                        font.pixelSize: 10
+                        background: Rectangle {
+                            color: autoNozzle.isActive ? "#ff4800" : "green"
+                            radius: 10
+                            anchors.fill: parent
+                        }
+                        onClicked: {
+                            autoNozzle.isActive = !autoNozzle.isActive
+                            switchNozzle.checked = false
+                        }
                     }
+                }
 
+                Item {
+                    width: 5 // Espaçamento entre o botão "Auto" e a label
+                }
+
+                Label {
+                    text: "Bicos"
+                    color: "black"
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 10
+                }
+            }
+
+            // Vazão Slider
+            ColumnLayout {
+                spacing: 1
+
+                Label {
+                    text: "Vazão"
+                    color: "black"
+                    font.pixelSize: 10
                 }
 
                 RowLayout {
-                    spacing: parent.width * 0.03
-
+                    spacing: 2
                     QGCSlider {
-                        id:                     bomba
-                        from:                   1
-                        to:                     3
-                        stepSize:               1
+                        id: bomba
+                        from: 1
+                        to: 3
+                        stepSize: 1
                         snapMode: QGCSlider.SnapAlways
-
-                        Layout.fillWidth: false  // Não preenche toda a largura
-                        Layout.preferredWidth: 90
-                        Layout.columnSpan:      2
-                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                        Layout.leftMargin: 12
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 18
                         live: true
-                        onValueChanged: {
-                            if (switchBomb.checked) {
-                                var pwmValue = bomba.value === 1 ? 1600 : (bomba.value === 2 ? 1400 : 1200);
-                                //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
-                                _activeVehicle.sendCommand(
-                                    1,      // component
-                                    183,    // command
-                                    true,   // confirmation
-                                    8,      // param1
-                                    pwmValue // param2
-                                );
-                            }
-                        }
                     }
 
                     Rectangle {
-                        id: ret1
-                        width: 40
-                        height: 14
-                        color: "#f0f0f0"  // Light grey background
+                        width: 35
+                        height: 18
+                        color: "#f0f0f0"
                         border.color: "#d0d0d0"
                         border.width: 1
                         radius: 5
@@ -567,59 +451,39 @@ Item {
                             text: bomba.value === 1 ? "Alta" : bomba.value === 2 ? "Média" : "Baixa"
                             anchors.centerIn: parent
                             color: "#333333"
-                            font.pixelSize: ret1.width * 0.20
+                            font.pixelSize: 10
                         }
                     }
                 }
-                //Tamanho gota
-                RowLayout{
-                    spacing: parent.width * 0.03
+            }
 
-                    Label{
-                        text: "Tamanho da gota"
-                        color: "white"
-                        Layout.leftMargin: 12
-                        font.pixelSize: headerArea.width * 0.06
-                    }
+            // Tamanho da gota
+            ColumnLayout {
+                spacing: 1
 
+                Label {
+                    text: "Tamanho da gota"
+                    color: "black"
+                    font.pixelSize: 10
                 }
 
                 RowLayout {
-                    spacing: parent.width * 0.03
-
+                    spacing: 2
                     QGCSlider {
-                        id:                     bicos
-                        from:           1
-                        to:           3
-                        stepSize:               1
-                        
+                        id: bicos
+                        from: 1
+                        to: 3
+                        stepSize: 1
                         snapMode: QGCSlider.SnapAlways
-                        Layout.fillWidth: false  // Não preenche toda a largura
-                        Layout.preferredWidth: 90
-                        Layout.columnSpan:      2
-                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                        Layout.leftMargin: 12
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 18
                         live: true
-                        onValueChanged: {
-                            if (switchNozzle.checked) {
-                                var pwmValue = bicos.value === 1 ? 1800 : (bicos.value === 2 ? 1500 : 1200);
-                                //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
-                                _activeVehicle.sendCommand(
-                                    1,      // component
-                                    183,    // command
-                                    true,   // confirmation
-                                    9,      // param1
-                                    pwmValue // param2
-                                );
-                            }
-                        }
                     }
 
                     Rectangle {
-                        
-                        width: 40
-                        height: 14
-                        color: "#f0f0f0"  // Light grey background
+                        width: 35
+                        height: 18
+                        color: "#f0f0f0"
                         border.color: "#d0d0d0"
                         border.width: 1
                         radius: 5
@@ -628,66 +492,8 @@ Item {
                             text: bicos.value === 1 ? "Fina" : bicos.value === 2 ? "Média" : "Grossa"
                             anchors.centerIn: parent
                             color: "#333333"
-                            font.pixelSize: ret1.width * 0.20
+                            font.pixelSize: 10
                         }
-                    }
-                }
-
-                RowLayout{
-                    spacing: parent.width * 0.03
-
-                    Label{
-                        text: "Velocidade"
-                        color: "white"
-                        Layout.leftMargin: 12
-                        font.pixelSize: headerArea.width * 0.06
-                    }
-
-                }
-                //Speed Slider
-                RowLayout {
-                    spacing: parent.width * 0.03
-
-                    QGCSlider {
-                        id:                     velocidade
-                        from:                   3
-                        to:                     18
-                        stepSize:               3
-                        snapMode: QGCSlider.SnapAlways
-
-                        Layout.fillWidth: false  // Não preenche toda a largura
-                        Layout.preferredWidth: 90
-                        Layout.columnSpan:      2
-                        Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                        Layout.leftMargin: 12
-                        live: true
-                        onValueChanged: {
-                            factSpeed.fact.value = velocidade.value;
-                        }
-
-                    }
-
-                    Rectangle {
-                        width: 40
-                        height: 14
-                        color: "#f0f0f0"  // Light grey background
-                        border.color: "#d0d0d0"
-                        border.width: 1
-                        radius: 5
-
-                        Label {
-                            text: speed.value.toFixed(1)
-                            anchors.centerIn: parent
-                            color: "#333333"
-                            font.pixelSize: ret1.width * 0.20
-                        }
-                    }
-                    FactCheckBox {
-                        id:factSpeed
-                        visible:false
-                        //fact:               controllerLoader.item.getParameterFact(-1, "speed")
-                        Layout.fillWidth:   true
-                        scale : ScreenTools.isMobile ? 0.5 : 0.8
                     }
                 }
             }
@@ -826,6 +632,7 @@ Item {
         height:                 ScreenTools.defaultFontPixelHeight * 6
         width:                  height
         radius:                 height * 0.5
+        visible: false
         color:                  qgcPal.windowShade
         anchors.horizontalCenter: parent.horizontalCenter // Centraliza horizontalmente
         anchors.bottom:         parent.bottom // Ancora na parte inferior da tela

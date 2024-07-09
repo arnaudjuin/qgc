@@ -49,6 +49,7 @@ Item {
                 width:              ScreenTools.minTouchPixels * 0.75
                 height:             width
                 sourceSize.width:   width
+                visible: false
                 color:              qgcPal.textpencil
                 fillMode:           Image.PreserveAspectFit
 
@@ -68,7 +69,7 @@ Item {
         }
     }
 
-    QGCMouseArea {
+    /*QGCMouseArea {
         id:                         mouseArea
         x:                          mainLayout.x
         y:                          mainLayout.y
@@ -86,5 +87,5 @@ Item {
                 mouse.accepted = false
             }
         }
-    }
+    }*/
 }

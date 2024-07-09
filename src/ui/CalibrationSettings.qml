@@ -28,6 +28,7 @@ Rectangle {
     color: qgcPal.window
 
     Rectangle {
+        id: calibrationRec
         width: 310
         height: 325
         border.color: "#d3d3d3"
@@ -36,7 +37,7 @@ Rectangle {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 5
+            //anchors.margins: 5
             spacing: 5  // Ajuste o espaçamento entre as linhas
 
             Label {
@@ -45,6 +46,29 @@ Rectangle {
                 font.bold: true
                 color: qgcPal.text
                 Layout.alignment: Qt.AlignHCenter
+                anchors.topMargin: 10
+            }       
+
+            QGCButton {
+                id: toggleButton
+                Layout.alignment: Qt.AlignHCenter
+                width: 50
+                Layout.preferredHeight: 30
+                text: "Active"
+                 background: Rectangle {
+                    id: buttonBackground
+                    color: "#ff4800" // Cor inicial (verde para Active)
+                    radius: 10
+                }
+                onClicked: {
+                    if (toggleButton.text === "Active") {
+                        toggleButton.text = "Disable"
+                        buttonBackground.color = "#ff0000" // Cor para Disable (vermelho)
+                    } else {
+                        toggleButton.text = "Active"
+                        buttonBackground.color = "#ff4800" // Cor para Active (verde)
+                    }
+                }
             }
 
             RowLayout {
