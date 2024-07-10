@@ -108,10 +108,23 @@ Item {
 
     //-------------------------------------------------------------------------
         //Play - Pause - Stop
+
+        Rectangle {
+            width: parent.width * 0.06
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            Layout.fillWidth: true
+            QGCButton {
+                text: "Painel de missões"
+                onClicked: showPlanView() // Adicione parênteses para chamar a função
+            }
+        }
     
         Rectangle {
         width: parent.width * 0.06
-        color: "black"
+        color: "transparent"
         anchors.left: parent.left
         anchors.leftMargin: 10
         anchors.verticalCenter: parent.verticalCenter
@@ -124,7 +137,7 @@ Item {
             anchors.margins: 5
     
             QGCButton {
-                Layout.fillWidth: true
+                width: 30
                 Layout.preferredHeight: 30
                 onClicked: {
                     guidedActionsController.confirmAction(guidedActionsController.actionStartMission)
@@ -132,7 +145,7 @@ Item {
                 
                 background: Rectangle {
                     color: "#ff4800"
-                    radius: 10
+                    radius: 100
                 }
     
                 Image {
@@ -142,17 +155,28 @@ Item {
                     fillMode: Image.PreserveAspectFit
                     anchors.centerIn: parent
                 }
+
+                PropertyAnimation on opacity {
+                    easing.type: Easing.OutQuart
+                    from: 0.7
+                    to: 1
+                    loops: Animation.Infinite
+                    running: true
+                    alwaysRunToEnd: true
+                    duration: 1000
+                }
+
             }
     
             QGCButton {
-                Layout.fillWidth: true
+                width: 30
                 Layout.preferredHeight: 30
                 onClicked: {
                     guidedActionsController.confirmAction(guidedActionsController.actionMVPause)
                 }
                 background: Rectangle {
                     color: "#ff4800"
-                    radius: 10
+                    radius: 100
                 }
     
                 Image {
@@ -165,22 +189,32 @@ Item {
             }
     
             QGCButton {
-                Layout.fillWidth: true
+                width: 30
                 Layout.preferredHeight: 30
                 onClicked: {
                     guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop)
                 }
                 background: Rectangle {
-                    color: "#ff4800"
-                    radius: 10
+                    color: "#ff4800" // Vermelho em hexadecimal
+                    radius: 100
                 }
-    
+
                 Image {
                     width: parent.width * 0.3
                     height: parent.height * 0.3
                     source: "/custom/img/stop.png"
                     fillMode: Image.PreserveAspectFit
                     anchors.centerIn: parent
+                }
+
+                PropertyAnimation on opacity {
+                    easing.type: Easing.OutQuart
+                    from: 0.5
+                    to: 1
+                    loops: Animation.Infinite
+                    running: true
+                    alwaysRunToEnd: true
+                    duration: 2000
                 }
             }
         }
@@ -204,24 +238,29 @@ Item {
         anchors.topMargin: 10
         color: "white"
         border.color: "gray"
-        radius: 3
+        radius:     ScreenTools.defaultFontPixelWidth / 2
 
-        // Imagem para a seta
-        Image {
-            source: "/custom/img/rightarrow.svg"  // Caminho da imagem da seta
-            width: 15  // Ajuste o tamanho conforme necessário
-            height: 15  // Ajuste o tamanho conforme necessário
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.leftMargin: 5
-            rotation: panel.visible ? 90 : 0
-            transformOrigin: Item.Center
-        }
+        Row {
+            anchors.fill: parent
+            anchors.margins: 8
+            spacing: 15  // Espaço entre a imagem e o texto
 
-        Text {
-            font.pixelSize: 12
-            text: "Painel de Instrumentos"
-            anchors.centerIn: parent
-            color: "black"
+            // Imagem para a seta
+            Image {
+                source: "/custom/img/rightarrow.svg"  // Caminho da imagem da seta
+                width: 10  // Ajuste o tamanho conforme necessário
+                height: 10  // Ajuste o tamanho conforme necessário
+                anchors.verticalCenter: parent.verticalCenter
+                rotation: panel.visible ? 90 : 0
+                transformOrigin: Item.Center
+            }
+
+            Text {
+                font.pixelSize: 12
+                text: "Painel de Instrumentos"
+                anchors.verticalCenter: parent.verticalCenter
+                color: "black"
+            }
         }
 
         MouseArea {
@@ -237,14 +276,14 @@ Item {
         height: 220
         anchors.top: header.bottom
         anchors.left: header.left
-        color: "#80FFFFFF" // Cinza meio transparente
+        color: "#90FFFFFF" // Cinza meio transparente
         border.color: "gray"
-        radius: 3
+        radius:     ScreenTools.defaultFontPixelWidth / 2
         visible: false
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.leftMargin: 5
+            //anchors.leftMargin: 5
             anchors.rightMargin: 5
             anchors.topMargin: 5
             anchors.bottomMargin: 5
@@ -418,7 +457,8 @@ Item {
 
             // Vazão Slider
             ColumnLayout {
-                spacing: 1
+                spacing: 5
+                Layout.leftMargin: 15
 
                 Label {
                     text: "Vazão"
@@ -455,11 +495,6 @@ Item {
                         }
                     }
                 }
-            }
-
-            // Tamanho da gota
-            ColumnLayout {
-                spacing: 1
 
                 Label {
                     text: "Tamanho da gota"

@@ -23,85 +23,96 @@ import QGroundControl.FactControls 1.0
 
 Rectangle {
     id: calibrationView
-    width: 600
-    height: 400
+    width: 400
+    height: 300
     color: qgcPal.window
 
     Rectangle {
         id: calibrationRec
-        width: 310
-        height: 325
+        width: 275
+        height: 305
         border.color: "#d3d3d3"
         anchors.centerIn: parent
         radius: 10
+        color: "white"
 
         ColumnLayout {
             anchors.fill: parent
-            //anchors.margins: 5
-            spacing: 5  // Ajuste o espaçamento entre as linhas
+            anchors.margins: 5  // Ajuste as margens para subir tudo um pouco
+            spacing: 5  // Ajuste o espaçamento entre os componentes
 
             Label {
                 text: "Wheel alignment panel"
-                font.pointSize: 8
+                font.pointSize: 12
                 font.bold: true
                 color: qgcPal.text
                 Layout.alignment: Qt.AlignHCenter
-                anchors.topMargin: 10
-            }       
+            }
 
             QGCButton {
                 id: toggleButton
                 Layout.alignment: Qt.AlignHCenter
-                width: 50
-                Layout.preferredHeight: 30
+                width: 100
+                height: 30
                 text: "Active"
-                 background: Rectangle {
+                background: Rectangle {
                     id: buttonBackground
-                    color: "#ff4800" // Cor inicial (verde para Active)
-                    radius: 10
+                    color: "#ff4800"
+                    radius: 5
                 }
                 onClicked: {
                     if (toggleButton.text === "Active") {
                         toggleButton.text = "Disable"
-                        buttonBackground.color = "#ff0000" // Cor para Disable (vermelho)
+                        buttonBackground.color = "#ff0000"
                     } else {
                         toggleButton.text = "Active"
-                        buttonBackground.color = "#ff4800" // Cor para Active (verde)
+                        buttonBackground.color = "#ff4800"
                     }
                 }
             }
 
-            RowLayout {
+            // Slider 1
+            ColumnLayout {
                 spacing: 2
                 Layout.alignment: Qt.AlignHCenter
-                ColumnLayout {
-                    spacing: 0  // Espaçamento entre a label e o slider
-                    Label {
-                        text: "Left front"
-                        Layout.alignment: Qt.AlignHCenter
-                    }
-                    RowLayout {
-                        spacing: 2
+                Label {
+                    text: "Left front"
+                    font.pixelSize: 12
+                    Layout.alignment: Qt.AlignHCenter
+                }
+                RowLayout {
+                    spacing: 5
+                    Layout.alignment: Qt.AlignHCenter
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        color: "#ff4800"
+                        radius: 5
                         QGCButton {
-                            width: 30
-                            height: 30
                             text: "-"
+                            anchors.fill: parent
                             onClicked: {
                                 slider1.value = Math.max(slider1.value - 1, slider1.from);
                             }
                         }
-                        QGCSlider {
-                            id: slider1
-                            width: 150
-                            from: 0
-                            to: 100
-                            stepSize: 1
-                            enabled: false
-                        }
+                    }
+                    QGCSlider {
+                        id: slider1
+                        width: 120
+                        height: 30
+                        from: 0
+                        to: 100
+                        stepSize: 1
+                        enabled: false
+                    }
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        color: "#ff4800"
+                        radius: 5
                         QGCButton {
-                            width: 30
-                            height: 30
                             text: "+"
+                            anchors.fill: parent
                             onClicked: {
                                 slider1.value = Math.min(slider1.value + 1, slider1.to);
                             }
@@ -110,37 +121,48 @@ Rectangle {
                 }
             }
 
-            RowLayout {
+            // Slider 2
+            ColumnLayout {
                 spacing: 2
                 Layout.alignment: Qt.AlignHCenter
-                ColumnLayout {
-                    spacing: 0  // Espaçamento entre a label e o slider
-                    Label {
-                        text: "Left rear"
-                        Layout.alignment: Qt.AlignHCenter
-                    }
-                    RowLayout {
-                        spacing: 2
+                Label {
+                    text: "Left rear"
+                    font.pixelSize: 12
+                    Layout.alignment: Qt.AlignHCenter
+                }
+                RowLayout {
+                    spacing: 5
+                    Layout.alignment: Qt.AlignHCenter
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        color: "#ff4800"
+                        radius: 5
                         QGCButton {
-                            width: 30
-                            height: 30
                             text: "-"
+                            anchors.fill: parent
                             onClicked: {
                                 slider2.value = Math.max(slider2.value - 1, slider2.from);
                             }
                         }
-                        QGCSlider {
-                            id: slider2
-                            width: 150
-                            from: 0
-                            to: 100
-                            stepSize: 1
-                            enabled: false
-                        }
+                    }
+                    QGCSlider {
+                        id: slider2
+                        width: 120
+                        height: 30
+                        from: 0
+                        to: 100
+                        stepSize: 1
+                        enabled: false
+                    }
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        color: "#ff4800"
+                        radius: 5
                         QGCButton {
-                            width: 30
-                            height: 30
                             text: "+"
+                            anchors.fill: parent
                             onClicked: {
                                 slider2.value = Math.min(slider2.value + 1, slider2.to);
                             }
@@ -149,37 +171,48 @@ Rectangle {
                 }
             }
 
-            RowLayout {
+            // Slider 3
+            ColumnLayout {
                 spacing: 2
                 Layout.alignment: Qt.AlignHCenter
-                ColumnLayout {
-                    spacing: 0  // Espaçamento entre a label e o slider
-                    Label {
-                        text: "Right front"
-                        Layout.alignment: Qt.AlignHCenter
-                    }
-                    RowLayout {
-                        spacing: 2
+                Label {
+                    text: "Right front"
+                    font.pixelSize: 12
+                    Layout.alignment: Qt.AlignHCenter
+                }
+                RowLayout {
+                    spacing: 5
+                    Layout.alignment: Qt.AlignHCenter
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        color: "#ff4800"
+                        radius: 5
                         QGCButton {
-                            width: 30
-                            height: 30
                             text: "-"
+                            anchors.fill: parent
                             onClicked: {
                                 slider3.value = Math.max(slider3.value - 1, slider3.from);
                             }
                         }
-                        QGCSlider {
-                            id: slider3
-                            width: 150
-                            from: 0
-                            to: 100
-                            stepSize: 1
-                            enabled: false
-                        }
+                    }
+                    QGCSlider {
+                        id: slider3
+                        width: 120
+                        height: 30
+                        from: 0
+                        to: 100
+                        stepSize: 1
+                        enabled: false
+                    }
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        color: "#ff4800"
+                        radius: 5
                         QGCButton {
-                            width: 30
-                            height: 30
                             text: "+"
+                            anchors.fill: parent
                             onClicked: {
                                 slider3.value = Math.min(slider3.value + 1, slider3.to);
                             }
@@ -188,39 +221,50 @@ Rectangle {
                 }
             }
 
-            RowLayout {
+            // Slider 4
+            ColumnLayout {
                 spacing: 2
                 Layout.alignment: Qt.AlignHCenter
-                ColumnLayout {
-                    spacing: 0  // Espaçamento entre a label e o slider
-                    Label {
-                        text: "Right rear"
-                        Layout.alignment: Qt.AlignHCenter
-                    }
-                    RowLayout {
-                        spacing: 2
+                Label {
+                    text: "Right rear"
+                    font.pixelSize: 12
+                    Layout.alignment: Qt.AlignHCenter
+                }
+                RowLayout {
+                    spacing: 5
+                    Layout.alignment: Qt.AlignHCenter
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        color: "#ff4800"
+                        radius: 5
                         QGCButton {
-                            width: 30
-                            height: 30
                             text: "-"
+                            anchors.fill: parent
                             onClicked: {
-                                slider4.value = Math.max(slider4.value - 20, slider4.from);
+                                slider4.value = Math.max(slider4.value - 1, slider4.from);
                             }
                         }
-                        QGCSlider {
-                            id: slider4
-                            width: 150
-                            from: 0
-                            to: 100
-                            stepSize: 20
-                            enabled: false
-                        }
+                    }
+                    QGCSlider {
+                        id: slider4
+                        width: 120
+                        height: 30
+                        from: 0
+                        to: 100
+                        stepSize: 1
+                        enabled: false
+                    }
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        color: "#ff4800"
+                        radius: 5
                         QGCButton {
-                            width: 30
-                            height: 30
                             text: "+"
+                            anchors.fill: parent
                             onClicked: {
-                                slider4.value = Math.min(slider4.value + 20, slider4.to);
+                                slider4.value = Math.min(slider4.value + 1, slider4.to);
                             }
                         }
                     }
