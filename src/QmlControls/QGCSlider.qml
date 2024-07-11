@@ -45,8 +45,8 @@ Slider {
         height:         control.horizontal ? implicitHeight : control.availableHeight
         radius:         control._barHeight / 2
         color:          qgcPal.button
-        border.width:   1
-        border.color:   qgcPal.buttonText
+        //border.width:   1
+        //border.color:   qgcPal.buttonText
     }
 
     // FIXME-QT6: Indicator portion of slider not yet supported
