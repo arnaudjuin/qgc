@@ -111,7 +111,7 @@ Item {
     
         Rectangle {
         width: parent.width * 0.06
-        color: "black"
+        color: "transparent"
         anchors.left: parent.left
         anchors.leftMargin: 10
         anchors.verticalCenter: parent.verticalCenter
@@ -124,7 +124,7 @@ Item {
             anchors.margins: 5
     
             QGCButton {
-                Layout.fillWidth: true
+                width: 30
                 Layout.preferredHeight: 30
                 onClicked: {
                     guidedActionsController.confirmAction(guidedActionsController.actionStartMission)
@@ -132,7 +132,7 @@ Item {
                 
                 background: Rectangle {
                     color: "#ff4800"
-                    radius: 10
+                    radius: 100
                 }
     
                 Image {
@@ -142,17 +142,28 @@ Item {
                     fillMode: Image.PreserveAspectFit
                     anchors.centerIn: parent
                 }
+
+                PropertyAnimation on opacity {
+                    easing.type: Easing.OutQuart
+                    from: 0.7
+                    to: 1
+                    loops: Animation.Infinite
+                    running: true
+                    alwaysRunToEnd: true
+                    duration: 1000
+                }
+
             }
     
             QGCButton {
-                Layout.fillWidth: true
+                width: 30
                 Layout.preferredHeight: 30
                 onClicked: {
                     guidedActionsController.confirmAction(guidedActionsController.actionMVPause)
                 }
                 background: Rectangle {
                     color: "#ff4800"
-                    radius: 10
+                    radius: 100
                 }
     
                 Image {
@@ -165,22 +176,32 @@ Item {
             }
     
             QGCButton {
-                Layout.fillWidth: true
+                width: 30
                 Layout.preferredHeight: 30
                 onClicked: {
                     guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop)
                 }
                 background: Rectangle {
-                    color: "#ff4800"
-                    radius: 10
+                    color: "#ff4800" // Vermelho em hexadecimal
+                    radius: 100
                 }
-    
+
                 Image {
                     width: parent.width * 0.3
                     height: parent.height * 0.3
                     source: "/custom/img/stop.png"
                     fillMode: Image.PreserveAspectFit
                     anchors.centerIn: parent
+                }
+
+                PropertyAnimation on opacity {
+                    easing.type: Easing.OutQuart
+                    from: 0.5
+                    to: 1
+                    loops: Animation.Infinite
+                    running: true
+                    alwaysRunToEnd: true
+                    duration: 2000
                 }
             }
         }
@@ -340,7 +361,30 @@ Item {
                     id: switchBomb
                     width: 25
                     height: 18
+                    onCheckedChanged: {
+                        if (switchBomb.checked) {
+                            var pwmValue = bomba.value === 1 ? 1600 : (bomba.value === 2 ? 1500 : 1200);
+                            //console.log("Switch ligado. Enviando PWM " + pwmValue + ".");
+                            _activeVehicle.sendCommand(
+                                1,      // component
+                                183,    // command
+                                true,   // confirmation
+                                8,      // param1
+                                pwmValue // param2
+                            );
+                        } else {
+                            //console.log("Switch desligado. Enviando para Bomba PWM 1051.");
+                            _activeVehicle.sendCommand(
+                                1,      // component
+                                183,    // command
+                                true,   // confirmation
+                                8,      // param1
+                                1051    // param2
+                            );
+                        }
+                    }
                 }
+
                 Item {
                     width: 35
                     height: 18
@@ -381,7 +425,30 @@ Item {
                     id: switchNozzle
                     width: 25
                     height: 18
+                    onCheckedChanged: {
+                        if (switchNozzle.checked) {
+                            var pwmValue = bicos.value === 1 ? 1800 : (bicos.value === 2 ? 1500 : 1200);
+                            //console.log("Switch ligado. Enviando PWM " + pwmValue + ".");
+                            _activeVehicle.sendCommand(
+                                1,      // component
+                                183,    // command
+                                true,   // confirmation
+                                9,      // param1
+                                pwmValue // param2
+                            );
+                        } else {
+                            //console.log("Switch desligado. Enviando PWM 1051.");
+                            _activeVehicle.sendCommand(
+                                1,      // component
+                                183,    // command
+                                true,   // confirmation
+                                9,      // param1
+                                1051    // param2
+                            );
+                        }
+                    }
                 }
+
                 Item {
                     width: 35
                     height: 18
@@ -398,8 +465,15 @@ Item {
                             anchors.fill: parent
                         }
                         onClicked: {
-                            autoNozzle.isActive = !autoNozzle.isActive
-                            switchNozzle.checked = false
+                            //console.log("Test.");
+                            _activeVehicle.sendCommand(
+                                1,
+                                183,  
+                                true,  
+                                9,  
+                                1100  
+                            );
+                            //console.log("Bicos foram desligados automaticamente.");
                         }
                     }
                 }
@@ -437,6 +511,19 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 18
                         live: true
+                        onValueChanged: {
+                            if (switchBomb.checked) {
+                                var pwmValue = bomba.value === 1 ? 1200 : (bomba.value === 2 ? 1400 : 1600);
+                                //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
+                                _activeVehicle.sendCommand(
+                                    1,      // component
+                                    183,    // command
+                                    true,   // confirmation
+                                    8,      // param1
+                                    pwmValue // param2
+                                );
+                            }
+                        }
                     }
 
                     Rectangle {
@@ -448,7 +535,7 @@ Item {
                         radius: 5
 
                         Label {
-                            text: bomba.value === 1 ? "Alta" : bomba.value === 2 ? "Média" : "Baixa"
+                            text: bomba.value === 1 ? "Baixa" : bomba.value === 2 ? "Média" : "Alta"
                             anchors.centerIn: parent
                             color: "#333333"
                             font.pixelSize: 10
@@ -478,6 +565,19 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 18
                         live: true
+                        onValueChanged: {
+                            if (switchNozzle.checked) {
+                                var pwmValue = bicos.value === 1 ? 1200 : (bicos.value === 2 ? 1500 : 1800);
+                                //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
+                                _activeVehicle.sendCommand(
+                                    1,      // component
+                                    183,    // command
+                                    true,   // confirmation
+                                    9,      // param1
+                                    pwmValue // param2
+                                );
+                            }
+                        }
                     }
 
                     Rectangle {
@@ -489,7 +589,7 @@ Item {
                         radius: 5
 
                         Label {
-                            text: bicos.value === 1 ? "Fina" : bicos.value === 2 ? "Média" : "Grossa"
+                            text: bicos.value === 1 ? "Grossa" : bicos.value === 2 ? "Média" : "Fina"
                             anchors.centerIn: parent
                             color: "#333333"
                             font.pixelSize: 10
