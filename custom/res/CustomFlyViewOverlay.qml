@@ -108,20 +108,6 @@ Item {
 
     //-------------------------------------------------------------------------
         //Play - Pause - Stop
-
-        Rectangle {
-            width: parent.width * 0.06
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            anchors.top: parent.top
-            anchors.topMargin: 10
-            Layout.fillWidth: true
-            QGCButton {
-                text: "Painel de missões"
-                onClicked: showPlanView() // Adicione parênteses para chamar a função
-            }
-        }
-    
         Rectangle {
         width: parent.width * 0.06
         color: "transparent"
@@ -206,16 +192,6 @@ Item {
                     fillMode: Image.PreserveAspectFit
                     anchors.centerIn: parent
                 }
-
-                PropertyAnimation on opacity {
-                    easing.type: Easing.OutQuart
-                    from: 0.5
-                    to: 1
-                    loops: Animation.Infinite
-                    running: true
-                    alwaysRunToEnd: true
-                    duration: 2000
-                }
             }
         }
     
@@ -236,8 +212,8 @@ Item {
         anchors.rightMargin: 10
         anchors.top: parent.top
         anchors.topMargin: 10
-        color: "white"
-        border.color: "gray"
+        color: "black"
+        border.color: "black"
         radius:     ScreenTools.defaultFontPixelWidth / 2
 
         Row {
@@ -245,21 +221,19 @@ Item {
             anchors.margins: 8
             spacing: 15  // Espaço entre a imagem e o texto
 
-            // Imagem para a seta
-            Image {
-                source: "/custom/img/rightarrow.svg"  // Caminho da imagem da seta
-                width: 10  // Ajuste o tamanho conforme necessário
-                height: 10  // Ajuste o tamanho conforme necessário
+             Text {
+                font.pixelSize: 18
+                width: 10
+                text: panel.visible ? "-" : "+"
                 anchors.verticalCenter: parent.verticalCenter
-                rotation: panel.visible ? 90 : 0
-                transformOrigin: Item.Center
+                color: "#ffffff"  // Cor do texto
             }
 
             Text {
                 font.pixelSize: 12
                 text: "Painel de Instrumentos"
                 anchors.verticalCenter: parent.verticalCenter
-                color: "black"
+                color: "#ff4800"
             }
         }
 
@@ -276,8 +250,8 @@ Item {
         height: 220
         anchors.top: header.bottom
         anchors.left: header.left
-        color: "#90FFFFFF" // Cinza meio transparente
-        border.color: "gray"
+        color: "#80000000" // Cinza meio transparente
+        border.color: "#80000000"
         radius:     ScreenTools.defaultFontPixelWidth / 2
         visible: false
 
@@ -325,7 +299,7 @@ Item {
 
                 Label {
                     text: "Freio"
-                    color: "black"
+                    color: "white"
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 10
                 }
@@ -367,7 +341,7 @@ Item {
 
                 Label {
                     text: "Luzes"
-                    color: "black"
+                    color: "white"
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 10
                 }
@@ -431,7 +405,7 @@ Item {
 
                 Label {
                     text: "Bombas"
-                    color: "black"
+                    color: "white"
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 10
                 }
@@ -502,7 +476,7 @@ Item {
 
                 Label {
                     text: "Bicos"
-                    color: "black"
+                    color: "white"
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 10
                 }
@@ -515,7 +489,7 @@ Item {
 
                 Label {
                     text: "Vazão"
-                    color: "black"
+                    color: "white"
                     font.pixelSize: 10
                 }
 
@@ -564,7 +538,7 @@ Item {
 
                 Label {
                     text: "Tamanho da gota"
-                    color: "black"
+                    color: "white"
                     font.pixelSize: 10
                 }
 

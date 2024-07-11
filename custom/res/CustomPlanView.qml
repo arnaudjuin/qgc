@@ -322,16 +322,16 @@ Item {
                            }
     }
 
-    PlanViewToolBar {
+    /*PlanViewToolBar {
         planMasterController:   _planMasterController
         id:                     planToolBar
-    }
+    }*/
 
     Item {
         id:             panel
         anchors.left:   parent.left
         anchors.right:  parent.right
-        anchors.top:    planToolBar.bottom
+        anchors.top:    parent.top
         anchors.bottom: parent.bottom
 
         FlightMap {
@@ -553,6 +553,30 @@ Item {
             visible: true
         }
 
+        QGCButton {
+            width: 50
+            height: 50
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            
+            onClicked: {
+                showFlyView();
+            }
+            background: Rectangle {
+                color: "#ff4800" // Vermelho em hexadecimal
+                radius: width / 2
+            }
+            Image {
+                width: parent.width * 0.5
+                height: parent.height * 0.5
+                source: "/qmlimages/Home.svg"
+                fillMode: Image.PreserveAspectFit
+                anchors.centerIn: parent
+            }
+        }
+
         //-------------------------------------------------------
         // Custom Panel Controls
         Item {
@@ -571,7 +595,7 @@ Item {
                 anchors.left:           parent.left
                 anchors.right:          parent.right
                 anchors.top:            rightPanel.top
-                height:250
+                height: 205
 
 
                 MissionPanel {

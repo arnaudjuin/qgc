@@ -256,8 +256,8 @@ Rectangle {
         }
 
         // Row for mission buttons
-
-        Row {
+        //Botões Set Vertex e Set Waypoint
+        /*Row {
             visible: bar.currentIndex == 0
             width: parent.width
             //Layout.leftMargin: _margin + 12
@@ -300,7 +300,7 @@ Rectangle {
                 waypointItem.coordinate = _activeVehicle.coordinate
                 }
             }
-        }
+        }*/
 
         Row {
             visible: bar.currentIndex == 0
@@ -454,7 +454,7 @@ Rectangle {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
                     }
-                    _planMasterController.saveToSelectedFile();
+                    //_planMasterController.saveToSelectedFile();
                     _confirmationStart = true;
                 }
 
