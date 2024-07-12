@@ -156,10 +156,10 @@ Rectangle {
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
                 id: buttonDraw
-                text: "Trace"
+                text: _editTracing ? "Finish" : "Trace" 
                 checked: _editTracing
-                               background: Rectangle {
-                    color: _editTracing ? "#595757" : "#ffffff" // When clicked turns light grey
+                    background: Rectangle {
+                    color: _editTracing ? "#FF6666" : "#ffffff" // When clicked turns light grey
                     radius: 14  
                     border.color: "white"  
                     anchors.fill: parent  

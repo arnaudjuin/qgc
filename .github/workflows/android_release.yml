@@ -9,7 +9,7 @@ on:
       - 'android*'
       - 'androidFieldTest'
       - 'ui/Features'
-      - 'ui/ListItem'
+      - 'ux/PlanView'
     tags:
       - 'v*'
     paths-ignore:
