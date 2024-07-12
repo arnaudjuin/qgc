@@ -35,7 +35,7 @@ Item {
     readonly property real  _margin:                    ScreenTools.defaultFontPixelHeight * 0.5
     readonly property real  _toolsMargin:               ScreenTools.defaultFontPixelWidth * 0.75
     readonly property real  _radius:                    ScreenTools.defaultFontPixelWidth  * 0.5
-    readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? Math.min(width / 3, ScreenTools.defaultFontPixelWidth * 34) :  500
+    readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? Math.min(width / 4, ScreenTools.defaultFontPixelWidth * 34) :  500
     readonly property var   _defaultVehicleCoordinate:  QtPositioning.coordinate(37.803784, -122.462276)
     readonly property bool  _waypointsOnlyMode:         QGroundControl.corePlugin.options.missionWaypointsOnly
 
@@ -622,7 +622,7 @@ Item {
                 QGCListView {
                     id:                 missionItemEditorListView
                     anchors.fill:       parent
-                    width: parent.width
+                    width: _rightPanelWidth
                     spacing:            ScreenTools.defaultFontPixelHeight / 2
                     orientation:        ListView.Vertical
                     model:              _missionController.visualItems
@@ -635,7 +635,7 @@ Item {
                         map:            editorMap
                         masterController:  _planMasterController
                         missionItem:    object
-                        width:          missionItemEditorListView.width
+                        width:          _rightPanelWidth
                         readOnly:       false
                         onClicked: (sequenceNumber) => { _missionController.setCurrentPlanViewSeqNum(object.sequenceNumber, false) }
                         onRemove: {

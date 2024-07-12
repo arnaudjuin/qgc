@@ -454,7 +454,7 @@ Rectangle {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
                     }
-                    //_planMasterController.saveToSelectedFile();
+                    _planMasterController.saveToSelectedFile();
                     _confirmationStart = true;
                 }
 

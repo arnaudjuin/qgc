@@ -212,8 +212,8 @@ Item {
         anchors.rightMargin: 10
         anchors.top: parent.top
         anchors.topMargin: 10
-        color: "black"
-        border.color: "black"
+        color: "white"
+        border.color: "white"
         radius:     ScreenTools.defaultFontPixelWidth / 2
 
         Row {
@@ -226,14 +226,14 @@ Item {
                 width: 10
                 text: panel.visible ? "-" : "+"
                 anchors.verticalCenter: parent.verticalCenter
-                color: "#ffffff"  // Cor do texto
+                color: "#000000"  // Cor do texto
             }
 
             Text {
                 font.pixelSize: 12
                 text: "Painel de Instrumentos"
                 anchors.verticalCenter: parent.verticalCenter
-                color: "#ff4800"
+                color: "#000000"
             }
         }
 
@@ -250,8 +250,8 @@ Item {
         height: 220
         anchors.top: header.bottom
         anchors.left: header.left
-        color: "#80000000" // Cinza meio transparente
-        border.color: "#80000000"
+        color: "#60ffffff" // Cinza meio transparente
+        border.color: "#60ffffff"
         radius:     ScreenTools.defaultFontPixelWidth / 2
         visible: false
 
@@ -299,7 +299,7 @@ Item {
 
                 Label {
                     text: "Freio"
-                    color: "white"
+                    color: "#000000"
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 10
                 }
@@ -341,7 +341,7 @@ Item {
 
                 Label {
                     text: "Luzes"
-                    color: "white"
+                    color: "#000000"
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 10
                 }
@@ -405,7 +405,7 @@ Item {
 
                 Label {
                     text: "Bombas"
-                    color: "white"
+                    color: "#000000"
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 10
                 }
@@ -476,7 +476,7 @@ Item {
 
                 Label {
                     text: "Bicos"
-                    color: "white"
+                    color: "#000000"
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 10
                 }
@@ -489,7 +489,7 @@ Item {
 
                 Label {
                     text: "Vazão"
-                    color: "white"
+                    color: "#000000"
                     font.pixelSize: 10
                 }
 
@@ -538,7 +538,7 @@ Item {
 
                 Label {
                     text: "Tamanho da gota"
-                    color: "white"
+                    color: "#000000"
                     font.pixelSize: 10
                 }
 
