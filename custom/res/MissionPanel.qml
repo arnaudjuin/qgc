@@ -135,14 +135,19 @@ Rectangle {
                     currentIndex = 0
                 }
                 QGCTabButton {
-                    text: qsTr("Mission")
+                    text: qsTr("M")
                     height: 35
                 }
                 QGCTabButton {
-                    text: qsTr("Fence")
+                    text: qsTr("F")
+                    height: 35
+                }
+                QGCTabButton{
+                    text: qsTr("L")
                     height: 35
                 }
             }
+            
         }
         // Row for trace and add waypoint buttons
         Row {
@@ -234,15 +239,16 @@ Rectangle {
             
             QGCButton {
                 background: Rectangle {
-                    color: _addWaypointOnClick ? "#595757" : "#ffffff" // When clicked turns light grey
+                    color: _addWaypointOnClick ? "#FF6666" : "#ffffff" // When clicked turns light grey
                     radius: 14  
                     border.color: "white"  
                     anchors.fill: parent  
                 }
+                text: _addWaypointOnClick ? "Finish" : "Add waypoint"
                 id: buttonTravel
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
-                text: "Add waypoint"
+                
                 checked: _addWaypointOnClick
                 onClicked: {
                     if (polygonItem) {
@@ -309,7 +315,7 @@ Rectangle {
             spacing: ScreenTools.defaultFontPixelWidth * 1
 
             // Undo button
-            QGCButton {
+            /*QGCButton {
                 background: Rectangle {
                     color: "#ffffff"  
                     radius: 14  
@@ -327,8 +333,32 @@ Rectangle {
                     }
                     _missionController.removeVisualItem(lastIndex);
                 }
+            }*/
+            QGCButton {
+                background: Rectangle {
+                    color: "#ffffff"  
+                    radius: 14  
+                    border.color: "white"  
+                    anchors.fill: parent  
+                }
+                text: qsTr("Save")
+                width: (_rightPanelWidth / 2) - ScreenTools.defaultFontPixelWidth * 1
+                height: ScreenTools.isMobile ? 28 : 28
+                Layout.fillWidth: true
+                enabled: !_planMasterController.syncInProgress
+                onClicked: {
+                                        if (polygonItem) {
+                        polygonItem.surveyAreaPolygon.traceMode = false;
+                        _editTracing = false;
+                    }
+                    if (_planMasterController.currentPlanFile !== "") {
+                        _planMasterController.saveToCurrent();
+                    } else {
+                        _planMasterController.saveToSelectedFile();
+                    }
+                }
             }
-            
+
             // Clear button
             QGCButton {
                 background: Rectangle {
@@ -355,18 +385,6 @@ Rectangle {
                     });
                 }
             }
-
-        }
-
-        // Row for additional mission buttons
-        Row {
-            visible: bar.currentIndex == 0
-            width: parent.width
-            //Layout.topMargin: _margin * 1
-            spacing: ScreenTools.defaultFontPixelWidth * 1
-            //Layout.leftMargin: _margin + 12
-
-            // File dialog for loading KML or SHP files
             KMLOrSHPFileDialog {
                 id: kmlOrSHPLoadDialog
                 title: qsTr("Select Polygon File")
@@ -383,10 +401,23 @@ Rectangle {
                 }
             }
 
+        }
+
+        // Row for additional mission buttons
+        /*Row {
+            visible: bar.currentIndex == 0
+            width: parent.width
+            //Layout.topMargin: _margin * 1
+            //spacing: ScreenTools.defaultFontPixelWidth * 1
+            //Layout.leftMargin: _margin + 12
+
+            // File dialog for loading KML or SHP files
+            
+
             
 
             // Load button
-            QGCButton {
+            /*QGCButton {
                 background: Rectangle {
                     color: "#ffffff"  
                     radius: 14  
@@ -404,37 +435,14 @@ Rectangle {
             }
 
             // Save button
-            QGCButton {
-                background: Rectangle {
-                    color: "#ffffff"  
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
-                }
-                text: qsTr("Save")
-                width: (_rightPanelWidth / 2) - ScreenTools.defaultFontPixelWidth * 1
-                height: ScreenTools.isMobile ? 28 : 28
-                Layout.fillWidth: true
-                enabled: !_planMasterController.syncInProgress
-                onClicked: {
-                                        if (polygonItem) {
-                        polygonItem.surveyAreaPolygon.traceMode = false;
-                        _editTracing = false;
-                    }
-                    if (_planMasterController.currentPlanFile !== "") {
-                        _planMasterController.saveToCurrent();
-                    } else {
-                        _planMasterController.saveToSelectedFile();
-                    }
-                }
-            }
-        }
+            
+        }*/
         //Row for start button
         Row {
             visible: bar.currentIndex == 0
             width: parent.width
             //Layout.topMargin: _margin * 1
-            spacing: ScreenTools.defaultFontPixelWidth * 1.5
+            spacing: ScreenTools.defaultFontPixelWidth * 1
             //Layout.leftMargin: _margin + 12
 
             // Start button
@@ -565,42 +573,39 @@ Rectangle {
     }
 
     // Column for file load choice
-    Column {
-        id: loadChoiceColumn
-        visible: loadChoice && bar.currentIndex == 0
-        anchors.margins: _margin
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top + 500
-        spacing: _margin
-        QGCLabel {
-            text: qsTr("Which kind of file are you loading?")
-            font.family: ScreenTools.demiboldFontFamily
-        }
-        Row {
-            QGCButton {
-                text: "KML"
-                Layout.fillWidth: true
-                onClicked: {
-                    loadChoice = false;
-                    kmlOrSHPLoadDialog.openForLoad();
-                }
+    Rectangle {
+        visible: bar.currentIndex == 2
+        id: loadChoiceRect
+        anchors.topMargin: 5
+        anchors.top: sep.bottom
+        height: 150
+        width: _rightPanelWidth
+        color: qgcPal.windowShadeDark
+
+        Column {
+            anchors.fill: parent
+            anchors.margins: _margin
+            spacing: _margin
+            QGCLabel {
+                text: qsTr("Which kind of file are you loading?")
+                font.family: ScreenTools.demiboldFontFamily
             }
-            QGCButton {
-                text: "Mission"
-                Layout.fillWidth: true
-                onClicked: {
-                    loadChoice = false;
-                    _planMasterController.loadFromSelectedFile();
+            Row {
+                QGCButton {
+                    text: "KML"
+                    Layout.fillWidth: true
+                    onClicked: {
+                        loadChoice = false;
+                        kmlOrSHPLoadDialog.openForLoad();
+                    }
                 }
-            }
-        }
-        Row {
-            QGCButton {
-                text: "Back"
-                Layout.fillWidth: true
-                onClicked: {
-                    loadChoice = false;
+                QGCButton {
+                    text: "Mission"
+                    Layout.fillWidth: true
+                    onClicked: {
+                        loadChoice = false;
+                        _planMasterController.loadFromSelectedFile();
+                    }
                 }
             }
         }

@@ -595,8 +595,8 @@ Item {
                 anchors.left:           parent.left
                 anchors.right:          parent.right
                 anchors.top:            rightPanel.top
-                height: 205
-
+                height: 170
+                visible: bar.currentIndex == 0
 
                 MissionPanel {
                     visible:            true
