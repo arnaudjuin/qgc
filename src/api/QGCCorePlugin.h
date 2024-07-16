@@ -51,8 +51,9 @@ public:
     Q_PROPERTY(QVariantList         analyzePages                    READ analyzePages                                   NOTIFY analyzePagesChanged)
     Q_PROPERTY(int                  defaultSettings                 READ defaultSettings                                CONSTANT)
     Q_PROPERTY(QGCOptions*          options                         READ options                                        CONSTANT)
-    Q_PROPERTY(bool                 showTouchAreas                  READ showTouchAreas         WRITE setShowTouchAreas NOTIFY showTouchAreasChanged)
-    Q_PROPERTY(bool                 showAdvancedUI                  READ showAdvancedUI         WRITE setShowAdvancedUI NOTIFY showAdvancedUIChanged)
+    Q_PROPERTY(bool                 showTouchAreas                  READ showTouchAreas                                 WRITE setShowTouchAreas NOTIFY showTouchAreasChanged)
+    Q_PROPERTY(bool                 showAdvancedUI                  READ showAdvancedUI                                 WRITE setShowAdvancedUI NOTIFY showAdvancedUIChanged)
+    Q_PROPERTY(bool                 showGeoFence                    READ showGeoFence                                   WRITE setShowGeoFence NOTIFY showGeoFenceChanged)
     Q_PROPERTY(QString              showAdvancedUIMessage           READ showAdvancedUIMessage                          CONSTANT)
     Q_PROPERTY(QString              brandImageIndoor                READ brandImageIndoor                               CONSTANT)
     Q_PROPERTY(QString              brandImageOutdoor               READ brandImageOutdoor                              CONSTANT)
@@ -184,8 +185,10 @@ public:
 
     bool showTouchAreas() const { return _showTouchAreas; }
     bool showAdvancedUI() const { return _showAdvancedUI; }
+    bool showGeoFence() const { return _showGeoFence; }
     void setShowTouchAreas(bool show);
     void setShowAdvancedUI(bool show);
+    void setShowGeoFence (bool show);
 
     // Override from QGCTool
     void                            setToolbox              (QGCToolbox* toolbox);
@@ -201,11 +204,13 @@ signals:
     void analyzePagesChanged        ();
     void showTouchAreasChanged      (bool showTouchAreas);
     void showAdvancedUIChanged      (bool showAdvancedUI);
+    void showGeoFenceChanged (bool showGeoFence);
     void toolBarIndicatorsChanged   ();
 
 protected:
     bool                _showTouchAreas;
     bool                _showAdvancedUI;
+    bool                _showGeoFence;
     Vehicle*            _activeVehicle  = nullptr;
     QGCCameraManager*   _cameraManager  = nullptr;
     QGCCameraControl*   _currentCamera  = nullptr;
