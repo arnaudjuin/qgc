@@ -18,6 +18,10 @@ signals:
     void buttonDisarm();
     void startMission();
     void endMission();
+    void showRoverVT();
+    void showRoverWP();
+    void hideRoverVT();
+    void hideRoverWP();
 
 private:
     static GlobalSignals* _instance;

@@ -11,6 +11,7 @@ import QGroundControl.SettingsManager
 import QGroundControl.Controllers
 import QGroundControl.FactSystem 1.0
 import QGroundControl.FactControls 1.0
+import GlobalSignals 1.0
 
 // Editor for Mission Settings
 Rectangle {
@@ -174,6 +175,13 @@ Rectangle {
                     _editTracing = !_editTracing;
                     // Disable adding waypoints on click
                     _addWaypointOnClick = false;
+                    //Show RoverVT button
+                    // Emit signal to show or hide Rover VT button
+                    if (_editTracing) {
+                        GlobalSignals.showRoverVT();
+                    } else {
+                        GlobalSignals.hideRoverVT();
+                    }
 
                     {
             
@@ -225,6 +233,7 @@ Rectangle {
                                 polygonItem.surveyAreaPolygon.traceMode = false;
                             }
                         isTraced=false;
+
                         }
                     }
                 }
@@ -234,23 +243,27 @@ Rectangle {
         Row {
             visible: bar.currentIndex == 0
             width: parent.width
-            //spacing: ScreenTools.defaultFontPixelWidth * 1.5
-            //Layout.leftMargin: _margin + 12
-            
+
             QGCButton {
                 background: Rectangle {
                     color: _addWaypointOnClick ? "#FF6666" : "#ffffff" // When clicked turns light grey
-                    radius: 14  
-                    border.color: "white"  
-                    anchors.fill: parent  
+                    radius: 14
+                    border.color: "white"
+                    anchors.fill: parent
                 }
                 text: _addWaypointOnClick ? "Finish" : "Add waypoint"
                 id: buttonTravel
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
-                
+
                 checked: _addWaypointOnClick
                 onClicked: {
+                    // Emit signal to show or hide Rover WP button
+                    if (!_addWaypointOnClick) {
+                        GlobalSignals.showRoverWP();
+                    } else {
+                        GlobalSignals.hideRoverWP();
+                    }
                     if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;

@@ -25,6 +25,7 @@ import QGroundControl.Palette
 import QGroundControl.Controllers
 import QGroundControl.ShapeFileHelper
 import Qt.labs.folderlistmodel 2.1
+import GlobalSignals 1.0
 
 Item {
     id: _root
@@ -54,6 +55,7 @@ Item {
     property bool   _promptForPlanUsageShowing:         false
     property bool   _addWaypointOnClick:                false
     property bool   _addWaypointOnClickSpray:          false
+    property var    _activeVehicle:       QGroundControl.multiVehicleManager.activeVehicle ? QGroundControl.multiVehicleManager.activeVehicle : QGroundControl.multiVehicleManager.offlineEditingVehicle
     readonly property var       _layers:                [_layerMission, _layerGeoFence, _layerRallyPoints]
 
     readonly property int       _layerMission:              1
@@ -575,6 +577,98 @@ Item {
                 fillMode: Image.PreserveAspectFit
                 anchors.centerIn: parent
             }
+        }
+
+        QGCButton {
+            id: buttonsetwp
+            width: 50
+            height: 50
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 10
+            visible: false
+            background: Rectangle {
+                color: "#ffffff"  
+                radius: 14  
+                border.color: "white"  
+                anchors.fill: parent  
+            }
+            text: "RoverWP"
+            
+            onClicked: {
+                    var currentIndex = _missionController.visualItems.count;
+                    var WPItem= null
+                    // Retrieve the last visual item as vertexItem
+                    for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
+                        var  WPItem= _missionController.visualItems.get(i);
+                        if (!WPItem.surveyAreaPolygon)
+                            break;
+                        else
+                        WPItem = null;
+                    }
+                    WPItem.coordinate = _activeVehicle.coordinate
+            }
+        }
+
+        QGCButton {
+            id:buttonsetvtx
+            background: Rectangle {
+                color: "#ffffff"  
+                radius: 14  
+                border.color: "white"  
+                anchors.fill: parent  
+            }
+            text: "RoverVT"
+            width: 50
+            height: 50
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 10
+            visible: false
+            
+            onClicked: {
+                    var currentIndex = _missionController.visualItems.count;
+                    var vertexItem= null
+                    // Retrieve the last visual item as vertexItem
+                    for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
+                          vertexItem= _missionController.visualItems.get(i);
+                          console.log("in")
+                        if (vertexItem.surveyAreaPolygon)
+                        {
+                            console.log("break")
+                            break;
+                        }
+                        else
+                        vertexItem = null;
+                    }
+                    console.log("_activeVehicle.coordinate1",_activeVehicle.coordinate)
+                    console.log("vertexItem.surveyAreaPolygon.coordinate1",vertexItem.centerCoordinate)
+                    vertexItem.centerCoordinate=_activeVehicle.coordinate
+
+
+                    console.log("_activeVehicle.coordinate2",_activeVehicle.coordinate)
+                    console.log("vertexItem.surveyAreaPolygon.coordinate2",vertexItem.centerCoordinate)
+            }
+        }
+
+        Component.onCompleted: {
+            GlobalSignals.showRoverVT.connect(function() {
+                buttonsetvtx.visible = true;
+            })
+
+            GlobalSignals.hideRoverVT.connect(function() {
+                buttonsetvtx.visible = false;
+            })
+
+            GlobalSignals.showRoverWP.connect(function() {
+                buttonsetwp.visible = true;
+            })
+
+            GlobalSignals.hideRoverWP.connect(function() {
+                buttonsetwp.visible = false;
+            })
         }
 
         //-------------------------------------------------------
