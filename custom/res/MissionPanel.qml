@@ -136,22 +136,59 @@ Rectangle {
                     currentIndex = 0
                 }
                 QGCTabButton {
-                    text: qsTr("M")
                     height: 35
+                    background: Rectangle {
+                        id: backgroundRect1
+                        color: bar.currentIndex === 0 ? "#ff4800" : (bar.currentIndex === 1 ? "black" : "black")
+                        radius: 5
+                        width: parent.width
+                        height: parent.height
+                    }
+                    Image {
+                        source: "/custom/img/MissionTab.svg" // Caminho para a imagem SVG
+                        width: 30
+                        height: 30
+                        anchors.centerIn: parent
+                    }
                 }
                 QGCTabButton {
-                    text: qsTr("F")
                     height: 35
+                    background: Rectangle {
+                        id: backgroundRect2
+                        color: bar.currentIndex === 1 ? "#ff4800" : (bar.currentIndex === 0 ? "black" : "black")
+                        radius: 5
+                        width: parent.width
+                        height: parent.height
+                    }
+                    Image {
+                        source: "/custom/img/FenceTab.svg" // Caminho para a imagem SVG
+                        width: 30
+                        height: 30
+                        anchors.centerIn: parent
+                    }
                 }
                 QGCTabButton{
-                    text: qsTr("L")
                     height: 35
+                    background: Rectangle {
+                        id: backgroundRect3
+                        color: bar.currentIndex === 2 ? "#ff4800" : (bar.currentIndex === 0 ? "black" : "black")
+                        radius: 5
+                        width: parent.width
+                        height: parent.height
+                    }
+                    Image {
+                        source: "/custom/img/LoadTab.svg" // Caminho para a imagem SVG
+                        width: 30
+                        height: 30
+                        anchors.centerIn: parent
+                    }
                 }
             }
             
         }
         // Row for trace and add waypoint buttons
         Row {
+            Layout.topMargin: _margin - 2
             visible: bar.currentIndex == 0
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
             //Layout.leftMargin: _margin + 12
@@ -166,7 +203,7 @@ Rectangle {
                 checked: _editTracing
                     background: Rectangle {
                     color: _editTracing ? "#FF6666" : "#ffffff" // When clicked turns light grey
-                    radius: 14  
+                    radius: 5  
                     border.color: "white"  
                     anchors.fill: parent  
                 }
@@ -247,7 +284,7 @@ Rectangle {
             QGCButton {
                 background: Rectangle {
                     color: _addWaypointOnClick ? "#FF6666" : "#ffffff" // When clicked turns light grey
-                    radius: 14
+                    radius: 5
                     border.color: "white"
                     anchors.fill: parent
                 }
@@ -350,7 +387,7 @@ Rectangle {
             QGCButton {
                 background: Rectangle {
                     color: "#ffffff"  
-                    radius: 14  
+                    radius: 5 
                     border.color: "white"  
                     anchors.fill: parent  
                 }
@@ -376,7 +413,7 @@ Rectangle {
             QGCButton {
                 background: Rectangle {
                     color: "#ffffff"  
-                    radius: 14  
+                    radius: 5 
                     border.color: "white"  
                     anchors.fill: parent  
                 }

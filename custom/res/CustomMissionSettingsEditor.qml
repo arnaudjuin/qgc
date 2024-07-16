@@ -86,83 +86,46 @@ Rectangle {
                 visible:                _showCameraSection && cameraSection.checked
             }
 
-            GridLayout {
-                anchors.left:   parent.left
-                anchors.right:  parent.right
-                columnSpacing:  ScreenTools.defaultFontPixelWidth
-                rowSpacing:     columnSpacing
-                columns:        2
-                visible:        vehicleInfoSectionHeader.visible && vehicleInfoSectionHeader.checked
+            ColumnLayout {
 
+                Layout.fillWidth: true
+                spacing: _margin
+                visible: vehicleInfoSectionHeader.visible && vehicleInfoSectionHeader.checked
+            
                 RowLayout {
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 13.5 : ScreenTools.defaultFontPixelWidth * 20
+                    Layout.fillWidth: true
+                    spacing: 60
                     QGCLabel {
                         text: qsTr("Speed")
-                        font.family: ScreenTools.demiboldFontFamily
-                        Layout.alignment: Qt.AlignLeft
-                        Layout.fillWidth: true
                     }
-                }
-
-                //Row for speed settings
-                RowLayout {
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
-                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
-
-                    QGCSlider {
-                        id: flightSpeedSlider
-                        property bool _loadComplete: false
-                        from: 0
-                        to: 15
-                        stepSize: 0.5
-                        Layout.fillWidth: true
-                        value: factFlightSpeed.fact.value
-
-                        onValueChanged: {
-                            factFlightSpeed.fact.value = value;
-                        }
-                    }
-
-                    Rectangle {
-                        width: 40
-                        height: 20
-                        color: "#f0f0f0"  // Light grey background
-                        border.color: "#d0d0d0"
-                        border.width: 1
-                        radius: 5
-                        Layout.alignment: Qt.AlignRight
-
-                        TextInput {
-                            id: labelSpeed
-                            text: factFlightSpeed.text
-                            anchors.centerIn: parent
-                            color: "#333333"
-                            font.pixelSize: 12
-                            horizontalAlignment: TextInput.AlignHCenter
-                            verticalAlignment: TextInput.AlignVCenter
-
-                            // Update the factFlightSpeed text when the user edits the TextInput
-                            onEditingFinished: {
-                                factFlightSpeed.text = labelSpeed.text;
-                                flightSpeedSlider.value = parseFloat(labelSpeed.text);
-                            }
-                        }
-                    }
-
                     FactTextField {
                         id: factFlightSpeed
                         fact: _missionController.visualItems.get(0).speedSection.flightSpeed
-                        visible: false
+                        visible: true
                         enabled: flightSpeedCheckBox.checked
+                        Layout.alignment: Qt.AlignRight
                         onTextChanged: {
-                            labelSpeed.text = factFlightSpeed.text;
                             flightSpeedSlider.value = factFlightSpeed.fact.value;
                         }
                     }
                 }
+                QGCSlider {
+                    id: flightSpeedSlider
+                    property bool _loadComplete: false
+                    from: 0
+                    to: 15
+                    stepSize: 0.5
+                    tickmarksEnabled: false
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                    value: factFlightSpeed.fact.value
+                    onValueChanged: {
+                        factFlightSpeed.fact.value = value;
+                    }
+                }
 
+                //Row for speed settings
+                
                 //Vazão
                 /*RowLayout {
                     width: parent.width

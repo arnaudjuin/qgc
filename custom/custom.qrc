@@ -25,6 +25,9 @@
         <file alias="pause.png">res/Images/pause.png</file>
         <file alias="stop.png">res/Images/stop.png</file>
         <file alias="rightarrow.svg">res/Images/rightarrow.svg</file>
+        <file alias="FenceTab.svg">res/Images/FenceTab.svg</file>
+        <file alias="LoadTab.svg">res/Images/LoadTab.svg</file>
+        <file alias="MissionTab.svg">res/Images/MissionTab.svg</file>
 
     </qresource>
     <qresource prefix="/qmlimages">

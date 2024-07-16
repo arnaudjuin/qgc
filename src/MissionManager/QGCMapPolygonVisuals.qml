@@ -49,7 +49,7 @@ Item {
     property real _zorderSplitHandle:   QGroundControl.zOrderMapItems + 2
     property real _zorderCenterHandle:  QGroundControl.zOrderMapItems + 1   // Lowest such that drag or split takes precedence
 
-    readonly property string _polygonToolsText: qsTr("Polygon Tools")
+    readonly property string _polygonToolsText: qsTr("")
     readonly property string _traceText:        qsTr("Click in the map to add vertices. Click 'Done Tracing' when finished.")
 
     function addCommonVisuals() {
@@ -630,7 +630,10 @@ Item {
                 text:               qsTr("Load KML/SHP...")
                 onClicked:          kmlOrSHPLoadDialog.openForLoad()
             }
+         
             QGCButton {
+                
+                anchors.topMargin: 10
                 visible:            mapPolygon.traceMode && mapPolygon.count > 3 
                 text:               qsTr("Remove last vertex")
                 onClicked: {
@@ -640,6 +643,7 @@ Item {
                     }
                 }
             }
+             
         }
     }
 
