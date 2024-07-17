@@ -27,6 +27,34 @@ Rectangle {
     height: 300
     color: qgcPal.window
 
+    property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
+
+    function enableSliders(enabled) {
+        slider1.enabled = enabled;
+        slider2.enabled = enabled;
+        slider3.enabled = enabled;
+        slider4.enabled = enabled;
+        minusButton1.enabled = enabled;
+        plusButton1.enabled = enabled;
+        minusButton2.enabled = enabled;
+        plusButton2.enabled = enabled;
+        minusButton3.enabled = enabled;
+        plusButton3.enabled = enabled;
+        minusButton4.enabled = enabled;
+        plusButton4.enabled = enabled;
+    }
+
+    function sendPWMCommand(channel, value) {
+        var pwmValue = 1500 + (value * 10);
+        _activeVehicle.sendCommand(
+            1,      // component
+            183,    // command
+            true,   // confirmation
+            channel, // param1
+            pwmValue // param2
+        );
+    }
+
     Rectangle {
         id: calibrationRec
         width: 275
@@ -38,8 +66,8 @@ Rectangle {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 5  // Ajuste as margens para subir tudo um pouco
-            spacing: 5  // Ajuste o espaçamento entre os componentes
+            anchors.margins: 5
+            spacing: 5
 
             Label {
                 text: "Wheel alignment panel"
@@ -64,9 +92,11 @@ Rectangle {
                     if (toggleButton.text === "Active") {
                         toggleButton.text = "Disable"
                         buttonBackground.color = "#ff0000"
+                        enableSliders(true)
                     } else {
                         toggleButton.text = "Active"
                         buttonBackground.color = "#ff4800"
+                        enableSliders(false)
                     }
                 }
             }
@@ -89,8 +119,10 @@ Rectangle {
                         color: "#ff4800"
                         radius: 5
                         QGCButton {
+                            id: minusButton1
                             text: "-"
                             anchors.fill: parent
+                            enabled: false
                             onClicked: {
                                 slider1.value = Math.max(slider1.value - 1, slider1.from);
                             }
@@ -100,10 +132,16 @@ Rectangle {
                         id: slider1
                         width: 120
                         height: 30
-                        from: 0
-                        to: 100
+                        from: -40
+                        to: 40
                         stepSize: 1
                         enabled: false
+                        value: 0
+                        onValueChanged: {
+                            if (toggleButton.text === "Disable") {
+                                sendPWMCommand(3, slider1.value);
+                            }
+                        }
                     }
                     Rectangle {
                         width: 30
@@ -111,8 +149,10 @@ Rectangle {
                         color: "#ff4800"
                         radius: 5
                         QGCButton {
+                            id: plusButton1
                             text: "+"
                             anchors.fill: parent
+                            enabled: false
                             onClicked: {
                                 slider1.value = Math.min(slider1.value + 1, slider1.to);
                             }
@@ -139,8 +179,10 @@ Rectangle {
                         color: "#ff4800"
                         radius: 5
                         QGCButton {
+                            id: minusButton2
                             text: "-"
                             anchors.fill: parent
+                            enabled: false
                             onClicked: {
                                 slider2.value = Math.max(slider2.value - 1, slider2.from);
                             }
@@ -150,10 +192,16 @@ Rectangle {
                         id: slider2
                         width: 120
                         height: 30
-                        from: 0
-                        to: 100
+                        from: -40
+                        to: 40
                         stepSize: 1
                         enabled: false
+                        value: 0
+                        onValueChanged: {
+                            if (toggleButton.text === "Disable") {
+                                sendPWMCommand(4, slider2.value);
+                            }
+                        }
                     }
                     Rectangle {
                         width: 30
@@ -161,8 +209,10 @@ Rectangle {
                         color: "#ff4800"
                         radius: 5
                         QGCButton {
+                            id: plusButton2
                             text: "+"
                             anchors.fill: parent
+                            enabled: false
                             onClicked: {
                                 slider2.value = Math.min(slider2.value + 1, slider2.to);
                             }
@@ -189,8 +239,10 @@ Rectangle {
                         color: "#ff4800"
                         radius: 5
                         QGCButton {
+                            id: minusButton3
                             text: "-"
                             anchors.fill: parent
+                            enabled: false
                             onClicked: {
                                 slider3.value = Math.max(slider3.value - 1, slider3.from);
                             }
@@ -200,10 +252,16 @@ Rectangle {
                         id: slider3
                         width: 120
                         height: 30
-                        from: 0
-                        to: 100
+                        from: -40
+                        to: 40
                         stepSize: 1
                         enabled: false
+                        value: 0
+                        onValueChanged: {
+                            if (toggleButton.text === "Disable") {
+                                sendPWMCommand(5, slider3.value);
+                            }
+                        }
                     }
                     Rectangle {
                         width: 30
@@ -211,8 +269,10 @@ Rectangle {
                         color: "#ff4800"
                         radius: 5
                         QGCButton {
+                            id: plusButton3
                             text: "+"
                             anchors.fill: parent
+                            enabled: false
                             onClicked: {
                                 slider3.value = Math.min(slider3.value + 1, slider3.to);
                             }
@@ -239,8 +299,10 @@ Rectangle {
                         color: "#ff4800"
                         radius: 5
                         QGCButton {
+                            id: minusButton4
                             text: "-"
                             anchors.fill: parent
+                            enabled: false
                             onClicked: {
                                 slider4.value = Math.max(slider4.value - 1, slider4.from);
                             }
@@ -250,10 +312,16 @@ Rectangle {
                         id: slider4
                         width: 120
                         height: 30
-                        from: 0
-                        to: 100
+                        from: -40
+                        to: 40
                         stepSize: 1
                         enabled: false
+                        value: 0
+                        onValueChanged: {
+                            if (toggleButton.text === "Disable") {
+                                sendPWMCommand(6, slider4.value);
+                            }
+                        }
                     }
                     Rectangle {
                         width: 30
@@ -261,8 +329,10 @@ Rectangle {
                         color: "#ff4800"
                         radius: 5
                         QGCButton {
+                            id: plusButton4
                             text: "+"
                             anchors.fill: parent
+                            enabled: false
                             onClicked: {
                                 slider4.value = Math.min(slider4.value + 1, slider4.to);
                             }

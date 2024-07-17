@@ -53,9 +53,9 @@ Rectangle {
         interval: 100 // We update the polygonItem every 100ms based on the currentPlanViewVIIndex
         repeat: true
         running: true
-        onTriggered: {
+        /*onTriggered: {
             console.log("GeoFence: ", QGroundControl.corePlugin.showGeoFence)
-        }
+        }*/
     }
 
 

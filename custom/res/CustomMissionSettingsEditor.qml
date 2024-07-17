@@ -124,10 +124,8 @@ Rectangle {
                     }
                 }
 
-                //Row for speed settings
-                
                 //Vazão
-                /*RowLayout {
+                RowLayout {
                     width: parent.width
                     spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 13.5 : ScreenTools.defaultFontPixelWidth * 20
                     QGCLabel {
@@ -138,7 +136,7 @@ Rectangle {
                     }
                 }
 
-                //Row for speed settings
+                //Row for flow settings
                 RowLayout {
                     width: parent.width
                     spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
@@ -151,11 +149,13 @@ Rectangle {
                         to: 3
                         stepSize: 1
                         Layout.fillWidth: true
-                        value: factVazao.fact.value
+                        value: factVazaoOffline.fact.value
 
                         onValueChanged: {
                             var pwmValue = vazaoSlider.value === 1 ? 1600 : (vazaoSlider.value === 2 ? 1400 : 1200);
                             //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
+                            factVazaoOffline.fact.value = pwmValue;
+                        QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value = pwmValue;
                             _activeVehicle.sendCommand(
                                 1,      // component
                                 183,    // command
@@ -164,6 +164,13 @@ Rectangle {
                                 pwmValue // param2
                             );
                         }
+                    }
+
+                    FactTextField {
+                        id : factVazaoOffline
+                        fact:                   QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
+                        visible:                true
+                        Layout.preferredWidth:  _fieldWidth
                     }
 
                     Rectangle {
@@ -177,7 +184,7 @@ Rectangle {
 
                         TextInput {
                             id: labelVazao
-                            text: factVazao.text
+                            text: factVazaoOffline.text
                             anchors.centerIn: parent
                             color: "#333333"
                             font.pixelSize: 12
@@ -186,29 +193,15 @@ Rectangle {
 
                             // Update the factVazao text when the user edits the TextInput
                             onEditingFinished: {
-                                factVazao.text = labelVazao.text;
+                                factVazaoOffline.text = labelVazao.text;
                                 vazaoSlider.value = parseFloat(labelVazao.text);
                             }
                         }
                     }
 
-                    FactTextField {
-                        id: factVazao
-                        fact: _missionController.visualItems.get(0).speedSection.flightSpeed //@arnaudjuin fix here! We want to save the flow (Vazão) as a MissionParameter
-                        visible: false
-                        enabled: flightSpeedCheckBox.checked
-                        onTextChanged: {
-                            labelVazao.text = factVazao.text;
-                            vazaoSlider.value = factVazao.fact.value;
-                        }
-                    }
-                }*/
-                
-                   
-               
+
+                }  
             } // GridLayout
-
-
         } // Column
     } // Column
 } // Rectangle
