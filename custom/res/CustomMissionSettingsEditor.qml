@@ -102,7 +102,7 @@ Rectangle {
                         id: factFlightSpeed
                         fact: _missionController.visualItems.get(0).speedSection.flightSpeed
                         visible: true
-                        enabled: flightSpeedCheckBox.checked
+                        enabled: true
                         Layout.alignment: Qt.AlignRight
                         onTextChanged: {
                             flightSpeedSlider.value = factFlightSpeed.fact.value;
@@ -123,85 +123,63 @@ Rectangle {
                         factFlightSpeed.fact.value = value;
                     }
                 }
+            } // GridLayout
 
-                //Vazão
+            ColumnLayout {
+                
+                Layout.fillWidth: true
+                spacing: _margin
+                visible: vehicleInfoSectionHeader.visible && vehicleInfoSectionHeader.checked
+
                 RowLayout {
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 13.5 : ScreenTools.defaultFontPixelWidth * 20
+                    Layout.fillWidth: true
+                    spacing: 60
                     QGCLabel {
                         text: qsTr("Vazão")
-                        font.family: ScreenTools.demiboldFontFamily
-                        Layout.alignment: Qt.AlignLeft
-                        
                     }
-                }
-
-                //Row for flow settings
-                RowLayout {
-                    width: parent.width
-                    spacing: ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 1 : ScreenTools.defaultFontPixelWidth * 3
-                    anchors.topMargin: ScreenTools.defaultFontPixelWidth * 2
-
-                    QGCSlider {
-                        id: vazaoSlider
-                        property bool _loadComplete: false
-                        from: 1
-                        to: 3
-                        stepSize: 1
-                        Layout.fillWidth: true
-                        value: factVazaoOffline.fact.value
-
-                        onValueChanged: {
-                            var pwmValue = vazaoSlider.value === 1 ? 1600 : (vazaoSlider.value === 2 ? 1400 : 1200);
-                            //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
-                            factVazaoOffline.fact.value = pwmValue;
-                        QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value = pwmValue;
-                            _activeVehicle.sendCommand(
-                                1,      // component
-                                183,    // command
-                                true,   // confirmation
-                                8,      // param1
-                                pwmValue // param2
-                            );
-                        }
-                    }
-
                     FactTextField {
                         id : factVazaoOffline
-                        fact:                   QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
-                        visible:                true
-                        Layout.preferredWidth:  _fieldWidth
-                    }
-
-                    Rectangle {
-                        width: 40
-                        height: 20
-                        color: "#f0f0f0"  // Light grey background
-                        border.color: "#d0d0d0"
-                        border.width: 1
-                        radius: 5
-                        Layout.alignment: Qt.AlignRight
-
-                        TextInput {
-                            id: labelVazao
-                            text: factVazaoOffline.text
-                            anchors.centerIn: parent
-                            color: "#333333"
-                            font.pixelSize: 12
-                            horizontalAlignment: TextInput.AlignHCenter
-                            verticalAlignment: TextInput.AlignVCenter
-
-                            // Update the factVazao text when the user edits the TextInput
-                            onEditingFinished: {
-                                factVazaoOffline.text = labelVazao.text;
-                                vazaoSlider.value = parseFloat(labelVazao.text);
+                        property string displayValue: {
+                            switch (factVazaoOffline.fact.value) {
+                                case 1200: return "Baixa";
+                                case 1400: return "Média";
+                                case 1600: return "Alta";
+                                default: return factVazaoOffline.fact.value.toString();
                             }
                         }
+                        fact:                   QGroundControl.settingsManager.appSettings.offlineFlowRoverSetting
+                        visible:                true
+                        text: displayValue
+                        Layout.alignment: Qt.AlignRight
+                        onTextChanged: {
+                            vazaoSlider.value = factVazaoOffline.fact.value;
+                        }
                     }
+                }
+                QGCSlider {
+                    id: vazaoSlider
+                    property bool _loadComplete: false
+                    from: 1
+                    to: 3
+                    stepSize: 1
+                    Layout.fillWidth: true
+                    value: factVazaoOffline.fact.value
 
-
-                }  
-            } // GridLayout
+                    onValueChanged: {
+                        var pwmValue = vazaoSlider.value === 1 ? 1600 : (vazaoSlider.value === 2 ? 1400 : 1200);
+                        //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
+                        factVazaoOffline.fact.value = pwmValue;
+                    QGroundControl.settingsManager.appSettings.offlineFlowRoverSetting.value = pwmValue;
+                        _activeVehicle.sendCommand(
+                            1,      // component
+                            183,    // command
+                            true,   // confirmation
+                            8,      // param1
+                            pwmValue // param2
+                        );
+                    }
+                }
+            }
         } // Column
     } // Column
 } // Rectangle

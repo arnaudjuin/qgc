@@ -37,7 +37,6 @@
     "default":     5.0,
     "min":              1100,
     "max":              1800,
-    "units":            "pwm",
     "decimalPlaces":    2
 },
 {

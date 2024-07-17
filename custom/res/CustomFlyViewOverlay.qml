@@ -105,6 +105,30 @@ Item {
 
         property real leftEdgeCenterInset: visible ? x + width : 0
     }
+    //-------------------------------------------------------------------------
+    // PlanView Button
+    QGCButton {
+        width: 40
+        height: 40
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        onClicked: {
+            showPlanView();
+        }
+        background: Rectangle {
+            color: "#ff4800" // Vermelho em hexadecimal
+            radius: 5
+        }
+        Image {
+            width: parent.width * 0.8
+            height: parent.height * 0.8
+            source: "/custom/img/MissionTab.svg"
+            fillMode: Image.PreserveAspectFit
+            anchors.centerIn: parent
+        }
+    }
 
     //-------------------------------------------------------------------------
         //Play - Pause - Stop

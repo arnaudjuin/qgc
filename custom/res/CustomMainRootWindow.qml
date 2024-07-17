@@ -303,7 +303,7 @@ ApplicationWindow {
                         property bool   _viewer3DEnabled:        QGroundControl.settingsManager.viewer3DSettings.enabled.rawValue
 
        
-                            SubMenuButton {
+                        /*SubMenuButton {
                             id:                 viewButton
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
@@ -314,7 +314,7 @@ ApplicationWindow {
                                  flyView.visible ?   mainWindow.showPlanView() :  mainWindow.showFlyView() 
                                 drawer.close()
                             }
-                        }
+                        }*/
 
                         SubMenuButton {
                             id:                 setupButton
