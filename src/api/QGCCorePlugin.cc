@@ -96,6 +96,7 @@ QGCCorePlugin::QGCCorePlugin(QGCApplication *app, QGCToolbox* toolbox)
     : QGCTool(app, toolbox)
     , _showTouchAreas(false)
     , _showAdvancedUI(true)
+    , _showGeoFence(false)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     _p = new QGCCorePlugin_p;
@@ -194,6 +195,14 @@ void QGCCorePlugin::setShowAdvancedUI(bool show)
     if (show != _showAdvancedUI) {
         _showAdvancedUI = show;
         emit showAdvancedUIChanged(show);
+    }
+}
+
+void QGCCorePlugin::setShowGeoFence(bool show)
+{
+    if (show != _showGeoFence) {
+        _showGeoFence = show;
+        emit showGeoFenceChanged(show);
     }
 }
 

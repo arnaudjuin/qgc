@@ -74,7 +74,7 @@ Rectangle {
     readonly property string _firmwareLabel: qsTr("Firmware")
     readonly property string _vehicleLabel: qsTr("Vehicle")
     readonly property real _margin: ScreenTools.defaultFontPixelWidth / 2
-    //readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 34 :  ScreenTools.defaultFontPixelWidth * 50
+    //readonly property real  _rightPanelWidth:           ScreenTools.isMobile ? ScreenTools.defaultFontPixelWidth * 34 :  ScreenTools.defaultFontPixelWidth * 51
 
     // Polygon item
     property var polygonItem: null
@@ -184,7 +184,24 @@ Rectangle {
                     }
                 }
             }
-            
+            // Connections to handle tab changes
+            Connections {
+                target: bar
+                onCurrentIndexChanged: {
+                    if (bar.currentIndex === 1) {
+                        QGroundControl.corePlugin.showGeoFence = true;
+                        QGroundControl.corePlugin.showLoadPlan = true;
+                    }
+                    else if (bar.currentIndex === 2){
+                        QGroundControl.corePlugin.showGeoFence = true;
+                        QGroundControl.corePlugin.showLoadPlan = true;
+                    }
+                    else {
+                        QGroundControl.corePlugin.showGeoFence = false;
+                        QGroundControl.corePlugin.showLoadPlan = false;
+                    }
+                }
+            } 
         }
         // Row for trace and add waypoint buttons
         Row {
@@ -553,16 +570,17 @@ Rectangle {
         color: qgcPal.text
     }
 
-      Timer {
+    Timer {
         interval: 100 // We update the polygonItem every 100ms based on the currentPlanViewVIIndex
         repeat: true
         running: true
         onTriggered: {
             if ( _missionController.visualItems.get(_missionController.currentPlanViewVIIndex ).surveyAreaPolygon)
-            polygonItem =_missionController.visualItems.get(_missionController.currentPlanViewVIIndex )
-
+            
+            polygonItem =_missionController.visualItems.get(_missionController.currentPlanViewVIIndex ) 
         }
     }
+
     // Column for mission start confirmation
     Column {
         id: confirmationColumn

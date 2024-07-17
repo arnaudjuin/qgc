@@ -13,6 +13,7 @@ import QGroundControl.Palette
 
 /// Mission item edit control
 Rectangle {
+    visible :       !QGroundControl.corePlugin.showGeoFence
     id:             _root
     width:          parent.width - 20  // Ajuste a largura para evitar o corte
     height:         editorLoader.visible ? (editorLoader.y + editorLoader.height + _innerMargin) : (topRowLayout.y + topRowLayout.height + _margin)
@@ -47,6 +48,17 @@ Rectangle {
     readonly property real  _hamburgerSize:     commandPicker.height * 0.75
     readonly property real  _trashSize:         commandPicker.height * 0.75
     readonly property bool  _waypointsOnlyMode: QGroundControl.corePlugin.options.missionWaypointsOnly
+
+    Timer {
+        interval: 100 // We update the polygonItem every 100ms based on the currentPlanViewVIIndex
+        repeat: true
+        running: true
+        onTriggered: {
+            console.log("GeoFence: ", QGroundControl.corePlugin.showGeoFence)
+        }
+    }
+
+
 
     QGCPalette {
         id: qgcPal

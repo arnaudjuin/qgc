@@ -10,6 +10,7 @@ on:
       - 'androidFieldTest'
       - 'ui/Features'
       - 'ux/PlanView'
+      - 'ui/MissionItemFix'
     tags:
       - 'v*'
     paths-ignore:
