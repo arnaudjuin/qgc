@@ -28,6 +28,13 @@
         <file alias="FenceTab.svg">res/Images/FenceTab.svg</file>
         <file alias="LoadTab.svg">res/Images/LoadTab.svg</file>
         <file alias="MissionTab.svg">res/Images/MissionTab.svg</file>
+        <file alias="CircularFence.svg">res/Images/CircularFence.svg</file>
+        <file alias="PolygonFence.svg">res/Images/PolygonFence.svg</file>
+        <file alias="menu.svg">res/Images/menu.svg</file>
+        <file alias="play.svg">res/Images/play.svg</file>
+        <file alias="pause.svg">res/Images/pause.svg</file>
+        <file alias="stop.svg">res/Images/stop.svg</file>
+
 
     </qresource>
     <qresource prefix="/qmlimages">

@@ -546,7 +546,7 @@ Item {
         Rectangle {
             id: rightPanel
             width: _rightPanelWidth
-            color: "white"
+            color: "transparent"
             opacity: 0.2
             height: parent.height
             //color: qgcPal.windowShadeDark

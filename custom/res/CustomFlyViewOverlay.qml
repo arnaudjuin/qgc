@@ -135,9 +135,9 @@ Item {
                 }
     
                 Image {
-                    width: parent.width * 0.3
-                    height: parent.height * 0.3
-                    source: "/custom/img/play.png"
+                    width: parent.width * 0.7
+                    height: parent.height * 0.7
+                    source: "/custom/img/play.svg"
                     fillMode: Image.PreserveAspectFit
                     anchors.centerIn: parent
                 }
@@ -161,14 +161,14 @@ Item {
                     guidedActionsController.confirmAction(guidedActionsController.actionMVPause)
                 }
                 background: Rectangle {
-                    color: "#ff4800"
+                    color: "Black"
                     radius: 100
                 }
     
                 Image {
-                    width: parent.width * 0.3
-                    height: parent.height * 0.3
-                    source: "/custom/img/pause.png"
+                    width: parent.width * 0.7
+                    height: parent.height * 0.7
+                    source: "/custom/img/pause.svg"
                     fillMode: Image.PreserveAspectFit
                     anchors.centerIn: parent
                 }
@@ -181,14 +181,14 @@ Item {
                     guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop)
                 }
                 background: Rectangle {
-                    color: "#ff4800" // Vermelho em hexadecimal
+                    color: "Black" // Vermelho em hexadecimal
                     radius: 100
                 }
 
                 Image {
-                    width: parent.width * 0.3
-                    height: parent.height * 0.3
-                    source: "/custom/img/stop.png"
+                    width: parent.width * 0.7
+                    height: parent.height * 0.7
+                    source: "/custom/img/stop.svg"
                     fillMode: Image.PreserveAspectFit
                     anchors.centerIn: parent
                 }

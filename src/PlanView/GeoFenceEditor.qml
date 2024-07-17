@@ -117,11 +117,11 @@ QGCFlickable {
                     }*/
                     Row{
                         Layout.fillWidth: true
-                        anchors.leftMargin: _margin
-                        anchors.rightMargin: _margin
+                        Layout.topMargin: 10
+                        anchors.horizontalCenter: parent.horizontalCenter
                         spacing: 20
                         QGCButton {
-                            Layout.fillWidth:   true
+                            width: 80
                             text:               qsTr("Polygon")
 
                             onClicked: {
@@ -133,7 +133,7 @@ QGCFlickable {
                         }
 
                         QGCButton {
-                            Layout.fillWidth:   true
+                            width: 80
                             text:               qsTr("Circular")
 
                             onClicked: {

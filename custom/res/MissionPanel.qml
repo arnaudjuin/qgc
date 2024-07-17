@@ -582,94 +582,118 @@ Rectangle {
     }
 
     // Column for mission start confirmation
-    Column {
-        id: confirmationColumn
+    Rectangle{
+        radius: _radius
         visible: _confirmationStart && bar.currentIndex == 0
-        anchors.margins: _margin
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        spacing: _margin
-        SectionHeader {
-            id: sepConfirmation
-            anchors.left: parent.left
-            anchors.right: parent.right
-            text: "Recap Header"
-        }
-        QGCLabel {
-            text: qsTr("Are you sure you want to start the mission?")
-            font.family: ScreenTools.demiboldFontFamily
-        }
-        Row {
-            QGCButton {
-                text: "No"
-                Layout.fillWidth: true
-                onClicked: {
-                    _confirmationStart = false;
+        anchors.topMargin: 5
+        //anchors.top: sep.bottom
+        height: 85
+        width: _rightPanelWidth
+        color: qgcPal.windowShadeDark
+        
+        Column {
+            anchors.fill: parent
+            anchors.margins: _margin
+            spacing: _margin + 5
+            //id: confirmationColumn
+            
+            /*SectionHeader {
+                id: sepConfirmation
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: "Recap Header"
+            }*/
+            QGCLabel {
+                text: qsTr("Are you sure you want to start the mission?")
+                font.family: ScreenTools.demiboldFontFamily
+                anchors.left:       parent.left
+                anchors.right:      parent.right
+                wrapMode:           Text.WordWrap
+                anchors.leftMargin: _margin + 6
+            }
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 20
+                QGCButton {
+                    text: "No"
+                    width: 70
+                    onClicked: {
+                        _confirmationStart = false;
+                    }
+                }
+                QGCButton {
+                    text: "Yes"
+                    width: 70
+                    onClicked: {
+                                            if (polygonItem) {
+                            polygonItem.surveyAreaPolygon.traceMode = false;
+                            _editTracing = false;
+                        }
+                        _confirmationStart = false;
+                        _planMasterController.upload();
+                        mainWindow.showFlyView()
+                    }
                 }
             }
-            QGCButton {
-                text: "Yes"
-                Layout.fillWidth: true
-                onClicked: {
-                                        if (polygonItem) {
-                        polygonItem.surveyAreaPolygon.traceMode = false;
-                        _editTracing = false;
-                    }
-                    _confirmationStart = false;
-                    _planMasterController.upload();
-                    mainWindow.showFlyView()
-                }
+            /*SectionHeader {
+                id: statsHeader
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: qsTr("Statistics")
             }
+            Row {
+                QGCLabel {
+                    visible:polygonItem
+                    text: qsTr("Survey Area:")
+                }
+                QGCLabel {
+                    visible: polygonItem
+                    QGCLabel { visible : polygonItem; text: QGroundControl.unitsConversion.squareMetersToAppSettingsAreaUnits(polygonItem.coveredArea/10000).toFixed(2) + " " +  "hA"}
+                }       
+            }*/
         }
-        SectionHeader {
-            id: statsHeader
-            anchors.left: parent.left
-            anchors.right: parent.right
-            text: qsTr("Statistics")
-        }
-        Row {
-
-                    QGCLabel {
-                        visible:polygonItem
-                        text: qsTr("Survey Area:")
-                    }
-                    QGCLabel {
-                        visible: polygonItem
-                        QGCLabel { visible : polygonItem; text: QGroundControl.unitsConversion.squareMetersToAppSettingsAreaUnits(polygonItem.coveredArea/10000).toFixed(2) + " " +  "hA"}
-                    }        }
     }
-
     // Column for file load choice
     Rectangle {
+        radius: _radius
         visible: bar.currentIndex == 2
         id: loadChoiceRect
         anchors.topMargin: 5
         anchors.top: sep.bottom
-        height: 150
+        height: 85
         width: _rightPanelWidth
         color: qgcPal.windowShadeDark
-
+    
         Column {
             anchors.fill: parent
             anchors.margins: _margin
-            spacing: _margin
+            spacing: _margin + 5
+    
             QGCLabel {
-                text: qsTr("Which kind of file are you loading?")
+                text: qsTr("Select the type of file you want to upload")
                 font.family: ScreenTools.demiboldFontFamily
+                anchors.left:       parent.left
+                anchors.right:      parent.right
+                wrapMode:           Text.WordWrap
+                anchors.leftMargin: _margin + 6
             }
+    
             Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 20 // Ajuste o espaçamento conforme necessário
+    
                 QGCButton {
                     text: "KML"
-                    Layout.fillWidth: true
+                    width: 80 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;
                         kmlOrSHPLoadDialog.openForLoad();
                     }
                 }
+    
                 QGCButton {
-                    text: "Mission"
-                    Layout.fillWidth: true
+                    text: "Missions"
+                    width: 80 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;
                         _planMasterController.loadFromSelectedFile();
@@ -687,7 +711,7 @@ Rectangle {
         anchors.top: sep.bottom
         height: 500
         width: _rightPanelWidth
-        color: qgcPal.windowShadeDark
+        color: "transparent"//qgcPal.windowShadeDark
         GeoFenceEditor {
             anchors.top: parent.top
             anchors.bottom: parent.bottom

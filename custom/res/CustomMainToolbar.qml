@@ -71,11 +71,18 @@ Rectangle {
         spacing:                ScreenTools.defaultFontPixelWidth / 2
 
         QGCToolBarButton {
-            id:                     currentButton
+            id: currentButton
             Layout.preferredHeight: viewButtonRow.height
-            icon.source:            "/custom/img/List1.png"
-            logo:                   true
-            onClicked:              mainWindow.showToolSelectDialog()
+            logo: true
+            onClicked: mainWindow.showToolSelectDialog()
+        
+            Image {
+                source: "qrc:/custom/img/menu.svg" // Substitua pelo caminho da sua imagem
+                anchors.centerIn: parent
+                fillMode: Image.PreserveAspectFit
+                width: parent.width * 0.6 // Ajuste conforme necessário
+                height: parent.height * 0.6 // Ajuste conforme necessário
+            }
         }
 
         Item {
