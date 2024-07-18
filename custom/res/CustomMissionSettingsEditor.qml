@@ -147,7 +147,7 @@ Rectangle {
                                 default: return factVazaoOffline.fact.value.toString();
                             }
                         }
-                        fact:                   QGroundControl.settingsManager.appSettings.offlineFlowRoverSetting
+                        fact:                   QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
                         visible:                true
                         text: displayValue
                         Layout.alignment: Qt.AlignRight
@@ -169,7 +169,7 @@ Rectangle {
                         var pwmValue = vazaoSlider.value === 1 ? 1600 : (vazaoSlider.value === 2 ? 1400 : 1200);
                         //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
                         factVazaoOffline.fact.value = pwmValue;
-                    QGroundControl.settingsManager.appSettings.offlineFlowRoverSetting.value = pwmValue;
+                    QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value = pwmValue;
                         _activeVehicle.sendCommand(
                             1,      // component
                             183,    // command
