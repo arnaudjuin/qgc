@@ -46,12 +46,31 @@ Rectangle {
 
     function sendPWMCommand(channel, value) {
         var pwmValue = 1500 + (value * 10);
-        _activeVehicle.sendCommand(
-            1,      // component
-            183,    // command
-            true,   // confirmation
-            channel, // param1
-            pwmValue // param2
+        var paramId = "";
+        
+        // Define o paramId com base no canal
+        if (channel === 3) {
+            paramId = "SERVO3_TRIM";
+        } else if (channel === 4) {
+            paramId = "SERVO4_TRIM";
+        } else if (channel === 5) {
+            paramId = "SERVO5_TRIM";
+        } else if (channel === 6) {
+            paramId = "SERVO6_TRIM";
+        }
+
+        _activeVehicle.sendMavCommand(
+            1,                  // target_system
+            1,                  // target_component
+            23,                 // MAV_CMD_PARAM_SET
+            true,               // showError
+            paramId,            // param_id as a string
+            pwmValue,           // param_value
+            0,                  // param_type
+            0,                  // param_index
+            0,                  // param_reserved
+            0,                  // param_reserved
+            0                   // param_reserved
         );
     }
 
