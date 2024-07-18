@@ -122,7 +122,7 @@ QGCFlickable {
                         spacing: 20
                         QGCButton {
                             width: 80
-                            text:               qsTr("Polygon")
+                            text:               qsTr("Poligono")
 
                             onClicked: {
                                 var rect = Qt.rect(flightMap.centerViewport.x, flightMap.centerViewport.y, flightMap.centerViewport.width, flightMap.centerViewport.height)

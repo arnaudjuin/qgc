@@ -97,7 +97,7 @@ Rectangle {
                     Layout.fillWidth: true
                     spacing: 60
                     QGCLabel {
-                        text: qsTr("Speed")
+                        text: qsTr("Velocidade")
                     }
                     FactTextField {
                         id: factFlightSpeed

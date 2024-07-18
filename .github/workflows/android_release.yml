@@ -11,7 +11,7 @@ on:
       - 'ui/Features'
       - 'ux/PlanView'
       - 'ui/MissionItemFix'
-      - 'Figma/PlanView'
+      - 'FirstTest'
     tags:
       - 'v*'
     paths-ignore:
