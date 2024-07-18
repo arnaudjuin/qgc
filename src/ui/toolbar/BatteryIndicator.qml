@@ -124,7 +124,7 @@ Item {
                 anchors.bottom:     parent.bottom
                 width:              height
                 sourceSize.width:   width
-                source:             "/qmlimages/Battery.svg"
+                source:             "/qmlimages/bateria.svg"
                 fillMode:           Image.PreserveAspectFit
                 color:              getBatteryColor()
             }
