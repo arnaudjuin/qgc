@@ -385,7 +385,7 @@ Item {
                                 1,      // component
                                 183,    // command
                                 true,   // confirmation
-                                8,      // param1
+                                7,      // param1
                                 pwmValue // param2
                             );
                         } else {
@@ -394,8 +394,8 @@ Item {
                                 1,      // component
                                 183,    // command
                                 true,   // confirmation
-                                8,      // param1
-                                1051    // param2
+                                7,      // param1
+                                1100    // param2
                             );
                         }
                     }
@@ -449,7 +449,7 @@ Item {
                                 1,      // component
                                 183,    // command
                                 true,   // confirmation
-                                9,      // param1
+                                8,      // param1
                                 pwmValue // param2
                             );
                         } else {
@@ -458,8 +458,8 @@ Item {
                                 1,      // component
                                 183,    // command
                                 true,   // confirmation
-                                9,      // param1
-                                1051    // param2
+                                8,      // param1
+                                1100    // param2
                             );
                         }
                     }
@@ -482,13 +482,13 @@ Item {
                         }
                         onClicked: {
                             //console.log("Test.");
-                            _activeVehicle.sendCommand(
+                           /* _activeVehicle.sendCommand(
                                 1,
                                 183,  
                                 true,  
                                 9,  
                                 1100  
-                            );
+                            );*/
                             //console.log("Bicos foram desligados automaticamente.");
                         }
                     }
@@ -536,7 +536,7 @@ Item {
                                     1,      // component
                                     183,    // command
                                     true,   // confirmation
-                                    8,      // param1
+                                    7,      // param1
                                     pwmValue // param2
                                 );
                             }
@@ -585,7 +585,7 @@ Item {
                                     1,      // component
                                     183,    // command
                                     true,   // confirmation
-                                    9,      // param1
+                                    8,      // param1
                                     pwmValue // param2
                                 );
                             }

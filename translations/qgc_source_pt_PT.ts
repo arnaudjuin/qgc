@@ -16238,7 +16238,7 @@ ROTATION_NONE indica que o componente aponta na direção do voo.</translation>
     <message>
       <location filename="../src/PlanView/StructureScanEditor.qml" line="139"/>
       <source>Scan</source>
-      <translation>Varredura</translation>
+      <translation>Polígono</translation>
     </message>
     <message>
       <location filename="../src/PlanView/StructureScanEditor.qml" line="158"/>
@@ -16402,7 +16402,7 @@ ROTATION_NONE indica que o componente aponta na direção do voo.</translation>
       <location filename="../src/MissionManager/SurveyComplexItem.h" line="58"/>
       <location filename="../src/MissionManager/SurveyComplexItem.h" line="59"/>
       <source>Survey</source>
-      <translation>Varredura</translation>
+      <translation>Poligono</translation>
     </message>
     <message>
       <location filename="../src/MissionManager/SurveyComplexItem.h" line="60"/>

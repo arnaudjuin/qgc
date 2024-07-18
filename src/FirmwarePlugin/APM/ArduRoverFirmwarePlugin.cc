@@ -19,9 +19,9 @@ APMRoverMode::APMRoverMode(uint32_t mode, bool settable)
     setEnumToStringMapping({
         {MANUAL,         "Manual"},
         /*{ACRO,           "Acro"},
-        {STEERING,       "Steering"},
+        {STEERING,       "Steering"},*/
         {HOLD,           "Hold"},
-        {LOITER,         "Loiter"},
+        /*{LOITER,         "Loiter"},
         {FOLLOW,         "Follow"},
         {SIMPLE,         "Simple"},*/
         {AUTO,           "Auto"},
