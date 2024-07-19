@@ -34,6 +34,8 @@
         <file alias="play.svg">res/Images/play.svg</file>
         <file alias="pause.svg">res/Images/pause.svg</file>
         <file alias="stop.svg">res/Images/stop.svg</file>
+        <file alias="on.svg">res/Images/on.svg</file>
+        <file alias="off.svg">res/Images/off.svg</file>
 
 
     </qresource>

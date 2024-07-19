@@ -73,7 +73,8 @@ Rectangle {
             CameraSection {
                 id:         cameraSection
                 checked:    !_waypointsOnlyMode && missionItem.cameraSection.settingsSpecified
-                visible:    _showCameraSection
+                //visible:    _showCameraSection
+                visible: false
             }
 
             QGCLabel {
@@ -126,7 +127,7 @@ Rectangle {
             } // GridLayout
 
             ColumnLayout {
-                
+
                 Layout.fillWidth: true
                 spacing: _margin
                 visible: vehicleInfoSectionHeader.visible && vehicleInfoSectionHeader.checked
@@ -162,21 +163,23 @@ Rectangle {
                     from: 1
                     to: 3
                     stepSize: 1
+                    snapMode: QGCSlider.SnapAlways
                     Layout.fillWidth: true
                     value: factVazaoOffline.fact.value
 
                     onValueChanged: {
                         var pwmValue = vazaoSlider.value === 1 ? 1600 : (vazaoSlider.value === 2 ? 1400 : 1200);
-                        //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
+                        // Atualizar apenas o valor do fact
                         factVazaoOffline.fact.value = pwmValue;
-                    QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value = pwmValue;
-                        _activeVehicle.sendCommand(
-                            1,      // component
-                            183,    // command
-                            true,   // confirmation
-                            8,      // param1
-                            pwmValue // param2
-                        );
+                        QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value = pwmValue;
+                        // Comentado o envio do comando para o veículo
+                        // _activeVehicle.sendCommand(
+                        //     1,      // component
+                        //     183,    // command
+                        //     true,   // confirmation
+                        //     8,      // param1
+                        //     pwmValue // param2
+                        // );
                     }
                 }
             }

@@ -216,7 +216,7 @@ Rectangle {
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
                 id: buttonDraw
-                text: _editTracing ? "Finish" : "Trace" 
+                text: _editTracing ? "Finalizar" : "Novo polígono" 
                 checked: _editTracing
                     background: Rectangle {
                     color: _editTracing ? "#FF6666" : "#ffffff" // When clicked turns light grey
@@ -305,7 +305,7 @@ Rectangle {
                     border.color: "white"
                     anchors.fill: parent
                 }
-                text: _addWaypointOnClick ? "Finish" : "Add waypoint"
+                text: _addWaypointOnClick ? "Finalizar" : "Novo ponto de rota"
                 id: buttonTravel
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
@@ -408,13 +408,13 @@ Rectangle {
                     border.color: "white"  
                     anchors.fill: parent  
                 }
-                text: qsTr("Save")
+                text: qsTr("Salvar")
                 width: (_rightPanelWidth / 2) - ScreenTools.defaultFontPixelWidth * 1
                 height: ScreenTools.isMobile ? 28 : 28
                 Layout.fillWidth: true
                 enabled: !_planMasterController.syncInProgress
                 onClicked: {
-                                        if (polygonItem) {
+                        if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
                     }
@@ -436,11 +436,11 @@ Rectangle {
                 }
                 width: (_rightPanelWidth / 2) - ScreenTools.defaultFontPixelWidth * 1
                 height: ScreenTools.isMobile ? 28 : 28
-                text: "Clear"
+                text: "Limpar"
                 Layout.fillWidth: true
                 onClicked: {
                     
-                    mainWindow.showMessageDialog(qsTr("Clear"), qsTr("Are you sure you want to remove all mission items and clear the mission from the vehicle?"), Dialog.Yes | Dialog.Cancel, function () {
+                    mainWindow.showMessageDialog(qsTr("Limpar"), qsTr("Tem certeza que deseja remover todos os itens e limpar a missão do veículo?"), Dialog.Yes | Dialog.Cancel, function () {
                         polygonItem = null;
                         _editTracing = false;
                         for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
@@ -522,10 +522,10 @@ Rectangle {
                 }
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
-                text: "Start"
+                text: "Iniciar"
                 //primary: true
                 onClicked: {
-                                    QGroundControl.corePlugin.showGeoFence=true
+                    QGroundControl.corePlugin.showGeoFence=true
                     if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
@@ -621,6 +621,7 @@ Rectangle {
                     onClicked: {
                                                                 QGroundControl.corePlugin.showGeoFence=false
                         _confirmationStart = false;
+                        QGroundControl.corePlugin.showGeoFence=false
                     }
                 }
                 QGCButton {
@@ -632,6 +633,7 @@ Rectangle {
                             polygonItem.surveyAreaPolygon.traceMode = false;
                             _editTracing = false;
                         }
+                        QGroundControl.corePlugin.showGeoFence=false
                         _confirmationStart = false;
                         _planMasterController.upload();
                         mainWindow.showFlyView()
@@ -673,7 +675,7 @@ Rectangle {
             spacing: _margin + 5
     
             QGCLabel {
-                text: qsTr("Select the type of file you want to upload")
+                text: qsTr("Selecione o tipo de arquivo que deseja carregar")
                 font.family: ScreenTools.demiboldFontFamily
                 anchors.left:       parent.left
                 anchors.right:      parent.right
@@ -695,7 +697,7 @@ Rectangle {
                 }
     
                 QGCButton {
-                    text: "Missions"
+                    text: "Missões"
                     width: 80 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;

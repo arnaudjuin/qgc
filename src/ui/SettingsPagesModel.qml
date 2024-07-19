@@ -122,5 +122,12 @@ ListModel {
         iconUrl: "qrc:/InstrumentValueIcons/photo.svg"
         pageVisible: function() { return ScreenTools.isDebug }
     }
+
+    ListElement {
+        name: qsTr("Calibration")
+        url: "/qml/CalibrationSettings.qml"
+        iconUrl: "/qmlimages/ConfigRover.svg"
+        pageVisible: function() { return true }
+    }
 }
 

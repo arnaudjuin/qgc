@@ -368,7 +368,7 @@ void QGCApplication::_exitWithError(QString errorMessage)
     connect(this, &QGCApplication::lastWindowClosed, this, QGCApplication::quit);
 }
 
-void QGCApplication::setLanguage()
+/*void QGCApplication::setLanguage()
 {
     _locale = QLocale(QLocale::Portuguese);
     qDebug() << "System reported locale:" << _locale << "; Name" << _locale.name() << "; Preffered (used in maps): " << (QLocale::system().uiLanguages().length() > 0 ? QLocale::system().uiLanguages()[0] : "None");
@@ -411,6 +411,45 @@ void QGCApplication::setLanguage()
     }
     if(_qmlAppEngine)
         _qmlAppEngine->retranslate();
+    emit languageChanged(_locale);
+}*/
+
+void QGCApplication::setLanguage()
+{
+    // Define a localidade fixa como Português do Brasil
+    _locale = QLocale(QLocale::Portuguese, QLocale::Portugal);
+    qDebug() << "Locale set to:" << _locale.name();
+
+    // Configura o idioma padrão
+    QLocale::setDefault(_locale);
+
+    // Carregar as traduções para a biblioteca Qt
+    if(_qgcTranslatorQtLibs.load("qt_" + _locale.name(), QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
+        _app->installTranslator(&_qgcTranslatorQtLibs);
+    } else {
+        qCWarning(LocalizationLog) << "Qt lib localization for" << _locale.name() << "is not present";
+    }
+
+    // Carregar as traduções do código-fonte
+    if(_qgcTranslatorSourceCode.load(_locale, QLatin1String("qgc_source_"), "", ":/i18n")) {
+        _app->installTranslator(&_qgcTranslatorSourceCode);
+    } else {
+        qCWarning(LocalizationLog) << "Error loading source localization for" << _locale.name();
+    }
+
+    // Carregar as traduções JSON
+    if(_qgcTranslatorJSON.load(_locale, QLatin1String("qgc_json_"), "", ":/i18n")) {
+        _app->installTranslator(&_qgcTranslatorJSON);
+    } else {
+        qCWarning(LocalizationLog) << "Error loading json localization for" << _locale.name();
+    }
+
+    // Atualiza todas as traduções ativas
+    if(_qmlAppEngine) {
+        _qmlAppEngine->retranslate();
+    }
+
+    // Notificar mudança de idioma
     emit languageChanged(_locale);
 }
 

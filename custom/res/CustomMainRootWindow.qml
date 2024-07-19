@@ -147,18 +147,12 @@ ApplicationWindow {
     }
 
     function showSettingsTool(settingsPage = "") {
-        showTool(qsTr("Application Settings"), "AppSettings.qml", "/res/QGCLogoWhite")
+        showTool(qsTr("Application Settings"), "AppSettings.qml", "/res/HuralIcon.png")
         if (settingsPage !== "") {
             toolDrawerLoader.item.showSettingsPage(settingsPage)
         }
     }
 
-    function showCalibrationTool(settingsPage = "") {
-        showTool(qsTr("Calibration Settings"), "CalibrationSettings.qml", "/res/QGCLogoWhite")
-        if (settingsPage !== "") {
-            toolDrawerLoader.item.showSettingsPage(settingsPage)
-        }
-    }
 
     //-------------------------------------------------------------------------
     //-- Global simple message dialog
@@ -282,16 +276,15 @@ ApplicationWindow {
 
     Component {
         id: toolSelectComponent
-
         ToolIndicatorPage {
             id:         toolSelectDialog
             //title:      qsTr("Select Tool")
-
             property real _toolButtonHeight:    ScreenTools.defaultFontPixelHeight * 3
             property real _margins:             ScreenTools.defaultFontPixelWidth
-
+            
             contentComponent: Component {
                 ColumnLayout {
+                    
                     width:  innerLayout.width + (toolSelectDialog._margins * 2)
                     height: innerLayout.height + (toolSelectDialog._margins * 2)
 
@@ -322,7 +315,7 @@ ApplicationWindow {
                             Layout.fillWidth:   true
                             text:               qsTr("Configurações")
                             imageColor:         "Black"
-                            imageResource:      "/qmlimages/Gears.svg"
+                            imageResource:      "/qmlimages/ConfigRover.svg"
                             onClicked: {
                                 if (!mainWindow.preventViewSwitch()) {
                                     mainWindow.closeIndicatorDrawer()
@@ -353,7 +346,7 @@ ApplicationWindow {
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
                             text:               qsTr("Application Settings")
-                            imageResource:      "/qmlimages/Gears.svg"
+                            imageResource:      "/qmlimages/ConfigMenu.svg"
                             imageColor:         "Black"
                             onClicked: {
                                 if (!mainWindow.preventViewSwitch()) {
@@ -363,20 +356,6 @@ ApplicationWindow {
                             }
                         }
 
-                        SubMenuButton {
-                            id:                 calibrationButton
-                            height:             toolSelectDialog._toolButtonHeight
-                            Layout.fillWidth:   true
-                            text:               qsTr("Steering Settings")
-                            imageResource:      "/qmlimages/RC.svg"
-                            imageColor:         "Black"
-                            onClicked: {
-                                if (!mainWindow.preventViewSwitch()) {
-                                    drawer.close()
-                                    mainWindow.showCalibrationTool()
-                                }
-                            }
-                        }
 
                         ColumnLayout {
                             width:                  innerLayout.width

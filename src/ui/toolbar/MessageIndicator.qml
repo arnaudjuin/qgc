@@ -59,7 +59,7 @@ Item {
     Image {
         id:                 criticalMessageIcon
         anchors.fill:       parent
-        source:             "/qmlimages/Yield.svg"
+        source:             "/qmlimages/notificacao.svg"
         sourceSize.height:  height
         fillMode:           Image.PreserveAspectFit
         cache:              false

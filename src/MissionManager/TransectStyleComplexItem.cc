@@ -1317,40 +1317,63 @@ void TransectStyleComplexItem::_buildAndAppendMissionItems(QList<MissionItem*>& 
 }
 void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QObject* missionItemParent, int &seqNum)
 {
-    /*MissionItem* item = new MissionItem(seqNum++,
-                                        MAV_CMD_DO_SPRAYER,
-                                        MAV_FRAME_MISSION,
-                                        1,                                           // Enable sprayer
-                                        0, 0, 0, 0, 0, 0,                             // not used
-                                        true,                                        // autoContinue
-                                        false,                                       // isCurrentItem
-                                        missionItemParent);*/ 
-AppSettings *appSettings = qgcApp()->toolbox()->settingsManager()->appSettings();
-    MissionItem* item = new MissionItem(seqNum++,
-                                        MAV_CMD_DO_SET_SERVO,
-                                        MAV_FRAME_MISSION,
-                                        9, // Servo number
-                                        appSettings->offlineEditingHoverSpeed()->rawValue().toDouble(), // PWM value to set
-                                        qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), // Unused parameters
-                                        true, // autoContinue
-                                        false, // isCurrentItem
-                                        missionItemParent);
-                                            items.append(item);
+    AppSettings *appSettings = qgcApp()->toolbox()->settingsManager()->appSettings();
+    
+    // Comando para o servo número 7
+    MissionItem* itemServo7 = new MissionItem(seqNum++,
+                                              MAV_CMD_DO_SET_SERVO,
+                                              MAV_FRAME_MISSION,
+                                              7, // Servo number
+                                              appSettings->offlineEditingHoverSpeed()->rawValue().toDouble(), // PWM value to set
+                                              qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), // Unused parameters
+                                              true, // autoContinue
+                                              false, // isCurrentItem
+                                              missionItemParent);
+    items.append(itemServo7);
 
+    // Comando para o servo número 8
+    MissionItem* itemServo8 = new MissionItem(seqNum++,
+                                              MAV_CMD_DO_SET_SERVO,
+                                              MAV_FRAME_MISSION,
+                                              8, // Servo number
+                                              appSettings->offlineEditingHoverSpeed()->rawValue().toDouble(), // PWM value to set
+                                              qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), // Unused parameters
+                                              true, // autoContinue
+                                              false, // isCurrentItem
+                                              missionItemParent);
+    items.append(itemServo8);
 }
 
-void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObject* missionItemParent, int& seqNum)
+
+void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObject* missionItemParent, int &seqNum)
 {
-/*     MissionItem* item = new MissionItem(seqNum++,
-                                        MAV_CMD_DO_SPRAYER,
-                                        MAV_FRAME_MISSION,
-                                        0,                                           // Disable sprayer
-                                        0, 0, 0, 0, 0, 0,                            // not used
-                                        true,                                        // autoContinue
-                                        false,                                       // isCurrentItem
-                                        missionItemParent); */
-    //items.append(item);
-    qDebug() << "Spray stop";
+    // PWM value to stop the spray
+    double stopPWMValue = 1051;
+
+    // Comando para o servo número 7
+    MissionItem* itemServo7 = new MissionItem(seqNum++,
+                                              MAV_CMD_DO_SET_SERVO,
+                                              MAV_FRAME_MISSION,
+                                              7, // Servo number
+                                              stopPWMValue, // PWM value to set
+                                              qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), // Unused parameters
+                                              true, // autoContinue
+                                              false, // isCurrentItem
+                                              missionItemParent);
+    items.append(itemServo7);
+
+    // Comando para o servo número 8
+    MissionItem* itemServo8 = new MissionItem(seqNum++,
+                                              MAV_CMD_DO_SET_SERVO,
+                                              MAV_FRAME_MISSION,
+                                              8, // Servo number
+                                              stopPWMValue, // PWM value to set
+                                              qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), // Unused parameters
+                                              true, // autoContinue
+                                              false, // isCurrentItem
+                                              missionItemParent);
+    items.append(itemServo8);
+
 }
 
 
