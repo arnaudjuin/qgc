@@ -379,7 +379,7 @@ Item {
                     height: 18
                     onCheckedChanged: {
                         if (switchBomb.checked) {
-                            var pwmValue = bomba.value === 1 ? 1600 : (bomba.value === 2 ? 1500 : 1200);
+                            var pwmValue = bomba.value === 1 ? 1200 : (bomba.value === 2 ? 1400 : 1600);
                             //console.log("Switch ligado. Enviando PWM " + pwmValue + ".");
                             _activeVehicle.sendCommand(
                                 1,      // component
@@ -443,7 +443,7 @@ Item {
                     height: 18
                     onCheckedChanged: {
                         if (switchNozzle.checked) {
-                            var pwmValue = bicos.value === 1 ? 1800 : (bicos.value === 2 ? 1500 : 1200);
+                            var pwmValue = bicos.value === 1 ? 1200 : (bicos.value === 2 ? 1500 : 1800);
                             //console.log("Switch ligado. Enviando PWM " + pwmValue + ".");
                             _activeVehicle.sendCommand(
                                 1,      // component

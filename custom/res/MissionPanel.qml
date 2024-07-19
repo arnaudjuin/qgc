@@ -401,6 +401,7 @@ Rectangle {
                     _missionController.removeVisualItem(lastIndex);
                 }
             }*/
+            
             QGCButton {
                 background: Rectangle {
                     color: "#ffffff"  
@@ -414,7 +415,7 @@ Rectangle {
                 Layout.fillWidth: true
                 enabled: !_planMasterController.syncInProgress
                 onClicked: {
-                        if (polygonItem) {
+                    if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
                     }
