@@ -68,7 +68,7 @@ Item {
 
     QGCColoredImage {
         anchors.fill:       parent
-        source:             "/qmlimages/Megaphone.svg"
+        source:             "/qmlimages/megafone.svg"
         sourceSize.height:  height
         fillMode:           Image.PreserveAspectFit
         color:              getMessageColor()

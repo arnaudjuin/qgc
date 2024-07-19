@@ -211,7 +211,8 @@
         <file alias="ConfigMenu.svg">src/ui/toolbar/Images/ConfigMenu.svg</file>
         <file alias="ConfigRover.svg">src/ui/toolbar/Images/ConfigRover.svg</file>
         <file alias="satelite.svg">src/ui/toolbar/Images/satelite.svg</file>
-        <file alias="notificacao.svg">src/ui/toolbar/Images/satelite.svg</file>
+        <file alias="notificacao.svg">src/ui/toolbar/Images/notificacao.svg</file>
         <file alias="bateria.svg">src/ui/toolbar/Images/bateria.svg</file>
+        <file alias="megafone.svg">src/ui/toolbar/Images/megafone.svg</file>
     </qresource>
 </RCC>

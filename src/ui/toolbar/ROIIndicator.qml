@@ -24,7 +24,7 @@ import QGroundControl.Palette
 Item {
     id:                     _root
     width:                  showIndicator ? roiIcon.width : 0
-    visible:                showIndicator
+    visible:                false//showIndicator
     anchors.top:            parent.top
     anchors.bottom:         parent.bottom
 
@@ -76,7 +76,7 @@ Item {
         anchors.top:        parent.top
         anchors.bottom:     parent.bottom
         sourceSize.height:  height
-        source:             "/qmlimages/roi.svg"
+        //source:             "/qmlimages/roi.svg"
         color:              _activeVehicle && _activeVehicle.isROIEnabled ? qgcPal.colorGreen : qgcPal.text
         fillMode:           Image.PreserveAspectFit
         opacity:            _activeVehicle && _activeVehicle.isROIEnabled ? 1 : 0.5
