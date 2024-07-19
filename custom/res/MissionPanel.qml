@@ -414,7 +414,7 @@ Rectangle {
                 Layout.fillWidth: true
                 enabled: !_planMasterController.syncInProgress
                 onClicked: {
-                                        if (polygonItem) {
+                        if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
                     }
@@ -525,6 +525,7 @@ Rectangle {
                 text: "Iniciar"
                 //primary: true
                 onClicked: {
+                    QGroundControl.corePlugin.showGeoFence=true
                     if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
@@ -619,6 +620,7 @@ Rectangle {
                     width: 70
                     onClicked: {
                         _confirmationStart = false;
+                        QGroundControl.corePlugin.showGeoFence=false
                     }
                 }
                 QGCButton {
@@ -629,6 +631,7 @@ Rectangle {
                             polygonItem.surveyAreaPolygon.traceMode = false;
                             _editTracing = false;
                         }
+                        QGroundControl.corePlugin.showGeoFence=false
                         _confirmationStart = false;
                         _planMasterController.upload();
                         mainWindow.showFlyView()
