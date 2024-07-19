@@ -1325,8 +1325,18 @@ void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QOb
                                         true,                                        // autoContinue
                                         false,                                       // isCurrentItem
                                         missionItemParent);*/ 
-    //items.append(item);
-    qDebug() << "Spray start";
+AppSettings *appSettings = qgcApp()->toolbox()->settingsManager()->appSettings();
+    MissionItem* item = new MissionItem(seqNum++,
+                                        MAV_CMD_DO_SET_SERVO,
+                                        MAV_FRAME_MISSION,
+                                        9, // Servo number
+                                        appSettings->offlineEditingHoverSpeed()->rawValue().toDouble(), // PWM value to set
+                                        qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), // Unused parameters
+                                        true, // autoContinue
+                                        false, // isCurrentItem
+                                        missionItemParent);
+                                            items.append(item);
+
 }
 
 void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObject* missionItemParent, int& seqNum)

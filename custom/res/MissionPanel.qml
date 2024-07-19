@@ -525,6 +525,7 @@ Rectangle {
                 text: "Start"
                 //primary: true
                 onClicked: {
+                                    QGroundControl.corePlugin.showGeoFence=true
                     if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
@@ -618,6 +619,7 @@ Rectangle {
                     text: "No"
                     width: 70
                     onClicked: {
+                                                                QGroundControl.corePlugin.showGeoFence=false
                         _confirmationStart = false;
                     }
                 }
@@ -625,6 +627,7 @@ Rectangle {
                     text: "Yes"
                     width: 70
                     onClicked: {
+                                        QGroundControl.corePlugin.showGeoFence=false
                                             if (polygonItem) {
                             polygonItem.surveyAreaPolygon.traceMode = false;
                             _editTracing = false;

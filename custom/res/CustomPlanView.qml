@@ -702,7 +702,7 @@ Item {
             Item {
                 //Propriedades
                 id:                     missionItemEditor
-                height: parent.height - missionSettingsItemEditor.height
+                height: parent.height -  !QGroundControl.corePlugin.showGeoFence ?  missionSettingsItemEditor.height : 500
 
                 //Ancoras
                 anchors.left:           parent.left

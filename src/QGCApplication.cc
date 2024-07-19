@@ -370,7 +370,7 @@ void QGCApplication::_exitWithError(QString errorMessage)
 
 void QGCApplication::setLanguage()
 {
-    _locale = QLocale::system();
+    _locale = QLocale(QLocale::Portuguese);
     qDebug() << "System reported locale:" << _locale << "; Name" << _locale.name() << "; Preffered (used in maps): " << (QLocale::system().uiLanguages().length() > 0 ? QLocale::system().uiLanguages()[0] : "None");
 
     QLocale::Language possibleLocale = AppSettings::_qLocaleLanguageID();
