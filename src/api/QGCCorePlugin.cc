@@ -239,14 +239,14 @@ void QGCCorePlugin::factValueGridCreateDefaultSettings(const QString& defaultSet
     QmlObjectListModel* column      = factValueGrid.columns()->value<QmlObjectListModel*>(0);
 
     InstrumentValueData* value = column->value<InstrumentValueData*>(rowIndex++);
-    value->setFact("Vehicle", "FlightTime");
-    value->setIcon("timer.svg");
+    value->setFact("Vehicle", "FlightTime"); //
+    value->setIcon("timer.svg"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(true);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
-    value->setFact("Vehicle", "DistanceToHome");
-    value->setIcon("home.svg");
+    value->setFact("Vehicle", "GroundSpeed"); //
+    value->setIcon("dashboard.svg"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(true);
 
@@ -254,14 +254,14 @@ void QGCCorePlugin::factValueGridCreateDefaultSettings(const QString& defaultSet
     column      = factValueGrid.columns()->value<QmlObjectListModel*>(1);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
-    value->setFact("Vehicle", "FlightDistance");
-    value->setIcon("drone.svg");
+    value->setFact("Vehicle", "rollRate");//
+    value->setIcon("cheveron-outline-right.svg"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(true);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
-    value->setFact("Vehicle", "GroundSpeed");
-    value->setIcon("arrow-thin-right.svg");
+    value->setFact("Vehicle", "distanceToHome"); //
+    value->setIcon("home.svg"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(true);
 
@@ -285,14 +285,14 @@ void QGCCorePlugin::factValueGridCreateDefaultSettings(const QString& defaultSet
     column      = factValueGrid.columns()->value<QmlObjectListModel*>(includeFWValues ? 3 : 2);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
-    value->setFact("Vehicle", "Heading");
-    value->setIcon("timer.svg");
+    value->setFact("Vehicle", "pitchRate"); //
+    value->setIcon("cheveron-outline-up.svg"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(false);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
-    value->setFact("Vehicle", "Roll");
-    value->setIcon("travel-walk.svg");
+    value->setFact("Vehicle", "Heading"); //
+    value->setIcon("location-current.svg"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(true);
 }

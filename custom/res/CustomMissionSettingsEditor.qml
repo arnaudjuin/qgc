@@ -57,132 +57,108 @@ Rectangle {
         }
     }
 
-    ColumnLayout {
+    GridLayout {
         id:                 valuesColumn
         anchors.margins:    _margin
+        Layout.fillWidth:   true
         anchors.left:       parent.left
         anchors.right:      parent.right
         anchors.top:        parent.top
-        spacing:            _margin
+        columnSpacing:      _margin + 80
+        rowSpacing:         _margin 
+        columns:            2
 
-        Column {
-            Layout.fillWidth:   true
-            spacing:            _margin
-            visible:            !_simpleMissionStart
+        CameraSection {
+            id:         cameraSection
+            checked:    !_waypointsOnlyMode && missionItem.cameraSection.settingsSpecified
+            visible:    false
+            Layout.columnSpan: 2
+        }
 
-            CameraSection {
-                id:         cameraSection
-                checked:    !_waypointsOnlyMode && missionItem.cameraSection.settingsSpecified
-                //visible:    _showCameraSection
-                visible: false
+        QGCLabel {
+            anchors.left:           parent.left
+            anchors.right:          parent.right
+            text:                   qsTr("Above camera commands will take affect immediately upon mission start.")
+            wrapMode:               Text.WordWrap
+            horizontalAlignment:    Text.AlignHCenter
+            font.pointSize:         ScreenTools.smallFontPointSize
+            visible:                _showCameraSection && cameraSection.checked
+            Layout.columnSpan: 2
+        }
+
+        QGCLabel {
+            text: qsTr("Speed")
+        }
+        FactTextField {
+            id: factFlightSpeed
+            fact: _missionController.visualItems.get(0).speedSection.flightSpeed
+            visible: true
+            enabled: true
+            Layout.fillWidth: true
+            onTextChanged: {
+                flightSpeedSlider.value = factFlightSpeed.fact.value;
             }
-
-            QGCLabel {
-                anchors.left:           parent.left
-                anchors.right:          parent.right
-                text:                   qsTr("Above camera commands will take affect immediately upon mission start.")
-                wrapMode:               Text.WordWrap
-                horizontalAlignment:    Text.AlignHCenter
-                font.pointSize:         ScreenTools.smallFontPointSize
-                visible:                _showCameraSection && cameraSection.checked
+        }
+        QGCSlider {
+            id: flightSpeedSlider
+            from: 0
+            to: 15
+            stepSize: 0.5
+            tickmarksEnabled: false
+            Layout.columnSpan: 2
+            Layout.fillWidth: true
+            Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+            value: factFlightSpeed.fact.value
+            onValueChanged: {
+                factFlightSpeed.fact.value = value;
             }
+        }
 
-            ColumnLayout {
-
-                Layout.fillWidth: true
-                spacing: _margin
-                visible: vehicleInfoSectionHeader.visible && vehicleInfoSectionHeader.checked
-            
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 60
-                    QGCLabel {
-                        text: qsTr("Speed")
-                    }
-                    FactTextField {
-                        id: factFlightSpeed
-                        fact: _missionController.visualItems.get(0).speedSection.flightSpeed
-                        visible: true
-                        enabled: true
-                        Layout.alignment: Qt.AlignRight
-                        onTextChanged: {
-                            flightSpeedSlider.value = factFlightSpeed.fact.value;
-                        }
-                    }
-                }
-                QGCSlider {
-                    id: flightSpeedSlider
-                    property bool _loadComplete: false
-                    from: 0
-                    to: 15
-                    stepSize: 0.5
-                    tickmarksEnabled: false
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                    value: factFlightSpeed.fact.value
-                    onValueChanged: {
-                        factFlightSpeed.fact.value = value;
-                    }
-                }
-            } // GridLayout
-
-            ColumnLayout {
-
-                Layout.fillWidth: true
-                spacing: _margin
-                visible: vehicleInfoSectionHeader.visible && vehicleInfoSectionHeader.checked
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 60
-                    QGCLabel {
-                        text: qsTr("Vazão")
-                    }
-                    FactTextField {
-                        id : factVazaoOffline
-                        property string displayValue: {
-                            switch (factVazaoOffline.fact.value) {
-                                case 1200: return "Baixa";
-                                case 1400: return "Média";
-                                case 1600: return "Alta";
-                                default: return factVazaoOffline.fact.value.toString();
-                            }
-                        }
-                        fact:                   QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
-                        visible:                true
-                        text: displayValue
-                        Layout.alignment: Qt.AlignRight
-                        onTextChanged: {
-                            vazaoSlider.value = factVazaoOffline.fact.value;
-                        }
-                    }
-                }
-                QGCSlider {
-                    id: vazaoSlider
-                    property bool _loadComplete: false
-                    from: 1
-                    to: 3
-                    stepSize: 1
-                    snapMode: QGCSlider.SnapAlways
-                    Layout.fillWidth: true
-                    value: factVazaoOffline.fact.value
-
-                    onValueChanged: {
-                        var pwmValue = vazaoSlider.value === 1 ? 1600 : (vazaoSlider.value === 2 ? 1400 : 1200);
-                        // Atualizar apenas o valor do fact
-                        factVazaoOffline.fact.value = pwmValue;
-                        QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value = pwmValue;
-                        // Comentado o envio do comando para o veículo
-                        // _activeVehicle.sendCommand(
-                        //     1,      // component
-                        //     183,    // command
-                        //     true,   // confirmation
-                        //     8,      // param1
-                        //     pwmValue // param2
-                        // );
-                    }
+        QGCLabel {
+            text: qsTr("Vazão")
+        }
+        FactTextField {
+            id : factVazaoOffline
+            property string displayValue: {
+                switch (factVazaoOffline.fact.value) {
+                    case 1200: return "Baixa";
+                    case 1400: return "Média";
+                    case 1600: return "Alta";
+                    default: return factVazaoOffline.fact.value.toString();
                 }
             }
-        } // Column
-    } // Column
+            fact: QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
+            visible: true
+            text: displayValue
+            Layout.fillWidth: true
+            onTextChanged: {
+                vazaoSlider.value = factVazaoOffline.fact.value;
+            }
+        }
+        QGCSlider {
+            id: vazaoSlider
+            from: 1
+            to: 3
+            stepSize: 1
+            snapMode: QGCSlider.SnapAlways
+            live: true
+            Layout.columnSpan: 2
+            Layout.fillWidth: true
+            value: factVazaoOffline.fact.value
+            onValueChanged: {
+                var pwmValue = vazaoSlider.value === 1 ? 1600 : (vazaoSlider.value === 2 ? 1400 : 1200);
+                // Atualizar apenas o valor do fact
+                factVazaoOffline.fact.value = pwmValue;
+                QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value = pwmValue;
+                // Comentado o envio do comando para o veículo
+                // _activeVehicle.sendCommand(
+                //     1,      // component
+                //     183,    // command
+                //     true,   // confirmation
+                //     8,      // param1
+                //     pwmValue // param2
+                // );
+            }
+        }
+    }
 } // Rectangle
