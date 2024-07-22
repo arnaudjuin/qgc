@@ -1325,7 +1325,7 @@ void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QOb
                                               MAV_FRAME_MISSION,
                                               7, // Servo number
                                               appSettings->offlineEditingHoverSpeed()->rawValue().toDouble(), // PWM value to set
-                                              qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), // Unused parameters
+                                              0, 0, 0, 0, 0, // Unused parameters
                                               true, // autoContinue
                                               false, // isCurrentItem
                                               missionItemParent);
@@ -1337,7 +1337,7 @@ void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QOb
                                               MAV_FRAME_MISSION,
                                               8, // Servo number
                                               appSettings->offlineEditingHoverSpeed()->rawValue().toDouble(), // PWM value to set
-                                              qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), // Unused parameters
+                                              0, 0, 0, 0, 0, // Unused parameters
                                               true, // autoContinue
                                               false, // isCurrentItem
                                               missionItemParent);
@@ -1356,7 +1356,7 @@ void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObj
                                               MAV_FRAME_MISSION,
                                               7, // Servo number
                                               stopPWMValue, // PWM value to set
-                                              qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), // Unused parameters
+                                              0, 0, 0, 0, 0, // Unused parameters
                                               true, // autoContinue
                                               false, // isCurrentItem
                                               missionItemParent);
@@ -1368,7 +1368,7 @@ void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObj
                                               MAV_FRAME_MISSION,
                                               8, // Servo number
                                               stopPWMValue, // PWM value to set
-                                              qQNaN(), qQNaN(), qQNaN(), qQNaN(), qQNaN(), // Unused parameters
+                                              0, 0, 0, 0, 0, // Unused parameters
                                               true, // autoContinue
                                               false, // isCurrentItem
                                               missionItemParent);

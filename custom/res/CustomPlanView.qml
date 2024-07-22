@@ -644,12 +644,12 @@ Item {
                         vertexItem = null;
                     }
                     console.log("_activeVehicle.coordinate1",_activeVehicle.coordinate)
-                    console.log("vertexItem.surveyAreaPolygon.coordinate1",vertexItem.centerCoordinate)
-                    vertexItem.centerCoordinate=_activeVehicle.coordinate
+                    console.log("vertexItem.surveyAreaPolygon.coordinate1",vertexItem.coordinate)
+                    vertexItem.coordinate=_activeVehicle.coordinate
 
 
                     console.log("_activeVehicle.coordinate2",_activeVehicle.coordinate)
-                    console.log("vertexItem.surveyAreaPolygon.coordinate2",vertexItem.centerCoordinate)
+                    console.log("vertexItem.surveyAreaPolygon.coordinate2",vertexItem.coordinate)
             }
         }
 

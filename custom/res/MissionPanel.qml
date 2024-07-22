@@ -419,11 +419,7 @@ Rectangle {
                         polygonItem.surveyAreaPolygon.traceMode = false;
                         _editTracing = false;
                     }
-                    if (_planMasterController.currentPlanFile !== "") {
-                        _planMasterController.saveToCurrent();
-                    } else {
-                        _planMasterController.saveToSelectedFile();
-                    }
+                    _planMasterController.saveToSelectedFile();
                 }
             }
 

@@ -629,17 +629,17 @@ FlightMap {
         }
     }
 
-    onMapClicked: (mouse) => {
-                      if (!globals.guidedControllerFlyView.guidedUIVisible &&
-                          (globals.guidedControllerFlyView.showGotoLocation || globals.guidedControllerFlyView.showOrbit || globals.guidedControllerFlyView.showROI || globals.guidedControllerFlyView.showSetHome || globals.guidedControllerFlyView.showSetEstimatorOrigin)) {
-                          orbitMapCircle.hide()
-                          gotoLocationItem.hide()
-                          var clickCoord = _root.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
-                          clickMenu.coord = clickCoord
-                          clickMenu.setCoordinates(mouse.x, mouse.y)
-                          clickMenu.open()
-                      }
-                  }
+    //onMapClicked: (mouse) => {
+    //    if (!globals.guidedControllerFlyView.guidedUIVisible &&
+    //        (globals.guidedControllerFlyView.showGotoLocation || globals.guidedControllerFlyView.showOrbit || globals.guidedControllerFlyView.showROI || globals.guidedControllerFlyView.showSetHome || globals.guidedControllerFlyView.showSetEstimatorOrigin)) {
+    //        orbitMapCircle.hide()
+    //        gotoLocationItem.hide()
+    //        var clickCoord = _root.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
+    //        clickMenu.coord = clickCoord
+    //        clickMenu.setCoordinates(mouse.x, mouse.y)
+    //        clickMenu.open()
+    //    }
+    //}
 
     MapScale {
         id:                 mapScale
