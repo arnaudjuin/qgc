@@ -218,6 +218,7 @@ Rectangle {
                 id: buttonDraw
                 text: _editTracing ? "Finalizar" : "Novo polígono" 
                 checked: _editTracing
+                enabled: !_addWaypointOnClick
                     background: Rectangle {
                     color: _editTracing ? "#FF6666" : "#ffffff" // When clicked turns light grey
                     radius: 5  
@@ -309,7 +310,7 @@ Rectangle {
                 id: buttonTravel
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
-
+                enabled: !_editTracing
                 checked: _addWaypointOnClick
                 onClicked: {
                     // Emit signal to show or hide Rover WP button
@@ -413,7 +414,7 @@ Rectangle {
                 width: (_rightPanelWidth / 2) - ScreenTools.defaultFontPixelWidth * 1
                 height: ScreenTools.isMobile ? 28 : 28
                 Layout.fillWidth: true
-                enabled: !_planMasterController.syncInProgress
+                enabled: !_planMasterController.syncInProgress && !_addWaypointOnClick && !_editTracing
                 onClicked: {
                     if (polygonItem) {
                         polygonItem.surveyAreaPolygon.traceMode = false;

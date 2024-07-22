@@ -43,6 +43,9 @@ public:
     Q_PROPERTY(bool     missingParameters   READ missingParameters  NOTIFY missingParametersChanged)    ///< true: Parameters are missing from firmware response, false: all parameters received from firmware
     Q_PROPERTY(double   loadProgress        READ loadProgress       NOTIFY loadProgressChanged)
     Q_PROPERTY(bool     pendingWrites       READ pendingWrites      NOTIFY pendingWritesChanged)        ///< true: There are still pending write updates against the vehicle
+    Q_INVOKABLE void sendParamSetToVehicle(int componentId, const QString& paramName, int valueType, const QVariant& value) {
+        _sendParamSetToVehicle(componentId, paramName, static_cast<FactMetaData::ValueType_t>(valueType), value);
+    }
 
     bool parametersReady    (void) const { return _parametersReady; }
     bool missingParameters  (void) const { return _missingParameters; }

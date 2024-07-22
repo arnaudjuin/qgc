@@ -12,6 +12,7 @@ on:
       - 'ux/PlanView'
       - 'ui/MissionItemFix'
       - 'MergeLG'
+      - 'fix/StableV1'
     tags:
       - 'v*'
     paths-ignore:

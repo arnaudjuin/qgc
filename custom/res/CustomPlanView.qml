@@ -84,6 +84,12 @@ Item {
         planMasterController:       _planMasterController
     }
 
+    EditPositionDialogController {
+        id: controller
+
+        Component.onCompleted: initValues()
+    }
+
     onVisibleChanged: {
         if(visible) {
             editorMap.zoomLevel = QGroundControl.flightMapZoom
@@ -629,27 +635,7 @@ Item {
             visible: false
             
             onClicked: {
-                    var currentIndex = _missionController.visualItems.count;
-                    var vertexItem= null
-                    // Retrieve the last visual item as vertexItem
-                    for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
-                          vertexItem= _missionController.visualItems.get(i);
-                          console.log("in")
-                        if (vertexItem.surveyAreaPolygon)
-                        {
-                            console.log("break")
-                            break;
-                        }
-                        else
-                        vertexItem = null;
-                    }
-                    console.log("_activeVehicle.coordinate1",_activeVehicle.coordinate)
-                    console.log("vertexItem.surveyAreaPolygon.coordinate1",vertexItem.coordinate)
-                    vertexItem.coordinate=_activeVehicle.coordinate
-
-
-                    console.log("_activeVehicle.coordinate2",_activeVehicle.coordinate)
-                    console.log("vertexItem.surveyAreaPolygon.coordinate2",vertexItem.coordinate)
+                controller.setFromVehicle()
             }
         }
 

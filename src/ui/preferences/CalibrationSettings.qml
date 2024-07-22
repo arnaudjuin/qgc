@@ -27,7 +27,7 @@ Rectangle {
     height: 300
     color: qgcPal.window
 
-    property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
+    property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
 
     function enableSliders(enabled) {
         slider1.enabled = enabled;
@@ -47,7 +47,7 @@ Rectangle {
     function sendPWMCommand(channel, value) {
         var pwmValue = 1500 + (value * 10);
         var paramId = "";
-        
+
         // Define o paramId com base no canal
         if (channel === 3) {
             paramId = "SERVO3_TRIM";
@@ -59,19 +59,12 @@ Rectangle {
             paramId = "SERVO6_TRIM";
         }
 
-        _activeVehicle.sendMavCommand(
-            1,                  // target_system
-            1,                  // target_component
-            23,                 // MAV_CMD_PARAM_SET
-            true,               // showError
-            paramId,            // param_id as a string
-            pwmValue,           // param_value
-            0,                  // param_type
-            0,                  // param_index
-            0,                  // param_reserved
-            0,                  // param_reserved
-            0                   // param_reserved
-        );
+        // Log to console for debugging
+        console.log("Sending command to channel:", channel, "with paramId:", paramId, "and pwmValue:", pwmValue);
+
+        if (_activeVehicle && _activeVehicle.parameterManager) {
+            _activeVehicle.parameterManager.sendParamSetToVehicle(1, paramId, FactMetaData.valueTypeFloat, pwmValue);
+        }
     }
 
     Rectangle {
