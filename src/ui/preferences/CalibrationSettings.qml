@@ -29,11 +29,7 @@ Rectangle {
 
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
 
-    function enableSliders(enabled) {
-        slider1.enabled = enabled;
-        slider2.enabled = enabled;
-        slider3.enabled = enabled;
-        slider4.enabled = enabled;
+    function enableButtons(enabled) {
         minusButton1.enabled = enabled;
         plusButton1.enabled = enabled;
         minusButton2.enabled = enabled;
@@ -104,11 +100,11 @@ Rectangle {
                     if (toggleButton.text === "Active") {
                         toggleButton.text = "Disable"
                         buttonBackground.color = "#ff0000"
-                        enableSliders(true)
+                        enableButtons(true)
                     } else {
                         toggleButton.text = "Active"
                         buttonBackground.color = "#ff4800"
-                        enableSliders(false)
+                        enableButtons(false)
                     }
                 }
             }
@@ -135,8 +131,15 @@ Rectangle {
                             text: "-"
                             anchors.fill: parent
                             enabled: false
+                            onPressed: {
+                                holdTimerMinus1.start();
+                            }
+                            onReleased: {
+                                holdTimerMinus1.stop();
+                            }
                             onClicked: {
                                 slider1.value = Math.max(slider1.value - 1, slider1.from);
+                                sendPWMCommand(3, slider1.value);
                             }
                         }
                     }
@@ -149,11 +152,6 @@ Rectangle {
                         stepSize: 1
                         enabled: false
                         value: 0
-                        onValueChanged: {
-                            if (toggleButton.text === "Disable") {
-                                sendPWMCommand(3, slider1.value);
-                            }
-                        }
                     }
                     Rectangle {
                         width: 30
@@ -165,9 +163,34 @@ Rectangle {
                             text: "+"
                             anchors.fill: parent
                             enabled: false
+                            onPressed: {
+                                holdTimerPlus1.start();
+                            }
+                            onReleased: {
+                                holdTimerPlus1.stop();
+                            }
                             onClicked: {
                                 slider1.value = Math.min(slider1.value + 1, slider1.to);
+                                sendPWMCommand(3, slider1.value);
                             }
+                        }
+                    }
+                    Timer {
+                        id: holdTimerMinus1
+                        interval: 100
+                        repeat: true
+                        onTriggered: {
+                            slider1.value = Math.max(slider1.value - 1, slider1.from);
+                            sendPWMCommand(3, slider1.value);
+                        }
+                    }
+                    Timer {
+                        id: holdTimerPlus1
+                        interval: 100
+                        repeat: true
+                        onTriggered: {
+                            slider1.value = Math.min(slider1.value + 1, slider1.to);
+                            sendPWMCommand(3, slider1.value);
                         }
                     }
                 }
@@ -195,8 +218,15 @@ Rectangle {
                             text: "-"
                             anchors.fill: parent
                             enabled: false
+                            onPressed: {
+                                holdTimerMinus2.start();
+                            }
+                            onReleased: {
+                                holdTimerMinus2.stop();
+                            }
                             onClicked: {
                                 slider2.value = Math.max(slider2.value - 1, slider2.from);
+                                sendPWMCommand(4, slider2.value);
                             }
                         }
                     }
@@ -209,11 +239,6 @@ Rectangle {
                         stepSize: 1
                         enabled: false
                         value: 0
-                        onValueChanged: {
-                            if (toggleButton.text === "Disable") {
-                                sendPWMCommand(4, slider2.value);
-                            }
-                        }
                     }
                     Rectangle {
                         width: 30
@@ -225,9 +250,34 @@ Rectangle {
                             text: "+"
                             anchors.fill: parent
                             enabled: false
+                            onPressed: {
+                                holdTimerPlus2.start();
+                            }
+                            onReleased: {
+                                holdTimerPlus2.stop();
+                            }
                             onClicked: {
                                 slider2.value = Math.min(slider2.value + 1, slider2.to);
+                                sendPWMCommand(4, slider2.value);
                             }
+                        }
+                    }
+                    Timer {
+                        id: holdTimerMinus2
+                        interval: 100
+                        repeat: true
+                        onTriggered: {
+                            slider2.value = Math.max(slider2.value - 1, slider2.from);
+                            sendPWMCommand(4, slider2.value);
+                        }
+                    }
+                    Timer {
+                        id: holdTimerPlus2
+                        interval: 100
+                        repeat: true
+                        onTriggered: {
+                            slider2.value = Math.min(slider2.value + 1, slider2.to);
+                            sendPWMCommand(4, slider2.value);
                         }
                     }
                 }
@@ -255,8 +305,15 @@ Rectangle {
                             text: "-"
                             anchors.fill: parent
                             enabled: false
+                            onPressed: {
+                                holdTimerMinus3.start();
+                            }
+                            onReleased: {
+                                holdTimerMinus3.stop();
+                            }
                             onClicked: {
                                 slider3.value = Math.max(slider3.value - 1, slider3.from);
+                                sendPWMCommand(5, slider3.value);
                             }
                         }
                     }
@@ -269,11 +326,6 @@ Rectangle {
                         stepSize: 1
                         enabled: false
                         value: 0
-                        onValueChanged: {
-                            if (toggleButton.text === "Disable") {
-                                sendPWMCommand(5, slider3.value);
-                            }
-                        }
                     }
                     Rectangle {
                         width: 30
@@ -285,9 +337,34 @@ Rectangle {
                             text: "+"
                             anchors.fill: parent
                             enabled: false
+                            onPressed: {
+                                holdTimerPlus3.start();
+                            }
+                            onReleased: {
+                                holdTimerPlus3.stop();
+                            }
                             onClicked: {
                                 slider3.value = Math.min(slider3.value + 1, slider3.to);
+                                sendPWMCommand(5, slider3.value);
                             }
+                        }
+                    }
+                    Timer {
+                        id: holdTimerMinus3
+                        interval: 100
+                        repeat: true
+                        onTriggered: {
+                            slider3.value = Math.max(slider3.value - 1, slider3.from);
+                            sendPWMCommand(5, slider3.value);
+                        }
+                    }
+                    Timer {
+                        id: holdTimerPlus3
+                        interval: 100
+                        repeat: true
+                        onTriggered: {
+                            slider3.value = Math.min(slider3.value + 1, slider3.to);
+                            sendPWMCommand(5, slider3.value);
                         }
                     }
                 }
@@ -315,8 +392,15 @@ Rectangle {
                             text: "-"
                             anchors.fill: parent
                             enabled: false
+                            onPressed: {
+                                holdTimerMinus4.start();
+                            }
+                            onReleased: {
+                                holdTimerMinus4.stop();
+                            }
                             onClicked: {
                                 slider4.value = Math.max(slider4.value - 1, slider4.from);
+                                sendPWMCommand(6, slider4.value);
                             }
                         }
                     }
@@ -329,11 +413,6 @@ Rectangle {
                         stepSize: 1
                         enabled: false
                         value: 0
-                        onValueChanged: {
-                            if (toggleButton.text === "Disable") {
-                                sendPWMCommand(6, slider4.value);
-                            }
-                        }
                     }
                     Rectangle {
                         width: 30
@@ -345,9 +424,34 @@ Rectangle {
                             text: "+"
                             anchors.fill: parent
                             enabled: false
+                            onPressed: {
+                                holdTimerPlus4.start();
+                            }
+                            onReleased: {
+                                holdTimerPlus4.stop();
+                            }
                             onClicked: {
                                 slider4.value = Math.min(slider4.value + 1, slider4.to);
+                                sendPWMCommand(6, slider4.value);
                             }
+                        }
+                    }
+                    Timer {
+                        id: holdTimerMinus4
+                        interval: 100
+                        repeat: true
+                        onTriggered: {
+                            slider4.value = Math.max(slider4.value - 1, slider4.from);
+                            sendPWMCommand(6, slider4.value);
+                        }
+                    }
+                    Timer {
+                        id: holdTimerPlus4
+                        interval: 100
+                        repeat: true
+                        onTriggered: {
+                            slider4.value = Math.min(slider4.value + 1, slider4.to);
+                            sendPWMCommand(6, slider4.value);
                         }
                     }
                 }
@@ -355,3 +459,6 @@ Rectangle {
         }
     }
 }
+
+
+
