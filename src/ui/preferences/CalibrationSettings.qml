@@ -44,7 +44,6 @@ Rectangle {
         var pwmValue = 1500 + (value * 10);
         var paramId = "";
 
-        // Define o paramId com base no canal
         if (channel === 3) {
             paramId = "SERVO3_TRIM";
         } else if (channel === 4) {
@@ -55,12 +54,18 @@ Rectangle {
             paramId = "SERVO6_TRIM";
         }
 
-        // Log to console for debugging
         console.log("Sending command to channel:", channel, "with paramId:", paramId, "and pwmValue:", pwmValue);
 
         if (_activeVehicle && _activeVehicle.parameterManager) {
-            _activeVehicle.parameterManager.sendParamSetToVehicle(1, paramId, FactMetaData.valueTypeFloat, pwmValue);
+            _activeVehicle.parameterManager.sendParamSetToVehicle(1, paramId, 3, pwmValue);
         }
+    }
+
+    function sendDefaultPWM() {
+        sendPWMCommand(3, 0);
+        sendPWMCommand(4, 0);
+        sendPWMCommand(5, 0);
+        sendPWMCommand(6, 0);
     }
 
     Rectangle {
@@ -101,6 +106,7 @@ Rectangle {
                         toggleButton.text = "Disable"
                         buttonBackground.color = "#ff0000"
                         enableButtons(true)
+                        sendDefaultPWM()
                     } else {
                         toggleButton.text = "Active"
                         buttonBackground.color = "#ff4800"
@@ -147,11 +153,10 @@ Rectangle {
                         id: slider1
                         width: 120
                         height: 30
-                        from: -40
-                        to: 40
+                        from: -50
+                        to: 50
                         stepSize: 1
                         enabled: false
-                        value: 0
                     }
                     Rectangle {
                         width: 30
@@ -234,8 +239,8 @@ Rectangle {
                         id: slider2
                         width: 120
                         height: 30
-                        from: -40
-                        to: 40
+                        from: -50
+                        to: 50
                         stepSize: 1
                         enabled: false
                         value: 0
@@ -321,8 +326,8 @@ Rectangle {
                         id: slider3
                         width: 120
                         height: 30
-                        from: -40
-                        to: 40
+                        from: -50
+                        to: 50
                         stepSize: 1
                         enabled: false
                         value: 0
@@ -408,8 +413,8 @@ Rectangle {
                         id: slider4
                         width: 120
                         height: 30
-                        from: -40
-                        to: 40
+                        from: -50
+                        to: 50
                         stepSize: 1
                         enabled: false
                         value: 0
@@ -459,6 +464,4 @@ Rectangle {
         }
     }
 }
-
-
 

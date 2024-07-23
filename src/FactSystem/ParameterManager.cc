@@ -843,10 +843,7 @@ void ParameterManager::_sendParamSetToVehicle(int componentId, const QString& pa
             break;
 
         default:
-            qCritical() << "Unsupported fact falue type" << valueType;
-            // fall through
-
-        case FactMetaData::valueTypeInt32:
+            qCritical() << "Unsupported fact value type" << valueType;
             union_value.param_int32 = (int32_t)value.toInt();
             break;
         }
