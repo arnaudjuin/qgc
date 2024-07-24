@@ -48,10 +48,12 @@ Rectangle {
             paramId = "SERVO3_TRIM";
         } else if (channel === 4) {
             paramId = "SERVO4_TRIM";
+            pwmValue = 1500 - (value * 10); // Invertido para o Left Rear
         } else if (channel === 5) {
             paramId = "SERVO5_TRIM";
         } else if (channel === 6) {
             paramId = "SERVO6_TRIM";
+            pwmValue = 1500 - (value * 10); // Invertido para o Right Rear
         }
 
         console.log("Sending command to channel:", channel, "with paramId:", paramId, "and pwmValue:", pwmValue);
@@ -83,7 +85,7 @@ Rectangle {
             spacing: 5
 
             Label {
-                text: "Wheel alignment panel"
+                text: "Painel de alinhamento"
                 font.pointSize: 12
                 font.bold: true
                 color: qgcPal.text
@@ -95,20 +97,20 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter
                 width: 100
                 height: 30
-                text: "Active"
+                text: "Ativar"
                 background: Rectangle {
                     id: buttonBackground
                     color: "#ff4800"
                     radius: 5
                 }
                 onClicked: {
-                    if (toggleButton.text === "Active") {
-                        toggleButton.text = "Disable"
+                    if (toggleButton.text === "Ativar") {
+                        toggleButton.text = "Desativar"
                         buttonBackground.color = "#ff0000"
                         enableButtons(true)
                         sendDefaultPWM()
                     } else {
-                        toggleButton.text = "Active"
+                        toggleButton.text = "Ativar"
                         buttonBackground.color = "#ff4800"
                         enableButtons(false)
                     }
@@ -120,7 +122,7 @@ Rectangle {
                 spacing: 2
                 Layout.alignment: Qt.AlignHCenter
                 Label {
-                    text: "Left front"
+                    text: "Dianteira esquerda"
                     font.pixelSize: 12
                     Layout.alignment: Qt.AlignHCenter
                 }
@@ -206,7 +208,7 @@ Rectangle {
                 spacing: 2
                 Layout.alignment: Qt.AlignHCenter
                 Label {
-                    text: "Left rear"
+                    text: "Traseira esquerda"
                     font.pixelSize: 12
                     Layout.alignment: Qt.AlignHCenter
                 }
@@ -293,7 +295,7 @@ Rectangle {
                 spacing: 2
                 Layout.alignment: Qt.AlignHCenter
                 Label {
-                    text: "Right front"
+                    text: "Dianteira direita"
                     font.pixelSize: 12
                     Layout.alignment: Qt.AlignHCenter
                 }
@@ -380,7 +382,7 @@ Rectangle {
                 spacing: 2
                 Layout.alignment: Qt.AlignHCenter
                 Label {
-                    text: "Right rear"
+                    text: "Traseira direita"
                     font.pixelSize: 12
                     Layout.alignment: Qt.AlignHCenter
                 }
@@ -464,4 +466,3 @@ Rectangle {
         }
     }
 }
-

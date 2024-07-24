@@ -635,7 +635,19 @@ Item {
             visible: false
             
             onClicked: {
-                controller.setFromVehicle()
+                var currentIndex = _missionController.visualItems.count;
+                var survey= null
+                // Retrieve the last visual item as vertexItem
+                for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
+                      survey= _missionController.visualItems.get(i);
+                    if (survey.surveyAreaPolygon)
+                    {
+                        break;
+                    }
+                    else
+                    survey = null;
+                }
+                survey.surveyAreaPolygon.appendVertex(_activeVehicle.coordinate)
             }
         }
 

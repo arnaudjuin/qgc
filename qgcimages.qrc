@@ -214,5 +214,6 @@
         <file alias="notificacao.svg">src/ui/toolbar/Images/notificacao.svg</file>
         <file alias="bateria.svg">src/ui/toolbar/Images/bateria.svg</file>
         <file alias="megafone.svg">src/ui/toolbar/Images/megafone.svg</file>
+        <file alias="CalibrationTrim.svg">src/ui/toolbar/Images/CalibrationTrim.svg</file>
     </qresource>
 </RCC>

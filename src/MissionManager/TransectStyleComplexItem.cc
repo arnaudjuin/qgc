@@ -1256,7 +1256,7 @@ void TransectStyleComplexItem::_buildAndAppendMissionItems(QList<MissionItem*>& 
         break;
     }
 
-    // Note: The code below is written to be understable as opposed to being compact and/or remove all duplicate code
+    // Note: The code below is written to be understandable as opposed to being compact and/or remove all duplicate code
     for (int coordIndex=0; coordIndex<_rgFlightPathCoordInfo.count(); coordIndex++) {
         const CoordInfo_t& coordInfo = _rgFlightPathCoordInfo[coordIndex];
         switch (coordInfo.coordType) {
@@ -1314,6 +1314,8 @@ void TransectStyleComplexItem::_buildAndAppendMissionItems(QList<MissionItem*>& 
             break;
         }
     }
+    // Append stop spray command at the end of the mission
+    _appendStopSpray(items, missionItemParent, seqNum);
 }
 void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QObject* missionItemParent, int &seqNum)
 {

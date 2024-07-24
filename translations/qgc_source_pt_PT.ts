@@ -4245,7 +4245,7 @@ Escolher UMA REGULAÇÃO</translation>
     <message>
       <location filename="../src/AutoPilotPlugins/AutoPilotPlugin.cc" line="74"/>
       <source>One or more vehicle components require setup prior to flight.</source>
-      <translation>Um ou mais componentes do veículo precisam ser configurados antes do voo.</translation>
+      <translation>Um ou mais componentes do veículo precisam ser configurados antes de iniciar.</translation>
     </message>
   </context>
   <context>
@@ -7979,17 +7979,17 @@ Clique em Ok para inciar o processo de auto-ajuste.</translation>
     <message>
       <location filename="../src/FlightDisplay/GuidedActionsController.qml" line="61"/>
       <source>WARNING: THIS WILL STOP ALL MOTORS. IF VEHICLE IS CURRENTLY IN THE AIR IT WILL CRASH.</source>
-      <translation>ATENÇÃO: ISSO IRÁ PARAR TODOS OS MOTORES. SE O VEÍCULO ESTÁ ATUALMENTE NO AR ELE IRÁ CAIR.</translation>
+      <translation>ATENÇÃO: ISSO IRÁ PARAR TODOS OS MOTORES.</translation>
     </message>
     <message>
       <location filename="../src/FlightDisplay/GuidedActionsController.qml" line="62"/>
       <source>Takeoff from ground and hold position.</source>
-      <translation>Decola do chão e mantêm na posição especificada.</translation>
+      <translation>Manter na posição especificada.</translation>
     </message>
     <message>
       <location filename="../src/FlightDisplay/GuidedActionsController.qml" line="63"/>
       <source>Takeoff from ground and start the current mission.</source>
-      <translation>Decola do chão e inicia a rota atual.</translation>
+      <translation>Iniciar a rota atual.</translation>
     </message>
     <message>
       <location filename="../src/FlightDisplay/GuidedActionsController.qml" line="64"/>
@@ -8004,7 +8004,7 @@ Clique em Ok para inciar o processo de auto-ajuste.</translation>
     <message>
       <location filename="../src/FlightDisplay/GuidedActionsController.qml" line="66"/>
       <source>Land the vehicle at the current position.</source>
-      <translation>Pouse o veículo na posição atual.</translation>
+      <translation>Parar o veículo na posição atual.</translation>
     </message>
     <message>
       <location filename="../src/FlightDisplay/GuidedActionsController.qml" line="68"/>
@@ -8039,7 +8039,7 @@ Clique em Ok para inciar o processo de auto-ajuste.</translation>
     <message>
       <location filename="../src/FlightDisplay/GuidedActionsController.qml" line="74"/>
       <source>Pause all vehicles at their current position.</source>
-      <translation>Pare todos os veículos na sua posição atual.</translation>
+      <translation>Pare o veículo na sua posição atual.</translation>
     </message>
     <message>
       <location filename="../src/FlightDisplay/GuidedActionsController.qml" line="75"/>

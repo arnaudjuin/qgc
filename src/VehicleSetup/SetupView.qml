@@ -237,6 +237,18 @@ Rectangle {
             }
 
             SubMenuButton {
+                id:                 calibrationSettings
+                imageResource:      "/qmlimages/CalibrationTrim.svg"
+                setupIndicator:     false
+                checked:            true
+                buttonGroup:     setupButtonGroup
+                text:               qsTr("Alinhamento")
+                Layout.fillWidth:   true
+
+                onClicked: showPanel(this, "CalibrationSettings.qml")
+            }
+
+            SubMenuButton {
                 id:                 firmwareButton
                 imageResource:      "/qmlimages/FirmwareUpgradeIcon.png"
                 setupIndicator:     false

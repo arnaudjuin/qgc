@@ -472,7 +472,7 @@ SetupPage {
                 onClicked:  globals.activeVehicle.flashBootloader()
             }
 
-            TextArea {
+            /*TextArea {
                 id:                 statusTextArea
                 Layout.preferredWidth:              parent.width
                 Layout.fillHeight:  true
@@ -485,7 +485,7 @@ SetupPage {
                 background: Rectangle {
                     color: qgcPal.windowShade
                 }
-            }
+            }*/
         } // ColumnLayout
     } // Component
 } // SetupPage
