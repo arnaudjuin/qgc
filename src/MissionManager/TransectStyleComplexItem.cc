@@ -1336,7 +1336,7 @@ void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QOb
     items.append(itemServo7);
 
     // Comando para o servo número 8
-    MissionItem* itemServo8 = new MissionItem(seqNum++,
+    /*MissionItem* itemServo8 = new MissionItem(seqNum++,
                                               MAV_CMD_DO_SET_SERVO,
                                               MAV_FRAME_MISSION,
                                               8, // Servo number
@@ -1345,7 +1345,7 @@ void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QOb
                                               true, // autoContinue
                                               false, // isCurrentItem
                                               missionItemParent);
-    items.append(itemServo8);
+    items.append(itemServo8);*/
 }
 
 
@@ -1366,7 +1366,7 @@ void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObj
                                               missionItemParent);
     items.append(itemServo7);
 
-    // Comando para o servo número 8
+   /* // Comando para o servo número 8
     MissionItem* itemServo8 = new MissionItem(seqNum++,
                                               MAV_CMD_DO_SET_SERVO,
                                               MAV_FRAME_MISSION,
@@ -1376,7 +1376,7 @@ void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObj
                                               true, // autoContinue
                                               false, // isCurrentItem
                                               missionItemParent);
-    items.append(itemServo8);
+    items.append(itemServo8);*/
 
 }
 
