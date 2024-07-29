@@ -1135,6 +1135,10 @@ void TransectStyleComplexItem::appendMissionItems(QList<MissionItem*>& items, QO
         // Build the mission items on the fly
         _buildAndAppendMissionItems(items, missionItemParent);
     }
+
+    // Ensure the spray is stopped at the end of the mission
+    int seqNum = items.isEmpty() ? _sequenceNumber : items.last()->sequenceNumber() + 1;
+    _appendStopSpray(items, missionItemParent, seqNum);
 }
 
 void TransectStyleComplexItem::_appendWaypoint(QList<MissionItem*>& items, QObject* missionItemParent, int& seqNum, MAV_FRAME mavFrame, float holdTime, const QGeoCoordinate& coordinate)
@@ -1314,8 +1318,6 @@ void TransectStyleComplexItem::_buildAndAppendMissionItems(QList<MissionItem*>& 
             break;
         }
     }
-    // Append stop spray command at the end of the mission
-    _appendStopSpray(items, missionItemParent, seqNum);
 }
 void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QObject* missionItemParent, int &seqNum)
 {

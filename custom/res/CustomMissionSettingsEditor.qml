@@ -87,11 +87,11 @@ Rectangle {
         }
 
         QGCLabel {
-            text: qsTr("Speed")
+            text: qsTr("Velocidade")
         }
         FactTextField {
             id: factFlightSpeed
-            fact: _missionController.visualItems.get(0).speedSection.flightSpeed
+            fact: QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed
             visible: true
             enabled: true
             Layout.fillWidth: true
@@ -121,9 +121,9 @@ Rectangle {
             id : factVazaoOffline
             property string displayValue: {
                 switch (factVazaoOffline.fact.value) {
-                    case 1200: return "Baixa";
-                    case 1400: return "Média";
-                    case 1600: return "Alta";
+                    case 1300: return "10L";
+                    case 1500: return "20L";
+                    case 1700: return "30L";
                     default: return factVazaoOffline.fact.value.toString();
                 }
             }
@@ -146,7 +146,7 @@ Rectangle {
             Layout.fillWidth: true
             value: factVazaoOffline.fact.value
             onValueChanged: {
-                var pwmValue = vazaoSlider.value === 1 ? 1600 : (vazaoSlider.value === 2 ? 1400 : 1200);
+                var pwmValue = vazaoSlider.value === 1 ? 1700 : (vazaoSlider.value === 2 ? 1500 : 1300);
                 // Atualizar apenas o valor do fact
                 factVazaoOffline.fact.value = pwmValue;
                 QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value = pwmValue;

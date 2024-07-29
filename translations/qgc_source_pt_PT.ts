@@ -5018,7 +5018,7 @@ Clique em Ok para inciar o processo de auto-ajuste.</translation>
     <message>
       <location filename="../src/PlanView/CorridorScanEditor.qml" line="18"/>
       <source>Use the Polyline Tools to create the polyline which defines the corridor.</source>
-      <translation>Use as Ferramentas de Polilinhas para criar a polilinha que define o corredor.</translation>
+      <translation>Finalize o traçado do polígono para ter acesso as configurações.</translation>
     </message>
     <message>
       <location filename="../src/PlanView/CorridorScanEditor.qml" line="56"/>
@@ -16196,7 +16196,7 @@ ROTATION_NONE indica que o componente aponta na direção do voo.</translation>
     <message>
       <location filename="../src/PlanView/StructureScanEditor.qml" line="69"/>
       <source>Use the Polygon Tools to create the polygon which outlines the structure.</source>
-      <translation>Use as Ferramentas do Polígono para criar o polígono que delineia a área de pesquisa.</translation>
+      <translation>Finalize o traçado do polígono para ter acesso as configurações.</translation>
     </message>
     <message>
       <location filename="../src/PlanView/StructureScanEditor.qml" line="100"/>
@@ -16415,7 +16415,7 @@ ROTATION_NONE indica que o componente aponta na direção do voo.</translation>
     <message>
       <location filename="../src/PlanView/SurveyItemEditor.qml" line="18"/>
       <source>Use the Polygon Tools to create the polygon which outlines your survey area.</source>
-      <translation>Use as Ferramentas do Polígono para criar o polígono que delineia a área de pesquisa.</translation>
+      <translation>Finalize o traçado do polígono para ter acesso as configurações.</translation>
     </message>
     <message>
       <location filename="../src/PlanView/SurveyItemEditor.qml" line="19"/>

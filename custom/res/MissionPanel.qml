@@ -603,7 +603,7 @@ Rectangle {
                 text: "Recap Header"
             }*/
             QGCLabel {
-                text: qsTr("Are you sure you want to start the mission?")
+                text: qsTr("Você tem certeza que deseja inicar a missão?")
                 font.family: ScreenTools.demiboldFontFamily
                 anchors.left:       parent.left
                 anchors.right:      parent.right
@@ -614,7 +614,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 20
                 QGCButton {
-                    text: "No"
+                    text: "Não"
                     width: 70
                     onClicked: {
                                                                 QGroundControl.corePlugin.showGeoFence=false
@@ -623,7 +623,7 @@ Rectangle {
                     }
                 }
                 QGCButton {
-                    text: "Yes"
+                    text: "Sim"
                     width: 70
                     onClicked: {
                                         QGroundControl.corePlugin.showGeoFence=false
@@ -686,11 +686,12 @@ Rectangle {
                 spacing: 20 // Ajuste o espaçamento conforme necessário
     
                 QGCButton {
-                    text: "KML"
+                    text: "KML/SHP"
                     width: 80 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;
                         kmlOrSHPLoadDialog.openForLoad();
+                        bar.currentIndex = 0
                     }
                 }
     
@@ -700,6 +701,7 @@ Rectangle {
                     onClicked: {
                         loadChoice = false;
                         _planMasterController.loadFromSelectedFile();
+                        bar.currentIndex = 0
                     }
                 }
             }
