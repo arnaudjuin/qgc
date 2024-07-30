@@ -146,18 +146,47 @@ Rectangle {
             Layout.fillWidth: true
             value: factVazaoOffline.fact.value
             onValueChanged: {
-                var pwmValue = vazaoSlider.value === 1 ? 1700 : (vazaoSlider.value === 2 ? 1500 : 1300);
-                // Atualizar apenas o valor do fact
+                var pwmValue = vazaoSlider.value === 1 ? 1300 : (vazaoSlider.value === 2 ? 1500 : 1700);
                 factVazaoOffline.fact.value = pwmValue;
                 QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value = pwmValue;
-                // Comentado o envio do comando para o veículo
-                // _activeVehicle.sendCommand(
-                //     1,      // component
-                //     183,    // command
-                //     true,   // confirmation
-                //     8,      // param1
-                //     pwmValue // param2
-                // );
+            }
+        }
+
+        QGCLabel {
+            text: qsTr("Tamanho da gota")
+        }
+        FactTextField {
+            id : factBicoOffline
+            property string displayValue2: {
+                switch (factBicoOffline.fact.value) {
+                    case 1300: return "Grossa";
+                    case 1500: return "Média";
+                    case 1700: return "Fina";
+                    default: return factBicoOffline.fact.value.toString();
+                }
+            }
+            fact: QGroundControl.settingsManager.appSettings.offlineEditingNozzle
+            visible: true
+            text: displayValue2
+            Layout.fillWidth: true
+            onTextChanged: {
+                nozzleSlider.value = factBicoOffline.fact.value;
+            }
+        }
+        QGCSlider {
+            id: nozzleSlider
+            from: 1
+            to: 3
+            stepSize: 1
+            snapMode: QGCSlider.SnapAlways
+            live: true
+            Layout.columnSpan: 2
+            Layout.fillWidth: true
+            value: factBicoOffline.fact.value
+            onValueChanged: {
+                var pwmValue = nozzleSlider.value === 1 ? 1300 : (nozzleSlider.value === 2 ? 1500 : 1700);
+                factBicoOffline.fact.value = pwmValue;
+                QGroundControl.settingsManager.appSettings.offlineEditingNozzle.value = pwmValue;
             }
         }
     }

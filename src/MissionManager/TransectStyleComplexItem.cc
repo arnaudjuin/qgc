@@ -1314,6 +1314,10 @@ void TransectStyleComplexItem::_buildAndAppendMissionItems(QList<MissionItem*>& 
             } else {
                 _appendWaypoint(items, missionItemParent, seqNum, mavFrame, 0 /* holdTime */, coordInfo.coord);
             }
+            if (lastSurveyExit) {
+                _appendStopSpray(items, missionItemParent, seqNum);
+            }
+
             _appendStopSpray(items, missionItemParent, seqNum);
             break;
         }
@@ -1336,16 +1340,16 @@ void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QOb
     items.append(itemServo7);
 
     // Comando para o servo número 8
-    /*MissionItem* itemServo8 = new MissionItem(seqNum++,
+    MissionItem* itemServo8 = new MissionItem(seqNum++,
                                               MAV_CMD_DO_SET_SERVO,
                                               MAV_FRAME_MISSION,
                                               8, // Servo number
-                                              appSettings->offlineEditingHoverSpeed()->rawValue().toDouble(), // PWM value to set
+                                              appSettings->offlineEditingAscentSpeed()->rawValue().toDouble(), // PWM value to set
                                               0, 0, 0, 0, 0, // Unused parameters
                                               true, // autoContinue
                                               false, // isCurrentItem
                                               missionItemParent);
-    items.append(itemServo8);*/
+    items.append(itemServo8);
 }
 
 
@@ -1366,7 +1370,7 @@ void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObj
                                               missionItemParent);
     items.append(itemServo7);
 
-   /* // Comando para o servo número 8
+    // Comando para o servo número 8
     MissionItem* itemServo8 = new MissionItem(seqNum++,
                                               MAV_CMD_DO_SET_SERVO,
                                               MAV_FRAME_MISSION,
@@ -1376,7 +1380,7 @@ void TransectStyleComplexItem::_appendStopSpray(QList<MissionItem*>& items, QObj
                                               true, // autoContinue
                                               false, // isCurrentItem
                                               missionItemParent);
-    items.append(itemServo8);*/
+    items.append(itemServo8);
 
 }
 
