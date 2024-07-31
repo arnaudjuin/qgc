@@ -158,7 +158,7 @@ Rectangle {
                     Image {
                         id: armDisarmImage
                         anchors.centerIn: parent
-                        source: _armed ? "/custom/img/off.svg" : "/custom/img/on.svg"  // Substitua com as imagens reais
+                        source: _armed ? "/custom/img/on.svg" : "/custom/img/off.svg"  // Substitua com as imagens reais
                         fillMode: Image.PreserveAspectFit
                         width: parent.width * 0.65
                         height: parent.height * 0.65
@@ -170,7 +170,7 @@ Rectangle {
                         } else {
                             GlobalSignals.buttonDisarm()
                         }
-                        armDisarmImage.source = _armed ? "/custom/img/off.svg" : "/custom/img/on.svg"
+                        armDisarmImage.source = _armed ? "/custom/img/on.svg" : "/custom/img/off.svg"
                     }
                 }
             }

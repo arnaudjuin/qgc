@@ -242,28 +242,28 @@ void QGCCorePlugin::factValueGridCreateDefaultSettings(const QString& defaultSet
     value->setFact("Vehicle", "FlightTime"); //
     value->setIcon("timer.svg"); //
     value->setText(value->fact()->shortDescription());
-    value->setShowUnits(true);
+    value->setShowUnits(false);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
     value->setFact("Vehicle", "GroundSpeed"); //
     value->setIcon("dashboard.svg"); //
     value->setText(value->fact()->shortDescription());
-    value->setShowUnits(true);
+    value->setShowUnits(false);
 
     rowIndex    = 0;
     column      = factValueGrid.columns()->value<QmlObjectListModel*>(1);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
-    value->setFact("Vehicle", "rollRate");//
+    value->setFact("Vehicle", "Roll");//
     value->setIcon("cheveron-outline-right.svg"); //
     value->setText(value->fact()->shortDescription());
-    value->setShowUnits(true);
+    value->setShowUnits(false);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
     value->setFact("Vehicle", "distanceToHome"); //
     value->setIcon("home.svg"); //
     value->setText(value->fact()->shortDescription());
-    value->setShowUnits(true);
+    value->setShowUnits(false);
 
 
     if (includeFWValues) {
@@ -285,7 +285,7 @@ void QGCCorePlugin::factValueGridCreateDefaultSettings(const QString& defaultSet
     column      = factValueGrid.columns()->value<QmlObjectListModel*>(includeFWValues ? 3 : 2);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
-    value->setFact("Vehicle", "pitchRate"); //
+    value->setFact("Vehicle", "Pitch"); //
     value->setIcon("cheveron-outline-up.svg"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(false);
@@ -294,7 +294,7 @@ void QGCCorePlugin::factValueGridCreateDefaultSettings(const QString& defaultSet
     value->setFact("Vehicle", "Heading"); //
     value->setIcon("location-current.svg"); //
     value->setText(value->fact()->shortDescription());
-    value->setShowUnits(true);
+    value->setShowUnits(false);
 }
 
 QQmlApplicationEngine* QGCCorePlugin::createQmlApplicationEngine(QObject* parent)

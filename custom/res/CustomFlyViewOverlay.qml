@@ -133,95 +133,133 @@ Item {
     //-------------------------------------------------------------------------
         //Play - Pause - Stop
         Rectangle {
-        width: parent.width * 0.06
-        color: "transparent"
-        anchors.left: parent.left
-        anchors.leftMargin: 10
-        anchors.verticalCenter: parent.verticalCenter
-        radius: 10
-    
-        ColumnLayout {
-            id: columnLayout
-            spacing: 8
-            anchors.fill: parent
-            anchors.margins: 5
-    
-            QGCButton {
-                width: 30
-                Layout.preferredHeight: 30
-                onClicked: {
-                    guidedActionsController.confirmAction(guidedActionsController.actionStartMission)
-                }
+    width: parent.width * 0.06
+    color: "transparent"
+    anchors.left: parent.left
+    anchors.leftMargin: 10
+    anchors.verticalCenter: parent.verticalCenter
+
+    ColumnLayout {
+        id: columnLayout
+        spacing: 8
+        anchors.fill: parent
+        anchors.margins: 5
+
+        QGCButton {
+            width: 40
+            height: 40
+            Layout.preferredHeight: 40
+            anchors.horizontalCenter: parent.horizontalCenter
+            onClicked: {
                 
-                background: Rectangle {
-                    color: "#ff4800"
-                    radius: 100
-                }
-    
-                Image {
-                    width: parent.width * 0.7
-                    height: parent.height * 0.7
-                    source: "/custom/img/play.svg"
-                    fillMode: Image.PreserveAspectFit
-                    anchors.centerIn: parent
-                }
-
-                PropertyAnimation on opacity {
-                    easing.type: Easing.OutQuart
-                    from: 0.7
-                    to: 1
-                    loops: Animation.Infinite
-                    running: true
-                    alwaysRunToEnd: true
-                    duration: 1000
-                }
-
             }
-    
-            QGCButton {
-                width: 30
-                Layout.preferredHeight: 30
-                onClicked: {
-                    guidedActionsController.confirmAction(guidedActionsController.actionMVPause)
-                }
-                background: Rectangle {
-                    color: "Black"
-                    radius: 100
-                }
-    
-                Image {
-                    width: parent.width * 0.7
-                    height: parent.height * 0.7
-                    source: "/custom/img/pause.svg"
-                    fillMode: Image.PreserveAspectFit
-                    anchors.centerIn: parent
-                }
-            }
-    
-            QGCButton {
-                width: 30
-                Layout.preferredHeight: 30
-                onClicked: {
-                    guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop)
-                }
-                background: Rectangle {
-                    color: "Black" // Vermelho em hexadecimal
-                    radius: 100
-                }
 
-                Image {
-                    width: parent.width * 0.7
-                    height: parent.height * 0.7
-                    source: "/custom/img/stop.svg"
-                    fillMode: Image.PreserveAspectFit
-                    anchors.centerIn: parent
-                }
+            background: Rectangle {
+                width: 40
+                height: 40
+                color: "red"
+                radius: 20
+                anchors.centerIn: parent
+            }
+
+            Label {
+                text: "!"
+                font.pixelSize: 30
+                anchors.centerIn: parent
+                color: "black"  // Para garantir que o texto seja visível
             }
         }
-    
-        // Correção: Define a altura do Rectangle de forma dinâmica para abranger todo o conteúdo do ColumnLayout
-        height: columnLayout.implicitHeight + 10
+
+        QGCButton {
+            width: 30
+            height: 30
+            Layout.preferredHeight: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+            onClicked: {
+                guidedActionsController.confirmAction(guidedActionsController.actionStartMission)
+            }
+            
+            background: Rectangle {
+                width: 30
+                height: 30
+                color: "#ff4800"
+                radius: 15
+                anchors.centerIn: parent
+            }
+
+            Image {
+                width: parent.width * 0.7
+                height: parent.height * 0.7
+                source: "/custom/img/play.svg"
+                fillMode: Image.PreserveAspectFit
+                anchors.centerIn: parent
+            }
+
+            PropertyAnimation on opacity {
+                easing.type: Easing.OutQuart
+                from: 0.7
+                to: 1
+                loops: Animation.Infinite
+                running: true
+                alwaysRunToEnd: true
+                duration: 1000
+            }
+        }
+
+        QGCButton {
+            width: 30
+            height: 30
+            Layout.preferredHeight: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+            onClicked: {
+                guidedActionsController.confirmAction(guidedActionsController.actionMVPause)
+            }
+            background: Rectangle {
+                width: 30
+                height: 30
+                color: "Black"
+                radius: 15
+                anchors.centerIn: parent
+            }
+
+            Image {
+                width: parent.width * 0.7
+                height: parent.height * 0.7
+                source: "/custom/img/pause.svg"
+                fillMode: Image.PreserveAspectFit
+                anchors.centerIn: parent
+            }
+        }
+
+        QGCButton {
+            width: 30
+            height: 30
+            Layout.preferredHeight: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+            onClicked: {
+                guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop)
+            }
+            background: Rectangle {
+                width: 30
+                height: 30
+                color: "Black"
+                radius: 15
+                anchors.centerIn: parent
+            }
+
+            Image {
+                width: parent.width * 0.7
+                height: parent.height * 0.7
+                source: "/custom/img/stop.svg"
+                fillMode: Image.PreserveAspectFit
+                anchors.centerIn: parent
+            }
+        }
     }
+
+    // Correção: Define a altura do Rectangle de forma dinâmica para abranger todo o conteúdo do ColumnLayout
+    height: columnLayout.implicitHeight + 10
+}
     
     
     
@@ -271,7 +309,7 @@ Item {
     Rectangle {
         id: panel
         width: 180
-        height: 220
+        height: 190
         anchors.top: header.bottom
         anchors.left: header.left
         color: "#60ffffff" // Cinza meio transparente
@@ -285,9 +323,9 @@ Item {
             anchors.rightMargin: 5
             anchors.topMargin: 5
             anchors.bottomMargin: 5
-            spacing: 1
+            //spacing: 1
 
-            RowLayout {
+            /*RowLayout {
                 spacing: 2
                 QGCSwitch {
                     id: switchBrake
@@ -327,17 +365,17 @@ Item {
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 10
                 }
-            }
+            }*/
 
             RowLayout {
-                spacing: 2
+                
                 QGCSwitch {
                     id: switchLight
                     width: 25
                     height: 18
                 }
 
-                Item {
+                /*Item {
                     width: 35
                     height: 18
 
@@ -357,11 +395,9 @@ Item {
                             switchLight.checked = false
                         }
                     }
-                }
+                }*/
 
-                Item {
-                    width: 5 // Espaçamento entre o botão "Auto" e a label
-                }
+                
 
                 Label {
                     text: "Luzes"
@@ -372,7 +408,7 @@ Item {
             }
 
             RowLayout {
-                spacing: 2
+                
                 QGCSwitch {
                     id: switchBomb
                     width: 25
@@ -401,7 +437,7 @@ Item {
                     }
                 }
 
-                Item {
+                /*Item {
                     width: 35
                     height: 18
 
@@ -421,11 +457,9 @@ Item {
                             switchBomb.checked = false
                         }
                     }
-                }
+                }*/
 
-                Item {
-                    width: 5 // Espaçamento entre o botão "Auto" e a label
-                }
+               
 
                 Label {
                     text: "Bombas"
@@ -436,7 +470,7 @@ Item {
             }
 
             RowLayout {
-                spacing: 2
+                
                 QGCSwitch {
                     id: switchNozzle
                     width: 25
@@ -465,7 +499,7 @@ Item {
                     }
                 }
 
-                Item {
+                /*Item {
                     width: 35
                     height: 18
 
@@ -490,13 +524,11 @@ Item {
                                 1100  
                             );*/
                             //console.log("Bicos foram desligados automaticamente.");
-                        }
-                    }
-                }
+                        //}
+                   // }
+               // }*/
 
-                Item {
-                    width: 5 // Espaçamento entre o botão "Auto" e a label
-                }
+                
 
                 Label {
                     text: "Bicos"

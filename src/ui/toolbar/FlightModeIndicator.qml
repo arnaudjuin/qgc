@@ -158,7 +158,7 @@ RowLayout {
                 }
             }
 
-            QGCLabel {
+            /*QGCLabel {
                 id:                     hiddenModesLabel
                 text:                   qsTr("Some Modes Hidden")
                 Layout.fillWidth:       true
@@ -169,7 +169,7 @@ RowLayout {
                 function calcVisible() {
                     hiddenModesLabel.visible = hiddenFlightModesList.length > 0
                 }
-            }
+            }*/
         }
     }
 

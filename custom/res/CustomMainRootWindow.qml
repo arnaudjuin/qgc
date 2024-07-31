@@ -759,7 +759,7 @@ ApplicationWindow {
                 opacity:        0.85
             }
 
-            Rectangle {
+            /*Rectangle {
                 anchors.horizontalCenter:   backgroundRect.right
                 anchors.verticalCenter:     backgroundRect.top
                 width:                      ScreenTools.defaultFontPixelHeight
@@ -779,7 +779,7 @@ ApplicationWindow {
                     fillItem: parent
                     onClicked: indicatorDrawer._expanded = true
                 }
-            }
+            }*/
         }
 
         contentItem: QGCFlickable {

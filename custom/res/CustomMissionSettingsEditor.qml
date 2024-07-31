@@ -101,9 +101,9 @@ Rectangle {
         }
         QGCSlider {
             id: flightSpeedSlider
-            from: 0
-            to: 15
-            stepSize: 0.5
+            from: 3.6
+            to: 18
+            stepSize: 3.6
             tickmarksEnabled: false
             Layout.columnSpan: 2
             Layout.fillWidth: true
@@ -165,7 +165,7 @@ Rectangle {
                     default: return factBicoOffline.fact.value.toString();
                 }
             }
-            fact: QGroundControl.settingsManager.appSettings.offlineEditingNozzle
+            fact: QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed
             visible: true
             text: displayValue2
             Layout.fillWidth: true
@@ -186,7 +186,7 @@ Rectangle {
             onValueChanged: {
                 var pwmValue = nozzleSlider.value === 1 ? 1300 : (nozzleSlider.value === 2 ? 1500 : 1700);
                 factBicoOffline.fact.value = pwmValue;
-                QGroundControl.settingsManager.appSettings.offlineEditingNozzle.value = pwmValue;
+                QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value = pwmValue;
             }
         }
     }
