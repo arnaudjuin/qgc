@@ -635,7 +635,7 @@ Item {
                 
                 anchors.topMargin: 10
                 visible:            mapPolygon.traceMode && mapPolygon.count > 3 
-                text:               qsTr("Remove last vertex")
+                text:               qsTr("Remover último vértice")
                 onClicked: {
                     if (mapPolygon.count > 0 && _lastVertexIndex >= 0) {
                         mapPolygon.removeVertex(_lastVertexIndex)

@@ -64,7 +64,7 @@ Rectangle {
         anchors.left:       parent.left
         anchors.right:      parent.right
         anchors.top:        parent.top
-        columnSpacing:      _margin + 80
+        columnSpacing:      _margin + 45
         rowSpacing:         _margin 
         columns:            2
 
@@ -87,13 +87,14 @@ Rectangle {
         }
 
         QGCLabel {
-            text: qsTr("Velocidade")
+            text: qsTr("Velocidade   Km/H")
         }
         FactTextField {
             id: factFlightSpeed
             fact: QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed
             visible: true
             enabled: true
+            showUnits: false
             Layout.fillWidth: true
             onTextChanged: {
                 flightSpeedSlider.value = factFlightSpeed.fact.value;
@@ -115,15 +116,15 @@ Rectangle {
         }
 
         QGCLabel {
-            text: qsTr("Vazão")
+            text: qsTr("Vazão   L/Hec")
         }
         FactTextField {
             id : factVazaoOffline
             property string displayValue: {
                 switch (factVazaoOffline.fact.value) {
-                    case 1300: return "10L";
-                    case 1500: return "20L";
-                    case 1700: return "30L";
+                    case 1300: return "10";
+                    case 1500: return "20";
+                    case 1700: return "30";
                     default: return factVazaoOffline.fact.value.toString();
                 }
             }

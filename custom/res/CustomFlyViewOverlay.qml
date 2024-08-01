@@ -150,14 +150,26 @@ Item {
             height: 40
             Layout.preferredHeight: 40
             anchors.horizontalCenter: parent.horizontalCenter
+
+            property bool relayState: false  // Estado inicial: desligado (0)
+
             onClicked: {
-                
+                relayState = !relayState;  // Alterna o estado do relé
+                var relayValue = relayState ? 1 : 0;
+
+                _activeVehicle.sendCommand(
+                    1,        // component (tipicamente 1 para o autopilot)
+                    181,      // MAV_CMD_DO_SET_RELAY
+                    relayValue // param2 (estado do relé: 1 para ligado, 0 para desligado)
+                );
+
+                background.color = relayState ? "green" : "red";  // Atualiza a cor de fundo
             }
 
             background: Rectangle {
                 width: 40
                 height: 40
-                color: "red"
+                color: relayState ? "green" : "red"  // Define a cor inicial
                 radius: 20
                 anchors.centerIn: parent
             }
