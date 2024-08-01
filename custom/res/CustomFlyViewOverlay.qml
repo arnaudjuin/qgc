@@ -155,12 +155,14 @@ Item {
 
             onClicked: {
                 relayState = !relayState;  // Alterna o estado do relé
-                var relayValue = relayState ? 1 : 0;
+                var servoValue = relayState ? 1 : 0;  // (valor: 1 para ligado, 0 para desligado)
 
                 _activeVehicle.sendCommand(
-                    1,        // component (tipicamente 1 para o autopilot)
-                    181,      // MAV_CMD_DO_SET_RELAY
-                    relayValue // param2 (estado do relé: 1 para ligado, 0 para desligado)
+                    1,          // component (tipicamente 1 para o autopilot)
+                    181,        // MAV_CMD_DO_SET_RELAY
+                    true,       //confirmation
+                    0,          // Instance number relay
+                    servoValue // param (valor: 1 para ligado, 0 para desligado)
                 );
 
                 background.color = relayState ? "green" : "red";  // Atualiza a cor de fundo
@@ -181,6 +183,7 @@ Item {
                 color: "black"  // Para garantir que o texto seja visível
             }
         }
+
 
         QGCButton {
             width: 30
