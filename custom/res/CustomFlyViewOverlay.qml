@@ -171,7 +171,7 @@ Item {
             background: Rectangle {
                 width: 40
                 height: 40
-                color: relayState ? "green" : "red"  // Define a cor inicial
+                color: "red"
                 radius: 20
                 anchors.centerIn: parent
             }

@@ -257,7 +257,7 @@ Rectangle {
 
                             // If the polygonItem exists, set its camera footprint side value
                             if (polygonItem) 
-                                polygonItem.cameraCalc.adjustedFootprintSide.value = 2;
+                                polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
 
                             // Check if the polygon's traceMode is enabled
                             if (polygonItem.surveyAreaPolygon.traceMode) {
