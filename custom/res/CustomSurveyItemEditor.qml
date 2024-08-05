@@ -23,6 +23,7 @@ TransectStyleComplexItemEditor {
     property var _missionItem: missionItem
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
     property real _heading: _activeVehicle ? _activeVehicle.heading.rawValue : 0
+    property int selectedButton: -1 // Propriedade para armazenar o botão selecionado
 
     property int faixaLargura: 0
     property real velocidade: 0
@@ -173,28 +174,41 @@ TransectStyleComplexItemEditor {
                 Layout.fillWidth: true
 
                 QGCButton {
+                    id: button36
                     text: "3.6"
                     Layout.fillWidth: true
+                    background: Rectangle {
+                        color: parent.selected ? "lightgrey" : "#ff4800" // Muda a cor de fundo
+                        radius: 5
+                    }
                     visible: (gridSlider.value === 6 && vazaoSlider.value === 3) ||
                             (gridSlider.value === 8 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 10 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 12 && (vazaoSlider.value === 2 || vazaoSlider.value === 3))
                     onClicked: {
+                        selectedButton = 0;
                         var pwmValue = 1200;
                         QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 3.6;
                         velocidade = 3.6;
                         factVazaoOffline.fact.value = pwmValue;
                     }
+                    property bool selected: selectedButton === 0
                 }
 
                 QGCButton {
+                    id: button72
                     text: "7.2"
                     Layout.fillWidth: true
+                    background: Rectangle {
+                        color: parent.selected ? "lightgrey" : "#ff4800"
+                        radius: 5
+                    }
                     visible: (gridSlider.value === 6 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 8 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 10 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 12 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3))
                     onClicked: {
+                        selectedButton = 1;
                         var pwmValue;
                         if (gridSlider.value === 6 && vazaoSlider.value === 2) {
                             pwmValue = 1225;
@@ -223,14 +237,21 @@ TransectStyleComplexItemEditor {
                         velocidade = 7.2;
                         factVazaoOffline.fact.value = pwmValue;
                     }
+                    property bool selected: selectedButton === 1
                 }
 
                 QGCButton {
+                    id: button108
                     text: "10.8"
                     Layout.fillWidth: true
+                    background: Rectangle {
+                        color: parent.selected ? "lightgrey" : "#ff4800"
+                        radius: 5
+                    }
                     visible: (gridSlider.value === 6 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value !== 6)
                     onClicked: {
+                        selectedButton = 2;
                         var pwmValue;
                         if (gridSlider.value === 6 && vazaoSlider.value === 1) {
                             pwmValue = 1200;
@@ -261,8 +282,10 @@ TransectStyleComplexItemEditor {
                         velocidade = 10.8;
                         factVazaoOffline.fact.value = pwmValue;
                     }
+                    property bool selected: selectedButton === 2
                 }
             }
+
 
 
             QGCLabel { text: qsTr("Tamanho da gota") }

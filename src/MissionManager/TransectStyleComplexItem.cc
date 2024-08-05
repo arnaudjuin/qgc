@@ -1317,12 +1317,13 @@ void TransectStyleComplexItem::_buildAndAppendMissionItems(QList<MissionItem*>& 
             if (lastSurveyExit) {
                 _appendStopSpray(items, missionItemParent, seqNum);
             }
-
-            _appendStopSpray(items, missionItemParent, seqNum);
             break;
         }
     }
+    // Always append stop spray command at the end
+    _appendStopSpray(items, missionItemParent, seqNum);
 }
+
 void TransectStyleComplexItem::_appendStartSpray(QList<MissionItem*>& items, QObject* missionItemParent, int &seqNum)
 {
     AppSettings *appSettings = qgcApp()->toolbox()->settingsManager()->appSettings();
