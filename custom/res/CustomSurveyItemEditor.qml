@@ -69,7 +69,7 @@ TransectStyleComplexItemEditor {
 
             QGCSlider {
                 id: turnAroundSlider
-                from: 0
+                from: -10
                 to: 19
                 stepSize: 0.5
                 tickmarksEnabled: false
