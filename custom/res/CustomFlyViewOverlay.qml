@@ -70,6 +70,15 @@ Item {
         return hours+':'+minutes+':'+seconds;
     }
 
+    function sendCommandWithDelay() {
+        // Enviar o primeiro comando imediatamente
+        _activeVehicle.sendCommand(1, 183, true, 7, 1051);
+
+        // Criar e iniciar o timer para o segundo comando
+        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 8, 1051, 0, 0, 0, 0); }', parent, 'timer');    }
+
+    
+
     QGCToolInsets {
         id:                     _totalToolInsets
         leftEdgeTopInset:       parentToolInsets.leftEdgeTopInset
@@ -167,8 +176,7 @@ Item {
 
                     // Adiciona lógica para parar os bicos ao desligar o relé
                     if (!relayState) {
-                        _activeVehicle.sendCommand(1, 183, true, 7, 1051, 0, 0, 0, 0);
-                        _activeVehicle.sendCommand(1, 183, true, 8, 1051, 0, 0, 0, 0);
+                        sendCommandWithDelay()
                     }
 
                     background.color = relayState ? "green" : "red";  // Atualiza a cor de fundo
@@ -233,8 +241,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
                     guidedActionsController.confirmAction(guidedActionsController.actionMVPause)
-                    _activeVehicle.sendCommand(1, 183, true, 7, 1051, 0, 0, 0, 0);
-                    _activeVehicle.sendCommand(1, 183, true, 8, 1051, 0, 0, 0, 0);
+                    sendCommandWithDelay()
                 }
                 background: Rectangle {
                     width: 30
@@ -260,8 +267,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
                     guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop)
-                    _activeVehicle.sendCommand(1, 183, true, 7, 1051, 0, 0, 0, 0);
-                    _activeVehicle.sendCommand(1, 183, true, 8, 1051, 0, 0, 0, 0);
+                    sendCommandWithDelay()
                 }
                 background: Rectangle {
                     width: 30
