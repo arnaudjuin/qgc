@@ -13,7 +13,7 @@ import QGroundControl.Palette
 
 /// Mission item edit control
 Rectangle {
-    visible :       !QGroundControl.corePlugin.showGeoFence
+    visible :       !QGroundControl.corePlugin.showGeoFence && missionItem.sequenceNumber !== 0
     id:             _root
     width:          parent.width - 20  // Ajuste a largura para evitar o corte
     height:         editorLoader.visible ? (editorLoader.y + editorLoader.height + _innerMargin) : (topRowLayout.y + topRowLayout.height + _margin)
