@@ -662,7 +662,7 @@ bool SurveyComplexItem::_nextTransectCoord(const QList<QGeoCoordinate>& transect
 
 bool SurveyComplexItem::_hasTurnaround(void) const
 {
-    return true;
+    return _turnAroundDistance() > 0;
 }
 
 double SurveyComplexItem::_turnaroundDistance(void) const

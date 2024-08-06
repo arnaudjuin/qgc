@@ -8,7 +8,7 @@
     "shortDesc": "Amount of additional distance to add outside the survey area for vehicle turn around.",
     "type":             "double",
     "decimalPlaces":    2,
-    "min":              -10,
+    "min":              0,
     "units":            "m",
     "default":     30
 },

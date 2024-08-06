@@ -16,7 +16,7 @@ Rectangle {
     visible :       !QGroundControl.corePlugin.showGeoFence && missionItem.sequenceNumber !== 0
     id:             _root
     width:          parent.width - 20  // Ajuste a largura para evitar o corte
-    height:         editorLoader.visible ? (editorLoader.y + editorLoader.height + _innerMargin) : (topRowLayout.y + topRowLayout.height + _margin) - 46
+    height:         editorLoader.visible ? (editorLoader.y + editorLoader.height + _innerMargin) : (topRowLayout.y + topRowLayout.height + _margin)
     color:          _currentItem ? qgcPal.missionItemEditor : qgcPal.windowShade
     radius:         _radius
     opacity:        _currentItem ? 1.0 : 0.7
