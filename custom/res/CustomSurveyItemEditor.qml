@@ -107,6 +107,43 @@ TransectStyleComplexItemEditor {
                 live: true
             }
 
+            QGCLabel { text: qsTr("Tamanho da gota") }
+            FactTextField {
+                id: factBicoOffline
+                property string displayValue2: {
+                    switch (factBicoOffline.fact.value) {
+                        case 1300: return "Grossa";
+                        case 1500: return "Média";
+                        case 1700: return "Fina";
+                        default: return factBicoOffline.fact.value.toString();
+                    }
+                }
+                fact: QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed
+                visible: true
+                text: displayValue2
+                Layout.fillWidth: true
+                onTextChanged: {
+                    nozzleSlider.value = factBicoOffline.fact.value
+                }
+            }
+            QGCSlider {
+                id: nozzleSlider
+                from: 1
+                to: 3
+                stepSize: 1
+                snapMode: QGCSlider.SnapAlways
+                live: true
+                Layout.columnSpan: 2
+                Layout.fillWidth: true
+                //Layout.margins: Qt.leftMargin | Qt.rightMargin
+                value: factBicoOffline.fact.value
+                onValueChanged: {
+                    var pwmValue = nozzleSlider.value === 1 ? 1300 : (nozzleSlider.value === 2 ? 1500 : 1700)
+                    factBicoOffline.fact.value = pwmValue
+                    QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value = pwmValue
+                }
+            }
+
             QGCLabel {
                 text: qsTr("Vazão   L/Ha")
             }
@@ -288,42 +325,7 @@ TransectStyleComplexItemEditor {
 
 
 
-            QGCLabel { text: qsTr("Tamanho da gota") }
-            FactTextField {
-                id: factBicoOffline
-                property string displayValue2: {
-                    switch (factBicoOffline.fact.value) {
-                        case 1300: return "Grossa";
-                        case 1500: return "Média";
-                        case 1700: return "Fina";
-                        default: return factBicoOffline.fact.value.toString();
-                    }
-                }
-                fact: QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed
-                visible: true
-                text: displayValue2
-                Layout.fillWidth: true
-                onTextChanged: {
-                    nozzleSlider.value = factBicoOffline.fact.value
-                }
-            }
-            QGCSlider {
-                id: nozzleSlider
-                from: 1
-                to: 3
-                stepSize: 1
-                snapMode: QGCSlider.SnapAlways
-                live: true
-                Layout.columnSpan: 2
-                Layout.fillWidth: true
-                Layout.margins: Qt.leftMargin | Qt.rightMargin
-                value: factBicoOffline.fact.value
-                onValueChanged: {
-                    var pwmValue = nozzleSlider.value === 1 ? 1300 : (nozzleSlider.value === 2 ? 1500 : 1700)
-                    factBicoOffline.fact.value = pwmValue
-                    QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value = pwmValue
-                }
-            }
+            
 
             QGCOptionsComboBox {
                 Layout.columnSpan: 2
