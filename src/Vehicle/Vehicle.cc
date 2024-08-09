@@ -2186,10 +2186,20 @@ void Vehicle::setArmed(bool armed, bool showError)
 void Vehicle::forceArm(void)
 {
     sendMavCommand(_defaultComponentId,
-                   MAV_CMD_COMPONENT_ARM_DISARM,
-                   true,    // show error if fails
-                   1.0f,    // arm
-                   2989);   // force arm
+                MAV_CMD_COMPONENT_ARM_DISARM,
+                true,    // show error if fails
+                1.0f,    // arm
+                2989);   // force arm
+}
+
+void Vehicle::setServoPWM(int servoNumber, double pwmValue)
+{
+    sendMavCommand(_defaultComponentId,
+                   MAV_CMD_DO_SET_SERVO,
+                   true,      // show error if fails
+                   servoNumber,  // Servo number
+                   pwmValue,    // PWM value to set
+                   0, 0, 0, 0, 0); // Unused parameters
 }
 
 bool Vehicle::flightModeSetAvailable()
