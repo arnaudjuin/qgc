@@ -298,18 +298,18 @@ Rectangle {
         }
 
         Row {
-            Layout.topMargin: _margin - 2
+           //Layout.topMargin: _margin - 2
             visible: bar.currentIndex == 0
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
             //Layout.leftMargin: _margin + 12
 
-            // Trace button
+            // Corridor button
             QGCButton {
 
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
                 id: buttonCorridor
-                text: _editCorridor ? "Finalizar" : "Corridor" 
+                text: _editCorridor ? "Finalizar" : "Corredor" 
                 checked: _editCorridor
                 enabled: !_addWaypointOnClick
                     background: Rectangle {
@@ -319,63 +319,46 @@ Rectangle {
                     anchors.fill: parent  
                 }
                 onClicked: {
-                    // Toggle the _editTracing property
+                    // Toggle the _editCorridor property
                     _editCorridor = !_editCorridor;
                     // Disable adding waypoints on click
                     _addWaypointOnClick = false;
 
-                    {
+                    // Check if tracing has not been started yet
+                    if (!isTracedCorridor) {
+                        isTracedCorridor = true;
 
-                        // Check if tracing has not been started yet
-                        if (!isTracedCorridor) {
+                        // Get the index of the last visual item
+                        var currentIndex = _missionController.visualItems.count;
+                        // Retrieve the last visual item as polygonItem
+                        polygonItem = _missionController.visualItems.get(currentIndex - 1);
+
+                        // Insert a complex mission item if it hasn't been traced yet
+                        insertComplexItemAfterCurrent(_missionController.corridorScanComplexItemName);
+
+                        // Get the current visual item as polygonItem
+                        polygonItem = _missionController.visualItems.get(currentIndex);
+
+                        // If the polygonItem exists, set its camera footprint side value
+                        if (polygonItem) 
+                            polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
+
+                        // Enable traceMode if tracing is being edited
+                        if (!polygonItem.corridorPolyline.traceMode && _editCorridor) {
+                            polygonItem.corridorPolyline.traceMode = true;
+                            // Save the current vertices
+                            _saveCurrentVertices(polygonItem);
+                            // Clear the current polygon vertices
+                            polygonItem.corridorPolyline.clear();
+                            // Mark tracing as started
                             isTracedCorridor = true;
-
-                            // Get the index of the last visual item
-                            var currentIndex = _missionController.visualItems.count;
-                            // Retrieve the last visual item as polygonItem
-                            polygonItem = _missionController.visualItems.get(currentIndex - 1);
-
-                            // Insert a complex mission item if it hasn't been traced yet
-                            insertComplexItemAfterCurrent(_missionController.corridorScanComplexItemName);
-
-                            // Get the current visual item as polygonItem
-                            polygonItem = _missionController.visualItems.get(currentIndex);
-
-                            // If the polygonItem exists, set its camera footprint side value
-                            if (polygonItem) 
-                                polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
-
-                            // Check if the polygon's traceMode is enabled
-                            if (polygonItem.corridorPolyline.traceMode) {
-                                // If the polygon has fewer than 3 vertices, restore previous vertices
-                                if (polygonItem.corridorPolyline.count < 3) {
-                                    _restorePreviousVertices(polygonItem);
-                                }
-                                // Mark tracing as started
-                                isTracedCorridor = true;
-                                // Disable traceMode
-                                polygonItem.corridorPolyline.traceMode = false;
-                            }
-
-                            // Enable traceMode if tracing is being edited
-                            if (!polygonItem.corridorPolyline.traceMode && _editTracing) {
-                                polygonItem.corridorPolyline.traceMode = true;
-                                // Save the current vertices
-                                _saveCurrentVertices(polygonItem);
-                                // Clear the current polygon vertices
-                                polygonItem.corridorPolyline.clear();
-                                // Mark tracing as started
-                                isTracedCorridor = true;
-                            }
-                        } else {
-                            // If tracing was already started, disable traceMode
-                            if (polygonItem && polygonItem.corridorPolyline && polygonItem.corridorPolyline.traceMode)
-                            {
-                                polygonItem.corridorPolyline.traceMode = false;
-                            }
-                        isTracedCorridor=false;
-
                         }
+                    } else {
+                        // If tracing was already started, disable traceMode
+                        if (polygonItem && polygonItem.corridorPolyline && polygonItem.corridorPolyline.traceMode) {
+                            polygonItem.corridorPolyline.traceMode = false;
+                        }
+                        isTracedCorridor = false;
                     }
                 }
             }   

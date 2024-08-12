@@ -215,5 +215,6 @@
         <file alias="bateria.svg">src/ui/toolbar/Images/bateria.svg</file>
         <file alias="megafone.svg">src/ui/toolbar/Images/megafone.svg</file>
         <file alias="CalibrationTrim.svg">src/ui/toolbar/Images/CalibrationTrim.svg</file>
+        <file alias="RoverPosition.svg">src/FlightMap/Images/RoverPosition.svg</file>
     </qresource>
 </RCC>

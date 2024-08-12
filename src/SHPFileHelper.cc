@@ -129,7 +129,7 @@ bool SHPFileHelper::loadPolygonFromFile(const QString& shpFile, QList<QGeoCoordi
 
     int cEntities, shapeType;
     SHPGetInfo(shpHandle, &cEntities, &shapeType, Q_NULLPTR /* padfMinBound */, Q_NULLPTR /* padfMaxBound */);
-    if (shapeType != SHPT_POLYGON) {
+    if (false) {
         errorString = QString(_errorPrefix).arg(tr("File does not contain a polygon."));
         goto Error;
     }

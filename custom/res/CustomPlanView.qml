@@ -599,33 +599,34 @@ Item {
                 radius: 14  
                 border.color: "white"  
                 anchors.fill: parent  
+                // Adicionando a imagem ao botão
+                Image {
+                    source: "/qmlimages/RoverPosition.svg" // Substitua pelo caminho da sua imagem
+                    fillMode: Image.PreserveAspectFit
+                    anchors.centerIn: parent
+                    width: 34
+                    height: 34
+                }
             }
-            text: "RoverWP"
-            
+           
+
             onClicked: {
-                    var currentIndex = _missionController.visualItems.count;
-                    var WPItem= null
-                    // Retrieve the last visual item as vertexItem
-                    for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
-                        var  WPItem= _missionController.visualItems.get(i);
-                        if (!WPItem.surveyAreaPolygon)
-                            break;
-                        else
+                var currentIndex = _missionController.visualItems.count;
+                var WPItem= null
+                // Retrieve the last visual item as vertexItem
+                for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
+                    var WPItem= _missionController.visualItems.get(i);
+                    if (!WPItem.surveyAreaPolygon)
+                        break;
+                    else
                         WPItem = null;
-                    }
-                    WPItem.coordinate = _activeVehicle.coordinate
+                }
+                WPItem.coordinate = _activeVehicle.coordinate
             }
         }
 
         QGCButton {
-            id:buttonsetvtx
-            background: Rectangle {
-                color: "#ffffff"  
-                radius: 14  
-                border.color: "white"  
-                anchors.fill: parent  
-            }
-            text: "RoverVT"
+            id: buttonsetvtx
             width: 50
             height: 50
             anchors.left: parent.left
@@ -633,19 +634,34 @@ Item {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 10
             visible: false
+            background: Rectangle {
+                color: "#ffffff"  
+                radius: 14  
+                border.color: "white"  
+                anchors.fill: parent  
+                // Adicionando a imagem ao botão
+                Image {
+                    source: "/qmlimages/RoverPosition.svg" // Substitua pelo caminho da sua imagem
+                    fillMode: Image.PreserveAspectFit
+                    anchors.centerIn: parent
+                    width: 34
+                    height: 34
+                }
+            }
             
+
             onClicked: {
                 var currentIndex = _missionController.visualItems.count;
                 var survey= null
                 // Retrieve the last visual item as vertexItem
                 for (var i = _missionController.visualItems.count - 1; i >= 0; i--) {
-                      survey= _missionController.visualItems.get(i);
+                    survey= _missionController.visualItems.get(i);
                     if (survey.surveyAreaPolygon)
                     {
                         break;
                     }
                     else
-                    survey = null;
+                        survey = null;
                 }
                 survey.surveyAreaPolygon.appendVertex(_activeVehicle.coordinate)
             }
@@ -687,7 +703,7 @@ Item {
                 anchors.left:           parent.left
                 anchors.right:          parent.right
                 anchors.top:            rightPanel.top
-                height: 175
+                height: 200
 
                 MissionPanel {
                     visible:            true
@@ -708,7 +724,7 @@ Item {
                 anchors.right:          parent.right
                 anchors.topMargin:      ScreenTools.defaultFontPixelHeight * 0.25
                 anchors.bottomMargin:   ScreenTools.defaultFontPixelHeight * 0.25
-                anchors.top:            missionPanel.bottom
+                anchors.top:            missionSettingsItemEditor.bottom
                 anchors.bottom:         parent.bottom
 
                 QGCListView {
