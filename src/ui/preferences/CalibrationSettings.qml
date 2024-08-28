@@ -23,21 +23,16 @@ import QGroundControl.FactControls 1.0
 
 Rectangle {
     id: calibrationView
-    width: 400
-    height: 300
+    width: 500
+    height: 500
     color: qgcPal.window
 
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
 
-    function enableButtons(enabled) {
-        minusButton1.enabled = enabled;
-        plusButton1.enabled = enabled;
-        minusButton2.enabled = enabled;
-        plusButton2.enabled = enabled;
-        minusButton3.enabled = enabled;
-        plusButton3.enabled = enabled;
-        minusButton4.enabled = enabled;
-        plusButton4.enabled = enabled;
+    function enableButtons(slider, minusButton, plusButton, enabled) {
+        minusButton.enabled = enabled;
+        plusButton.enabled = enabled;
+        slider.enabled = enabled;
     }
 
     function sendPWMCommand(channel, value) {
@@ -63,71 +58,60 @@ Rectangle {
         }
     }
 
-    function sendDefaultPWM() {
-        sendPWMCommand(3, 0);
-        sendPWMCommand(4, 0);
-        sendPWMCommand(5, 0);
-        sendPWMCommand(6, 0);
+    function sendDefaultPWM(channel) {
+        sendPWMCommand(channel, 0);
     }
 
     Rectangle {
         id: calibrationRec
-        width: 275
-        height: 305
+        width: 600
+        height: 350
         border.color: "#d3d3d3"
         anchors.centerIn: parent
         radius: 10
         color: "white"
 
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: 5
-            spacing: 5
+        GridLayout {
+            columns: 2
+            anchors.centerIn: parent
+            rowSpacing: 20
+            columnSpacing: 50
 
-            Label {
-                text: "Painel de alinhamento"
-                font.pointSize: 12
-                font.bold: true
-                color: qgcPal.text
-                Layout.alignment: Qt.AlignHCenter
-            }
-
-            QGCButton {
-                id: toggleButton
-                Layout.alignment: Qt.AlignHCenter
-                width: 100
-                height: 30
-                text: "Ativar"
-                background: Rectangle {
-                    id: buttonBackground
-                    color: "#ff4800"
-                    radius: 5
-                }
-                onClicked: {
-                    if (toggleButton.text === "Ativar") {
-                        toggleButton.text = "Desativar"
-                        buttonBackground.color = "#ff0000"
-                        enableButtons(true)
-                        sendDefaultPWM()
-                    } else {
-                        toggleButton.text = "Ativar"
-                        buttonBackground.color = "#ff4800"
-                        enableButtons(false)
-                    }
-                }
-            }
-
-            // Slider 1
+            // Dianteira Esquerda
             ColumnLayout {
-                spacing: 2
-                Layout.alignment: Qt.AlignHCenter
+                spacing: 10
                 Label {
                     text: "Dianteira esquerda"
                     font.pixelSize: 12
                     Layout.alignment: Qt.AlignHCenter
                 }
+                QGCButton {
+                    id: enableButton1
+                    Layout.alignment: Qt.AlignHCenter
+                    width: 100
+                    height: 30
+                    text: "Ativar"
+                    background: Rectangle {
+                        id: buttonBackground1
+                        color: "#ff4800"
+                        radius: 5
+                    }
+                    onClicked: {
+                        if (enableButton1.text === "Ativar") {
+                            enableButton1.text = "Desativar"
+                            buttonBackground1.color = "#ff0000"
+                            enableButtons(slider1, minusButton1, plusButton1, true)
+                            slider1.value = 0;  // Reseta o slider para o ponto inicial
+                            sendDefaultPWM(3)
+                        } else {
+                            enableButton1.text = "Ativar"
+                            buttonBackground1.color = "#ff4800"
+                            enableButtons(slider1, minusButton1, plusButton1, false)
+                        }
+                    }
+                }
                 RowLayout {
-                    spacing: 5
+                    spacing: 10
                     Layout.alignment: Qt.AlignHCenter
                     Rectangle {
                         width: 30
@@ -153,7 +137,7 @@ Rectangle {
                     }
                     QGCSlider {
                         id: slider1
-                        width: 120
+                        width: 150
                         height: 30
                         from: -50
                         to: 50
@@ -203,104 +187,41 @@ Rectangle {
                 }
             }
 
-            // Slider 2
+            // Dianteira Direita
             ColumnLayout {
-                spacing: 2
-                Layout.alignment: Qt.AlignHCenter
-                Label {
-                    text: "Traseira esquerda"
-                    font.pixelSize: 12
-                    Layout.alignment: Qt.AlignHCenter
-                }
-                RowLayout {
-                    spacing: 5
-                    Layout.alignment: Qt.AlignHCenter
-                    Rectangle {
-                        width: 30
-                        height: 30
-                        color: "#ff4800"
-                        radius: 5
-                        QGCButton {
-                            id: minusButton2
-                            text: "-"
-                            anchors.fill: parent
-                            enabled: false
-                            onPressed: {
-                                holdTimerMinus2.start();
-                            }
-                            onReleased: {
-                                holdTimerMinus2.stop();
-                            }
-                            onClicked: {
-                                slider2.value = Math.max(slider2.value - 1, slider2.from);
-                                sendPWMCommand(4, slider2.value);
-                            }
-                        }
-                    }
-                    QGCSlider {
-                        id: slider2
-                        width: 120
-                        height: 30
-                        from: -50
-                        to: 50
-                        stepSize: 1
-                        enabled: false
-                        value: 0
-                    }
-                    Rectangle {
-                        width: 30
-                        height: 30
-                        color: "#ff4800"
-                        radius: 5
-                        QGCButton {
-                            id: plusButton2
-                            text: "+"
-                            anchors.fill: parent
-                            enabled: false
-                            onPressed: {
-                                holdTimerPlus2.start();
-                            }
-                            onReleased: {
-                                holdTimerPlus2.stop();
-                            }
-                            onClicked: {
-                                slider2.value = Math.min(slider2.value + 1, slider2.to);
-                                sendPWMCommand(4, slider2.value);
-                            }
-                        }
-                    }
-                    Timer {
-                        id: holdTimerMinus2
-                        interval: 100
-                        repeat: true
-                        onTriggered: {
-                            slider2.value = Math.max(slider2.value - 1, slider2.from);
-                            sendPWMCommand(4, slider2.value);
-                        }
-                    }
-                    Timer {
-                        id: holdTimerPlus2
-                        interval: 100
-                        repeat: true
-                        onTriggered: {
-                            slider2.value = Math.min(slider2.value + 1, slider2.to);
-                            sendPWMCommand(4, slider2.value);
-                        }
-                    }
-                }
-            }
-
-            // Slider 3
-            ColumnLayout {
-                spacing: 2
-                Layout.alignment: Qt.AlignHCenter
+                spacing: 10
                 Label {
                     text: "Dianteira direita"
                     font.pixelSize: 12
                     Layout.alignment: Qt.AlignHCenter
                 }
+                QGCButton {
+                    id: enableButton3
+                    Layout.alignment: Qt.AlignHCenter
+                    width: 100
+                    height: 30
+                    text: "Ativar"
+                    background: Rectangle {
+                        id: buttonBackground3
+                        color: "#ff4800"
+                        radius: 5
+                    }
+                    onClicked: {
+                        if (enableButton3.text === "Ativar") {
+                            enableButton3.text = "Desativar"
+                            buttonBackground3.color = "#ff0000"
+                            enableButtons(slider3, minusButton3, plusButton3, true)
+                            slider3.value = 0;  // Reseta o slider para o ponto inicial
+                            sendDefaultPWM(5)
+                        } else {
+                            enableButton3.text = "Ativar"
+                            buttonBackground3.color = "#ff4800"
+                            enableButtons(slider3, minusButton3, plusButton3, false)
+                        }
+                    }
+                }
                 RowLayout {
-                    spacing: 5
+                    spacing: 10
                     Layout.alignment: Qt.AlignHCenter
                     Rectangle {
                         width: 30
@@ -326,7 +247,7 @@ Rectangle {
                     }
                     QGCSlider {
                         id: slider3
-                        width: 120
+                        width: 150
                         height: 30
                         from: -50
                         to: 50
@@ -377,17 +298,152 @@ Rectangle {
                 }
             }
 
-            // Slider 4
+            // Traseira Esquerda
             ColumnLayout {
-                spacing: 2
-                Layout.alignment: Qt.AlignHCenter
+                spacing: 10
+                Label {
+                    text: "Traseira esquerda"
+                    font.pixelSize: 12
+                    Layout.alignment: Qt.AlignHCenter
+                }
+                QGCButton {
+                    id: enableButton2
+                    Layout.alignment: Qt.AlignHCenter
+                    width: 100
+                    height: 30
+                    text: "Ativar"
+                    background: Rectangle {
+                        id: buttonBackground2
+                        color: "#ff4800"
+                        radius: 5
+                    }
+                    onClicked: {
+                        if (enableButton2.text === "Ativar") {
+                            enableButton2.text = "Desativar"
+                            buttonBackground2.color = "#ff0000"
+                            enableButtons(slider2, minusButton2, plusButton2, true)
+                            slider2.value = 0;  // Reseta o slider para o ponto inicial
+                            sendDefaultPWM(4)
+                        } else {
+                            enableButton2.text = "Ativar"
+                            buttonBackground2.color = "#ff4800"
+                            enableButtons(slider2, minusButton2, plusButton2, false)
+                        }
+                    }
+                }
+                RowLayout {
+                    spacing: 10
+                    Layout.alignment: Qt.AlignHCenter
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        color: "#ff4800"
+                        radius: 5
+                        QGCButton {
+                            id: minusButton2
+                            text: "-"
+                            anchors.fill: parent
+                            enabled: false
+                            onPressed: {
+                                holdTimerMinus2.start();
+                            }
+                            onReleased: {
+                                holdTimerMinus2.stop();
+                            }
+                            onClicked: {
+                                slider2.value = Math.max(slider2.value - 1, slider2.from);
+                                sendPWMCommand(4, slider2.value);
+                            }
+                        }
+                    }
+                    QGCSlider {
+                        id: slider2
+                        width: 150
+                        height: 30
+                        from: -50
+                        to: 50
+                        stepSize: 1
+                        enabled: false
+                        value: 0
+                    }
+                    Rectangle {
+                        width: 30
+                        height: 30
+                        color: "#ff4800"
+                        radius: 5
+                        QGCButton {
+                            id: plusButton2
+                            text: "+"
+                            anchors.fill: parent
+                            enabled: false
+                            onPressed: {
+                                holdTimerPlus2.start();
+                            }
+                            onReleased: {
+                                holdTimerPlus2.stop();
+                            }
+                            onClicked: {
+                                slider2.value = Math.min(slider2.value + 1, slider2.to);
+                                sendPWMCommand(4, slider2.value);
+                            }
+                        }
+                    }
+                    Timer {
+                        id: holdTimerMinus2
+                        interval: 100
+                        repeat: true
+                        onTriggered: {
+                            slider2.value = Math.max(slider2.value - 1, slider2.from);
+                            sendPWMCommand(4, slider2.value);
+                        }
+                    }
+                    Timer {
+                        id: holdTimerPlus2
+                        interval: 100
+                        repeat: true
+                        onTriggered: {
+                            slider2.value = Math.min(slider2.value + 1, slider2.to);
+                            sendPWMCommand(4, slider2.value);
+                        }
+                    }
+                }
+            }
+
+            // Traseira Direita
+            ColumnLayout {
+                spacing: 10
                 Label {
                     text: "Traseira direita"
                     font.pixelSize: 12
                     Layout.alignment: Qt.AlignHCenter
                 }
+                QGCButton {
+                    id: enableButton4
+                    Layout.alignment: Qt.AlignHCenter
+                    width: 100
+                    height: 30
+                    text: "Ativar"
+                    background: Rectangle {
+                        id: buttonBackground4
+                        color: "#ff4800"
+                        radius: 5
+                    }
+                    onClicked: {
+                        if (enableButton4.text === "Ativar") {
+                            enableButton4.text = "Desativar"
+                            buttonBackground4.color = "#ff0000"
+                            enableButtons(slider4, minusButton4, plusButton4, true)
+                            slider4.value = 0;  // Reseta o slider para o ponto inicial
+                            sendDefaultPWM(6)
+                        } else {
+                            enableButton4.text = "Ativar"
+                            buttonBackground4.color = "#ff4800"
+                            enableButtons(slider4, minusButton4, plusButton4, false)
+                        }
+                    }
+                }
                 RowLayout {
-                    spacing: 5
+                    spacing: 10
                     Layout.alignment: Qt.AlignHCenter
                     Rectangle {
                         width: 30
@@ -413,7 +469,7 @@ Rectangle {
                     }
                     QGCSlider {
                         id: slider4
-                        width: 120
+                        width: 150
                         height: 30
                         from: -50
                         to: 50

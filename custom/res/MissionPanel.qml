@@ -46,6 +46,7 @@ Rectangle {
     property bool _showHoverSpeed: _controllerVehicle.multiRotor || _controllerVehicle.vtol
     property bool _multipleFirmware: !QGroundControl.singleFirmwareSupport
     property bool _multipleVehicleTypes: !QGroundControl.singleVehicleSupport
+    property var  mapPolyline                 ///< QGCMapPolyline object
 
     // Layout-related properties
     property real _fieldWidth: ScreenTools.defaultFontPixelWidth * 16
@@ -89,6 +90,32 @@ Rectangle {
     // File dialog controller
     QGCFileDialogController {
         id: fileController
+    }
+
+    // Componente de QGCMapPolylines para carregar a função de KML
+    QGCMapPolylineVisuals {
+        id: mapPolylinesComponent
+    }
+
+    // Conectar-se ao sinal de carregamento de KML
+    Connections {
+        target: mapPolylinesComponent
+        onLoadKMLRequested: {
+            // Abre o diálogo de KML no MissionPanel
+            kmlLoadDialog.openForLoad()
+        }
+    }
+
+    QGCFileDialog {
+        id:             kmlLoadDialog
+        folder:         QGroundControl.settingsManager.appSettings.missionSavePath
+        title:          qsTr("Select KML File")
+        nameFilters:    ShapeFileHelper.fileDialogKMLFilters
+
+        onAcceptedForLoad: (file) => {
+            mapPolyline.loadKMLFile(file)
+            close()
+        }
     }
 
     // Altitude mode dialog component
@@ -298,18 +325,18 @@ Rectangle {
         }
 
         Row {
-           //Layout.topMargin: _margin - 2
+            Layout.topMargin: _margin - 2
             visible: bar.currentIndex == 0
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
             //Layout.leftMargin: _margin + 12
 
-            // Corridor button
+            // Trace button
             QGCButton {
 
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
                 id: buttonCorridor
-                text: _editCorridor ? "Finalizar" : "Corredor" 
+                text: _editCorridor ? "Finalizar" : "Carregar Linhas" 
                 checked: _editCorridor
                 enabled: !_addWaypointOnClick
                     background: Rectangle {
@@ -319,46 +346,63 @@ Rectangle {
                     anchors.fill: parent  
                 }
                 onClicked: {
-                    // Toggle the _editCorridor property
+                    // Toggle the _editTracing property
                     _editCorridor = !_editCorridor;
                     // Disable adding waypoints on click
                     _addWaypointOnClick = false;
 
-                    // Check if tracing has not been started yet
-                    if (!isTracedCorridor) {
-                        isTracedCorridor = true;
+                    {
 
-                        // Get the index of the last visual item
-                        var currentIndex = _missionController.visualItems.count;
-                        // Retrieve the last visual item as polygonItem
-                        polygonItem = _missionController.visualItems.get(currentIndex - 1);
-
-                        // Insert a complex mission item if it hasn't been traced yet
-                        insertComplexItemAfterCurrent(_missionController.corridorScanComplexItemName);
-
-                        // Get the current visual item as polygonItem
-                        polygonItem = _missionController.visualItems.get(currentIndex);
-
-                        // If the polygonItem exists, set its camera footprint side value
-                        if (polygonItem) 
-                            polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
-
-                        // Enable traceMode if tracing is being edited
-                        if (!polygonItem.corridorPolyline.traceMode && _editCorridor) {
-                            polygonItem.corridorPolyline.traceMode = true;
-                            // Save the current vertices
-                            _saveCurrentVertices(polygonItem);
-                            // Clear the current polygon vertices
-                            polygonItem.corridorPolyline.clear();
-                            // Mark tracing as started
+                        // Check if tracing has not been started yet
+                        if (!isTracedCorridor) {
                             isTracedCorridor = true;
+
+                            // Get the index of the last visual item
+                            var currentIndex = _missionController.visualItems.count;
+                            // Retrieve the last visual item as polygonItem
+                            polygonItem = _missionController.visualItems.get(currentIndex - 1);
+
+                            // Insert a complex mission item if it hasn't been traced yet
+                            insertComplexItemAfterCurrent(_missionController.corridorScanComplexItemName);
+
+                            // Get the current visual item as polygonItem
+                            polygonItem = _missionController.visualItems.get(currentIndex);
+
+                            // If the polygonItem exists, set its camera footprint side value
+                            if (polygonItem) 
+                                polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
+
+                            // Check if the polygon's traceMode is enabled
+                            if (polygonItem.corridorPolyline.traceMode) {
+                                // If the polygon has fewer than 3 vertices, restore previous vertices
+                                if (polygonItem.corridorPolyline.count < 3) {
+                                    _restorePreviousVertices(polygonItem);
+                                }
+                                // Mark tracing as started
+                                isTracedCorridor = true;
+                                // Disable traceMode
+                                polygonItem.corridorPolyline.traceMode = false;
+                            }
+
+                            // Enable traceMode if tracing is being edited
+                            if (!polygonItem.corridorPolyline.traceMode && _editTracing) {
+                                polygonItem.corridorPolyline.traceMode = true;
+                                // Save the current vertices
+                                _saveCurrentVertices(polygonItem);
+                                // Clear the current polygon vertices
+                                polygonItem.corridorPolyline.clear();
+                                // Mark tracing as started
+                                isTracedCorridor = true;
+                            }
+                        } else {
+                            // If tracing was already started, disable traceMode
+                            if (polygonItem && polygonItem.corridorPolyline && polygonItem.corridorPolyline.traceMode)
+                            {
+                                polygonItem.corridorPolyline.traceMode = false;
+                            }
+                        isTracedCorridor=false;
+
                         }
-                    } else {
-                        // If tracing was already started, disable traceMode
-                        if (polygonItem && polygonItem.corridorPolyline && polygonItem.corridorPolyline.traceMode) {
-                            polygonItem.corridorPolyline.traceMode = false;
-                        }
-                        isTracedCorridor = false;
                     }
                 }
             }   

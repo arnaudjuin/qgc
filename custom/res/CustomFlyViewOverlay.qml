@@ -21,6 +21,7 @@ import QGroundControl.FactSystem    1.0
 import QGroundControl.FactControls  1.0
 import Custom.Widgets
 import QGroundControl.Controllers
+import GlobalSignals 1.0
 
 Item {
     property bool _initialDownloadComplete: _activeVehicle ? _activeVehicle.initialConnectComplete : true
@@ -72,20 +73,20 @@ Item {
 
     function sendPauseCommandWithDelay() {
         // Enviar o primeiro comando imediatamente
-        _activeVehicle.sendCommand(1, 183, true, 7, 1051);
+        _activeVehicle.sendCommand(1, 183, true, 8, 1051);
 
         // Criar e iniciar o timer para o segundo comando
-        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 8, 1051, 0, 0, 0, 0); }', parent, 'timer');    
+        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 7, 1051); }', parent, 'timer');    
         
     }
 
     function sendPlayCommandWithDelay() {
         console.log( QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value)
         // Enviar o primeiro comando imediatamente
-        _activeVehicle.sendCommand(1, 183, true, 7,  QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value);
+        _activeVehicle.sendCommand(1, 183, true, 8, QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value);
 
         // Criar e iniciar o timer para o segundo comando
-        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 8, QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value, 0, 0, 0, 0); }', parent, 'timer');    
+        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 7,  QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value); }', parent, 'timer');    
     }
 
 
@@ -212,15 +213,15 @@ Item {
                 }
             }
 
-
+            //PLAY
             QGCButton {
                 width: 30
                 height: 30
                 Layout.preferredHeight: 30
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
-                    guidedActionsController.confirmAction(guidedActionsController.actionStartMission)
-                    sendPlayCommandWithDelay()
+                    _activeVehicle.forceArm();
+                    sendPlayCommandWithDelay();
                 }
                 
                 background: Rectangle {
@@ -250,14 +251,15 @@ Item {
                 }
             }
 
+            //PAUSE
             QGCButton {
                 width: 30
                 height: 30
                 Layout.preferredHeight: 30
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
-                    guidedActionsController.confirmAction(guidedActionsController.actionMVPause)
-                    sendPauseCommandWithDelay()
+                    GlobalSignals.buttonDisarm();
+                    sendPauseCommandWithDelay();
                 }
                 background: Rectangle {
                     width: 30
@@ -276,14 +278,15 @@ Item {
                 }
             }
 
+            //STOP
             QGCButton {
                 width: 30
                 height: 30
                 Layout.preferredHeight: 30
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
-                    guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop)
-                    sendPauseCommandWithDelay()
+                    guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop);
+                    sendPauseCommandWithDelay();
                 }
                 background: Rectangle {
                     width: 30

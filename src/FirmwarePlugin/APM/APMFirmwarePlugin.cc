@@ -656,7 +656,16 @@ const QVariantList& APMFirmwarePlugin::toolIndicators(const Vehicle* vehicle)
             }
         }
 
-        // Find the generic battery indicator and replace with the custom one
+  
+                for (int i=0; i<_toolIndicatorList.size(); i++) {
+                    qDebug()<<"Here1";
+                                if (_toolIndicatorList.at(i).toUrl().toString().contains("Coverage.qml")) {
+                                                        qDebug()<<"Here2";
+                _toolIndicatorList[i] = QVariant::fromValue(QUrl::fromUserInput("qrc:/qml/QGroundControl/Controls/Coverage.qml"));
+                break;
+            }
+        }
+              // Find the generic battery indicator and replace with the custom one
         for (int i=0; i<_toolIndicatorList.size(); i++) {
             if (_toolIndicatorList.at(i).toUrl().toString().contains("BatteryIndicator.qml")) {
                 _toolIndicatorList[i] = QVariant::fromValue(QUrl::fromUserInput("qrc:/APM/Indicators/APMBatteryIndicator.qml"));

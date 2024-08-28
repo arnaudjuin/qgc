@@ -2989,7 +2989,6 @@ void Vehicle::sendMavCommandDelayed(int compId, MAV_CMD command, bool showError,
 
 void Vehicle::sendCommand(int compId, int command, bool showError, double param1, double param2, double param3, double param4, double param5, double param6, double param7)
 {
-    qDebug() << "Vehicle::sendCommand: " << compId << command << showError << param1 << param2 << param3 << param4 << param5 << param6 << param7;
     sendMavCommand(
                 compId, static_cast<MAV_CMD>(command),
                 showError,

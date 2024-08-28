@@ -192,6 +192,24 @@ Item {
         }
     }
 
+    function sendPauseCommandWithDelay() {
+        // Enviar o primeiro comando imediatamente
+        _activeVehicle.sendCommand(1, 183, true, 8, 1051);
+
+        // Criar e iniciar o timer para o segundo comando
+        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 7, 1051); }', parent, 'timer');    
+        
+    }
+
+    function sendPlayCommandWithDelay() {
+        console.log( QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value)
+        // Enviar o primeiro comando imediatamente
+        _activeVehicle.sendCommand(1, 183, true, 8, QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value);
+
+        // Criar e iniciar o timer para o segundo comando
+        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 7,  QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value); }', parent, 'timer');    
+    }
+
     function setupSlider(actionCode) {
         // generic defaults
         guidedValueSlider.configureAsLinearSlider()
@@ -406,6 +424,7 @@ Item {
             confirmDialog.title = emergencyStopTitle
             confirmDialog.message = emergencyStopMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showEmergenyStop })
+            sendPlayCommandWithDelay();
             break;
         case actionTakeoff:
             confirmDialog.title = takeoffTitle
@@ -418,6 +437,8 @@ Item {
             confirmDialog.title = startMissionTitle
             confirmDialog.message = startMissionMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showStartMission })
+            sendPlayCommandWithDelay();
+
             break;
         case actionMVStartMission:
             confirmDialog.title = mvStartMissionTitle
@@ -488,6 +509,7 @@ Item {
             confirmDialog.title = mvPauseTitle
             confirmDialog.message = mvPauseMessage
             confirmDialog.hideTrigger = true
+            sendPauseCommandWithDelay();
             break;
         case actionVtolTransitionToFwdFlight:
             confirmDialog.title = vtolTransitionTitle

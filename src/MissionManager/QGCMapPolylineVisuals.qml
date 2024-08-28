@@ -40,6 +40,7 @@ Item {
     readonly property string _corridorToolsText:    qsTr("")
     readonly property string _traceText:            qsTr("")
 
+
     function _addCommonVisuals() {
         if (_objMgrCommonVisuals.empty) {
             _objMgrCommonVisuals.createObject(polylineComponent, mapControl, true)
@@ -357,9 +358,10 @@ Item {
             QGCButton {
                 _horizontalPadding: 0
                 text:               qsTr("Load KML...")
-                onClicked:          kmlLoadDialog.openForLoad()
-                //visible:            !mapPolyline.traceMode
-                visible: false
+                onClicked: {
+                    kmlLoadDialog.openForLoad()
+                }         
+                visible:            !mapPolyline.traceMode
             }
 
         }
@@ -382,4 +384,3 @@ Item {
         }
     }
 }
-
