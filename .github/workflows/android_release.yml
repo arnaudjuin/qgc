@@ -73,7 +73,7 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           version:      ${{ env.QT_VERSION }}
-          aqtversion:   = 3.1.18
+          aqtversion:   == 3.1.18
           host:         linux
           target:       android
           arch:         ${{ matrix.arch }}
