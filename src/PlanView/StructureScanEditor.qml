@@ -207,7 +207,7 @@ Rectangle {
                     QGCLabel { text: missionItem.timeBetweenShots.toFixed(1) + " " + qsTr("secs") }
 
                     QGCLabel { text: qsTr("Trigger Distance") }
-                    QGCLabel { text: x§.valueString + " " + QGroundControl.unitsConversion.appSettingsHorizontalDistanceUnitsString }
+                    QGCLabel { text: missionItem.cameraCalc.adjustedFootprintSide.valueString + " " + QGroundControl.unitsConversion.appSettingsHorizontalDistanceUnitsString }
                 }
             } // Grid Column
 

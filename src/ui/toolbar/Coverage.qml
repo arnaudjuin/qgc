@@ -51,6 +51,14 @@ Item {
             sourceComponent:    coverageVisual
         }
     }
+            FactTextField {
+            id : factVazaoOffline
+
+            fact: QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
+            visible: false
+            Layout.fillWidth: true
+
+        }
 
     Component {
         id: coverageVisual
@@ -58,38 +66,20 @@ Item {
             anchors.top:    parent.top
             anchors.bottom: parent.bottom
 
-            // Timer to trigger getTotalSurveyArea every second
-            Timer {
-                id: surveyAreaTimer
-                interval: 1000  // 1 second interval
-                repeat: true
-                running: true
-                onTriggered: {
-                    surveyAreaLabel.text = "Survey Area: " + getTotalSurveyArea();
-                }
-            }
+    
 
             function getCoverage() {
-                return _planMasterController.missionController.missionDistance * 2 + "L"; // Adjusted function without factVazaoOffline
+                return _planMasterController.missionController.missionDistance / factVazaoOffline.fact.value   + "L";
             }
 
-            // Function to calculate the area of a polygon using the Shoelace formula
-            function calculateArea(vertices) {
-                let area = 0.0;
-                for (let i = 0; i < vertices.length; i++) {
-                    let j = (i + 1) % vertices.length;
-                    area += vertices[i].latitude * vertices[j].longitude;
-                    area -= vertices[j].latitude * vertices[i].longitude;
-                }
-                return Math.abs(area / 2.0);
-            }
+
 
             QGCLabel {
                 id: surveyAreaLabel
                 color: "white"
                 Layout.alignment: Qt.AlignHCenter
                 font.pointSize: _showBoth ? ScreenTools.defaultFontPointSize : ScreenTools.mediumFontPointSize
-                text: "Survey Area: " + getTotalSurveyArea()
+                text: "Coverage: " + getCoverage()
             }
 
             QGCColoredImage {

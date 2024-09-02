@@ -29,7 +29,7 @@ include(QGCCommon.pri)
 
 TARGET   = QGroundControl
 TEMPLATE = app
-QGCROOT  = $$PWD
+QGCROOT  = $$PWDz
 
 QML_IMPORT_PATH += $$PWD/src/QmlControls
 
