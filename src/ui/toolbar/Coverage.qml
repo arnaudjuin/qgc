@@ -51,14 +51,13 @@ Item {
             sourceComponent:    coverageVisual
         }
     }
-            FactTextField {
-            id : factVazaoOffline
 
-            fact: QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
-            visible: false
-            Layout.fillWidth: true
-
-        }
+    FactTextField {
+        id: factVazaoOffline
+        fact: QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
+        visible: false
+        Layout.fillWidth: true
+    }
 
     Component {
         id: coverageVisual
@@ -66,20 +65,35 @@ Item {
             anchors.top:    parent.top
             anchors.bottom: parent.bottom
 
-    
-
-            function getCoverage() {
-                return _planMasterController.missionController.missionDistance / factVazaoOffline.fact.value   + "L";
+            // Timer to update the getActualCoverage every second
+            Timer {
+                id: coverageUpdateTimer
+                interval: 1000 // 1 second interval
+                repeat: true
+                running: true
+                onTriggered: {
+                    surveyAreaLabel.text = "Coverage: " + getActualCoverage();
+                    coverageLabel.text = "Coverage: " + getActualCoverage();
+                }
             }
 
-
+            function getActualCoverage() {
+                console.log("_activeVehicle.flightDistance.value: " + _activeVehicle.flightDistance.value);
+                console.log("fact: " + factVazaoOffline.fact.value);
+                let vazao = 0;
+                if (factVazaoOffline.fact.value === 1700) vazao = 30;
+                if (factVazaoOffline.fact.value === 1500) vazao = 20;
+                if (factVazaoOffline.fact.value === 1300) vazao = 10;
+                // Replace the hardcoded width (6) with the actual width if needed
+                return ((_activeVehicle.flightDistance.value * 6 /* replace with the actual width */) / 10000) * vazao + "L";
+            }
 
             QGCLabel {
                 id: surveyAreaLabel
                 color: "white"
                 Layout.alignment: Qt.AlignHCenter
                 font.pointSize: _showBoth ? ScreenTools.defaultFontPointSize : ScreenTools.mediumFontPointSize
-                text: "Coverage: " + getCoverage()
+                text: "Coverage: " + getActualCoverage()
             }
 
             QGCColoredImage {
@@ -98,10 +112,11 @@ Item {
                 spacing:                0
 
                 QGCLabel {
+                    id: coverageLabel
                     color: "white"
                     Layout.alignment: Qt.AlignHCenter
                     font.pointSize: _showBoth ? ScreenTools.defaultFontPointSize : ScreenTools.mediumFontPointSize
-                    text: "Coverage: " + getCoverage()
+                    text: "Coverage: " + getActualCoverage()
                 }
             }
         }
