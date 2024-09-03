@@ -180,7 +180,7 @@ Rectangle {
                         anchors.centerIn: parent
                     }
                 }
-                QGCTabButton {
+                /*QGCTabButton {
                     height: 35
                     background: Rectangle {
                         id: backgroundRect2
@@ -195,12 +195,12 @@ Rectangle {
                         height: 30
                         anchors.centerIn: parent
                     }
-                }
+                }*/
                 QGCTabButton{
                     height: 35
                     background: Rectangle {
                         id: backgroundRect3
-                        color: bar.currentIndex === 2 ? "#ff4800" : (bar.currentIndex === 0 ? "black" : "black")
+                        color: bar.currentIndex === 1 ? "#ff4800" : (bar.currentIndex === 0 ? "black" : "black")
                         radius: 5
                         width: parent.width
                         height: parent.height
@@ -773,7 +773,7 @@ Rectangle {
     // Column for file load choice
     Rectangle {
         radius: _radius
-        visible: bar.currentIndex == 2
+        visible: bar.currentIndex == 1
         id: loadChoiceRect
         anchors.topMargin: 5
         anchors.top: sep.bottom
@@ -824,7 +824,7 @@ Rectangle {
 
     // Rectangle for GeoFence editor
     Rectangle {
-        visible: bar.currentIndex == 1
+        visible: bar.currentIndex == 2
         id: geo
         anchors.topMargin: 5
         anchors.top: sep.bottom

@@ -231,6 +231,7 @@ Rectangle {
                 checked:            true
                 buttonGroup:     setupButtonGroup
                 text:               qsTr("Summary")
+                visible: false
                 Layout.fillWidth:   true
 
                 onClicked: showSummaryPanel()
