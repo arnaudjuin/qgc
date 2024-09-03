@@ -285,8 +285,11 @@ Rectangle {
                             polygonItem = _missionController.visualItems.get(currentIndex);
 
                             // If the polygonItem exists, set its camera footprint side value
-                            if (polygonItem) 
+                            if (polygonItem)
+                            
                                 polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
+
+
 
                             // Check if the polygon's traceMode is enabled
                             if (polygonItem.surveyAreaPolygon.traceMode) {
@@ -370,7 +373,9 @@ Rectangle {
 
                             // If the polygonItem exists, set its camera footprint side value
                             if (polygonItem) 
+                            {
                                 polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
+                            }
 
                             // Check if the polygon's traceMode is enabled
                             if (polygonItem.corridorPolyline.traceMode) {

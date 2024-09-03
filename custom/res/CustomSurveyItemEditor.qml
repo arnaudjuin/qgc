@@ -90,7 +90,11 @@ TransectStyleComplexItemEditor {
             FactTextField {
                 fact:                   _missionItem.cameraCalc.adjustedFootprintSide
                 Layout.fillWidth:       true
-                onUpdated:              gridSlider.value = _missionItem.cameraCalc.adjustedFootprintSide.value
+                onUpdated:              {
+                    gridSlider.value = _missionItem.cameraCalc.adjustedFootprintSide.value
+                    QGroundControl.corePlugin.showAdjustedFootprint = _missionItem.cameraCalc.adjustedFootprintSide.value
+                    console.log("set value")
+                }
             }
 
             QGCSlider {
@@ -102,7 +106,7 @@ TransectStyleComplexItemEditor {
                 Layout.fillWidth:       true
                 Layout.columnSpan:      2
                 Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                onValueChanged:         _missionItem.cameraCalc.adjustedFootprintSide.value = value
+                onValueChanged:         {_missionItem.cameraCalc.adjustedFootprintSide.value = value;                    QGroundControl.corePlugin.showAdjustedFootprint = _missionItem.cameraCalc.adjustedFootprintSide.value}
                 Component.onCompleted:  value = _missionItem.cameraCalc.adjustedFootprintSide.value
                 live: true
             }

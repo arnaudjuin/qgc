@@ -97,6 +97,7 @@ QGCCorePlugin::QGCCorePlugin(QGCApplication *app, QGCToolbox* toolbox)
     , _showTouchAreas(false)
     , _showAdvancedUI(true)
     , _showGeoFence(false)
+    , _footprint(6)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     _p = new QGCCorePlugin_p;
@@ -205,7 +206,13 @@ void QGCCorePlugin::setShowGeoFence(bool show)
         emit showGeoFenceChanged(show);
     }
 }
-
+void QGCCorePlugin::setShowAdjustedFootprint(int footprint)
+{
+    if (footprint != _footprint) {
+        _footprint = footprint;
+        emit showAdjustedFootprintChanged(footprint);
+    }
+}
 void QGCCorePlugin::paletteOverride(QString /*colorName*/, QGCPalette::PaletteColorInfo_t& /*colorInfo*/)
 {
 
