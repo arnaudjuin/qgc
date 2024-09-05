@@ -328,7 +328,7 @@ Rectangle {
         }
 
         Row {
-            Layout.topMargin: _margin - 2
+            //Layout.topMargin: _margin - 2
             visible: bar.currentIndex == 0
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
             //Layout.leftMargin: _margin + 12

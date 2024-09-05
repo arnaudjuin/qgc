@@ -142,35 +142,16 @@ Rectangle {
         FlyViewToolBarIndicators {
             id: toolIndicators
             // Se FlyViewToolBarIndicators não estiver centralizando os ícones internamente, você pode precisar ajustar isso também
-             RowLayout {
-                id: buttonRow
-                spacing: 10 // Ajuste conforme necessário
-                anchors.verticalCenter: parent.verticalCenter // Centraliza verticalmente no parent
-
-                QGCButton {
-                    id: armDisarmButton 
-                    visible: _activeVehicle
-
-                    background: Rectangle {
-                        color: "transparent"
+            QGCButton {
+                id: armDisarmButton
+                text: _armed ? qsTr("Desarmar") : qsTr("Armar")
+                visible:            _activeVehicle
+                onClicked: {
+                    if (!_armed) {
+                        GlobalSignals.buttonArm()
                     }
-
-                    Image {
-                        id: armDisarmImage
-                        anchors.centerIn: parent
-                        source: _armed ? "/custom/img/on.svg" : "/custom/img/off.svg"  // Substitua com as imagens reais
-                        fillMode: Image.PreserveAspectFit
-                        width: parent.width * 0.65
-                        height: parent.height * 0.65
-                    }
-
-                    onClicked: {
-                        if (!_armed) {
-                            GlobalSignals.buttonArm()
-                        } else {
-                            GlobalSignals.buttonDisarm()
-                        }
-                        armDisarmImage.source = _armed ? "/custom/img/on.svg" : "/custom/img/off.svg"
+                    else {
+                        GlobalSignals.buttonDisarm()
                     }
                 }
             }

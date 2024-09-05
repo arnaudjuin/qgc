@@ -72,8 +72,7 @@ Item {
                 repeat: true
                 running: true
                 onTriggered: {
-                    surveyAreaLabel.text = "Coverage: " + getActualCoverage();
-                    coverageLabel.text = "Coverage: " + getActualCoverage();
+                    coverageLabel.text = getActualCoverage();
                 }
             }
 
@@ -89,35 +88,36 @@ Item {
                 return ((_activeVehicle.flightDistance.value * QGroundControl.corePlugin.adjustedFootprintSide ? QGroundControl.corePlugin.adjustedFootprintSide : 6) / 10000) * vazao + "L";
             }
 
-            QGCLabel {
+            /*QGCLabel {
                 id: surveyAreaLabel
-                color: "white"
+                color: "black"
                 Layout.alignment: Qt.AlignHCenter
                 font.pointSize: _showBoth ? ScreenTools.defaultFontPointSize : ScreenTools.mediumFontPointSize
-                text: "Coverage: " + getActualCoverage()
-            }
-
-            QGCColoredImage {
-                anchors.top:        parent.top
-                anchors.bottom:     parent.bottom
-                width:              height
-                sourceSize.width:   width
-                source:             "/qmlimages/TrackingIcon.svg"
-                fillMode:           Image.PreserveAspectFit
-            }
-
-            ColumnLayout {
+                text: getActualCoverage()
+            }*/
+            RowLayout {
                 id:                     batteryInfoColumn
                 anchors.top:            parent.top
                 anchors.bottom:         parent.bottom
-                spacing:                0
+                spacing:                35
+
+                QGCColoredImage {
+                    anchors.top:        parent.top
+                    anchors.bottom:     parent.bottom
+                    width:              height
+                    sourceSize.width:   width
+                    source:             "/qmlimages/TrackingIcon.svg"
+                    fillMode:           Image.PreserveAspectFit
+                }
+
+
 
                 QGCLabel {
                     id: coverageLabel
-                    color: "white"
+                    color: "black"
                     Layout.alignment: Qt.AlignHCenter
                     font.pointSize: _showBoth ? ScreenTools.defaultFontPointSize : ScreenTools.mediumFontPointSize
-                    text: "Coverage: " + getActualCoverage()
+                    text: getActualCoverage()
                 }
             }
         }
