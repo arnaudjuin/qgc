@@ -54,6 +54,7 @@ public:
     Q_PROPERTY(bool                 showTouchAreas                  READ showTouchAreas                                 WRITE setShowTouchAreas NOTIFY showTouchAreasChanged)
     Q_PROPERTY(bool                 showAdvancedUI                  READ showAdvancedUI                                 WRITE setShowAdvancedUI NOTIFY showAdvancedUIChanged)
     Q_PROPERTY(bool                 showGeoFence                    READ showGeoFence                                   WRITE setShowGeoFence NOTIFY showGeoFenceChanged)
+    Q_PROPERTY(int                  showAdjustedFootprint           READ showAdjustedFootprint                          WRITE setShowAdjustedFootprint NOTIFY showAdjustedFootprintChanged)
     Q_PROPERTY(QString              showAdvancedUIMessage           READ showAdvancedUIMessage                          CONSTANT)
     Q_PROPERTY(QString              brandImageIndoor                READ brandImageIndoor                               CONSTANT)
     Q_PROPERTY(QString              brandImageOutdoor               READ brandImageOutdoor                              CONSTANT)
@@ -186,10 +187,12 @@ public:
     bool showTouchAreas() const { return _showTouchAreas; }
     bool showAdvancedUI() const { return _showAdvancedUI; }
     bool showGeoFence() const { return _showGeoFence; }
+    int  showAdjustedFootprint () const { return _footprint; }
     void setShowTouchAreas(bool show);
     void setShowAdvancedUI(bool show);
     void setShowGeoFence (bool show);
-
+    void setShowAdjustedFootprint(int footprint);
+         
     // Override from QGCTool
     void                            setToolbox              (QGCToolbox* toolbox);
 
@@ -205,12 +208,14 @@ signals:
     void showTouchAreasChanged      (bool showTouchAreas);
     void showAdvancedUIChanged      (bool showAdvancedUI);
     void showGeoFenceChanged (bool showGeoFence);
+    void showAdjustedFootprintChanged (int showAdjustedFootprint);
     void toolBarIndicatorsChanged   ();
 
 protected:
     bool                _showTouchAreas;
     bool                _showAdvancedUI;
     bool                _showGeoFence;
+    int                 _footprint=6;
     Vehicle*            _activeVehicle  = nullptr;
     QGCCameraManager*   _cameraManager  = nullptr;
     QGCCameraControl*   _currentCamera  = nullptr;

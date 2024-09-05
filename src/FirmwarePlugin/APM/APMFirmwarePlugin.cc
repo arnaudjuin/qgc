@@ -658,10 +658,8 @@ const QVariantList& APMFirmwarePlugin::toolIndicators(const Vehicle* vehicle)
 
   
                 for (int i=0; i<_toolIndicatorList.size(); i++) {
-                    qDebug()<<"Here1";
-                                if (_toolIndicatorList.at(i).toUrl().toString().contains("Coverage.qml")) {
-                                                        qDebug()<<"Here2";
-                _toolIndicatorList[i] = QVariant::fromValue(QUrl::fromUserInput("qrc:/qml/QGroundControl/Controls/Coverage.qml"));
+                    if (_toolIndicatorList.at(i).toUrl().toString().contains("Coverage.qml")) {
+                    _toolIndicatorList[i] = QVariant::fromValue(QUrl::fromUserInput("qrc:/qml/QGroundControl/Controls/Coverage.qml"));
                 break;
             }
         }

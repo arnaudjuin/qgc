@@ -10,6 +10,7 @@
 import QtQuick
 import QtQuick.Layouts
 
+import QGroundControl.Controllers
 import QGroundControl
 import QGroundControl.Controls
 import QGroundControl.MultiVehicleManager
@@ -22,11 +23,12 @@ import MAVLink
 //-------------------------------------------------------------------------
 //-- Battery Indicator
 Item {
-       // property var    missionItems:               _controllerValid ? _planMasterController.missionController.visualItems : undefined
+    property var    _planMasterController:  globals.planMasterControllerFlyView
+    property var    _missionController:     _planMasterController.missionController
     id:             control
     anchors.top:    parent.top
     anchors.bottom: parent.bottom
-    width:         50
+    width:          50
 
     property bool       showIndicator:      true
     property bool       waitForParameters:  false   // UI won't show until parameters are ready
@@ -38,19 +40,24 @@ Item {
     property bool   _showVoltage:       _indicatorDisplay.rawValue === 1
     property bool   _showBoth:          _indicatorDisplay.rawValue === 2
 
-
- Row {
+    Row {
         id:             batteryIndicatorRow
         anchors.top:    parent.top
         anchors.bottom: parent.bottom
 
-            Loader {
-                anchors.top:        parent.top
-                anchors.bottom:     parent.bottom
-                sourceComponent:    coverageVisual
-
+        Loader {
+            anchors.top:        parent.top
+            anchors.bottom:     parent.bottom
+            sourceComponent:    coverageVisual
+        }
     }
- }
+
+    FactTextField {
+        id: factVazaoOffline
+        fact: QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
+        visible: false
+        Layout.fillWidth: true
+    }
 
     Component {
         id: coverageVisual
@@ -58,15 +65,36 @@ Item {
             anchors.top:    parent.top
             anchors.bottom: parent.bottom
 
-            function getCoverage() {
-             return factVazaoOffline.fact.value * 10 + "L"
+            // Timer to update the getActualCoverage every second
+            Timer {
+                id: coverageUpdateTimer
+                interval: 1000 // 1 second interval
+                repeat: true
+                running: true
+                onTriggered: {
+                    surveyAreaLabel.text = "Coverage: " + getActualCoverage();
+                    coverageLabel.text = "Coverage: " + getActualCoverage();
+                }
             }
 
-           FactTextField {
-                id : factVazaoOffline
-                fact: QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed
-                visible: false
-                Layout.fillWidth: true
+            function getActualCoverage() {
+                console.log("QGroundControl.corePlugin.adjustedFootprintSide " + QGroundControl.corePlugin.adjustedFootprintSide )
+                console.log("_activeVehicle.flightDistance.value: " + _activeVehicle.flightDistance.value);
+                console.log("fact: " + factVazaoOffline.fact.value);
+                let vazao = 0;
+                if (factVazaoOffline.fact.value === 1700) vazao = 30;
+                if (factVazaoOffline.fact.value === 1500) vazao = 20;
+                if (factVazaoOffline.fact.value === 1300) vazao = 10;
+                // Replace the hardcoded width (6) with the actual width if needed
+                return ((_activeVehicle.flightDistance.value * QGroundControl.corePlugin.adjustedFootprintSide ? QGroundControl.corePlugin.adjustedFootprintSide : 6) / 10000) * vazao + "L";
+            }
+
+            QGCLabel {
+                id: surveyAreaLabel
+                color: "white"
+                Layout.alignment: Qt.AlignHCenter
+                font.pointSize: _showBoth ? ScreenTools.defaultFontPointSize : ScreenTools.mediumFontPointSize
+                text: "Coverage: " + getActualCoverage()
             }
 
             QGCColoredImage {
@@ -78,19 +106,18 @@ Item {
                 fillMode:           Image.PreserveAspectFit
             }
 
-           ColumnLayout {
+            ColumnLayout {
                 id:                     batteryInfoColumn
                 anchors.top:            parent.top
                 anchors.bottom:         parent.bottom
                 spacing:                0
 
-
-
                 QGCLabel {
-                    color:"white"
-                    Layout.alignment:       Qt.AlignHCenter
-                    font.pointSize:         _showBoth ? ScreenTools.defaultFontPointSize : ScreenTools.mediumFontPointSize
-                    text:                   getCoverage()
+                    id: coverageLabel
+                    color: "white"
+                    Layout.alignment: Qt.AlignHCenter
+                    font.pointSize: _showBoth ? ScreenTools.defaultFontPointSize : ScreenTools.mediumFontPointSize
+                    text: "Coverage: " + getActualCoverage()
                 }
             }
         }
