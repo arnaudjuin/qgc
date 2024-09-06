@@ -64,8 +64,8 @@ Rectangle {
 
     Rectangle {
         id: calibrationRec
-        width: 600
-        height: 350
+        width: 550
+        height: 250
         border.color: "#d3d3d3"
         anchors.centerIn: parent
         radius: 10
