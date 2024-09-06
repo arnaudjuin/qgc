@@ -332,15 +332,15 @@ Item {
             QGCButton {
                 _horizontalPadding: 0
                 text:               qsTr("Basic")
-                //visible:            !mapPolyline.traceMode
-                visible: false
+                visible:            !mapPolyline.traceMode
+                //visible: false
                 onClicked:          _resetPolyline()
             }
 
             QGCButton {
                 _horizontalPadding: 0
                 text:               mapPolyline.traceMode ? qsTr("Finalizar") : qsTr("Iniciar")
-                visible: false
+                //visible: false
                 onClicked: {
                     if (mapPolyline.traceMode) {
                         if (mapPolyline.count < 2) {
