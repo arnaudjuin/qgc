@@ -128,7 +128,22 @@ void GeoFenceManager::_sendComplete(bool error)
     _sendCircles.clear();
     emit sendComplete(error);
 }
+void GeoFenceManager::handleGeofenceBreach() {
+    qDebug() << "Geofence breach detected! Turning off spray nozzles.";
 
+    // MAV_CMD_DO_SET_SERVO: Set servo 9 (which controls the spray nozzle)
+    int servo_number = 9;  // Servo 9 controls the nozzle
+    float pwm_value_off = 1000;  // PWM value to turn off the nozzle (neutral/off position)
+
+    // Send MAVLink command via Vehicle's sendMavCommand
+    _vehicle->sendMavCommand(
+        MAV_COMP_ID_ALL,  // Target all components
+        MAV_CMD_DO_SET_SERVO,  // Command to set servo
+        true,  // Show in command UI
+        servo_number,  // Servo number (9)
+        pwm_value_off  // PWM value (1000 for off)
+    );
+}
 void GeoFenceManager::_planManagerLoadComplete(bool removeAllRequested)
 {
     bool loadFailed = false;

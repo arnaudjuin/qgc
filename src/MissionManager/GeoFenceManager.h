@@ -31,10 +31,12 @@ class GeoFenceManager : public PlanManager
     Q_OBJECT
     
 public:
+
     GeoFenceManager(Vehicle* vehicle);
     ~GeoFenceManager();
     
     bool supported(void) const;
+    void handleGeofenceBreach();
 
     /// Signals sendComplete when done
     void sendToVehicle(const QGeoCoordinate&    breachReturn,   ///< Breach return point
