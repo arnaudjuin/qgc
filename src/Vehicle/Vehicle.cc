@@ -625,6 +625,17 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
     }
 
     switch (message.msgid) {
+        case MAVLINK_MSG_ID_FENCE_STATUS: {
+            mavlink_fence_status_t fenceStatus;
+            mavlink_msg_fence_status_decode(&message, &fenceStatus);
+            // Check if a breach has occurred
+            if (fenceStatus.breach_status == 1) {
+                // Trigger the custom geofence breach function
+                _geoFenceManager->handleGeofenceBreach();
+            }
+            break;
+        }
+    
     case MAVLINK_MSG_ID_HOME_POSITION:
         _handleHomePosition(message);
         break;
@@ -715,9 +726,9 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
     case MAVLINK_MSG_ID_OBSTACLE_DISTANCE:
         _handleObstacleDistance(message);
         break;
-    case MAVLINK_MSG_ID_FENCE_STATUS:
-        _handleFenceStatus(message);
-        break;
+    //case MAVLINK_MSG_ID_FENCE_STATUS:
+        //_handleFenceStatus(message);
+        //break;
 
     case MAVLINK_MSG_ID_EVENT:
     case MAVLINK_MSG_ID_CURRENT_EVENT_SEQUENCE:
