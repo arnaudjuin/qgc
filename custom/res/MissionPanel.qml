@@ -247,7 +247,7 @@ Rectangle {
                 id: buttonDraw
                 text: _editTracing ? "Finalizar" : "Novo polígono" 
                 checked: _editTracing
-                enabled: !_addWaypointOnClick
+                enabled: !_addWaypointOnClick && !_editCorridor
                     background: Rectangle {
                     color: _editTracing ? "#FF6666" : "#ffffff" // When clicked turns light grey
                     radius: 5  
@@ -341,7 +341,7 @@ Rectangle {
                 id: buttonCorridor
                 text: _editCorridor ? "Finalizar" : "Carregar Linhas" 
                 checked: _editCorridor
-                enabled: !_addWaypointOnClick
+                enabled: !_addWaypointOnClick && !_editTracing
                     background: Rectangle {
                     color: _editCorridor ? "#FF6666" : "#ffffff" // When clicked turns light grey
                     radius: 5  
@@ -429,7 +429,7 @@ Rectangle {
                 id: buttonTravel
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
-                enabled: !_editTracing
+                enabled: !_editTracing && !_editCorridor
                 checked: _addWaypointOnClick
                 onClicked: {
                     // Emit signal to show or hide Rover WP button
