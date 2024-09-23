@@ -180,7 +180,7 @@ Rectangle {
                         anchors.centerIn: parent
                     }
                 }
-                /*QGCTabButton {
+                QGCTabButton {
                     height: 35
                     background: Rectangle {
                         id: backgroundRect2
@@ -195,12 +195,12 @@ Rectangle {
                         height: 30
                         anchors.centerIn: parent
                     }
-                }*/
+                }
                 QGCTabButton{
                     height: 35
                     background: Rectangle {
                         id: backgroundRect3
-                        color: bar.currentIndex === 1 ? "#ff4800" : (bar.currentIndex === 0 ? "black" : "black")
+                        color: bar.currentIndex === 2 ? "#ff4800" : (bar.currentIndex === 0 ? "black" : "black")
                         radius: 5
                         width: parent.width
                         height: parent.height
@@ -247,7 +247,7 @@ Rectangle {
                 id: buttonDraw
                 text: _editTracing ? "Finalizar" : "Novo polígono" 
                 checked: _editTracing
-                enabled: !_addWaypointOnClick
+                enabled: !_addWaypointOnClick && !_editCorridor
                     background: Rectangle {
                     color: _editTracing ? "#FF6666" : "#ffffff" // When clicked turns light grey
                     radius: 5  
@@ -341,7 +341,7 @@ Rectangle {
                 id: buttonCorridor
                 text: _editCorridor ? "Finalizar" : "Carregar Linhas" 
                 checked: _editCorridor
-                enabled: !_addWaypointOnClick
+                enabled: !_addWaypointOnClick && !_editTracing
                     background: Rectangle {
                     color: _editCorridor ? "#FF6666" : "#ffffff" // When clicked turns light grey
                     radius: 5  
@@ -429,7 +429,7 @@ Rectangle {
                 id: buttonTravel
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
-                enabled: !_editTracing
+                enabled: !_editTracing && !_editCorridor
                 checked: _addWaypointOnClick
                 onClicked: {
                     // Emit signal to show or hide Rover WP button
@@ -778,7 +778,7 @@ Rectangle {
     // Column for file load choice
     Rectangle {
         radius: _radius
-        visible: bar.currentIndex == 1
+        visible: bar.currentIndex == 2
         id: loadChoiceRect
         anchors.topMargin: 5
         anchors.top: sep.bottom
@@ -829,7 +829,7 @@ Rectangle {
 
     // Rectangle for GeoFence editor
     Rectangle {
-        visible: bar.currentIndex == 2
+        visible: bar.currentIndex == 1
         id: geo
         anchors.topMargin: 5
         anchors.top: sep.bottom
