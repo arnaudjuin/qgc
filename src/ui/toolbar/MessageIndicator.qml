@@ -71,8 +71,9 @@ Item {
         source:             "/qmlimages/megafone.svg"
         sourceSize.height:  height
         fillMode:           Image.PreserveAspectFit
-        color:              getMessageColor()
+        color: "black"      // color:              getMessageColor()
         visible:            !criticalMessageIcon.visible
+        
     }
 
     MouseArea {
