@@ -21,6 +21,7 @@ import QGroundControl.FlightDisplay
 import QGroundControl.FlightMap
 
 import QGroundControl.UTMSP
+import GlobalSignals 1.0
 
 /// @brief Native QML top level window
 /// All properties defined here are visible to all QML pages.
@@ -35,6 +36,7 @@ ApplicationWindow {
     property string _flightID
     property bool   _utmspSendActTrigger
     property bool   _utmspStartTelemetry
+    property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
 
     Component.onCompleted: {
         //-- Full screen on mobile or tiny screens
@@ -546,102 +548,151 @@ ApplicationWindow {
         }
     }
 
-    //-------------------------------------------------------------------------
-    //-- Critical Vehicle Message Popup
+   //-------------------------------------------------------------------------
+       //-- Critical Vehicle Message Popup
 
     function showCriticalVehicleMessage(message) {
-        indicatorPopup.close()
+        console.log("Mensagem recebida: " + message);
+
+        // Manter o popup do Atuador Desarmado visível até que o estado mude
+        if (message === "Atuador desarmado") {
+            simplePopup.visible = true;
+        } else if (message === "Atuador OK") {
+            simplePopup.visible = false;
+        }
+
+        // Lidar com outras mensagens críticas
+        indicatorPopup.close();
         if (criticalVehicleMessagePopup.visible || QGroundControl.videoManager.fullScreen) {
-            // We received additional wanring message while an older warning message was still displayed.
-            // When the user close the older one drop the message indicator tool so they can see the rest of them.
-            criticalVehicleMessagePopup.dropMessageIndicatorOnClose = true
+            criticalVehicleMessagePopup.dropMessageIndicatorOnClose = true;
         } else {
-            criticalVehicleMessagePopup.criticalVehicleMessage      = message
-            criticalVehicleMessagePopup.dropMessageIndicatorOnClose = false
-            criticalVehicleMessagePopup.open()
+            criticalVehicleMessagePopup.criticalVehicleMessage = message;
+            criticalVehicleMessagePopup.dropMessageIndicatorOnClose = false;
+            criticalVehicleMessagePopup.open();
+        }
+    }
+
+    Rectangle {
+        id: simplePopup
+        visible: false
+        width: 300
+        height: 150
+        color: "#ff4800"
+        border.color: "black"
+        border.width: 2
+        radius: 10
+        anchors.centerIn: parent
+
+        Column {
+            anchors.fill: parent
+            anchors.margins: 20
+            spacing: 10
+
+            QGCLabel {
+                text: "Atuador Desarmado"
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 15
+                color: "black"
+            }
+
+             QGCLabel {
+                text: "Favor verificar o Rover e desobstruir a rota"
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 9
+                color: "black"
+            }
+
+            QGCButton {
+                text: "Armar novamente"
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClicked: {
+                    simplePopup.visible = false;  
+                    _activeVehicle.forceArm();
+                }
+            }
         }
     }
 
     Popup {
-        id:                 criticalVehicleMessagePopup
-        y:                  ScreenTools.defaultFontPixelHeight
-        x:                  Math.round((mainWindow.width - width) * 0.5)
-        width:              mainWindow.width  * 0.55
-        height:             criticalVehicleMessageText.contentHeight + ScreenTools.defaultFontPixelHeight * 2
-        modal:              false
-        focus:              true
-        closePolicy:        Popup.CloseOnEscape
+        id: criticalVehicleMessagePopup
+        y: ScreenTools.defaultFontPixelHeight
+        x: Math.round((mainWindow.width - width) * 0.5)
+        width: mainWindow.width * 0.55
+        height: criticalVehicleMessageText.contentHeight + ScreenTools.defaultFontPixelHeight * 2
+        modal: false
+        focus: true
+        closePolicy: Popup.CloseOnEscape
 
-        property alias  criticalVehicleMessage:        criticalVehicleMessageText.text
-        property bool   dropMessageIndicatorOnClose:   false
+        property alias criticalVehicleMessage: criticalVehicleMessageText.text
+        property bool dropMessageIndicatorOnClose: false
 
         background: Rectangle {
-            anchors.fill:   parent
-            color:          qgcPal.alertBackground
-            radius:         ScreenTools.defaultFontPixelHeight * 0.5
-            border.color:   qgcPal.alertBorder
-            border.width:   2
+            anchors.fill: parent
+            color: qgcPal.alertBackground
+            radius: ScreenTools.defaultFontPixelHeight * 0.5
+            border.color: qgcPal.alertBorder
+            border.width: 2
 
             Rectangle {
-                anchors.horizontalCenter:   parent.horizontalCenter
-                anchors.top:                parent.top
-                anchors.topMargin:          -(height / 2)
-                color:                      qgcPal.alertBackground
-                radius:                     ScreenTools.defaultFontPixelHeight * 0.25
-                border.color:               qgcPal.alertBorder
-                border.width:               1
-                width:                      vehicleWarningLabel.contentWidth + _margins
-                height:                     vehicleWarningLabel.contentHeight + _margins
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: -(height / 2)
+                color: qgcPal.alertBackground
+                radius: ScreenTools.defaultFontPixelHeight * 0.25
+                border.color: qgcPal.alertBorder
+                border.width: 1
+                width: vehicleWarningLabel.contentWidth + _margins
+                height: vehicleWarningLabel.contentHeight + _margins
 
                 property real _margins: ScreenTools.defaultFontPixelHeight * 0.25
 
                 QGCLabel {
-                    id:                 vehicleWarningLabel
-                    anchors.centerIn:   parent
-                    text:               qsTr("Vehicle Error")
-                    font.pointSize:     ScreenTools.smallFontPointSize
-                    color:              qgcPal.alertText
+                    id: vehicleWarningLabel
+                    anchors.centerIn: parent
+                    text: qsTr("Vehicle Error")
+                    font.pointSize: ScreenTools.smallFontPointSize
+                    color: qgcPal.alertText
                 }
             }
 
             Rectangle {
-                id:                         additionalErrorsIndicator
-                anchors.horizontalCenter:   parent.horizontalCenter
-                anchors.bottom:             parent.bottom
-                anchors.bottomMargin:       -(height / 2)
-                color:                      qgcPal.alertBackground
-                radius:                     ScreenTools.defaultFontPixelHeight * 0.25
-                border.color:               qgcPal.alertBorder
-                border.width:               1
-                width:                      additionalErrorsLabel.contentWidth + _margins
-                height:                     additionalErrorsLabel.contentHeight + _margins
-                visible:                    criticalVehicleMessagePopup.dropMessageIndicatorOnClose
+                id: additionalErrorsIndicator
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: -(height / 2)
+                color: qgcPal.alertBackground
+                radius: ScreenTools.defaultFontPixelHeight * 0.25
+                border.color: qgcPal.alertBorder
+                border.width: 1
+                width: additionalErrorsLabel.contentWidth + _margins
+                height: additionalErrorsLabel.contentHeight + _margins
+                visible: criticalVehicleMessagePopup.dropMessageIndicatorOnClose
 
                 property real _margins: ScreenTools.defaultFontPixelHeight * 0.25
 
                 QGCLabel {
-                    id:                 additionalErrorsLabel
-                    anchors.centerIn:   parent
-                    text:               qsTr("Additional errors received")
-                    font.pointSize:     ScreenTools.smallFontPointSize
-                    color:              qgcPal.alertText
+                    id: additionalErrorsLabel
+                    anchors.centerIn: parent
+                    text: qsTr("Additional errors received")
+                    font.pointSize: ScreenTools.smallFontPointSize
+                    color: qgcPal.alertText
                 }
             }
         }
 
         QGCLabel {
-            id:                 criticalVehicleMessageText
-            width:              criticalVehicleMessagePopup.width - ScreenTools.defaultFontPixelHeight
-            anchors.centerIn:   parent
-            wrapMode:           Text.WordWrap
-            color:              qgcPal.alertText
-            textFormat:         TextEdit.RichText
+            id: criticalVehicleMessageText
+            width: criticalVehicleMessagePopup.width - ScreenTools.defaultFontPixelHeight
+            anchors.centerIn: parent
+            wrapMode: Text.WordWrap
+            color: qgcPal.alertText
+            textFormat: TextEdit.RichText
         }
 
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                criticalVehicleMessagePopup.close()
+                criticalVehicleMessagePopup.close();
                 if (criticalVehicleMessagePopup.dropMessageIndicatorOnClose) {
                     criticalVehicleMessagePopup.dropMessageIndicatorOnClose = false;
                     QGroundControl.multiVehicleManager.activeVehicle.resetErrorLevelMessages();
