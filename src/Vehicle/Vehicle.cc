@@ -2205,12 +2205,13 @@ void Vehicle::forceArm(void)
 
 void Vehicle::setServoPWM(int servoNumber, double pwmValue)
 {
-    sendMavCommand(_defaultComponentId,
-                   MAV_CMD_DO_SET_SERVO,
-                   true,      // show error if fails
-                   servoNumber,  // Servo number
-                   pwmValue,    // PWM value to set
-                   0, 0, 0, 0, 0); // Unused parameters
+    sendCommand(
+        _defaultComponentId,      // component
+        MAV_CMD_DO_SET_SERVO,    // command
+        true,                   // confirmation
+        servoNumber,            // param1
+        pwmValue                // param2
+    );
 }
 
 bool Vehicle::flightModeSetAvailable()

@@ -424,7 +424,6 @@ Item {
             confirmDialog.title = emergencyStopTitle
             confirmDialog.message = emergencyStopMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showEmergenyStop })
-            sendPlayCommandWithDelay();
             break;
         case actionTakeoff:
             confirmDialog.title = takeoffTitle
@@ -437,7 +436,6 @@ Item {
             confirmDialog.title = startMissionTitle
             confirmDialog.message = startMissionMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showStartMission })
-            sendPlayCommandWithDelay();
 
             break;
         case actionMVStartMission:

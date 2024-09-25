@@ -247,13 +247,18 @@ void MissionManager::_updateMissionIndex(int index)
         emit currentIndexChanged(_currentMissionIndex);
     }
 
+    // Check if the mission is complete
+    if (_currentMissionIndex == _missionItems.count() - 1) {
+        qCDebug(MissionManagerLog) << "Mission complete. Sending custom MAVLink command.";
+        
+        // Send custom MAVLink command upon mission completion
+        if (_vehicle) {
+            _vehicle->setServoPWM(8,1051);
+        }
+    }
+
+    // Handle RTL/DO_LAND_START sequence as before
     if (_currentMissionIndex != _lastCurrentIndex && _cachedLastCurrentIndex != _currentMissionIndex) {
-        // We have to be careful of an RTL sequence causing a change of index to the DO_LAND_START sequence. This also triggers
-        // a flight mode change away from mission flight mode. So we only update _lastCurrentIndex when the flight mode is mission.
-        // But we can run into problems where we may get the MISSION_CURRENT message for the RTL/DO_LAND_START sequenc change prior
-        // to the HEARTBEAT message which contains the flight mode change which will cause things to work incorrectly. To fix this
-        // We force the sequencing of HEARTBEAT following by MISSION_CURRENT by caching the possible _lastCurrentIndex update until
-        // the next HEARTBEAT comes through.
         qCDebug(MissionManagerLog) << "_updateMissionIndex caching _lastCurrentIndex for possible update:" << _currentMissionIndex;
         _cachedLastCurrentIndex = _currentMissionIndex;
     }

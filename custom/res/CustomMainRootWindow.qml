@@ -8,7 +8,7 @@
  ****************************************************************************/
 
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls 2.15
 import QtQuick.Dialogs
 import QtQuick.Layouts
 import QtQuick.Window
@@ -19,8 +19,13 @@ import QGroundControl.Controls
 import QGroundControl.ScreenTools
 import QGroundControl.FlightDisplay
 import QGroundControl.FlightMap
+import QGroundControl.FactSystem    1.0
+import QGroundControl.FactControls  1.0
+import Custom.Widgets
+import QGroundControl.Controllers
 
 import QGroundControl.UTMSP
+import GlobalSignals 1.0
 
 /// @brief Native QML top level window
 /// All properties defined here are visible to all QML pages.
@@ -35,6 +40,7 @@ ApplicationWindow {
     property string _flightID
     property bool   _utmspSendActTrigger
     property bool   _utmspStartTelemetry
+    property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
 
     Component.onCompleted: {
         //-- Full screen on mobile or tiny screens
@@ -74,6 +80,60 @@ ApplicationWindow {
                 showPreFlightChecklistIfNeeded()
             }
         }
+    }
+
+    Timer {
+        id: commandTimer
+        interval: 2000  // 1000 ms = 1 segundo de atraso
+        repeat: false   // Não repetir o timer
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 181, true, 0, 1);
+            console.log("Segundo comando enviado");
+        }
+    }
+
+    Timer {
+        id: armTimer
+        interval: 2500
+        repeat: false
+        onTriggered: {
+            _activeVehicle.forceArm();
+        }
+    }
+    
+    function sendRelayReset() {
+        // Enviar o primeiro comando imediatamente
+        _activeVehicle.sendCommand(1, 181, true, 0, 0);
+
+        // Iniciar o Timer para enviar o segundo comando após o intervalo
+        commandTimer.start();
+
+        console.log("Relay resetado");
+
+        armTimer.start();
+
+        console.log("Veiculo Armado");
+        
+    }
+
+    Timer {
+        id: stopPumpTimer
+        interval: 1000
+        repeat: false
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 8, 1051);
+        }
+    }
+
+    function sendPauseCommandWithDelay() {
+        // Enviar o primeiro comando imediatamente
+        _activeVehicle.sendCommand(1, 183, true, 7, 1051);
+
+        //Timer de 1s para desligar os bicos
+        stopPumpTimer.start(); 
+
+        console.log("bicos e bombas desligados");
+        
     }
 
     readonly property real      _topBottomMargins:          ScreenTools.defaultFontPixelHeight * 0.5
@@ -554,7 +614,9 @@ ApplicationWindow {
 
         // Manter o popup do Atuador Desarmado visível até que o estado mude
         if (message === "Atuador desarmado") {
+            sendPauseCommandWithDelay()
             simplePopup.visible = true;
+
         } else if (message === "Atuador OK") {
             simplePopup.visible = false;
         }
@@ -601,10 +663,11 @@ ApplicationWindow {
             }
 
             QGCButton {
-                text: "Armar novamente"
+                text: "Resetar o Rover"
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
-                    simplePopup.visible = false;  
+                    simplePopup.visible = false;
+                    sendRelayReset();
                 }
             }
         }

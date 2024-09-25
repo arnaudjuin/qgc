@@ -90,14 +90,13 @@ Rectangle {
             text: qsTr("Velocidade   Km/H")
         }
         FactTextField {
-            id: factFlightSpeed
+            id: factCruiseSpeed
             fact: QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed
-            visible: true
-            enabled: true
             showUnits: false
             Layout.fillWidth: true
             onTextChanged: {
-                flightSpeedSlider.value = factFlightSpeed.fact.value;
+                flightSpeedSlider.value = factCruiseSpeed.fact.value;
+                factFlightSpeed.fact.value = factCruiseSpeed.fact.value;
             }
         }
         QGCSlider {
@@ -109,11 +108,17 @@ Rectangle {
             Layout.columnSpan: 2
             Layout.fillWidth: true
             Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-            value: factFlightSpeed.fact.value
+            value: factCruiseSpeed.fact.value
             onValueChanged: {
+                factCruiseSpeed.fact.value = value;
                 factFlightSpeed.fact.value = value;
             }
         }
+        FactTextField {
+            id: factFlightSpeed
+            fact:               missionItem.speedSection.flightSpeed
+            visible:            false
+            }
 
         QGCLabel {
             text: qsTr("Vazão   L/Hec")

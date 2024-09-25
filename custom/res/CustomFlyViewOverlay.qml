@@ -73,20 +73,20 @@ Item {
 
     function sendPauseCommandWithDelay() {
         // Enviar o primeiro comando imediatamente
-        _activeVehicle.sendCommand(1, 183, true, 8, 1051);
+        _activeVehicle.sendCommand(1, 183, true, 7, 1051);
 
         // Criar e iniciar o timer para o segundo comando
-        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 7, 1051); }', parent, 'timer');    
+        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 3000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 8, 1051); }', parent, 'timer');    
         
     }
 
     function sendPlayCommandWithDelay() {
         console.log( QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value)
         // Enviar o primeiro comando imediatamente
-        _activeVehicle.sendCommand(1, 183, true, 8, QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value);
+        _activeVehicle.sendCommand(1, 183, true, 7, QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value);
 
         // Criar e iniciar o timer para o segundo comando
-        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 7,  QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value); }', parent, 'timer');    
+        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 8,  QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value); }', parent, 'timer');    
     }
 
 
@@ -170,7 +170,7 @@ Item {
             anchors.fill: parent
             anchors.margins: 5
 
-            QGCButton {
+            /*QGCButton { Removed Emergency Stop button
                 width: 40
                 height: 40
                 Layout.preferredHeight: 40
@@ -211,7 +211,7 @@ Item {
                     anchors.centerIn: parent
                     color: "black"  // Para garantir que o texto seja visível
                 }
-            }
+            }*/
 
             //PLAY
             QGCButton {
