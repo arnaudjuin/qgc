@@ -129,21 +129,35 @@ void GeoFenceManager::_sendComplete(bool error)
     emit sendComplete(error);
 }
 void GeoFenceManager::handleGeofenceBreach() {
-    qDebug() << "Geofence breach detected! Turning off spray nozzles.";
+    qDebug() << "Geofence breach detected! Turning off spray nozzles and pump.";
 
-    // MAV_CMD_DO_SET_SERVO: Set servo 9 (which controls the spray nozzle)
-    int servo_number = 9;  // Servo 9 controls the nozzle
-    float pwm_value_off = 1000;  // PWM value to turn off the nozzle (neutral/off position)
+    // MAV_CMD_DO_SET_SERVO: Set servo 8 (which controls the spray nozzle)
+    int servo_nozzle = 8;  // Servo 8 controls the nozzle
+    int servo_pump = 7;    // Servo 7 controls the pump
+    float pwm_value_off = 1051;  // PWM value to turn off (neutral/off position)
 
-    // Send MAVLink command via Vehicle's sendMavCommand
+    // Send MAVLink command to turn off the spray nozzle (servo 8)
     _vehicle->sendMavCommand(
         MAV_COMP_ID_ALL,  // Target all components
         MAV_CMD_DO_SET_SERVO,  // Command to set servo
         true,  // Show in command UI
-        servo_number,  // Servo number (9)
-        pwm_value_off  // PWM value (1000 for off)
+        servo_nozzle,  // Servo number 8 for the nozzle
+        pwm_value_off  // PWM value 1051 for off
     );
+
+    // Delay to ensure commands are not sent at the same time
+    QTimer::singleShot(500, [=]() {  // 500 ms delay
+        // Send MAVLink command to turn off the pump (servo 7)
+        _vehicle->sendMavCommand(
+            MAV_COMP_ID_ALL,  // Target all components
+            MAV_CMD_DO_SET_SERVO,  // Command to set servo
+            true,  // Show in command UI
+            servo_pump,  // Servo number 7 for the pump
+            pwm_value_off  // PWM value 1051 for off
+        );
+    });
 }
+
 void GeoFenceManager::_planManagerLoadComplete(bool removeAllRequested)
 {
     bool loadFailed = false;

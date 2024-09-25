@@ -184,24 +184,24 @@ TransectStyleComplexItemEditor {
                     var pwmValue;
                     switch (gridSlider.value) {
                         case 6:
-                            if (vazaoSlider.value === 1) pwmValue = 1800;//1200;
-                            else if (vazaoSlider.value === 2) pwmValue = 1800;//1225;
-                            else if (vazaoSlider.value === 3) pwmValue = 1800;//1250;
+                            if (vazaoSlider.value === 1) pwmValue = 1200;
+                            else if (vazaoSlider.value === 2) pwmValue = 1225;
+                            else if (vazaoSlider.value === 3) pwmValue = 1250;
                             break;
                         case 8:
-                            if (vazaoSlider.value === 1) pwmValue = 1800;//1200;
-                            else if (vazaoSlider.value === 2) pwmValue = 1800;//1250;
-                            else if (vazaoSlider.value === 3) pwmValue = 1800;//1300;
+                            if (vazaoSlider.value === 1) pwmValue = 1200;
+                            else if (vazaoSlider.value === 2) pwmValue = 1250;
+                            else if (vazaoSlider.value === 3) pwmValue = 1300;
                             break;
                         case 10:
-                            if (vazaoSlider.value === 1) pwmValue = 1800;//1200;
-                            else if (vazaoSlider.value === 2) pwmValue = 1800;//1300;
-                            else if (vazaoSlider.value === 3) pwmValue = 1800;//1350;
+                            if (vazaoSlider.value === 1) pwmValue = 1200;
+                            else if (vazaoSlider.value === 2) pwmValue = 1300;
+                            else if (vazaoSlider.value === 3) pwmValue = 1350;
                             break;
                         case 12:
-                            if (vazaoSlider.value === 1) pwmValue = 1800;//1225;
-                            else if (vazaoSlider.value === 2) pwmValue = 1800;//1300;
-                            else if (vazaoSlider.value === 3) pwmValue = 1800;//1400;
+                            if (vazaoSlider.value === 1) pwmValue = 1225;
+                            else if (vazaoSlider.value === 2) pwmValue = 1300;
+                            else if (vazaoSlider.value === 3) pwmValue = 1400;
                             break;
                     }
                     QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value = pwmValue;
