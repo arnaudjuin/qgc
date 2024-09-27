@@ -369,7 +369,7 @@ ApplicationWindow {
                             }
                         }*/
 
-                        SubMenuButton {
+                        /*SubMenuButton {
                             id:                 setupButton
                             height:             toolSelectDialog._toolButtonHeight
                             Layout.fillWidth:   true
@@ -382,7 +382,7 @@ ApplicationWindow {
                                     mainWindow.showVehicleSetupTool()
                                 }
                             }
-                        }
+                        }*/
 
                         SubMenuButton {
                             id:                 analyzeButton
@@ -638,9 +638,9 @@ ApplicationWindow {
         width: 300
         height: 150
         color: "#ff4800"
-        border.color: "black"
+        //border.color: "black"
         border.width: 2
-        radius: 10
+        radius: 5
         anchors.centerIn: parent
 
         Column {
