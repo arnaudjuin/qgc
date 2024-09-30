@@ -78,13 +78,25 @@ TransectStyleComplexItemEditor {
             }
 
             FactTextField {
-                fact:                   _missionItem.cameraCalc.adjustedFootprintSide
-                Layout.fillWidth:       true
-                onUpdated:              {
-                    gridSlider.value = _missionItem.cameraCalc.adjustedFootprintSide.value
-                    QGroundControl.corePlugin.showAdjustedFootprint = _missionItem.cameraCalc.adjustedFootprintSide.value
-                    console.log("set value")
+                id: factFlightSpeed
+                fact:               missionItem.speedSection.flightSpeed
+                visible:            false
+            }
+
+            FactTextField {
+                id: factCruiseSpeed
+                fact: QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed
+                showUnits: false
+                Layout.fillWidth: true
+                onTextChanged: {
+                    flightSpeedSlider.value = factCruiseSpeed.fact.value;
+                    factFlightSpeed.fact.value = factCruiseSpeed.fact.value;
                 }
+            }
+
+             FactTextField {
+                fact:               _missionItem.corridorWidth
+                Layout.fillWidth:   true
             }
 
             QGCSlider {
@@ -96,8 +108,8 @@ TransectStyleComplexItemEditor {
                 Layout.fillWidth:       true
                 Layout.columnSpan:      2
                 Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                onValueChanged:         {_missionItem.cameraCalc.adjustedFootprintSide.value = value;                    QGroundControl.corePlugin.showAdjustedFootprint = _missionItem.cameraCalc.adjustedFootprintSide.value}
-                Component.onCompleted:  value = _missionItem.cameraCalc.adjustedFootprintSide.value
+                onValueChanged:         {_missionItem.corridorWidth.value = value;  /*QGroundControl.corePlugin.showAdjustedFootprint = _missionItem.cameraCalc.adjustedFootprintSide.value*/}
+                Component.onCompleted:  value = _missionItem.corridorWidth.value
                 live: true
             }
 
