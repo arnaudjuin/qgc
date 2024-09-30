@@ -5,6 +5,8 @@ on:
     branches:
       - 'master'
       - 'Stable*'
+      - 'fix/StableV1'
+      - 'guilherme/changes'
     tags:
       - 'v*'
     paths-ignore:
@@ -14,6 +16,7 @@ on:
     - '*'
     paths-ignore:
       - 'docs/**'
+      - '.github/workflows/**'
 
 defaults:
   run:
@@ -21,7 +24,7 @@ defaults:
 
 env:
   SOURCE_DIR:   ${{ github.workspace }}
-  QT_VERSION:   6.6.*
+  QT_VERSION:   6.6.1
   ARTIFACT:     QGroundControl.dmg
   BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
 
@@ -72,6 +75,12 @@ jobs:
 
       - name: Create build directory
         run:  mkdir ${{ runner.temp }}/shadow_build_dir
+
+      - name: Set up Python environment
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          python3 -m pip install setuptools wheel py7zr==0.20.*
 
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
