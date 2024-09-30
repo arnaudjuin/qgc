@@ -5,6 +5,7 @@ on:
     branches:
       - 'master'
       - 'Stable*'
+      - 'fix/StableV1'
     tags:
       - 'v*'
     paths-ignore:
@@ -14,6 +15,7 @@ on:
     - '*'
     paths-ignore:
       - 'docs/**'
+      - '.github/workflows/**'
 
 defaults:
   run:
@@ -21,7 +23,7 @@ defaults:
 
 env:
   SOURCE_DIR:   ${{ github.workspace }}
-  QT_VERSION:   6.6.*
+  QT_VERSION:   6.6.1
   ARTIFACT:     QGroundControl.dmg
   BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
 
