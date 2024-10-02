@@ -23,8 +23,8 @@ import QGroundControl.FactControls 1.0
 
 Rectangle {
     id: calibrationView
-    width: 500
-    height: 500
+    width: 400
+    height: 400
     color: qgcPal.window
 
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
@@ -64,7 +64,7 @@ Rectangle {
 
     Rectangle {
         id: calibrationRec
-        width: 550
+        width: 500
         height: 250
         border.color: "#d3d3d3"
         anchors.centerIn: parent
