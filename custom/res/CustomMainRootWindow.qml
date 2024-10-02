@@ -628,7 +628,7 @@ ApplicationWindow {
         } else {
             criticalVehicleMessagePopup.criticalVehicleMessage = message;
             criticalVehicleMessagePopup.dropMessageIndicatorOnClose = false;
-            criticalVehicleMessagePopup.open();
+            //criticalVehicleMessagePopup.open();
         }
     }
 
