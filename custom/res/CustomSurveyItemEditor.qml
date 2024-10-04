@@ -11,6 +11,8 @@ import QGroundControl.FactSystem
 import QGroundControl.FactControls
 import QGroundControl.Palette
 import QGroundControl.FlightMap
+import QGroundControl.SettingsManager
+import QGroundControl.Controllers
 
 TransectStyleComplexItemEditor {
     transectAreaDefinitionComplete: missionItem.surveyAreaPolygon.isValid
@@ -214,6 +216,12 @@ TransectStyleComplexItemEditor {
             RowLayout {
                 Layout.fillWidth: true
 
+                FactTextField {
+                    id: factFlightSpeed
+                    fact: _missionItem && _missionItem.speedSection ? _missionItem.speedSection.flightSpeed : null
+                    visible: false
+                }
+                
                 QGCButton {
                     id: button36
                     text: "3.6"
@@ -231,6 +239,7 @@ TransectStyleComplexItemEditor {
                         var pwmValue = 1200;
                         QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 3.6;
                         velocidade = 3.6;
+                        factFlightSpeed.fact.value = velocidade;
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 0
@@ -276,6 +285,7 @@ TransectStyleComplexItemEditor {
                         }
                         QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 7.2;
                         velocidade = 7.2;
+                        factFlightSpeed.fact.value = velocidade;
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 1
@@ -321,6 +331,8 @@ TransectStyleComplexItemEditor {
                         }
                         QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 10.8;
                         velocidade = 10.8;
+                        factFlightSpeed.fact.value = velocidade;
+                        
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 2
