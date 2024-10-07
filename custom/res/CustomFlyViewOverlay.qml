@@ -213,43 +213,50 @@ Item {
                 }
             }*/
 
-            //PLAY
-            QGCButton {
-                width: 30
-                height: 30
-                Layout.preferredHeight: 30
-                anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: {
-                    _activeVehicle.forceArm();
-                    sendPlayCommandWithDelay();
-                }
-                
-                background: Rectangle {
-                    width: 30
-                    height: 30
-                    color: "#ff4800"
-                    radius: 15
-                    anchors.centerIn: parent
-                }
+ // PLAY Button
+QGCButton {
+    width: 30
+    height: 30
+    Layout.preferredHeight: 30
+    anchors.horizontalCenter: parent.horizontalCenter
+    
+    onClicked: {
+        // Verifica o modo atual do veículo
+        if (_activeVehicle.flightMode === "Manual") {
+            // Se estiver em Manual, alterna para Auto
+            _activeVehicle.flightMode = "Auto"; // Isso depende de como o QGC trata os modos de voo
+        } 
+        
+        _activeVehicle.forceArm(); // Arma o veículo
+        sendPlayCommandWithDelay(); // Executa o comando de "play"
+    }
+    
+    background: Rectangle {
+        width: 30
+        height: 30
+        color: "#ff4800"
+        radius: 15
+        anchors.centerIn: parent
+    }
 
-                Image {
-                    width: parent.width * 0.7
-                    height: parent.height * 0.7
-                    source: "/custom/img/play.svg"
-                    fillMode: Image.PreserveAspectFit
-                    anchors.centerIn: parent
-                }
+    Image {
+        width: parent.width * 0.7
+        height: parent.height * 0.7
+        source: "/custom/img/play.svg"
+        fillMode: Image.PreserveAspectFit
+        anchors.centerIn: parent
+    }
 
-                PropertyAnimation on opacity {
-                    easing.type: Easing.OutQuart
-                    from: 0.7
-                    to: 1
-                    loops: Animation.Infinite
-                    running: true
-                    alwaysRunToEnd: true
-                    duration: 1000
-                }
-            }
+    PropertyAnimation on opacity {
+        easing.type: Easing.OutQuart
+        from: 0.7
+        to: 1
+        loops: Animation.Infinite
+        running: true
+        alwaysRunToEnd: true
+        duration: 1000
+    }
+}
 
             //PAUSE
             QGCButton {
@@ -258,7 +265,11 @@ Item {
                 Layout.preferredHeight: 30
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
-                    GlobalSignals.buttonDisarm();
+                    if (_activeVehicle.flightMode === "Auto") {
+                        // Se estiver em Manual, alterna para Auto
+                        _activeVehicle.flightMode = "Manual"; // Isso depende de como o QGC trata os modos de voo
+                    } 
+                    //GlobalSignals.buttonDisarm();
                     sendPauseCommandWithDelay();
                 }
                 background: Rectangle {
