@@ -632,46 +632,87 @@ ApplicationWindow {
         }
     }
 
-    Rectangle {
-        id: simplePopup
-        visible: false
-        width: 300
-        height: 150
-        color: "#ff4800"
-        //border.color: "black"
-        border.width: 2
-        radius: 5
-        anchors.centerIn: parent
+  Rectangle {
+    id: simplePopup
+    visible: false
+    width: 300
+    height: 180
+    color: "#ff4800"
+    border.color: "black"
+    radius: 5
+    anchors.centerIn: parent
 
-        Column {
-            anchors.fill: parent
-            anchors.margins: 20
+    Column {
+        anchors.fill: parent
+        anchors.margins: 10
+        spacing: 10
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        QGCLabel {
+            text: "Atuador Desarmado"
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pointSize: 15
+            color: "black"
+        }
+
+        QGCLabel {
+            text: "Favor verificar o Rover e desobstruir a rota"
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pointSize: 9
+            color: "black"
+        }
+
+        // Primeira linha com os dois botões de Reset
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
             spacing: 10
 
-            QGCLabel {
-                text: "Atuador Desarmado"
-                anchors.horizontalCenter: parent.horizontalCenter
-                font.pointSize: 15
-                color: "black"
-            }
-
-             QGCLabel {
-                text: "Favor verificar o Rover e desobstruir a rota"
-                anchors.horizontalCenter: parent.horizontalCenter
-                font.pointSize: 9
-                color: "black"
-            }
-
             QGCButton {
+                background: Rectangle {
+                    color: "white"
+                    radius: 5
+                }
                 text: "Resetar o Rover"
-                anchors.horizontalCenter: parent.horizontalCenter
+                width: 130
+                height: 40
                 onClicked: {
                     simplePopup.visible = false;
                     sendRelayReset();
                 }
             }
+
+            QGCButton {
+                background: Rectangle {
+                    color: "white"
+                    radius: 5
+                }
+                text: "Resetar e armar o Rover"
+                width: 130
+                height: 40
+                onClicked: {
+                    // Ação para o Botão 2
+                }
+            }
+        }
+
+        // Botão de Fechar centralizado abaixo dos dois primeiros
+        QGCButton {
+            background: Rectangle {
+                color: "#DC143C"
+                radius: 5
+            }
+            text: "Fechar"
+            width: 120
+            height: 40
+            anchors.horizontalCenter: parent.horizontalCenter
+            onClicked: {
+                simplePopup.visible = false;
+            }
         }
     }
+}
+
+
 
     Popup {
         id: criticalVehicleMessagePopup

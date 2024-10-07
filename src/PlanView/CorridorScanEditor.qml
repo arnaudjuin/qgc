@@ -60,40 +60,6 @@ TransectStyleComplexItemEditor {
                 visible:    !forPresets
             }
 
-            FactTextField {
-                id: factFlightSpeed
-                fact:               missionItem.speedSection.flightSpeed
-                visible:            false
-            }
-
-            FactTextField {
-                id: factCruiseSpeed
-                fact: QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed
-                showUnits: false
-                Layout.fillWidth: true
-                onTextChanged: {
-                    flightSpeedSlider.value = factCruiseSpeed.fact.value;
-                    factFlightSpeed.fact.value = factCruiseSpeed.fact.value;
-                }
-            }
-
-            FactTextField {
-                id: factFlightSpeed
-                fact:               missionItem.speedSection.flightSpeed
-                visible:            false
-            }
-
-            FactTextField {
-                id: factCruiseSpeed
-                fact: QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed
-                showUnits: false
-                Layout.fillWidth: true
-                onTextChanged: {
-                    flightSpeedSlider.value = factCruiseSpeed.fact.value;
-                    factFlightSpeed.fact.value = factCruiseSpeed.fact.value;
-                }
-            }
-
              FactTextField {
                 fact:               _missionItem.corridorWidth
                 Layout.fillWidth:   true
@@ -213,7 +179,7 @@ TransectStyleComplexItemEditor {
 
 
 
-            QGCLabel { text: qsTr("Velocidade (Km/H)") }
+                            QGCLabel { text: qsTr("Velocidade (Km/H)") }
             RowLayout {
                 Layout.fillWidth: true
 
@@ -233,7 +199,6 @@ TransectStyleComplexItemEditor {
                         selectedButton = 0;
                         var pwmValue = 1200;
                         QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 3.6;
-                        factCruiseSpeed.fact.value = 3.6;
                         velocidade = 3.6;
                         factVazaoOffline.fact.value = pwmValue;
                     }
@@ -279,7 +244,6 @@ TransectStyleComplexItemEditor {
                             pwmValue = 1400;
                         }
                         QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 7.2;
-                        factCruiseSpeed.fact.value = 7.2;
                         velocidade = 7.2;
                         factVazaoOffline.fact.value = pwmValue;
                     }
@@ -325,7 +289,6 @@ TransectStyleComplexItemEditor {
                             pwmValue = 1600;
                         }
                         QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 10.8;
-                        factCruiseSpeed.fact.value = 10.8;
                         velocidade = 10.8;
                         factVazaoOffline.fact.value = pwmValue;
                     }
