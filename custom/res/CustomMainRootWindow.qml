@@ -621,6 +621,11 @@ ApplicationWindow {
             simplePopup.visible = false;
         }
 
+        if  (message === "Mission Complete") {
+            sendPauseCommandWithDelay()
+             _activeVehicle.flightMode = "Hold";
+        }
+
         // Lidar com outras mensagens críticas
         indicatorPopup.close();
         if (criticalVehicleMessagePopup.visible || QGroundControl.videoManager.fullScreen) {
