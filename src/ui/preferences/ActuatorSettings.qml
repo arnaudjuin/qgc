@@ -71,7 +71,7 @@ SettingsPage {
             QGCButton{
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                text: "Resetar o Rover"
+                text: "Resetar Atuadores"
             }
         }
          QGCLabel{

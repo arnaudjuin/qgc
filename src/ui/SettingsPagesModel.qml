@@ -131,7 +131,7 @@ ListModel {
     }*/
 
     ListElement {
-        name: qsTr("Motores")
+        name: qsTr("Calibração")
         url: "/qml/ActuatorSettings.qml"
         iconUrl: "/qmlimages/ConfigRover.svg"
         pageVisible: function() { return true }
