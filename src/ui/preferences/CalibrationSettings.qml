@@ -21,6 +21,7 @@ import QGroundControl.Controllers
 import QGroundControl.FactSystem 1.0
 import QGroundControl.FactControls 1.0
 
+
 Rectangle {
     id: calibrationView
     width: 300 // Diminuído de 400

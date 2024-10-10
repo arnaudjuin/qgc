@@ -283,6 +283,7 @@
 		<file alias="SetupParameterEditor.qml">../src/VehicleSetup/SetupParameterEditor.qml</file>
 		<file alias="SetupView.qml">../src/VehicleSetup/SetupView.qml</file>
 		<file alias="CalibrationSettings.qml">../src/ui/preferences/CalibrationSettings.qml</file>
+		<file alias="ActuatorSettings.qml">../src/ui/preferences/ActuatorSettings.qml</file>
 		<file alias="SettingsPage.qml">../src/ui/preferences/SettingsPage.qml</file>
 		<file alias="SettingsPagesModel.qml">../src/ui/SettingsPagesModel.qml</file>
 		<file alias="SimpleItemEditor.qml">../src/PlanView/SimpleItemEditor.qml</file>
