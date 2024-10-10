@@ -123,9 +123,16 @@ ListModel {
         pageVisible: function() { return ScreenTools.isDebug }
     }*/
 
-    ListElement {
+    /*ListElement {
         name: qsTr("Calibration")
         url: "/qml/CalibrationSettings.qml"
+        iconUrl: "/qmlimages/ConfigRover.svg"
+        pageVisible: function() { return true }
+    }*/
+
+    ListElement {
+        name: qsTr("Motores")
+        url: "/qml/ActuatorSettings.qml"
         iconUrl: "/qmlimages/ConfigRover.svg"
         pageVisible: function() { return true }
     }

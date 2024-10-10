@@ -620,21 +620,26 @@ ApplicationWindow {
    //-------------------------------------------------------------------------
        //-- Critical Vehicle Message Popup
 
-    function showCriticalVehicleMessage(message) {
+        function showCriticalVehicleMessage(message) {
         console.log("Mensagem recebida: " + message);
 
-        // Manter o popup do Atuador Desarmado visível até que o estado mude
-        if (message === "Atuador desarmado") {
-            sendPauseCommandWithDelay()
+        if (message === "Atuador desarmado - Lado Direito") {
+            sendPauseCommandWithDelay();
             simplePopup.visible = true;
+            simplePopupLabel.text = "Atuador Direito Desarmado"; 
 
-        } else if (message === "Atuador OK") {
+        } else if (message === "Atuador desarmado - Lado Esquerdo") {
+            sendPauseCommandWithDelay();
+            simplePopup.visible = true;
+            simplePopupLabel.text = "Atuador Esquerdo Desarmado"; 
+
+        } else if (message === "Atuador OK - Lado Direito" || message === "Atuador OK - Lado Esquerdo") {
             simplePopup.visible = false;
         }
 
-        if (message === "Mission Complete" && _activeVehicle.flightMode === "Auto") {
-            sendPauseCommandWithDelay()
-             _activeVehicle.flightMode = "Hold";
+        if (message === "Mission Complete") {
+            sendPauseCommandWithDelay();
+            _activeVehicle.flightMode = "Hold";
         }
 
         // Lidar com outras mensagens críticas
@@ -665,7 +670,8 @@ ApplicationWindow {
         anchors.horizontalCenter: parent.horizontalCenter
 
         QGCLabel {
-            text: "Atuador Desarmado"
+            id: simplePopupLabel 
+            text: "Atuador Desarmado"  
             anchors.horizontalCenter: parent.horizontalCenter
             font.pointSize: 15
             color: "black"
@@ -677,6 +683,7 @@ ApplicationWindow {
             font.pointSize: 9
             color: "black"
         }
+    
 
         // Primeira linha com os dois botões de Reset
         Row {

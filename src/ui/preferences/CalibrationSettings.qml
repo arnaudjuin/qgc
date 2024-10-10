@@ -21,10 +21,11 @@ import QGroundControl.Controllers
 import QGroundControl.FactSystem 1.0
 import QGroundControl.FactControls 1.0
 
+
 Rectangle {
     id: calibrationView
-    width: 400
-    height: 400
+    width: 300 // Diminuído de 400
+    height: 300 // Diminuído de 400
     color: qgcPal.window
 
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
@@ -64,37 +65,37 @@ Rectangle {
 
     Rectangle {
         id: calibrationRec
-        width: 500
-        height: 250
-        border.color: "#d3d3d3"
+        width: 450 // Diminuído de 500
+        height: 220 // Diminuído de 250
+        
         anchors.centerIn: parent
-        radius: 10
+        radius: 8 // Proporcionalmente menor
         color: "white"
 
         GridLayout {
             columns: 2
             anchors.centerIn: parent
-            rowSpacing: 20
-            columnSpacing: 50
+            rowSpacing: 15 // Diminuído de 20
+            columnSpacing: 40 // Diminuído de 50
 
             // Dianteira Esquerda
             ColumnLayout {
-                spacing: 10
+                spacing: 8 // Diminuído de 10
                 Label {
                     text: "Dianteira esquerda"
-                    font.pixelSize: 12
+                    font.pixelSize: 10 // Diminuído de 12
                     Layout.alignment: Qt.AlignHCenter
                 }
                 QGCButton {
                     id: enableButton1
                     Layout.alignment: Qt.AlignHCenter
-                    width: 100
-                    height: 30
+                    width: 80 // Diminuído de 100
+                    height: 25 // Diminuído de 30
                     text: "Ativar"
                     background: Rectangle {
                         id: buttonBackground1
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4 // Diminuído de 5
                     }
                     onClicked: {
                         if (enableButton1.text === "Ativar") {
@@ -111,13 +112,13 @@ Rectangle {
                     }
                 }
                 RowLayout {
-                    spacing: 10
+                    spacing: 8 // Diminuído de 10
                     Layout.alignment: Qt.AlignHCenter
                     Rectangle {
-                        width: 30
-                        height: 30
+                        width: 25 // Diminuído de 30
+                        height: 25 // Diminuído de 30
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4 // Diminuído de 5
                         QGCButton {
                             id: minusButton1
                             text: "-"
@@ -137,18 +138,18 @@ Rectangle {
                     }
                     QGCSlider {
                         id: slider1
-                        width: 150
-                        height: 30
+                        width: 120 // Diminuído de 150
+                        height: 25 // Diminuído de 30
                         from: -50
                         to: 50
                         stepSize: 1
                         enabled: false
                     }
                     Rectangle {
-                        width: 30
-                        height: 30
+                        width: 25 // Diminuído de 30
+                        height: 25 // Diminuído de 30
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4 // Diminuído de 5
                         QGCButton {
                             id: plusButton1
                             text: "+"
@@ -189,22 +190,22 @@ Rectangle {
 
             // Dianteira Direita
             ColumnLayout {
-                spacing: 10
+                spacing: 8
                 Label {
                     text: "Dianteira direita"
-                    font.pixelSize: 12
+                    font.pixelSize: 10
                     Layout.alignment: Qt.AlignHCenter
                 }
                 QGCButton {
                     id: enableButton3
                     Layout.alignment: Qt.AlignHCenter
-                    width: 100
-                    height: 30
+                    width: 80
+                    height: 25
                     text: "Ativar"
                     background: Rectangle {
                         id: buttonBackground3
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4
                     }
                     onClicked: {
                         if (enableButton3.text === "Ativar") {
@@ -221,13 +222,13 @@ Rectangle {
                     }
                 }
                 RowLayout {
-                    spacing: 10
+                    spacing: 8
                     Layout.alignment: Qt.AlignHCenter
                     Rectangle {
-                        width: 30
-                        height: 30
+                        width: 25
+                        height: 25
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4
                         QGCButton {
                             id: minusButton3
                             text: "-"
@@ -247,8 +248,8 @@ Rectangle {
                     }
                     QGCSlider {
                         id: slider3
-                        width: 150
-                        height: 30
+                        width: 120
+                        height: 25
                         from: -50
                         to: 50
                         stepSize: 1
@@ -256,10 +257,10 @@ Rectangle {
                         value: 0
                     }
                     Rectangle {
-                        width: 30
-                        height: 30
+                        width: 25
+                        height: 25
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4
                         QGCButton {
                             id: plusButton3
                             text: "+"
@@ -300,22 +301,22 @@ Rectangle {
 
             // Traseira Esquerda
             ColumnLayout {
-                spacing: 10
+                spacing: 8
                 Label {
                     text: "Traseira esquerda"
-                    font.pixelSize: 12
+                    font.pixelSize: 10
                     Layout.alignment: Qt.AlignHCenter
                 }
                 QGCButton {
                     id: enableButton2
                     Layout.alignment: Qt.AlignHCenter
-                    width: 100
-                    height: 30
+                    width: 80
+                    height: 25
                     text: "Ativar"
                     background: Rectangle {
                         id: buttonBackground2
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4
                     }
                     onClicked: {
                         if (enableButton2.text === "Ativar") {
@@ -332,13 +333,13 @@ Rectangle {
                     }
                 }
                 RowLayout {
-                    spacing: 10
+                    spacing: 8
                     Layout.alignment: Qt.AlignHCenter
                     Rectangle {
-                        width: 30
-                        height: 30
+                        width: 25
+                        height: 25
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4
                         QGCButton {
                             id: minusButton2
                             text: "-"
@@ -358,8 +359,8 @@ Rectangle {
                     }
                     QGCSlider {
                         id: slider2
-                        width: 150
-                        height: 30
+                        width: 120
+                        height: 25
                         from: -50
                         to: 50
                         stepSize: 1
@@ -367,10 +368,10 @@ Rectangle {
                         value: 0
                     }
                     Rectangle {
-                        width: 30
-                        height: 30
+                        width: 25
+                        height: 25
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4
                         QGCButton {
                             id: plusButton2
                             text: "+"
@@ -411,22 +412,22 @@ Rectangle {
 
             // Traseira Direita
             ColumnLayout {
-                spacing: 10
+                spacing: 8
                 Label {
                     text: "Traseira direita"
-                    font.pixelSize: 12
+                    font.pixelSize: 10
                     Layout.alignment: Qt.AlignHCenter
                 }
                 QGCButton {
                     id: enableButton4
                     Layout.alignment: Qt.AlignHCenter
-                    width: 100
-                    height: 30
+                    width: 80
+                    height: 25
                     text: "Ativar"
                     background: Rectangle {
                         id: buttonBackground4
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4
                     }
                     onClicked: {
                         if (enableButton4.text === "Ativar") {
@@ -443,13 +444,13 @@ Rectangle {
                     }
                 }
                 RowLayout {
-                    spacing: 10
+                    spacing: 8
                     Layout.alignment: Qt.AlignHCenter
                     Rectangle {
-                        width: 30
-                        height: 30
+                        width: 25
+                        height: 25
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4
                         QGCButton {
                             id: minusButton4
                             text: "-"
@@ -469,8 +470,8 @@ Rectangle {
                     }
                     QGCSlider {
                         id: slider4
-                        width: 150
-                        height: 30
+                        width: 120
+                        height: 25
                         from: -50
                         to: 50
                         stepSize: 1
@@ -478,10 +479,10 @@ Rectangle {
                         value: 0
                     }
                     Rectangle {
-                        width: 30
-                        height: 30
+                        width: 25
+                        height: 25
                         color: "#ff4800"
-                        radius: 5
+                        radius: 4
                         QGCButton {
                             id: plusButton4
                             text: "+"
@@ -522,3 +523,4 @@ Rectangle {
         }
     }
 }
+
