@@ -101,7 +101,7 @@ ApplicationWindow {
         }
     }
     
-    function sendRelayReset() {
+    function sendRelayResetArm() {
         // Enviar o primeiro comando imediatamente
         _activeVehicle.sendCommand(1, 183, true, 9, 1100);
 
@@ -113,6 +113,17 @@ ApplicationWindow {
         armTimer.start();
 
         console.log("Veiculo Armado");
+        
+    }
+
+    function sendRelayReset() {
+        // Enviar o primeiro comando imediatamente
+        _activeVehicle.sendCommand(1, 183, true, 9, 1100);
+
+        // Iniciar o Timer para enviar o segundo comando após o intervalo
+        commandTimer.start();
+
+        console.log("Relay resetado");
         
     }
 
@@ -702,7 +713,8 @@ ApplicationWindow {
                 width: 130
                 height: 40
                 onClicked: {
-                    // Ação para o Botão 2
+                    sendRelayResetArm();
+                    simplePopup.visible = false;
                 }
             }
         }

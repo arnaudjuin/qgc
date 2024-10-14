@@ -241,6 +241,7 @@ TransectStyleComplexItemEditor {
                         velocidade = 3.6;
                         factFlightSpeed.fact.value = velocidade;
                         factVazaoOffline.fact.value = pwmValue;
+                        _activeVehicle.sendCommand(1, 178, 1, 1, -1);
                     }
                     property bool selected: selectedButton === 0
                 }
@@ -287,6 +288,7 @@ TransectStyleComplexItemEditor {
                         velocidade = 7.2;
                         factFlightSpeed.fact.value = velocidade;
                         factVazaoOffline.fact.value = pwmValue;
+                        _activeVehicle.sendCommand(1, 178, 1, 2, -1);
                     }
                     property bool selected: selectedButton === 1
                 }
@@ -332,7 +334,7 @@ TransectStyleComplexItemEditor {
                         QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 10.8;
                         velocidade = 10.8;
                         factFlightSpeed.fact.value = velocidade;
-                        
+                        _activeVehicle.sendCommand(1, 178, 1, 3, -1);
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 2

@@ -81,6 +81,7 @@ Item {
     }
 
     function sendPlayCommandWithDelay() {
+        console.log( QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value)
         console.log( QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value)
         // Enviar o primeiro comando imediatamente
         _activeVehicle.sendCommand(1, 183, true, 7, QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value);
@@ -225,9 +226,8 @@ Item {
                     if (_activeVehicle.flightMode === "Manual") {
                      
                         _activeVehicle.flightMode = "Auto"; 
-                    } 
-
-                    _activeVehicle.forceArm(); 
+                    }
+                    
                     sendPlayCommandWithDelay(); 
                 }
 
@@ -269,7 +269,7 @@ Item {
                         
                         _activeVehicle.flightMode = "Manual"; 
                     } 
-                    GlobalSignals.buttonDisarm();
+                    
                     sendPauseCommandWithDelay();
                 }
                 background: Rectangle {
