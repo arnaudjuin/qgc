@@ -92,6 +92,18 @@ Rectangle {
         id: fileController
     }
 
+    QGCFileDialog {
+        id:             kmlLoadDialog
+        folder:         QGroundControl.settingsManager.appSettings.missionSavePath
+        title:          qsTr("Select KML File")
+        nameFilters:    ShapeFileHelper.fileDialogKMLFilters
+
+        onAcceptedForLoad: (file) => {
+            mapPolyline.loadKMLFile(file)
+            close()
+        }
+    }
+
     // Componente de QGCMapPolylines para carregar a função de KML
     QGCMapPolylineVisuals {
         id: mapPolylinesComponent
@@ -103,18 +115,6 @@ Rectangle {
         onLoadKMLRequested: {
             // Abre o diálogo de KML no MissionPanel
             kmlLoadDialog.openForLoad()
-        }
-    }
-
-    QGCFileDialog {
-        id:             kmlLoadDialog
-        folder:         QGroundControl.settingsManager.appSettings.missionSavePath
-        title:          qsTr("Select KML File")
-        nameFilters:    ShapeFileHelper.fileDialogKMLFilters
-
-        onAcceptedForLoad: (file) => {
-            mapPolyline.loadKMLFile(file)
-            close()
         }
     }
 
@@ -810,6 +810,16 @@ Rectangle {
                     onClicked: {
                         loadChoice = false;
                         kmlOrSHPLoadDialog.openForLoad();
+                        bar.currentIndex = 0
+                    }
+                }
+
+                QGCButton {
+                    text: "Linhas"
+                    width: 80 // Ajuste conforme necessário
+                    onClicked: {
+                        loadChoice = false;
+                        kmlLoadDialog.openForLoad();
                         bar.currentIndex = 0
                     }
                 }
