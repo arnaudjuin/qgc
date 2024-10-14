@@ -118,7 +118,7 @@ Rectangle {
             id: factFlightSpeed
             fact:               missionItem.speedSection.flightSpeed
             visible:            false
-            }
+        }
 
         QGCLabel {
             text: qsTr("Vazão   L/Hec")

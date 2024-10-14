@@ -363,8 +363,8 @@ bool CustomPlugin::mavlinkMessage(Vehicle* vehicle, LinkInterface* link, mavlink
       _sprayPumpState = QString::number(servoOutputRaw.servo8_raw);
       _sprayNozzleState = QString::number(servoOutputRaw.servo9_raw);
 
-      qDebug() << _sprayPumpState; 
-      qDebug() << _sprayNozzleState;
+      //qDebug() << _sprayPumpState; 
+      //qDebug() << _sprayNozzleState;
       emit sprayPumpStateChanged();
       emit sprayNozzleStateChanged();
     }
