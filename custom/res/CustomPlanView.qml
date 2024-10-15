@@ -54,6 +54,7 @@ Item {
     property var    _planViewSettings:                  QGroundControl.settingsManager.planViewSettings
     property bool   _promptForPlanUsageShowing:         false
     property bool   _addWaypointOnClick:                false
+    property bool   _addWaypointOnClickSpeed:                false
     property bool   _addWaypointOnClickSpray:          false
     property var    _activeVehicle:       QGroundControl.multiVehicleManager.activeVehicle ? QGroundControl.multiVehicleManager.activeVehicle : QGroundControl.multiVehicleManager.offlineEditingVehicle
     readonly property var       _layers:                [_layerMission, _layerGeoFence, _layerRallyPoints]
@@ -264,6 +265,10 @@ Item {
         var nextIndex = _missionController.currentPlanViewVIIndex + 1
         _missionController.insertSimpleMissionItem(coordinate, nextIndex, true /* makeCurrentItem */)
     }
+        function insertSimpleItemAfterCurrentSpeed() {
+        var nextIndex = _missionController.currentPlanViewVIIndex + 1
+        _missionController.insertSimpleMissionItemSpeed(nextIndex, true /* makeCurrentItem */)
+    }
 
     function insertSimpleItemAfterCurrentSpray(coordinate) {
         var nextIndex = _missionController.currentPlanViewVIIndex + 1
@@ -383,7 +388,9 @@ Item {
                                   if (_addWaypointOnClick) {
                                       insertSimpleItemAfterCurrentTravel(coordinate)
                                   }
-                                
+                                if (_addWaypointOnClickSpeed) {
+                                      insertSimpleItemAfterCurrentSpeed()
+                                  }
                               }
                           
     
@@ -703,7 +710,7 @@ Item {
                 anchors.left:           parent.left
                 anchors.right:          parent.right
                 anchors.top:            rightPanel.top
-                height: 200
+                height: 225
 
                 MissionPanel {
                     visible:            true

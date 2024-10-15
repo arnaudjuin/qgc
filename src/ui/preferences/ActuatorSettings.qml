@@ -49,6 +49,60 @@ SettingsPage {
         sendPWMCommand(channel, 0);
     }
 
+    Timer {
+        id: commandTimer
+        interval: 3000  // 3000 ms = 3 segundo de atraso
+        repeat: false   // Não repetir o timer
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 9, 1900);
+            console.log("Segundo comando enviado");
+        }
+    }
+
+    Timer {
+        id: armTimer
+        interval: 2500
+        repeat: false
+        onTriggered: {
+            _activeVehicle.forceArm();
+        }
+    }
+    
+    function sendRelayResetArm() {
+        // Enviar o primeiro comando imediatamente
+        _activeVehicle.sendCommand(1, 183, true, 9, 1100);
+
+        // Iniciar o Timer para enviar o segundo comando após o intervalo
+        commandTimer.start();
+
+        console.log("Relay resetado");
+
+        armTimer.start();
+
+        console.log("Veiculo Armado");
+        
+    }
+
+    function sendRelayReset() {
+        // Enviar o primeiro comando imediatamente
+        _activeVehicle.sendCommand(1, 183, true, 9, 1100);
+
+        // Iniciar o Timer para enviar o segundo comando após o intervalo
+        commandTimer.start();
+
+        console.log("Relay resetado");
+        
+    }
+
+    Timer {
+        id: stopPumpTimer
+        interval: 1000
+        repeat: false
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 8, 1051);
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 10
@@ -72,6 +126,9 @@ SettingsPage {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 text: "Resetar Atuadores"
+                onClicked: {
+                    sendRelayReset();
+                }
             }
         }
          QGCLabel{

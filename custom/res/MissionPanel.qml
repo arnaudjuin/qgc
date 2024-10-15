@@ -92,6 +92,18 @@ Rectangle {
         id: fileController
     }
 
+    QGCFileDialog {
+        id:             kmlLoadDialog
+        folder:         QGroundControl.settingsManager.appSettings.missionSavePath
+        title:          qsTr("Select KML File")
+        nameFilters:    ShapeFileHelper.fileDialogKMLFilters
+
+        onAcceptedForLoad: (file) => {
+            mapPolyline.loadKMLFile(file)
+            close()
+        }
+    }
+
     // Componente de QGCMapPolylines para carregar a função de KML
     QGCMapPolylineVisuals {
         id: mapPolylinesComponent
@@ -103,18 +115,6 @@ Rectangle {
         onLoadKMLRequested: {
             // Abre o diálogo de KML no MissionPanel
             kmlLoadDialog.openForLoad()
-        }
-    }
-
-    QGCFileDialog {
-        id:             kmlLoadDialog
-        folder:         QGroundControl.settingsManager.appSettings.missionSavePath
-        title:          qsTr("Select KML File")
-        nameFilters:    ShapeFileHelper.fileDialogKMLFilters
-
-        onAcceptedForLoad: (file) => {
-            mapPolyline.loadKMLFile(file)
-            close()
         }
     }
 
@@ -429,7 +429,34 @@ Rectangle {
                 }
             }
         }
+        // Add waypoint button
+        Row {
+            visible: bar.currentIndex == 0
+            width: parent.width
 
+            QGCButton {
+                background: Rectangle {
+                    color: _addWaypointOnClickSpeed ? "#FF6666" : "#ffffff" // When clicked turns light grey
+                    radius: 5
+                    border.color: "white"
+                    anchors.fill: parent
+                }
+                text: _addWaypointOnClickSpeed ? "Speed" : "Speed"
+                id: buttonSpeed
+                width: _rightPanelWidth - (_margin + 3)
+                height: ScreenTools.isMobile ? 28 : 28
+                enabled: !_editTracing && !_editCorridor
+                checked: _addWaypointOnClickSpeed
+                onClicked: {
+
+                    if (polygonItem) {
+                        polygonItem.surveyAreaPolygon.traceMode = false;
+                        _editTracing = false;
+                    }
+                    _addWaypointOnClickSpeed = !_addWaypointOnClickSpeed;
+                }
+            }
+        }
         // Row for mission buttons
         //Botões Set Vertex e Set Waypoint
         /*Row {
@@ -792,6 +819,16 @@ Rectangle {
                     onClicked: {
                         loadChoice = false;
                         kmlOrSHPLoadDialog.openForLoad();
+                        bar.currentIndex = 0
+                    }
+                }
+
+                QGCButton {
+                    text: "Linhas"
+                    width: 80 // Ajuste conforme necessário
+                    onClicked: {
+                        loadChoice = false;
+                        kmlLoadDialog.openForLoad();
                         bar.currentIndex = 0
                     }
                 }
