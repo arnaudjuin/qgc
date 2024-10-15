@@ -129,7 +129,7 @@ ApplicationWindow {
 
     Timer {
         id: stopPumpTimer
-        interval: 1000
+        interval: 500
         repeat: false
         onTriggered: {
             _activeVehicle.sendCommand(1, 183, true, 8, 1051);
@@ -635,9 +635,7 @@ ApplicationWindow {
 
         } else if (message === "Atuador OK - Lado Direito" || message === "Atuador OK - Lado Esquerdo") {
             simplePopup.visible = false;
-        }
-
-        if (message === "Mission Complete") {
+        } else if (message === "FOI CARAI") {
             sendPauseCommandWithDelay();
             _activeVehicle.flightMode = "Hold";
         }
