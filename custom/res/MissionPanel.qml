@@ -447,7 +447,34 @@ Rectangle {
                 }
             }
         }
+        // Add waypoint button
+        Row {
+            visible: bar.currentIndex == 0
+            width: parent.width
 
+            QGCButton {
+                background: Rectangle {
+                    color: _addWaypointOnClickSpeed ? "#FF6666" : "#ffffff" // When clicked turns light grey
+                    radius: 5
+                    border.color: "white"
+                    anchors.fill: parent
+                }
+                text: _addWaypointOnClickSpeed ? "Speed" : "Speed"
+                id: buttonSpeed
+                width: _rightPanelWidth - (_margin + 3)
+                height: ScreenTools.isMobile ? 28 : 28
+                enabled: !_editTracing && !_editCorridor
+                checked: _addWaypointOnClickSpeed
+                onClicked: {
+
+                    if (polygonItem) {
+                        polygonItem.surveyAreaPolygon.traceMode = false;
+                        _editTracing = false;
+                    }
+                    _addWaypointOnClickSpeed = !_addWaypointOnClickSpeed;
+                }
+            }
+        }
         // Row for mission buttons
         //Botões Set Vertex e Set Waypoint
         /*Row {

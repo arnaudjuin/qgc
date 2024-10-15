@@ -114,7 +114,7 @@ Rectangle {
             anchors.right:      parent.right
             spacing:            _altRectMargin
             //visible:            !missionItem.wizardMode
-            visible: false
+            visible : true
 
             ColumnLayout {
                 anchors.left:   parent.left
@@ -151,19 +151,19 @@ Rectangle {
 
                     RowLayout {
                         spacing: _altRectMargin
-                        visible: false
+                        visible : true
 
                         QGCLabel {
                             Layout.alignment:   Qt.AlignBaseline
                             text:               qsTr("Altitude")
                             font.pointSize:     ScreenTools.smallFontPointSize
-                            visible: false
+                            visible : true
                         }
                         QGCLabel {
                             id:                 altModeLabel
                             Layout.alignment:   Qt.AlignBaseline
                             //visible:            _globalAltMode !== QGroundControl.AltitudeModeRelative
-                            visible: false
+                            visible : true
                         }
                         QGCColoredImage {
                             height:     ScreenTools.defaultFontPixelHeight / 2
@@ -171,7 +171,7 @@ Rectangle {
                             source:     "/res/DropArrow.svg"
                             color:      qgcPal.text
                             //visible:    _globalAltModeIsMixed
-                            visible: false
+                            visible : true
                         }
                     }
                 }
@@ -180,14 +180,14 @@ Rectangle {
                     id:                 altField
                     Layout.fillWidth:   true
                     fact:               missionItem.altitude
-                    visible: false
+                    visible : true
                 }
 
                 QGCLabel {
                     font.pointSize:     ScreenTools.smallFontPointSize
                     text:               qsTr("Actual AMSL alt sent: %1 %2").arg(missionItem.amslAltAboveTerrain.valueString).arg(missionItem.amslAltAboveTerrain.units)
                     //visible:            missionItem.altitudeMode === QGroundControl.AltitudeModeCalcAboveTerrain
-                    visible: false
+                    visible : true
                 }
             }
 
@@ -195,7 +195,7 @@ Rectangle {
                 anchors.left:   parent.left
                 anchors.right:  parent.right
                 spacing:        _margin
-                visible: false
+                visible : true
 
                 Repeater {
                     model: missionItem.comboboxFacts
@@ -228,7 +228,7 @@ Rectangle {
                                 missionItem.nanFacts.count +
                                 (missionItem.speedSection.available ? 1 : 0)
                 columns:        2
-                visible: false
+                visible : true
 
                 Repeater {
                     model: missionItem.textFieldFacts
@@ -288,7 +288,7 @@ Rectangle {
             CameraSection {
                 checked:    missionItem.cameraSection.settingsSpecified
                 //visible:    missionItem.cameraSection.available
-                visible: false
+                visible : false
             }
         }
     }
