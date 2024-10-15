@@ -351,10 +351,39 @@ VisualMissionItem* MissionController::_insertSimpleMissionItemWorker(QGeoCoordin
     return newItem;
 }
 
+VisualMissionItem* MissionController::_insertSimpleMissionItemWorkerSpeed(int visualItemIndex, bool makeCurrentItem)
+{
+    int sequenceNumber = _nextSequenceNumber();
+    SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
+    newItem->setSequenceNumber(sequenceNumber);
+    newItem->setCommand(178);
+    _initVisualItem(newItem);
 
+   
+    if (visualItemIndex == -1) {
+        _visualItems->append(newItem);
+    } else {
+        _visualItems->insert(visualItemIndex, newItem);
+    }
+
+    // We send the click coordinate through here to be able to set the planned home position from the user click location if needed
+
+    if (makeCurrentItem) {
+        setCurrentPlanViewSeqNum(newItem->sequenceNumber(), true);
+    }
+
+    _firstItemAdded();
+
+    return newItem;
+}
 VisualMissionItem* MissionController::insertSimpleMissionItem(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem)
 {
     return _insertSimpleMissionItemWorker(coordinate, MAV_CMD_NAV_WAYPOINT, visualItemIndex, makeCurrentItem);
+}
+
+VisualMissionItem* MissionController::insertSimpleMissionItemSpeed(int visualItemIndex, bool makeCurrentItem)
+{
+    return _insertSimpleMissionItemWorkerSpeed(visualItemIndex, makeCurrentItem);
 }
 
 VisualMissionItem* MissionController::insertTakeoffItem(QGeoCoordinate /*coordinate*/, int visualItemIndex, bool makeCurrentItem)

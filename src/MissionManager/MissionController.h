@@ -124,6 +124,7 @@ public:
     ///     @param makeCurrentItem: true: Make this item the current item
     /// @return Newly created item
     Q_INVOKABLE VisualMissionItem* insertSimpleMissionItem(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem = false);
+    Q_INVOKABLE VisualMissionItem* insertSimpleMissionItemSpeed(int visualItemIndex, bool makeCurrentItem = false);
 
     /// Add a new takeoff item to the list
     ///     @param coordinate: Coordinate for item
@@ -352,6 +353,7 @@ private:
     FlightPathSegment*      _addFlightPathSegment               (FlightPathSegmentHashTable& prevItemPairHashTable, VisualItemPair& pair, bool mavlinkTerrainFrame);
     void                    _addTimeDistance                    (bool vtolInHover, double hoverTime, double cruiseTime, double extraTime, double distance, int seqNum);
     VisualMissionItem*      _insertSimpleMissionItemWorker      (QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem);
+    VisualMissionItem*      _insertSimpleMissionItemWorkerSpeed  (int visualItemIndex, bool makeCurrentItem);
     void                    _insertComplexMissionItemWorker     (const QGeoCoordinate& mapCenterCoordinate, ComplexMissionItem* complexItem, int visualItemIndex, bool makeCurrentItem);
     bool                    _isROIBeginItem                     (SimpleMissionItem* simpleItem);
     bool                    _isROICancelItem                    (SimpleMissionItem* simpleItem);
