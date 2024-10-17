@@ -136,9 +136,13 @@ void GeoFenceManager::handleGeofenceBreach() {
     int servo_pump = 7;    // Servo 7 controls the pump
     float pwm_value_off = 1051;  // PWM value to turn off (neutral/off position)
 
+    MultiVehicleManager*    vehicleMgr  = qgcApp()->toolbox()->multiVehicleManager();
+    Vehicle*                vehicle     = vehicleMgr->activeVehicle();
+
+
     // Send MAVLink command to turn off the spray nozzle (servo 8)
-    _vehicle->sendMavCommand(
-        MAV_COMP_ID_ALL,  // Target all components
+    vehicle->sendMavCommand(
+        1,  // Target all components
         MAV_CMD_DO_SET_SERVO,  // Command to set servo
         true,  // Show in command UI
         servo_nozzle,  // Servo number 8 for the nozzle
@@ -148,8 +152,8 @@ void GeoFenceManager::handleGeofenceBreach() {
     // Delay to ensure commands are not sent at the same time
     QTimer::singleShot(500, [=]() {  // 500 ms delay
         // Send MAVLink command to turn off the pump (servo 7)
-        _vehicle->sendMavCommand(
-            MAV_COMP_ID_ALL,  // Target all components
+        vehicle->sendMavCommand(
+            1,  // Target all components
             MAV_CMD_DO_SET_SERVO,  // Command to set servo
             true,  // Show in command UI
             servo_pump,  // Servo number 7 for the pump
