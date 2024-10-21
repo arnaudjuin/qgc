@@ -287,6 +287,8 @@ Item {
 
     function insertComplexItemAfterCurrent(complexItemName) {
         var nextIndex = _missionController.currentPlanViewVIIndex + 1
+        _missionController.insertSimpleMissionItemSpeed(nextIndex, false /* makeCurrentItem */)
+        nextIndex = nextIndex + 1 
         _missionController.insertComplexMissionItem(complexItemName, mapCenter(), nextIndex, true /* makeCurrentItem */)
     }
 
