@@ -157,169 +157,154 @@ Item {
     }
 
     //-------------------------------------------------------------------------
-    //Play - Pause - Stop
-    Rectangle {
-        width: parent.width * 0.06
-        color: "transparent"
-        anchors.left: parent.left
-        anchors.leftMargin: 10
-        anchors.verticalCenter: parent.verticalCenter
+  //Play - Pause - Stop
+Rectangle {
+    width: parent.width * 0.06
+    color: "transparent"
+    anchors.left: parent.left
+    anchors.leftMargin: 10
+    anchors.verticalCenter: parent.verticalCenter
 
-        ColumnLayout {
-            id: columnLayout
-            spacing: 8
-            anchors.fill: parent
-            anchors.margins: 5
+    ColumnLayout {
+        id: columnLayout
+        spacing: 8
+        anchors.fill: parent
+        anchors.margins: 5
 
-            /*QGCButton { Removed Emergency Stop button
-                width: 40
-                height: 40
-                Layout.preferredHeight: 40
-                anchors.horizontalCenter: parent.horizontalCenter
+        // Verifica se a missão está ativa e define uma propriedade para controlar a visibilidade dos botões
+        property bool missionActive: false
 
-                property bool relayState: false  // Estado inicial: desligado (0)
+        // Conexão com o signal de mudança no missionManager
+        Connections {
+            target: _activeVehicle.missionManager
 
-                onClicked: {
-                    relayState = !relayState;  // Alterna o estado do relé
-                    var servoValue = relayState ? 1 : 0;  // (valor: 1 para ligado, 0 para desligado)
-
-                    _activeVehicle.sendCommand(
-                        1,          // component (tipicamente 1 para o autopilot)
-                        181,        // MAV_CMD_DO_SET_RELAY
-                        true,       //confirmation
-                        0,          // Instance number relay
-                        servoValue // param (valor: 1 para ligado, 0 para desligado)
-                    );
-
-                    // Adiciona lógica para parar os bicos ao desligar o relé
-                    if (!relayState) {
-                        sendPauseCommandWithDelay()
-                    }
-
-                    background.color = relayState ? "green" : "red";  // Atualiza a cor de fundo
-                }
-                background: Rectangle {
-                    width: 40
-                    height: 40
-                    color: "red"
-                    radius: 20
-                    anchors.centerIn: parent
-                }
-
-                Label {
-                    text: "!"
-                    font.pixelSize: 30
-                    anchors.centerIn: parent
-                    color: "black"  // Para garantir que o texto seja visível
-                }
-            }*/
-
-             // PLAY Button
-            QGCButton {
-                width: 30
-                height: 30
-                Layout.preferredHeight: 30
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                onClicked: {
-                    
-                    if (_activeVehicle.flightMode === "Manual") {
-                     
-                        _activeVehicle.flightMode = "Auto"; 
-                    }
-                    
-                    sendPlayCommandWithDelay(); 
-                }
-
-                background: Rectangle {
-                    width: 30
-                    height: 30
-                    color: "#ff4800"
-                    radius: 15
-                    anchors.centerIn: parent
-                }
-
-                Image {
-                    width: parent.width * 0.7
-                    height: parent.height * 0.7
-                    source: "/custom/img/play.svg"
-                    fillMode: Image.PreserveAspectFit
-                    anchors.centerIn: parent
-                }
-
-                PropertyAnimation on opacity {
-                    easing.type: Easing.OutQuart
-                    from: 0.7
-                    to: 1
-                    loops: Animation.Infinite
-                    running: true
-                    alwaysRunToEnd: true
-                    duration: 1000
+            // Escuta as mudanças de estado das missões
+            onCurrentMissionChanged: {
+                if (_activeVehicle.missionManager.currentMissionIndex >= 0 && _activeVehicle.missionManager.currentMission.count > 0) {
+                    columnLayout.missionActive = true;
+                } else {
+                    columnLayout.missionActive = false;
                 }
             }
 
-            //PAUSE
-            QGCButton {
-                width: 30
-                height: 30
-                Layout.preferredHeight: 30
-                anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: {
-                    if (_activeVehicle.flightMode === "Auto") {
-                        
-                        _activeVehicle.flightMode = "Manual"; 
-                    } 
-                    
-                    sendPauseCommandWithDelay();
-                }
-                background: Rectangle {
-                    width: 30
-                    height: 30
-                    color: "Black"
-                    radius: 15
-                    anchors.centerIn: parent
-                }
-
-                Image {
-                    width: parent.width * 0.7
-                    height: parent.height * 0.7
-                    source: "/custom/img/pause.svg"
-                    fillMode: Image.PreserveAspectFit
-                    anchors.centerIn: parent
-                }
-            }
-
-            //STOP
-            QGCButton {
-                width: 30
-                height: 30
-                Layout.preferredHeight: 30
-                anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: {
-                    guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop);
-                    sendPauseCommandWithDelay();
-                }
-                background: Rectangle {
-                    width: 30
-                    height: 30
-                    color: "Black"
-                    radius: 15
-                    anchors.centerIn: parent
-                }
-
-                Image {
-                    width: parent.width * 0.7
-                    height: parent.height * 0.7
-                    source: "/custom/img/stop.svg"
-                    fillMode: Image.PreserveAspectFit
-                    anchors.centerIn: parent
+            // Escuta qualquer modificação nos waypoints da missão
+            onCurrentMissionIndexChanged: {
+                if (_activeVehicle.missionManager.currentMissionIndex >= 0) {
+                    columnLayout.missionActive = true;
+                } else {
+                    columnLayout.missionActive = false;
                 }
             }
         }
 
-        // Correção: Define a altura do Rectangle de forma dinâmica para abranger todo o conteúdo do ColumnLayout
-        height: columnLayout.implicitHeight + 10
+        // PLAY Button
+        QGCButton {
+            visible: columnLayout.missionActive  // Botão visível apenas quando há uma missão ativa
+            width: 30
+            height: 30
+            Layout.preferredHeight: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            onClicked: {
+                if (_activeVehicle.flightMode === "Manual") {
+                    _activeVehicle.flightMode = "Auto"; 
+                }
+                sendPlayCommandWithDelay(); 
+            }
+
+            background: Rectangle {
+                width: 30
+                height: 30
+                color: "#ff4800"
+                radius: 15
+                anchors.centerIn: parent
+            }
+
+            Image {
+                width: parent.width * 0.7
+                height: parent.height * 0.7
+                source: "/custom/img/play.svg"
+                fillMode: Image.PreserveAspectFit
+                anchors.centerIn: parent
+            }
+
+            PropertyAnimation on opacity {
+                easing.type: Easing.OutQuart
+                from: 0.7
+                to: 1
+                loops: Animation.Infinite
+                running: true
+                alwaysRunToEnd: true
+                duration: 1000
+            }
+        }
+
+        //PAUSE Button
+        QGCButton {
+            visible: columnLayout.missionActive  // Botão visível apenas quando há uma missão ativa
+            width: 30
+            height: 30
+            Layout.preferredHeight: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            onClicked: {
+                if (_activeVehicle.flightMode === "Auto") {
+                    _activeVehicle.flightMode = "Manual"; 
+                } 
+                sendPauseCommandWithDelay();
+            }
+            background: Rectangle {
+                width: 30
+                height: 30
+                color: "Black"
+                radius: 15
+                anchors.centerIn: parent
+            }
+
+            Image {
+                width: parent.width * 0.7
+                height: parent.height * 0.7
+                source: "/custom/img/pause.svg"
+                fillMode: Image.PreserveAspectFit
+                anchors.centerIn: parent
+            }
+        }
+
+        //STOP Button
+        QGCButton {
+            visible: columnLayout.missionActive  // Botão visível apenas quando há uma missão ativa
+            width: 30
+            height: 30
+            Layout.preferredHeight: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            onClicked: {
+                guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop);
+                sendPauseCommandWithDelay();
+            }
+            background: Rectangle {
+                width: 30
+                height: 30
+                color: "Black"
+                radius: 15
+                anchors.centerIn: parent
+            }
+
+            Image {
+                width: parent.width * 0.7
+                height: parent.height * 0.7
+                source: "/custom/img/stop.svg"
+                fillMode: Image.PreserveAspectFit
+                anchors.centerIn: parent
+            }
+        }
     }
+
+    // Define a altura do Rectangle de forma dinâmica para abranger todo o conteúdo do ColumnLayout
+    height: columnLayout.implicitHeight + 10
+}
+
+
     
     
     

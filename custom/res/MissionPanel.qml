@@ -811,11 +811,11 @@ Rectangle {
     
             Row {
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 20 // Ajuste o espaçamento conforme necessário
+                spacing: 5 // Ajuste o espaçamento conforme necessário
     
                 QGCButton {
                     text: "KML/SHP"
-                    width: 80 // Ajuste conforme necessário
+                    width: 60 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;
                         kmlOrSHPLoadDialog.openForLoad();
@@ -825,7 +825,7 @@ Rectangle {
 
                 QGCButton {
                     text: "Linhas"
-                    width: 80 // Ajuste conforme necessário
+                    width: 60 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;
                         kmlLoadDialog.openForLoad();
@@ -835,7 +835,7 @@ Rectangle {
     
                 QGCButton {
                     text: "Missões"
-                    width: 80 // Ajuste conforme necessário
+                    width: 60 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;
                         _planMasterController.loadFromSelectedFile();
