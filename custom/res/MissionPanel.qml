@@ -273,16 +273,16 @@ Rectangle {
                         if (!isTraced) {
                             isTraced = true;
 
-                            // Get the index of the last visual item
-                            var currentIndex = _missionController.visualItems.count;
-                            // Retrieve the last visual item as polygonItem
-                            polygonItem = _missionController.visualItems.get(currentIndex - 1);
 
                             // Insert a complex mission item if it hasn't been traced yet
                             insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
 
+                            
+                            // Get the index of the last visual item
+                            var currentIndex = _missionController.visualItems.count;
+
                             // Get the current visual item as polygonItem
-                            polygonItem = _missionController.visualItems.get(currentIndex);
+                            polygonItem = _missionController.visualItems.get(currentIndex -1);
 
                             // If the polygonItem exists, set its camera footprint side value
                             if (polygonItem)

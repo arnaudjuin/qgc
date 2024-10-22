@@ -80,6 +80,15 @@ Item {
         
     }
 
+    Timer {
+        id: nozzleTimer
+        interval: 1000
+        repeat: false
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 8, QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value);
+        }
+    }
+
     function sendPlayCommandWithDelay() {
         console.log( QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value)
         console.log( QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value)
@@ -87,7 +96,7 @@ Item {
         _activeVehicle.sendCommand(1, 183, true, 7, QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value);
 
         // Criar e iniciar o timer para o segundo comando
-        Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered: _activeVehicle.sendCommand(1, 183, true, 8,  QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value); }', parent, 'timer');    
+        nozzleTimer.start();
     }
 
 

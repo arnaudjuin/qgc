@@ -110,10 +110,16 @@ Rectangle {
             Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
             value: factCruiseSpeed.fact.value
             onValueChanged: {
-                factCruiseSpeed.fact.value = value;
-                factFlightSpeed.fact.value = value;
+                factSpeed.fact.value=value
+                    console.log("Fact Speed Value",factSpeed.fact.value)
             }
+            
         }
+                  FactTextField {
+                    id: factSpeed
+                    fact:               _missionController.visualItems.get(_missionController.visualItems.count - 2).speedSection.flightSpeed
+                    Layout.fillWidth:   true
+                }
         FactTextField {
             id: factFlightSpeed
             fact:               missionItem.speedSection.flightSpeed
