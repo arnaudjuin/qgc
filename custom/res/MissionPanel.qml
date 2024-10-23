@@ -332,30 +332,29 @@ Rectangle {
             visible: bar.currentIndex == 0
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
             //Layout.leftMargin: _margin + 12
-
-            // Trace button
+            // Trace button for Corridor
             QGCButton {
-
+            
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
                 id: buttonCorridor
-                text: _editCorridor ? "Finalizar" : "Carregar Linhas" 
+                text: _editCorridor ? "Finalizar" : "Novo Corredor" // Mudança para iniciar novo corredor
                 checked: _editCorridor
                 enabled: !_addWaypointOnClick && !_editTracing
-                    background: Rectangle {
+                background: Rectangle {
                     color: _editCorridor ? "#FF6666" : "#ffffff" // When clicked turns light grey
                     radius: 5  
                     border.color: "white"  
                     anchors.fill: parent  
                 }
                 onClicked: {
-                    // Toggle the _editTracing property
+                    // Toggle the _editCorridor property
                     _editCorridor = !_editCorridor;
                     // Disable adding waypoints on click
                     _addWaypointOnClick = false;
 
-                    {
-
+                    // Iniciar traçado do corredor imediatamente
+                    if (_editCorridor) {
                         // Check if tracing has not been started yet
                         if (!isTracedCorridor) {
                             isTracedCorridor = true;
@@ -377,40 +376,23 @@ Rectangle {
                                 polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
                             }
 
-                            // Check if the polygon's traceMode is enabled
-                            if (polygonItem.corridorPolyline.traceMode) {
-                                // If the polygon has fewer than 3 vertices, restore previous vertices
-                                if (polygonItem.corridorPolyline.count < 3) {
-                                    _restorePreviousVertices(polygonItem);
-                                }
-                                // Mark tracing as started
-                                isTracedCorridor = true;
-                                // Disable traceMode
-                                polygonItem.corridorPolyline.traceMode = false;
-                            }
-
-                            // Enable traceMode if tracing is being edited
-                            if (!polygonItem.corridorPolyline.traceMode && _editTracing) {
-                                polygonItem.corridorPolyline.traceMode = true;
-                                // Save the current vertices
-                                _saveCurrentVertices(polygonItem);
-                                // Clear the current polygon vertices
-                                polygonItem.corridorPolyline.clear();
-                                // Mark tracing as started
-                                isTracedCorridor = true;
-                            }
-                        } else {
-                            // If tracing was already started, disable traceMode
-                            if (polygonItem && polygonItem.corridorPolyline && polygonItem.corridorPolyline.traceMode)
-                            {
-                                polygonItem.corridorPolyline.traceMode = false;
-                            }
-                        isTracedCorridor=false;
-
+                            // Enable traceMode for the corridor
+                            polygonItem.corridorPolyline.traceMode = true;
+                            // Clear the current corridor vertices
+                            polygonItem.corridorPolyline.clear();
+                            // Save the current vertices
+                            _saveCurrentVertices(polygonItem);
+                            isTracedCorridor = true;
                         }
+                    } else {
+                        // Finalizar traçado
+                        if (polygonItem && polygonItem.corridorPolyline && polygonItem.corridorPolyline.traceMode) {
+                            polygonItem.corridorPolyline.traceMode = false;
+                        }
+                        isTracedCorridor = false;
                     }
                 }
-            }   
+            }
         }
 
         // Add waypoint button
@@ -830,11 +812,11 @@ Rectangle {
     
             Row {
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 20 // Ajuste o espaçamento conforme necessário
+                spacing: 5 // Ajuste o espaçamento conforme necessário
     
                 QGCButton {
                     text: "KML/SHP"
-                    width: 80 // Ajuste conforme necessário
+                    width: 60 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;
                         kmlOrSHPLoadDialog.openForLoad();
@@ -844,7 +826,7 @@ Rectangle {
 
                 QGCButton {
                     text: "Linhas"
-                    width: 80 // Ajuste conforme necessário
+                    width: 60 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;
                         kmlLoadDialog.openForLoad();
@@ -854,7 +836,7 @@ Rectangle {
     
                 QGCButton {
                     text: "Missões"
-                    width: 80 // Ajuste conforme necessário
+                    width: 60 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;
                         _planMasterController.loadFromSelectedFile();
