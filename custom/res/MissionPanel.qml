@@ -449,7 +449,8 @@ Rectangle {
         }
         // Add waypoint button
         Row {
-            visible: bar.currentIndex == 0
+            //visible: bar.currentIndex == 0
+            visible: false
             width: parent.width
 
             QGCButton {

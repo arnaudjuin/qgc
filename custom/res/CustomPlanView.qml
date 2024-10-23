@@ -712,7 +712,7 @@ Item {
                 anchors.left:           parent.left
                 anchors.right:          parent.right
                 anchors.top:            rightPanel.top
-                height: 225
+                height: 200
 
                 MissionPanel {
                     visible:            true
