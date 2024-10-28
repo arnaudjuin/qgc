@@ -34,6 +34,11 @@ Rectangle {
     property bool   _communicationLost: _activeVehicle ? _activeVehicle.vehicleLinkManager.communicationLost : false
     property bool   _armed:             _activeVehicle ? _activeVehicle.armed : false
     property color  _mainStatusBGColor: "#ff4800"
+    
+    // Propriedade para medir o progresso da missão
+    property real missionProgress: _activeVehicle ? _activeVehicle.missionManager.progress : 0
+    // Propriedade para verificar se o veículo está em uma missão ativa
+    property bool missionActive: _activeVehicle ? _activeVehicle.missionManager.isMissionActive : false
 
     function dropMessageIndicatorTool() {
         toolIndicators.dropMessageIndicatorTool();
@@ -49,7 +54,6 @@ Rectangle {
         visible: false
         height:         1
         color:          "black"
-        //visible:        qgcPal.globalTheme === QGCPalette.Light
     }
 
     Rectangle {
@@ -77,11 +81,11 @@ Rectangle {
             onClicked: mainWindow.showToolSelectDialog()
         
             Image {
-                source: "qrc:/custom/img/menu.svg" // Substitua pelo caminho da sua imagem
+                source: "qrc:/custom/img/menu.svg"
                 anchors.centerIn: parent
                 fillMode: Image.PreserveAspectFit
-                width: parent.width * 0.6 // Ajuste conforme necessário
-                height: parent.height * 0.6 // Ajuste conforme necessário
+                width: parent.width * 0.6
+                height: parent.height * 0.6
             }
         }
 
@@ -101,6 +105,112 @@ Rectangle {
             }
         }
 
+        // Círculo de progresso do carregamento
+        Canvas {
+            id: progressCircle
+            width: 40
+            height: 40
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenterOffset: -50
+            visible: _activeVehicle && !_activeVehicle.initialConnectComplete 
+
+            onPaint: {
+                if (_activeVehicle && !_activeVehicle.initialConnectComplete) {
+                    var ctx = getContext("2d");
+                    ctx.clearRect(0, 0, width, height);
+
+                    // Círculo de fundo (cinza)
+                    ctx.beginPath();
+                    ctx.arc(width / 2, height / 2, width / 2 - 5, 0, 2 * Math.PI, false);
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = "#e0e0e0";
+                    ctx.stroke();
+
+                    // Círculo de progresso de carregamento (verde)
+                    ctx.beginPath();
+                    ctx.arc(width / 2, height / 2, width / 2 - 5, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * _activeVehicle.loadProgress, false);
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = "#4CAF50";
+                    ctx.stroke();
+                }
+            }
+
+            Timer {
+                interval: 16 
+                running: true
+                repeat: true
+                onTriggered: {
+                    if (_activeVehicle && _activeVehicle.initialConnectComplete) {
+                        progressCircle.visible = false; 
+                    } else {
+                        progressCircle.requestPaint();
+                    }
+                }
+            }
+
+           
+            QGCLabel {
+                anchors.centerIn: parent
+                text: Math.round(_activeVehicle.loadProgress * 100) + "%"
+                color: "#4CAF50"
+                font.bold: true
+                visible: _activeVehicle && !_activeVehicle.initialConnectComplete 
+            }
+        }
+
+        // Círculo de progresso da missão
+        Canvas {
+            id: missionProgressCircle
+            width: 40
+            height: 40
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenterOffset: -100
+            visible: _activeVehicle && missionActive && missionProgress < 1.0 // O círculo de missão será visível apenas quando a missão estiver ativa
+
+            onPaint: {
+                if (_activeVehicle && missionActive && missionProgress < 1.0) {
+                    var ctx = getContext("2d");
+                    ctx.clearRect(0, 0, width, height);
+
+                    // Círculo de fundo (cinza)
+                    ctx.beginPath();
+                    ctx.arc(width / 2, height / 2, width / 2 - 5, 0, 2 * Math.PI, false);
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = "#e0e0e0";
+                    ctx.stroke();
+
+                    // Círculo de progresso da missão (azul)
+                    ctx.beginPath();
+                    ctx.arc(width / 2, height / 2, width / 2 - 5, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * missionProgress, false);
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = "#2196F3"; // Azul para diferenciar da barra de carregamento
+                    ctx.stroke();
+                }
+            }
+
+            Timer {
+                interval: 16 // Atualiza aproximadamente 60 vezes por segundo
+                running: true
+                repeat: true
+                onTriggered: {
+                    if (_activeVehicle && missionProgress >= 1.0) {
+                        missionProgressCircle.visible = false; // Esconde o círculo ao concluir a missão
+                    } else {
+                        missionProgressCircle.requestPaint();
+                    }
+                }
+            }
+
+            // Texto opcional para exibir percentual da missão dentro do círculo
+            QGCLabel {
+                anchors.centerIn: parent
+                text: Math.round(missionProgress * 100) + "%"
+                color: "#2196F3"
+                font.bold: true
+                visible: missionActive && missionProgress < 1.0 // O texto desaparece quando a missão é concluída
+            }
+        }
+
         QGCButton {
             id:                 disconnectButton
             text:               qsTr("Disconnect")
@@ -109,20 +219,6 @@ Rectangle {
         }
     }
 
-    /*RowLayout {
-        //visible: false
-        anchors.right: parent.right // Anchor the RowLayout to the right side of the parent
-        TelemetryValuesBar {
-            Layout.alignment:   Qt.AlignBottom
-            extraWidth:         instrumentPanel.extraValuesWidth
-        }
-
-        FlyViewInstrumentPanel {
-            id:         instrumentPanel
-            visible:    QGroundControl.corePlugin.options.flyView.showInstrumentPanel && _showSingleVehicleUI
-        }
-    }*/
-
     MainStatusIndicator {
         anchors.right:parent.right
         visible: false
@@ -130,18 +226,16 @@ Rectangle {
 
     QGCFlickable {
         id: toolsFlickable
-        // Removidas as âncoras laterais para não forçar o estiramento até os limites
-        // Removida a margem esquerda para não deslocar o conteúdo
-        width: toolIndicators.width // Defina a largura do Flickable para a largura dos indicadores
-        anchors.horizontalCenter: parent.horizontalCenter // Centraliza horizontalmente no parent
+        width: toolIndicators.width
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        contentWidth: toolIndicators.width // Certifique-se de que isso corresponde à largura dos ícones que você quer centralizar
+        contentWidth: toolIndicators.width
         flickableDirection: Flickable.HorizontalFlick
 
         FlyViewToolBarIndicators {
             id: toolIndicators
-            // Se FlyViewToolBarIndicators não estiver centralizando os ícones internamente, você pode precisar ajustar isso também
+
             QGCButton {
                 id: armDisarmButton
                 text: _armed ? qsTr("Desarmar") : qsTr("Armar")
@@ -158,7 +252,6 @@ Rectangle {
         }
     }
 
-
     //-------------------------------------------------------------------------
     //-- Branding Logo
     Image {
@@ -167,7 +260,6 @@ Rectangle {
         anchors.bottom:         parent.bottom
         anchors.margins:        ScreenTools.defaultFontPixelHeight * 0.66
         visible: false
-        //visible:                _activeVehicle && !_communicationLost && x > (toolsFlickable.x + toolsFlickable.contentWidth + ScreenTools.defaultFontPixelWidth)
         fillMode:               Image.PreserveAspectFit
         source:                 _outdoorPalette ? _brandImageOutdoor : _brandImageIndoor
         mipmap:                 true
@@ -186,7 +278,7 @@ Rectangle {
                 return _userBrandImageIndoor
             } else {
                 if (_userBrandingOutdoor) {
-                    return _userBrandingOutdoor
+                    return _userBrandImageOutdoor
                 } else {
                     if (_corePluginBranding) {
                         return QGroundControl.corePlugin.brandImageIndoor
@@ -199,7 +291,7 @@ Rectangle {
 
         function brandImageOutdoor() {
             if (_userBrandingOutdoor) {
-                return _userBrandingOutdoor
+                return _userBrandImageOutdoor
             } else {
                 if (_userBrandingIndoor) {
                     return _userBrandingIndoor
@@ -211,62 +303,6 @@ Rectangle {
                     }
                 }
             }
-        }
-    }
-
-    // Small parameter download progress bar
-    Rectangle {
-        anchors.bottom: parent.bottom
-        height:         _root.height * 0.05
-        width:          _activeVehicle ? _activeVehicle.loadProgress * parent.width : 0
-        color:          qgcPal.colorGreen
-        visible:        !largeProgressBar.visible
-    }
-
-    // Large parameter download progress bar
-    Rectangle {
-        id:             largeProgressBar
-        anchors.bottom: parent.bottom
-        anchors.left:   parent.left
-        anchors.right:  parent.right
-        height:         parent.height
-        color:          qgcPal.window
-        visible:        _showLargeProgress
-
-        property bool _initialDownloadComplete: _activeVehicle ? _activeVehicle.initialConnectComplete : true
-        property bool _userHide:                false
-        property bool _showLargeProgress:       !_initialDownloadComplete && !_userHide && qgcPal.globalTheme === QGCPalette.Light
-
-        Connections {
-            target:                 QGroundControl.multiVehicleManager
-            function onActiveVehicleChanged(activeVehicle) { largeProgressBar._userHide = false }
-        }
-
-        Rectangle {
-            anchors.top:    parent.top
-            anchors.bottom: parent.bottom
-            width:          _activeVehicle ? _activeVehicle.loadProgress * parent.width : 0
-            color:          qgcPal.colorGreen
-        }
-
-        QGCLabel {
-            anchors.centerIn:   parent
-            text:               qsTr("Downloading")
-            font.pointSize:     ScreenTools.largeFontPointSize
-        }
-
-        QGCLabel {
-            anchors.margins:    _margin
-            anchors.right:      parent.right
-            anchors.bottom:     parent.bottom
-            text:               qsTr("Click anywhere to hide")
-
-            property real _margin: ScreenTools.defaultFontPixelWidth / 2
-        }
-
-        MouseArea {
-            anchors.fill:   parent
-            onClicked:      largeProgressBar._userHide = true
         }
     }
 }
