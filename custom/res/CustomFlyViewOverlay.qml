@@ -180,32 +180,6 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 5
 
-        // Verifica se a missão está ativa e define uma propriedade para controlar a visibilidade dos botões
-        property bool missionActive: false
-
-        // Conexão com o signal de mudança no missionManager
-        Connections {
-            target: _activeVehicle.missionManager
-
-            // Escuta as mudanças de estado das missões
-            onCurrentMissionChanged: {
-                if (_activeVehicle.missionManager.currentMissionIndex >= 0 && _activeVehicle.missionManager.currentMission.count > 0) {
-                    columnLayout.missionActive = true;
-                } else {
-                    columnLayout.missionActive = false;
-                }
-            }
-
-            // Escuta qualquer modificação nos waypoints da missão
-            onCurrentMissionIndexChanged: {
-                if (_activeVehicle.missionManager.currentMissionIndex >= 0) {
-                    columnLayout.missionActive = true;
-                } else {
-                    columnLayout.missionActive = false;
-                }
-            }
-        }
-
         // PLAY Button
         QGCButton {
             visible: columnLayout.missionActive  // Botão visível apenas quando há uma missão ativa

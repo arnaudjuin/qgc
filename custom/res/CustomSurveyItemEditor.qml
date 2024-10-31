@@ -237,8 +237,8 @@ TransectStyleComplexItemEditor {
                     onClicked: {
                         selectedButton = 0;
                         var pwmValue = 1200;
-                        QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 3.6;
-                        velocidade = 3.6;
+                        QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 1;
+                        velocidade = 1;
                         factFlightSpeed.fact.value = velocidade;
                         factVazaoOffline.fact.value = pwmValue;
                     }
@@ -283,8 +283,8 @@ TransectStyleComplexItemEditor {
                         } else if (gridSlider.value === 12 && vazaoSlider.value === 3) {
                             pwmValue = 1400;
                         }
-                        QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 7.2;
-                        velocidade = 7.2;
+                        QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 2;
+                        velocidade = 2;
                         factFlightSpeed.fact.value = velocidade;
                         factVazaoOffline.fact.value = pwmValue;
                     }
@@ -329,8 +329,8 @@ TransectStyleComplexItemEditor {
                         } else if (gridSlider.value === 12 && vazaoSlider.value === 3) {
                             pwmValue = 1600;
                         }
-                        QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 10.8;
-                        velocidade = 10.8;
+                        QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 3;
+                        velocidade = 3;
                         factFlightSpeed.fact.value = velocidade;
                         factVazaoOffline.fact.value = pwmValue;
                     }
