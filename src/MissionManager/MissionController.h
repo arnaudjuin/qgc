@@ -48,6 +48,10 @@ public:
     MissionController(PlanMasterController* masterController, QObject* parent = nullptr);
     ~MissionController();
 
+    int velocidadeConfigurada() const { return _velocidadeConfigurada; }
+    Q_INVOKABLE void setVelocidadeConfigurada(int velocidade);
+    Q_INVOKABLE void insertSpeedMissionItem(int visualItemIndex, bool makeCurrentItem);
+
     typedef struct {
         double                      maxTelemetryDistance;
         double                      totalDistance;
@@ -74,6 +78,8 @@ public:
         double                      vehicleSpeed;           ///< Either cruise or hover speed based on vehicle type and vtol state
     } MissionFlightStatus_t;
 
+    
+    Q_PROPERTY(int                velocidadeConfigurada           READ velocidadeConfigurada          WRITE setVelocidadeConfigurada          NOTIFY velocidadeConfiguradaChanged)
     Q_PROPERTY(QmlObjectListModel*  visualItems                     READ visualItems                    NOTIFY visualItemsChanged)
     Q_PROPERTY(QmlObjectListModel*  simpleFlightPathSegments        READ simpleFlightPathSegments       CONSTANT)                               ///< Used by Plan view only for interactive editing
     Q_PROPERTY(QVariantList         waypointPath                    READ waypointPath                   NOTIFY waypointPathChanged)             ///< Used by Fly view only for static display
@@ -264,6 +270,7 @@ public:
     void setGlobalAltitudeMode(QGroundControlQmlGlobal::AltMode altMode);
 
 signals:
+    void velocidadeConfiguradaChanged();
     void visualItemsChanged                 (void);
     void waypointPathChanged                (void);
     void splitSegmentChanged                (void);
@@ -323,6 +330,7 @@ private slots:
     void _takeoffItemNotRequiredChanged         (void);
 
 private:
+    void                    updateInitialSpeedCommand();
     void                    _init                               (void);
     void                    _recalcSequence                     (void);
     void                    _recalcChildItems                   (void);
@@ -367,6 +375,7 @@ private:
     static bool             _convertToMissionItems              (QmlObjectListModel* visualMissionItems, QList<MissionItem*>& rgMissionItems, QObject* missionItemParent);
 
 private:
+    float                       _velocidadeConfigurada = 0.0; // Inicialize a variável com um valor padrão
     Vehicle*                    _controllerVehicle =            nullptr;
     Vehicle*                    _managerVehicle =               nullptr;
     MissionManager*             _missionManager =               nullptr;

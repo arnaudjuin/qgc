@@ -13,6 +13,9 @@ import QGroundControl.Palette
 import QGroundControl.FlightMap
 import QGroundControl.SettingsManager
 import QGroundControl.Controllers
+import QGroundControl.FactSystem 1.0
+import QGroundControl.FactControls 1.0
+import GlobalSignals 1.0
 
 TransectStyleComplexItemEditor {
     transectAreaDefinitionComplete: missionItem.surveyAreaPolygon.isValid
@@ -21,14 +24,20 @@ TransectStyleComplexItemEditor {
     transectValuesComponent:        _transectValuesComponent
     presetsTransectValuesComponent: _transectValuesComponent
 
+    FactPanelController {
+        id: controller
+    }
+
     property real _margin: ScreenTools.defaultFontPixelWidth / 2
+    property var    _masterControler:           masterController
+    property var    _missionController:         _masterControler.missionController
     property var _missionItem: missionItem
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
     property real _heading: _activeVehicle ? _activeVehicle.heading.rawValue : 0
     property int selectedButton: -1 // Propriedade para armazenar o botão selecionado
 
     property int faixaLargura: 0
-    property real velocidade: 0
+    property int velocidade: 0
 
     Component {
         id: _transectValuesComponent
@@ -211,6 +220,15 @@ TransectStyleComplexItemEditor {
                 }
             }
 
+            Connections {
+                target: _missionController
+                onVelocidadeConfiguradaChanged: {
+                    console.log("Sinal velocidadeConfigurada recebido.");
+                    _missionController.insertSpeedMissionItem(-1, true);
+                }
+            }
+
+
 
             QGCLabel { text: qsTr("Velocidade (Km/H)") }
             RowLayout {
@@ -227,7 +245,7 @@ TransectStyleComplexItemEditor {
                     text: "3.6"
                     Layout.fillWidth: true
                     background: Rectangle {
-                        color: parent.selected ? "lightgrey" : "#ff4800" // Muda a cor de fundo
+                        color: parent.selected ? "lightgrey" : "#ff4800"
                         radius: 5
                     }
                     visible: (gridSlider.value === 6 && vazaoSlider.value === 3) ||
@@ -235,11 +253,17 @@ TransectStyleComplexItemEditor {
                             (gridSlider.value === 10 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 12 && (vazaoSlider.value === 2 || vazaoSlider.value === 3))
                     onClicked: {
-                        selectedButton = 0;
                         var pwmValue = 1200;
-                        QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 1;
-                        velocidade = 1;
-                        factFlightSpeed.fact.value = velocidade;
+                        selectedButton = 0;
+                        velocidade = 1; // Define a velocidade para 1 m/s
+
+                        if (_missionController) {
+                            _missionController.setVelocidadeConfigurada(1);
+                            console.log("Velocidade configurada:", velocidade);
+                        } else {
+                            console.error("Erro: _missionController não está definido.");
+                        }
+
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 0
@@ -285,7 +309,15 @@ TransectStyleComplexItemEditor {
                         }
                         QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 2;
                         velocidade = 2;
-                        factFlightSpeed.fact.value = velocidade;
+
+                        // Define a velocidade no MissionController
+                        if (_missionController) {
+                            _missionController.setVelocidadeConfigurada(2);
+                            console.log("Velocidade configurada:", velocidade);
+                        } else {
+                            console.error("Erro: _missionController não está definido.");
+                        }
+
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 1
@@ -331,7 +363,14 @@ TransectStyleComplexItemEditor {
                         }
                         QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 3;
                         velocidade = 3;
-                        factFlightSpeed.fact.value = velocidade;
+                        // Define a velocidade no MissionController
+                        if (_missionController) {
+                            _missionController.setVelocidadeConfigurada(3);
+                            console.log("Velocidade configurada:", velocidade);
+                        } else {
+                            console.error("Erro: _missionController não está definido.");
+                        }
+
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 2

@@ -351,23 +351,89 @@ VisualMissionItem* MissionController::_insertSimpleMissionItemWorker(QGeoCoordin
     return newItem;
 }
 
+void MissionController::setVelocidadeConfigurada(int velocidade) {
+    if (_velocidadeConfigurada != velocidade) {
+        _velocidadeConfigurada = velocidade;
+        emit velocidadeConfiguradaChanged();
+
+        updateInitialSpeedCommand();
+    }
+}
+
+void MissionController::updateInitialSpeedCommand() {
+    qDebug() << "Atualizando o comando de velocidade inicial com _velocidadeConfigurada:" << _velocidadeConfigurada;
+    bool foundSpeedCommand = false;
+    for (int i = 0; i < _visualItems->count(); ++i) {
+        SimpleMissionItem* simpleItem = qobject_cast<SimpleMissionItem*>(_visualItems->get(i));
+        if (simpleItem && simpleItem->command() == MAV_CMD_DO_CHANGE_SPEED) {
+            // Atualize o param2 com o valor de _velocidadeConfigurada
+            simpleItem->missionItem().setParam2(static_cast<double>(_velocidadeConfigurada));
+            qDebug() << "Atualizado param2 do comando de velocidade inicial para:" << _velocidadeConfigurada;
+            foundSpeedCommand = true;
+            break; // Atualizamos o primeiro comando de velocidade, podemos sair do loop
+        }
+    }
+
+    if (!foundSpeedCommand) {
+        // Se não encontrou, insira um novo comando de velocidade no início da missão
+        qDebug() << "Comando de velocidade inicial não encontrado. Inserindo novo comando.";
+        // Insere após o item de configurações da missão (geralmente na posição 1)
+        insertSpeedMissionItem(1, false);
+
+        // Recalcula as sequências dos itens de missão
+        _recalcSequence();
+    }
+}
+
+
+void MissionController::insertSpeedMissionItem(int visualItemIndex, bool makeCurrentItem) {
+    _insertSimpleMissionItemWorkerSpeed(visualItemIndex, makeCurrentItem);
+}
+
+
 VisualMissionItem* MissionController::_insertSimpleMissionItemWorkerSpeed(int visualItemIndex, bool makeCurrentItem)
 {
+    qDebug() << "_insertSimpleMissionItemWorkerSpeed called on instance:" << this;
+    qDebug() << "Inserindo item simples com _velocidadeConfigurada:" << _velocidadeConfigurada;
+
     int sequenceNumber = _nextSequenceNumber();
-    SimpleMissionItem * newItem = new SimpleMissionItem(_masterController, _flyView, false /* forLoad */);
+
+    // Crie um MissionItem com os parâmetros configurados
+    MissionItem missionItem(
+        sequenceNumber,                     // sequence number
+        MAV_CMD_DO_CHANGE_SPEED,            // command
+        MAV_FRAME_MISSION,                  // frame
+        1,                                  // param1: tipo de velocidade (1 = velocidade terrestre)
+        static_cast<double>(_velocidadeConfigurada), // param2: velocidade
+        -1,                                 // param3: throttle (sem alteração)
+        0,                                  // param4: absoluto
+        0, 0, 0,                            // x, y, z
+        true,                               // autocontinue
+        false                               // isCurrentItem
+    );
+
+    // Crie um SimpleMissionItem a partir do MissionItem
+    SimpleMissionItem* newItem = new SimpleMissionItem(_masterController, _flyView, missionItem);
     newItem->setSequenceNumber(sequenceNumber);
-    newItem->setCommand(178);
+
+    // Inicialize o item visual
     _initVisualItem(newItem);
 
-   
+    // Logs para verificar os valores dos parâmetros
+    qDebug() << "Parâmetros do comando após configuração:";
+    qDebug() << "Param1:" << newItem->missionItem().param1();
+    qDebug() << "Param2:" << newItem->missionItem().param2();
+    qDebug() << "Param3:" << newItem->missionItem().param3();
+    qDebug() << "Param4:" << newItem->missionItem().param4();
+
+    // Adicione o item à lista de visualItems
     if (visualItemIndex == -1) {
         _visualItems->append(newItem);
     } else {
         _visualItems->insert(visualItemIndex, newItem);
     }
 
-    // We send the click coordinate through here to be able to set the planned home position from the user click location if needed
-
+    // Defina o item como o item atual, se necessário
     if (makeCurrentItem) {
         setCurrentPlanViewSeqNum(newItem->sequenceNumber(), true);
     }
@@ -376,6 +442,9 @@ VisualMissionItem* MissionController::_insertSimpleMissionItemWorkerSpeed(int vi
 
     return newItem;
 }
+
+
+
 VisualMissionItem* MissionController::insertSimpleMissionItem(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem)
 {
     return _insertSimpleMissionItemWorker(coordinate, MAV_CMD_NAV_WAYPOINT, visualItemIndex, makeCurrentItem);
