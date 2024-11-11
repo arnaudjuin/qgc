@@ -93,8 +93,6 @@
 		<file alias="QGroundControl/Controls/FirstRunPrompt.qml">../src/FirstRunPromptDialogs/FirstRunPrompt.qml</file>
 		<file alias="QGroundControl/Controls/FileButton.qml">../src/QmlControls/FileButton.qml</file>
 		<file alias="QGroundControl/Controls/FlightModeIndicator.qml">../src/ui/toolbar/FlightModeIndicator.qml</file>
-		<file alias="QGroundControl/Controls/Coverage.qml">../src/ui/toolbar/Coverage.qml</file>
-		<file alias="QGroundControl/Controls/EmergencyPopUp.qml">../src/ui/toolbar/EmergencyPopUp.qml</file>
 		<file alias="QGroundControl/Controls/FlightModeDropdown.qml">../src/QmlControls/FlightModeDropdown.qml</file>
 		<file alias="QGroundControl/Controls/FlightModeMenu.qml">../src/QmlControls/FlightModeMenu.qml</file>
 		<file alias="QGroundControl/Controls/FWLandingPatternMapVisual.qml">../src/PlanView/FWLandingPatternMapVisual.qml</file>
@@ -283,7 +281,6 @@
 		<file alias="SetupParameterEditor.qml">../src/VehicleSetup/SetupParameterEditor.qml</file>
 		<file alias="SetupView.qml">../src/VehicleSetup/SetupView.qml</file>
 		<file alias="CalibrationSettings.qml">../src/ui/preferences/CalibrationSettings.qml</file>
-		<file alias="ActuatorSettings.qml">../src/ui/preferences/ActuatorSettings.qml</file>
 		<file alias="SettingsPage.qml">../src/ui/preferences/SettingsPage.qml</file>
 		<file alias="SettingsPagesModel.qml">../src/ui/SettingsPagesModel.qml</file>
 		<file alias="SimpleItemEditor.qml">../src/PlanView/SimpleItemEditor.qml</file>
