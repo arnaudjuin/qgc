@@ -50,16 +50,6 @@ SettingsPage {
     }
 
     Timer {
-        id: commandTimer
-        interval: 3000  // 3000 ms = 3 segundo de atraso
-        repeat: false   // Não repetir o timer
-        onTriggered: {
-            _activeVehicle.sendCommand(1, 183, true, 9, 1900);
-            console.log("Segundo comando enviado");
-        }
-    }
-
-    Timer {
         id: armTimer
         interval: 2500
         repeat: false
@@ -82,16 +72,53 @@ SettingsPage {
         console.log("Veiculo Armado");
         
     }
-
+    
     function sendRelayReset() {
         // Enviar o primeiro comando imediatamente
-        _activeVehicle.sendCommand(1, 183, true, 9, 1100);
+        _activeVehicle.sendCommand(1, 183, true, 14, 1100);
 
         // Iniciar o Timer para enviar o segundo comando após o intervalo
         commandTimer.start();
 
+        commandTimer2.start();
+
+        commandTimer3.start();
+
         console.log("Relay resetado");
+    }
         
+
+
+
+    Timer {
+        id: commandTimer2
+        interval: 4000  // 3000 ms = 3 segundo de atraso
+        repeat: false   // Não repetir o timer
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 13, 1100);
+            console.log("Segundo comando enviado");
+        }
+    }
+
+    Timer {
+        id: commandTimer3
+        interval: 5000  // 3000 ms = 3 segundo de atraso
+        repeat: false   // Não repetir o timer
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 13, 1900);
+            console.log("Segundo comando enviado");
+        }
+    }
+    
+    
+    Timer {
+        id: commandTimer
+        interval: 3000  // 3000 ms = 3 segundo de atraso
+        repeat: false   // Não repetir o timer
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 14, 1900);
+            console.log("Segundo comando enviado");
+        }
     }
 
     Timer {
@@ -198,8 +225,8 @@ SettingsPage {
                                 text: "-"
                                 anchors.fill: parent
                                 enabled: false
-                                onPressed: holdTimerMinus1.start()
-                                onReleased: holdTimerMinus1.stop()
+                                //onPressed: holdTimerMinus1.start()
+                                //onReleased: holdTimerMinus1.stop()
                                 onClicked: {
                                     slider1.value = Math.max(slider1.value - 1, slider1.from);
                                     sendPWMCommand(3, slider1.value);
@@ -225,8 +252,8 @@ SettingsPage {
                                 text: "+"
                                 anchors.fill: parent
                                 enabled: false
-                                onPressed: holdTimerPlus1.start()
-                                onReleased: holdTimerPlus1.stop()
+                                //onPressed: holdTimerPlus1.start()
+                                //onReleased: holdTimerPlus1.stop()
                                 onClicked: {
                                     slider1.value = Math.min(slider1.value + 1, slider1.to);
                                     sendPWMCommand(3, slider1.value);
@@ -300,8 +327,8 @@ SettingsPage {
                                 text: "-"
                                 anchors.fill: parent
                                 enabled: false
-                                onPressed: holdTimerMinus3.start()
-                                onReleased: holdTimerMinus3.stop()
+                                //onPressed: holdTimerMinus3.start()
+                                //onReleased: holdTimerMinus3.stop()
                                 onClicked: {
                                     slider3.value = Math.max(slider3.value - 1, slider3.from);
                                     sendPWMCommand(5, slider3.value);
@@ -328,8 +355,8 @@ SettingsPage {
                                 text: "+"
                                 anchors.fill: parent
                                 enabled: false
-                                onPressed: holdTimerPlus3.start()
-                                onReleased: holdTimerPlus3.stop()
+                                //onPressed: holdTimerPlus3.start()
+                                //onReleased: holdTimerPlus3.stop()
                                 onClicked: {
                                     slider3.value = Math.min(slider3.value + 1, slider3.to);
                                     sendPWMCommand(5, slider3.value);
@@ -403,8 +430,8 @@ SettingsPage {
                                 text: "-"
                                 anchors.fill: parent
                                 enabled: false
-                                onPressed: holdTimerMinus2.start()
-                                onReleased: holdTimerMinus2.stop()
+                                //onPressed: holdTimerMinus2.start()
+                                //onReleased: holdTimerMinus2.stop()
                                 onClicked: {
                                     slider2.value = Math.max(slider2.value - 1, slider2.from);
                                     sendPWMCommand(4, slider2.value);
@@ -431,8 +458,8 @@ SettingsPage {
                                 text: "+"
                                 anchors.fill: parent
                                 enabled: false
-                                onPressed: holdTimerPlus2.start()
-                                onReleased: holdTimerPlus2.stop()
+                                //onPressed: holdTimerPlus2.start()
+                                //onReleased: holdTimerPlus2.stop()
                                 onClicked: {
                                     slider2.value = Math.min(slider2.value + 1, slider2.to);
                                     sendPWMCommand(4, slider2.value);
@@ -506,8 +533,8 @@ SettingsPage {
                                 text: "-"
                                 anchors.fill: parent
                                 enabled: false
-                                onPressed: holdTimerMinus4.start()
-                                onReleased: holdTimerMinus4.stop()
+                                //onPressed: holdTimerMinus4.start()
+                                //onReleased: holdTimerMinus4.stop()
                                 onClicked: {
                                     slider4.value = Math.max(slider4.value - 1, slider4.from);
                                     sendPWMCommand(6, slider4.value);
@@ -534,8 +561,8 @@ SettingsPage {
                                 text: "+"
                                 anchors.fill: parent
                                 enabled: false
-                                onPressed: holdTimerPlus4.start()
-                                onReleased: holdTimerPlus4.stop()
+                                //onPressed: holdTimerPlus4.start()
+                                //onReleased: holdTimerPlus4.stop()
                                 onClicked: {
                                     slider4.value = Math.min(slider4.value + 1, slider4.to);
                                     sendPWMCommand(6, slider4.value);
