@@ -247,13 +247,13 @@ void QGCCorePlugin::factValueGridCreateDefaultSettings(const QString& defaultSet
 
     InstrumentValueData* value = column->value<InstrumentValueData*>(rowIndex++);
     value->setFact("Vehicle", "FlightTime"); //
-    value->setIcon("timer.svg"); //
+    value->setIcon("relogio.png"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(false);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
     value->setFact("Vehicle", "GroundSpeed"); //
-    value->setIcon("dashboard.svg"); //
+    value->setIcon("veloci.png"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(false);
 
@@ -262,13 +262,13 @@ void QGCCorePlugin::factValueGridCreateDefaultSettings(const QString& defaultSet
 
     value = column->value<InstrumentValueData*>(rowIndex++);
     value->setFact("Vehicle", "Roll");//
-    value->setIcon("cheveron-outline-right.svg"); //
+    value->setIcon("roll.png"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(false);
 
     value = column->value<InstrumentValueData*>(rowIndex++);
     value->setFact("Vehicle", "distanceToHome"); //
-    value->setIcon("home.svg"); //
+    value->setIcon("homee.png"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(false);
 
@@ -293,7 +293,7 @@ void QGCCorePlugin::factValueGridCreateDefaultSettings(const QString& defaultSet
 
     value = column->value<InstrumentValueData*>(rowIndex++);
     value->setFact("Vehicle", "Pitch"); //
-    value->setIcon("cheveron-outline-up.svg"); //
+    value->setIcon("pitch.png"); //
     value->setText(value->fact()->shortDescription());
     value->setShowUnits(false);
 

@@ -286,6 +286,14 @@
 		<file alias="folder.svg">../resources/InstrumentValueIcons/folder.svg</file>
 		<file alias="folder-outline.svg">../resources/InstrumentValueIcons/folder-outline.svg</file>
 		<file alias="timer.svg">../resources/InstrumentValueIcons/timer.svg</file>
+
+		<file alias="homee.png">../resources/InstrumentValueIcons/homee.png</file>
+		<file alias="distControle.png">../resources/InstrumentValueIcons/distControle.png</file>
+		<file alias="pitch.png">../resources/InstrumentValueIcons/pitch.png</file>
+		<file alias="relogio.png">../resources/InstrumentValueIcons/relogio.png</file>
+		<file alias="roll.png">../resources/InstrumentValueIcons/roll.png</file>
+		<file alias="veloci.png">../resources/InstrumentValueIcons/veloci.png</file>
+
 		<file alias="photo.svg">../resources/InstrumentValueIcons/photo.svg</file>
 		<file alias="film.svg">../resources/InstrumentValueIcons/film.svg</file>
 		<file alias="browser-window.svg">../resources/InstrumentValueIcons/browser-window.svg</file>
