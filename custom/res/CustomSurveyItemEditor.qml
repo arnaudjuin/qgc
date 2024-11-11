@@ -110,8 +110,8 @@ TransectStyleComplexItemEditor {
 
             QGCSlider {
                 id:                     gridSlider
-                from:           6
-                to:           12
+                from:                   6
+                to:                     12
                 stepSize:               2
                 tickmarksEnabled:       false
                 Layout.fillWidth:       true
@@ -248,10 +248,10 @@ TransectStyleComplexItemEditor {
                         color: parent.selected ? "lightgrey" : "#ff4800"
                         radius: 5
                     }
-                    visible: (gridSlider.value === 6 && vazaoSlider.value === 3) ||
+                    /*visible: (gridSlider.value === 6 && vazaoSlider.value === 3) ||
                             (gridSlider.value === 8 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 10 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
-                            (gridSlider.value === 12 && (vazaoSlider.value === 2 || vazaoSlider.value === 3))
+                            (gridSlider.value === 12 && (vazaoSlider.value === 2 || vazaoSlider.value === 3))*/
                     onClicked: {
                         var pwmValue = 1200;
                         selectedButton = 0;
@@ -277,10 +277,10 @@ TransectStyleComplexItemEditor {
                         color: parent.selected ? "lightgrey" : "#ff4800"
                         radius: 5
                     }
-                    visible: (gridSlider.value === 6 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
+                    /*visible: (gridSlider.value === 6 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 8 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 10 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
-                            (gridSlider.value === 12 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3))
+                            (gridSlider.value === 12 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3))*/
                     onClicked: {
                         selectedButton = 1;
                         var pwmValue;
@@ -331,8 +331,8 @@ TransectStyleComplexItemEditor {
                         color: parent.selected ? "lightgrey" : "#ff4800"
                         radius: 5
                     }
-                    visible: (gridSlider.value === 6 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
-                            (gridSlider.value !== 6)
+                    /*visible: (gridSlider.value === 6 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
+                            (gridSlider.value !== 6)*/
                     onClicked: {
                         selectedButton = 2;
                         var pwmValue;
