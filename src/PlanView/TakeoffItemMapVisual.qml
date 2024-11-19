@@ -118,21 +118,22 @@ Item {
     }
 
     Component {
+        visible:false
         id: launchIndicatorComponent
 
         MapQuickItem {
+            visible:false
             coordinate:     _missionItem.launchCoordinate
             anchorPoint.x:  sourceItem.anchorPointX
             anchorPoint.y:  sourceItem.anchorPointY
-            visible:        !_missionItem.launchTakeoffAtSameLocation && _root.interactive
 
             sourceItem:
                 MissionItemIndexLabel {
+                    visible:false
                     checked:            _missionItem.isCurrentItem
                     label:              qsTr("Launch")
                     highlightSelected:  true
                     onClicked:          _root.clicked(_missionItem.sequenceNumber)
-                    visible:            _root.interactive
                 }
         }
     }
