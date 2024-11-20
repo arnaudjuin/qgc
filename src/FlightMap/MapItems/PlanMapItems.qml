@@ -40,6 +40,7 @@ Item {
         model: largeMapView ? _missionController.visualItems : 0
 
         delegate: MissionItemMapVisual {
+            opacity:     index === 0 ? 0 : 1 // Set opacity to 0 for the first item
             map:        _map
             vehicle:    _vehicle
             onClicked:  _guidedController.confirmAction(_guidedController.actionSetWaypoint, Math.max(object.sequenceNumber, 1))
@@ -64,7 +65,7 @@ Item {
             line.width: 3
             line.color: "#be781c"                           // Hack, can't get palette to work in here
             z:          QGroundControl.zOrderWaypointLines
-            path:       _missionController.waypointPath
+            path:       _missionController.waypointPath.length > 0 ? _missionController.waypointPath.slice(1) : [] // Skip the first waypoint
         }
     }
 }

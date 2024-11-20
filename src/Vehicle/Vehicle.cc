@@ -556,7 +556,7 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
     // If the link is already running at Mavlink V2 set our max proto version to it.
     unsigned mavlinkVersion = _mavlink->getCurrentVersion();
     if (_maxProtoVersion != mavlinkVersion && mavlinkVersion >= 200) {
-        _maxProtoVersion = mavlinkVersion;
+        _maxProtoVersion = mavlinkVersion;  
         qCDebug(VehicleLog) << "_mavlinkMessageReceived Link already running Mavlink v2. Setting _maxProtoVersion" << _maxProtoVersion;
     }
 
@@ -622,20 +622,25 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
     // Let the fact groups take a whack at the mavlink traffic
     for (FactGroup* factGroup : factGroups()) {
         factGroup->handleMessage(this, message);
-    }
+        }
 
-    switch (message.msgid) {
+        switch (message.msgid) {
+        qDebug()<<"Mavlink message received" ;
         case MAVLINK_MSG_ID_FENCE_STATUS: {
             mavlink_fence_status_t fenceStatus;
             mavlink_msg_fence_status_decode(&message, &fenceStatus);
-            // Check if a breach has occurred
+            qDebug() << "Mavlink fence status received:" << fenceStatus.breach_status;
+
             if (fenceStatus.breach_status == 1) {
-                // Trigger the custom geofence breach function
+                // Handle geofence breach
                 _geoFenceManager->handleGeofenceBreach();
+            } else if (fenceStatus.breach_status == 0) {
+                // Handle geofence reentry
+               _geoFenceManager->handleGeofenceReentry();
             }
             break;
         }
-    
+        
     case MAVLINK_MSG_ID_HOME_POSITION:
         _handleHomePosition(message);
         break;

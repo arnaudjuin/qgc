@@ -263,7 +263,7 @@ TransectStyleComplexItemEditor {
                         } else {
                             console.error("Erro: _missionController não está definido.");
                         }
-
+                        _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true) 
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 0
@@ -319,6 +319,8 @@ TransectStyleComplexItemEditor {
                         }
 
                         factVazaoOffline.fact.value = pwmValue;
+                        _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true) 
+
                     }
                     property bool selected: selectedButton === 1
                 }
@@ -370,7 +372,7 @@ TransectStyleComplexItemEditor {
                         } else {
                             console.error("Erro: _missionController não está definido.");
                         }
-
+                        _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true) 
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 2
