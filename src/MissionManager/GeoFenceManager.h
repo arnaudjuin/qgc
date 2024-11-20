@@ -36,8 +36,8 @@ public:
     ~GeoFenceManager();
     
     bool supported(void) const;
-    void handleGeofenceBreach();
-
+    void handleGeofenceBreach();  // Handles breach: turns off nozzles and pump
+    void handleGeofenceReentry();  // Handles reentry: turns on nozzles and pump
     /// Signals sendComplete when done
     void sendToVehicle(const QGeoCoordinate&    breachReturn,   ///< Breach return point
                        QmlObjectListModel&      polygons,       ///< List of QGCFencePolygons
@@ -78,7 +78,8 @@ private slots:
 
 private:
     void _sendError(ErrorCode_t errorCode, const QString& errorMsg);
-
+    bool _nozzlesTurnedOff = false;  // Tracks if nozzles are turned off
+    bool _breachOccurred = false;   // Tracks if a breach occurred
     QList<QGCFencePolygon>  _polygons;
     QList<QGCFenceCircle>   _circles;
     QGeoCoordinate          _breachReturnPoint;

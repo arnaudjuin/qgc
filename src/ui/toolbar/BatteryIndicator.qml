@@ -33,9 +33,9 @@ Item {
 
     property var    _activeVehicle:     QGroundControl.multiVehicleManager.activeVehicle
     property Fact   _indicatorDisplay:  QGroundControl.settingsManager.batteryIndicatorSettings.display
-    property bool   _showPercentage:    _indicatorDisplay.rawValue === 0
-    property bool   _showVoltage:       _indicatorDisplay.rawValue === 1
-    property bool   _showBoth:          _indicatorDisplay.rawValue === 2
+    property bool   _showPercentage:    true
+    property bool   _showVoltage:       false
+    property bool   _showBoth:          false
 
     Row {
         id:             batteryIndicatorRow
@@ -102,12 +102,8 @@ Item {
                     } else {
                         return battery.percentRemaining.valueString + battery.percentRemaining.units
                     }
-                } else if (!isNaN(battery.voltage.rawValue)) {
-                    return battery.voltage.valueString + battery.voltage.units
-                } else if (battery.chargeState.rawValue !== MAVLink.MAV_BATTERY_CHARGE_STATE_UNDEFINED) {
-                    return battery.chargeState.enumStringValue
-                }
-                return qsTr("n/a")
+                } 
+                    return qsTr("n/a")
             }
 
            function getBatteryVoltageText() {
@@ -139,18 +135,12 @@ Item {
                     Layout.alignment:       Qt.AlignHCenter
                     verticalAlignment:      Text.AlignVCenter
                     color:                  getBatteryColor()
-                    text:                   getBatteryPercentageText()
+                    text:                   getBatteryPercentageText() 
                     font.pointSize:         _showBoth ? ScreenTools.defaultFontPointSize : ScreenTools.mediumFontPointSize
-                    visible:                _showBoth || _showPercentage
+                    visible:                _showPercentage
                 }
 
-                QGCLabel {
-                    Layout.alignment:       Qt.AlignHCenter
-                    font.pointSize:         _showBoth ? ScreenTools.defaultFontPointSize : ScreenTools.mediumFontPointSize
-                    color:                  getBatteryColor()
-                    text:                   getBatteryVoltageText()
-                    visible:                _showBoth || _showVoltage
-                }
+
             }
         }
     }

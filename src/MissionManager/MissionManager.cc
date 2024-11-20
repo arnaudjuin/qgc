@@ -249,11 +249,33 @@ void MissionManager::_updateMissionIndex(int index)
 
     // Check if the mission is complete
     if (_currentMissionIndex == _missionItems.count() - 1) {
-        qCDebug(MissionManagerLog) << "Mission complete. Sending custom MAVLink command.";
-        
-        // Send custom MAVLink command upon mission completion
+        qCDebug(MissionManagerLog) << "Mission complete. Clearing mission.";
+
+        // Clear the mission automatically upon completion
+        removeAll(); // Clear all mission items locally
+
+        // Send MAVLink MISSION_CLEAR_ALL command to vehicle
         if (_vehicle) {
-            _vehicle->setServoPWM(8,1051);
+            mavlink_message_t messageOut;
+            mavlink_mission_clear_all_t missionClearAll = {};
+            missionClearAll.target_system = _vehicle->id();
+            missionClearAll.target_component = _vehicle->defaultComponentId();
+
+            SharedLinkInterfacePtr sharedLink = _vehicle->vehicleLinkManager()->primaryLink().lock();
+            if (sharedLink) {
+                mavlink_msg_mission_clear_all_encode_chan(
+                    qgcApp()->toolbox()->mavlinkProtocol()->getSystemId(),
+                    qgcApp()->toolbox()->mavlinkProtocol()->getComponentId(),
+                    sharedLink->mavlinkChannel(),
+                    &messageOut,
+                    &missionClearAll
+                );
+
+                _vehicle->sendMessageOnLinkThreadSafe(sharedLink.get(), messageOut);
+                qCDebug(MissionManagerLog) << "MAVLink MISSION_CLEAR_ALL sent to vehicle.";
+            } else {
+                qCWarning(MissionManagerLog) << "Failed to send MISSION_CLEAR_ALL: no valid link.";
+            }
         }
     }
 
@@ -263,6 +285,7 @@ void MissionManager::_updateMissionIndex(int index)
         _cachedLastCurrentIndex = _currentMissionIndex;
     }
 }
+
 
 void MissionManager::_handleHighLatency(const mavlink_message_t& message) 
 {
