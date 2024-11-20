@@ -730,85 +730,141 @@ ApplicationWindow {
   Rectangle {
     id: simplePopup
     visible: false
-    width: 300
-    height: 180
-    color: "#ff4800"
-    border.color: "black"
-    radius: 5
+    width: 400
+    height: 200
+    color: "#f4f4f4" // Fundo claro para aparência moderna
+    border.color: "#333333" // Borda cinza-escuro
+    border.width: 2
+    radius: 8
     anchors.centerIn: parent
+
+    // Botão de fechar no canto superior direito
+    QGCButton {
+        id: closeButton
+        text: "✖" // Ícone de fechar
+        width: 30
+        height: 30
+        font.pointSize: 14
+        font.bold: true
+        background: Rectangle {
+            color: "#d41111" // Vermelho claro para destaque
+            radius: 15
+        }
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 10
+        onClicked: {
+            simplePopup.visible = false;
+        }
+    }
 
     Column {
         anchors.fill: parent
-        anchors.margins: 10
-        spacing: 10
+        anchors.margins: 15
+        spacing: 20
         anchors.horizontalCenter: parent.horizontalCenter
 
+        // Título do Popup
         QGCLabel {
-            id: simplePopupLabel 
-            text: "Atuador Desarmado"  
+            id: simplePopupLabel
+            text: "Atuador Esquerdo Desarmado"
+            font.pointSize: 16
+            font.bold: true
+            color: "#333333" // Cinza-escuro para o título
             anchors.horizontalCenter: parent.horizontalCenter
-            font.pointSize: 15
-            color: "black"
         }
 
+        // Mensagem explicativa
         QGCLabel {
-            text: "Favor verificar o Rover e desobstruir a rota"
+            text: "Favor verificar o Rover e desobstruir a rota."
+            font.pointSize: 11
+            color: "#555555" // Cinza suave para o texto
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
-            font.pointSize: 9
-            color: "black"
         }
-    
 
-        // Primeira linha com os dois botões de Reset
-        Row {
+        // Círculo de progresso do carregamento
+        Canvas {
+            id: progressCircle
+            width: 80
+            height: 80
             anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 10
+            visible: false // Inicialmente invisível
 
-            QGCButton {
-                background: Rectangle {
-                    color: "white"
-                    radius: 5
-                }
-                text: "Resetar o Rover"
-                width: 130
-                height: 40
-                onClicked: {
-                    simplePopup.visible = false;
-                    sendRelayReset();
+            property real progress: 0 // Progresso de 0 a 1
+
+            onPaint: {
+                var ctx = getContext("2d");
+                ctx.clearRect(0, 0, width, height);
+
+                // Círculo de fundo (cinza)
+                ctx.beginPath();
+                ctx.arc(width / 2, height / 2, width / 2 - 5, 0, 2 * Math.PI, false);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "#e0e0e0";
+                ctx.stroke();
+
+                // Círculo de progresso de carregamento (verde)
+                ctx.beginPath();
+                ctx.arc(width / 2, height / 2, width / 2 - 5, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * progress, false);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "#4CAF50";
+                ctx.stroke();
+            }
+
+            Timer {
+                id: loadingTimer
+                interval: 75 // Atualiza a cada 100ms (10 fps)
+                running: false
+                repeat: true
+                onTriggered: {
+                    progressCircle.progress += 0.01; // Incrementa progresso
+                    progressCircle.requestPaint(); // Redesenha o círculo
+                    if (progressCircle.progress >= 1) {
+                        loadingTimer.stop(); // Para o timer após 10 segundos
+                        progressCircle.visible = false; // Esconde a roda de carregamento
+                        resetButton.visible = true; // Reexibe o botão
+                    }
                 }
             }
 
-            QGCButton {
-                background: Rectangle {
-                    color: "white"
-                    radius: 5
-                }
-                text: "Resetar e armar o Rover"
-                width: 130
-                height: 40
-                onClicked: {
-                    sendRelayResetArm();
-                    simplePopup.visible = false;
-                }
+            QGCLabel {
+                anchors.centerIn: parent
+                text: Math.round(progressCircle.progress * 100) + "%"
+                color: "#4CAF50"
+                font.bold: true
+                visible: true
             }
         }
 
-        // Botão de Fechar centralizado abaixo dos dois primeiros
+        // Linha com botão de ação
         QGCButton {
-            background: Rectangle {
-                color: "#DC143C"
-                radius: 5
-            }
-            text: "Fechar"
-            width: 120
-            height: 40
+            id: resetButton
+            text: "Resetar o Rover"
+            width: 140
+            height: 35
+            font.pointSize: 11
             anchors.horizontalCenter: parent.horizontalCenter
+            background: Rectangle {
+                color: "#ff4800" // Laranja para o botão
+                radius: 10
+            }
             onClicked: {
-                simplePopup.visible = false;
+                sendRelayReset();
+                resetButton.visible = false; // Esconde o botão
+                progressCircle.progress = 0; // Reseta o progresso
+                progressCircle.visible = true; // Mostra o círculo
+                loadingTimer.start(); // Inicia o timer de 10 segundos
             }
         }
     }
 }
+
+
+
+
+
 
 
 

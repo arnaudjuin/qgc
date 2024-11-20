@@ -50,48 +50,52 @@ SettingsPage {
     }
 
     Timer {
-        id: commandTimer
-        interval: 3000  // 3000 ms = 3 segundo de atraso
-        repeat: false   // Não repetir o timer
+        id: channel14DownTimer
+        interval: 3000 // Imediato
+        repeat: false
         onTriggered: {
-            _activeVehicle.sendCommand(1, 183, true, 9, 1900);
-            console.log("Segundo comando enviado");
+            _activeVehicle.sendCommand(1, 183, true, 14, 1100); // PWM para baixo
+            console.log("Canal 14: PWM para baixo enviado");
         }
     }
 
     Timer {
-        id: armTimer
-        interval: 2500
+        id: channel14UpTimer
+        interval: 5000  // 5 segundos depois
         repeat: false
         onTriggered: {
-            _activeVehicle.forceArm();
+            _activeVehicle.sendCommand(1, 183, true, 14, 1900); // PWM para cima
+            console.log("Canal 14: PWM para cima enviado");
         }
     }
-    
-    function sendRelayResetArm() {
-        // Enviar o primeiro comando imediatamente
-        _activeVehicle.sendCommand(1, 183, true, 9, 1100);
 
-        // Iniciar o Timer para enviar o segundo comando após o intervalo
-        commandTimer.start();
+    Timer {
+        id: channel13DownTimer
+        interval: 4000  // 1 segundo depois
+        repeat: false
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 13, 1100); // PWM para baixo
+            console.log("Canal 13: PWM para baixo enviado");
+        }
+    }
 
-        console.log("Relay resetado");
-
-        armTimer.start();
-
-        console.log("Veiculo Armado");
-        
+    Timer {
+        id: channel13UpTimer
+        interval: 6000  // 6 segundos depois
+        repeat: false
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 13, 1900); // PWM para cima
+            console.log("Canal 13: PWM para cima enviado");
+        }
     }
 
     function sendRelayReset() {
-        // Enviar o primeiro comando imediatamente
-        _activeVehicle.sendCommand(1, 183, true, 9, 1100);
-
-        // Iniciar o Timer para enviar o segundo comando após o intervalo
-        commandTimer.start();
-
-        console.log("Relay resetado");
-        
+        // Inicia todos os timers para os canais 13 e 14
+        channel14DownTimer.start();
+        channel14UpTimer.start();
+        channel13DownTimer.start();
+        channel13UpTimer.start();
+        console.log("Timers para reset do relay iniciados");
     }
 
     Timer {
