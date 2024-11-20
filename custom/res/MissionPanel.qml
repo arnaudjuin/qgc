@@ -328,72 +328,85 @@ Rectangle {
         }
 
         Row {
-            //Layout.topMargin: _margin - 2
             visible: bar.currentIndex == 0
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
-            //Layout.leftMargin: _margin + 12
-            // Trace button for Corridor
+        
             QGCButton {
-            
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
                 id: buttonCorridor
-                text: _editCorridor ? "Finalizar" : "Novo Corredor" // Mudança para iniciar novo corredor
+                text: _editCorridor ? "Finalizar" : "Novo Corredor"
                 checked: _editCorridor
                 enabled: !_addWaypointOnClick && !_editTracing
                 background: Rectangle {
-                    color: _editCorridor ? "#FF6666" : "#ffffff" // When clicked turns light grey
+                    color: _editCorridor ? "#FF6666" : "#ffffff"
                     radius: 5  
-                    border.color: "white"  
+                    border.color: "white"
                     anchors.fill: parent  
                 }
                 onClicked: {
-                    // Toggle the _editCorridor property
+                    console.log("Botão de corredor clicado");
                     _editCorridor = !_editCorridor;
-                    // Disable adding waypoints on click
                     _addWaypointOnClick = false;
-
-                    // Iniciar traçado do corredor imediatamente
+        
                     if (_editCorridor) {
-                        // Check if tracing has not been started yet
                         if (!isTracedCorridor) {
-                            isTracedCorridor = true;
-
-                            // Get the index of the last visual item
-                            var currentIndex = _missionController.visualItems.count;
-                            // Retrieve the last visual item as polygonItem
-                            polygonItem = _missionController.visualItems.get(currentIndex - 1);
-
-                            // Insert a complex mission item if it hasn't been traced yet
-                            insertComplexItemAfterCurrent(_missionController.corridorScanComplexItemName);
-
-                            // Get the current visual item as polygonItem
-                            polygonItem = _missionController.visualItems.get(currentIndex);
-
-                            // If the polygonItem exists, set its camera footprint side value
-                            if (polygonItem) 
-                            {
-                                polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
+                            console.log("Iniciando traçado do corredor...");
+        
+                            // Verifique se visualItems não está vazio
+                            if (_missionController.visualItems.count === 0) {
+                                console.error("Nenhum item visual encontrado no controlador de missão.");
+                                return;
                             }
-
-                            // Enable traceMode for the corridor
-                            polygonItem.corridorPolyline.traceMode = true;
-                            // Clear the current corridor vertices
-                            polygonItem.corridorPolyline.clear();
-                            // Save the current vertices
-                            _saveCurrentVertices(polygonItem);
-                            isTracedCorridor = true;
+        
+                            // Insere o item de corredor no controlador de missão
+                            insertComplexItemAfterCurrent(_missionController.corridorScanComplexItemName);
+                            
+                            // Atualiza o índice para o último item após a inserção
+                            var currentIndex = _missionController.visualItems.count - 1;
+                            polygonItem = _missionController.visualItems.get(currentIndex);
+        
+                            // Verifique se o polygonItem foi criado com sucesso
+                            if (!polygonItem) {
+                                console.error("Falha ao obter o item visual após a inserção.");
+                                return;
+                            }
+        
+                            console.log("Item visual encontrado para o traçado do corredor.");
+        
+                            // Configura o valor de footprint e inicia o traçado
+                            if (polygonItem.cameraCalc && polygonItem.cameraCalc.adjustedFootprintSide) {
+                                polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
+                            } else {
+                                console.error("cameraCalc ou adjustedFootprintSide não definido.");
+                            }
+        
+                            // Verifica e ativa o traceMode no corridorPolyline
+                            if (polygonItem.corridorPolyline) {
+                                polygonItem.corridorPolyline.traceMode = true;
+                                polygonItem.corridorPolyline.clear();
+                                _saveCurrentVertices(polygonItem);
+                                console.log("Traçado do corredor iniciado com sucesso.");
+                                isTracedCorridor = true;
+                            } else {
+                                console.error("corridorPolyline não definido ou não inicializado.");
+                            }
                         }
                     } else {
-                        // Finalizar traçado
+                        console.log("Finalizando traçado do corredor...");
                         if (polygonItem && polygonItem.corridorPolyline && polygonItem.corridorPolyline.traceMode) {
                             polygonItem.corridorPolyline.traceMode = false;
+                            console.log("Traçado do corredor finalizado.");
+                        } else {
+                            console.error("Erro ao finalizar o traçado do corredor. corridorPolyline não encontrado ou traceMode já desativado.");
                         }
                         isTracedCorridor = false;
                     }
                 }
             }
         }
+
+
 
         // Add waypoint button
         Row {

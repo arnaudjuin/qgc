@@ -83,14 +83,64 @@ ApplicationWindow {
     }
 
     Timer {
+        id: channel14DownTimer
+        interval: 3000 // Imediato
+        repeat: false
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 14, 1100); // PWM para baixo
+            console.log("Canal 14: PWM para baixo enviado");
+        }
+    }
+
+    Timer {
+        id: channel14UpTimer
+        interval: 5000  // 5 segundos depois
+        repeat: false
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 14, 1900); // PWM para cima
+            console.log("Canal 14: PWM para cima enviado");
+        }
+    }
+
+    Timer {
+        id: channel13DownTimer
+        interval: 4000  // 1 segundo depois
+        repeat: false
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 13, 1100); // PWM para baixo
+            console.log("Canal 13: PWM para baixo enviado");
+        }
+    }
+
+    Timer {
+        id: channel13UpTimer
+        interval: 6000  // 6 segundos depois
+        repeat: false
+        onTriggered: {
+            _activeVehicle.sendCommand(1, 183, true, 13, 1900); // PWM para cima
+            console.log("Canal 13: PWM para cima enviado");
+        }
+    }
+
+    function sendRelayReset() {
+        // Inicia todos os timers para os canais 13 e 14
+        channel14DownTimer.start();
+        channel14UpTimer.start();
+        channel13DownTimer.start();
+        channel13UpTimer.start();
+        console.log("Timers para reset do relay iniciados");
+    }
+
+    
+    /*Timer {
         id: commandTimer
-        interval: 3000  // 3000 ms = 3 segundo de atraso
+        interval: 5000  // 3000 ms = 3 segundo de atraso
         repeat: false   // Não repetir o timer
         onTriggered: {
             _activeVehicle.sendCommand(1, 183, true, 14, 1900);
             console.log("Segundo comando enviado");
         }
-    }
+    }*/
 
     Timer {
         id: armTimer
@@ -116,7 +166,7 @@ ApplicationWindow {
         
     }
 
-    function sendRelayReset() {
+    /*function sendRelayReset() {
         // Enviar o primeiro comando imediatamente
         _activeVehicle.sendCommand(1, 183, true, 14, 1100);
 
@@ -129,7 +179,7 @@ ApplicationWindow {
 
         console.log("Relay resetado");
         
-    }
+    }*/
 
     Timer {
         id: stopPumpTimer
@@ -140,7 +190,7 @@ ApplicationWindow {
         }
     }
 
-    Timer {
+    /*Timer {
         id: commandTimer2
         interval: 4000  // 3000 ms = 3 segundo de atraso
         repeat: false   // Não repetir o timer
@@ -158,7 +208,7 @@ ApplicationWindow {
             _activeVehicle.sendCommand(1, 183, true, 13, 1900);
             console.log("Segundo comando enviado");
         }
-    }
+    }*/
 
     function sendPauseCommandWithDelay() {
         // Enviar o primeiro comando imediatamente
@@ -649,11 +699,13 @@ ApplicationWindow {
 
         if (message === "Atuador desarmado - Lado Direito") {
             sendPauseCommandWithDelay();
+            _activeVehicle.flightMode = "Hold";
             simplePopup.visible = true;
             simplePopupLabel.text = "Atuador Direito Desarmado"; 
 
         } else if (message === "Atuador desarmado - Lado Esquerdo") {
             sendPauseCommandWithDelay();
+            _activeVehicle.flightMode = "Hold";
             simplePopup.visible = true;
             simplePopupLabel.text = "Atuador Esquerdo Desarmado"; 
 

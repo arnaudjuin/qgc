@@ -132,7 +132,7 @@ ListModel {
 
     ListElement {
         name: qsTr("Calibração")
-        url: "/qml/ActuatorSettings.qml"
+        url: "/qml/CalibrationSettings.qml"
         iconUrl: "/qmlimages/ConfigRover.svg"
         pageVisible: function() { return true }
     }

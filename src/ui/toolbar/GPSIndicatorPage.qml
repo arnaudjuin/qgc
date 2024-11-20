@@ -32,7 +32,7 @@ ToolIndicatorPage {
             spacing: ScreenTools.defaultFontPixelHeight / 2
 
             SettingsGroupLayout {
-                heading: qsTr("Vehicle GPS Status")
+                heading: qsTr("Status do GPS")
 
                 LabelledLabel {
                     label:      qsTr("Satellites")
@@ -44,7 +44,7 @@ ToolIndicatorPage {
                     labelText:  activeVehicle ? activeVehicle.gps.lock.enumStringValue : na
                 }
 
-                LabelledLabel {
+                /*LabelledLabel {
                     label:      qsTr("HDOP")
                     labelText:  activeVehicle ? activeVehicle.gps.hdop.valueString : valueNA
                 }
@@ -57,7 +57,7 @@ ToolIndicatorPage {
                 LabelledLabel {
                     label:      qsTr("Course Over Ground")
                     labelText:  activeVehicle ? activeVehicle.gps.courseOverGround.valueString : valueNA
-                }
+                }*/
             }
 
             SettingsGroupLayout {
