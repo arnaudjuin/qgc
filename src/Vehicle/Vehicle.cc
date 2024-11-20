@@ -625,7 +625,7 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
         }
 
         switch (message.msgid) {
-        qDebug()<<"Mavlink message received" ;
+        //qDebug()<<"Mavlink message received" ;
         case MAVLINK_MSG_ID_FENCE_STATUS: {
             mavlink_fence_status_t fenceStatus;
             mavlink_msg_fence_status_decode(&message, &fenceStatus);
