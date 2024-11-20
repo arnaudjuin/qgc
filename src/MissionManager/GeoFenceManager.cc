@@ -15,6 +15,8 @@
 #include "QGCMapPolygon.h"
 #include "QGCMapCircle.h"
 #include "SettingsManager.h"
+#include "QGCQGeoCoordinate.h"
+#include "TransectStyleComplexItem.h"
 
 QGC_LOGGING_CATEGORY(GeoFenceManagerLog, "GeoFenceManagerLog")
 
@@ -130,58 +132,56 @@ void GeoFenceManager::_sendComplete(bool error)
     emit sendComplete(error);
 }
 void GeoFenceManager::handleGeofenceReentry() {
-    AppSettings *appSettings = qgcApp()->toolbox()->settingsManager()->appSettings();
+//    AppSettings* appSettings = qgcApp()->toolbox()->settingsManager()->appSettings();
 
     if (!_nozzlesTurnedOff || !_breachOccurred) {
         qDebug() << "Nozzles are already on or no breach occurred. No action taken.";
         return;
     }
 
-    qDebug() << "Geofence reentry detected! Turning on spray nozzles and pump.";
+    qDebug() << "Geofence reentry detected! Checking waypoints and coordType.";
 
-    // Servo configurations
-    const int servo_nozzle = 8;  // Servo 8 controls the nozzle
-    const int servo_pump = 7;    // Servo 7 controls the pump
+    MultiVehicleManager* vehicleMgr = qgcApp()->toolbox()->multiVehicleManager();
+    Vehicle* vehicle = vehicleMgr->activeVehicle();
 
-    // Retrieve PWM values from settings
-    float nozzle_pwm_value_on = appSettings->offlineEditingAscentSpeed()->rawValue().toDouble();
-    float pump_pwm_value_on = appSettings->offlineEditingHoverSpeed()->rawValue().toDouble();
-
-    // Validate PWM values
-    if (nozzle_pwm_value_on < 1000 || nozzle_pwm_value_on > 2000 ||
-        pump_pwm_value_on < 1000 || pump_pwm_value_on > 2000) {
-        qWarning() << "Invalid PWM values. No action taken.";
+    if (!vehicle) {
+        qWarning() << "No active vehicle. Unable to verify position.";
         return;
     }
 
-    MultiVehicleManager *vehicleMgr = qgcApp()->toolbox()->multiVehicleManager();
-    Vehicle *vehicle = vehicleMgr->activeVehicle();
+    // Retrieve current position
+    QGeoCoordinate currentPosition = vehicle->coordinate();
 
-    if (vehicle) {
-        // Turn on spray nozzle
-        MAVLinkProtocol *mavlink = qgcApp()->toolbox()->mavlinkProtocol();
-        bool nozzleResult = vehicle->sendMavCommand(
-            1, MAV_CMD_DO_SET_SERVO, true, servo_nozzle, nozzle_pwm_value_on);
-        qDebug() << "Nozzle command sent:" << nozzleResult;
+/*     // Loop through flight path coordinates with coordType
+    for (const CoordInfo_t& coordInfo : _rgFlightPathCoordInfo) {
+        if (coordInfo.coordType == CoordTypeInterior || coordInfo.coordType == CoordTypeSurveyEntry) {
+                qDebug() << "Drone inside polygon at waypoint coordType:" << coordInfo.coordType;
+                    const int servo_nozzle = 8;
+                    const int servo_pump = 7;
 
-        // Turn on pump
-        bool pumpResult = vehicle->sendMavCommand(
-            1, MAV_CMD_DO_SET_SERVO, true, servo_pump, pump_pwm_value_on);
-        qDebug() << "Pump command sent:" << pumpResult;
+                    float nozzle_pwm_value_on = appSettings->offlineEditingAscentSpeed()->rawValue().toDouble();
+                    float pump_pwm_value_on = appSettings->offlineEditingHoverSpeed()->rawValue().toDouble();
 
-        if (nozzleResult && pumpResult) {
-            qDebug() << "Spray nozzles and pump turned on successfully.";
-        } else {
-            qWarning() << "Failed to send commands for spray nozzles or pump.";
+                    if (nozzle_pwm_value_on < 1000 || nozzle_pwm_value_on > 2000 ||
+                        pump_pwm_value_on < 1000 || pump_pwm_value_on > 2000) {
+                        qWarning() << "Invalid PWM values. No action taken.";
+                        return;
+                    }
+
+                    // Send MAVLink commands to activate nozzles and pump
+                     vehicle->sendMavCommand(
+                        1, MAV_CMD_DO_SET_SERVO, true, servo_nozzle, nozzle_pwm_value_on);
+                    vehicle->sendMavCommand(
+                        1, MAV_CMD_DO_SET_SERVO, true, servo_pump, pump_pwm_value_on);
+                return;
         }
-    } else {
-        qWarning() << "No active vehicle. Unable to send MAVLink command.";
-    }
+    } */
 
-    // Reset flags
-    _nozzlesTurnedOff = false;
-    _breachOccurred = false;
+    qWarning() << "Drone not inside a relevant polygon waypoint. No action taken.";
 }
+
+
+
 
 void GeoFenceManager::handleGeofenceBreach() {
     if (_nozzlesTurnedOff) {
@@ -201,8 +201,11 @@ void GeoFenceManager::handleGeofenceBreach() {
     if (vehicle) {
         vehicle->sendMavCommand(
             1, MAV_CMD_DO_SET_SERVO, true, servo_nozzle, pwm_value_off);
+
         vehicle->sendMavCommand(
             1, MAV_CMD_DO_SET_SERVO, true, servo_pump, pwm_value_off);
+
+        //Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered:vehicle->sendMavCommand(1, MAV_CMD_DO_SET_SERVO, true, servo_pump, pwm_value_off); }', parent, 'timer');    
         qDebug() << "Spray nozzles and pump turned off.";
     } else {
         qWarning() << "No active vehicle. Unable to send MAVLink command.";

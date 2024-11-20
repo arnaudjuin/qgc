@@ -85,7 +85,7 @@ Item {
                 if (factVazaoOffline.fact.value === 1500) vazao = 20;
                 if (factVazaoOffline.fact.value === 1300) vazao = 10;
                 // Replace the hardcoded width (6) with the actual width if needed
-                return ((_activeVehicle.flightDistance.value * QGroundControl.corePlugin.adjustedFootprintSide ? QGroundControl.corePlugin.adjustedFootprintSide : 6) / 10000) * vazao;
+                return ((_activeVehicle.flightDistance.value * QGroundControl.corePlugin.adjustedFootprintSide ? QGroundControl.corePlugin.adjustedFootprintSide : 0) / 10000) * vazao;
             }
 
             /*QGCLabel {

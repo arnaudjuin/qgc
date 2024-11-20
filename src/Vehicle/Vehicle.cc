@@ -622,25 +622,25 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
     // Let the fact groups take a whack at the mavlink traffic
     for (FactGroup* factGroup : factGroups()) {
         factGroup->handleMessage(this, message);
-    }
-
-    switch (message.msgid) {
-                    qDebug()<<"Mavlink message received" ;
-    case MAVLINK_MSG_ID_FENCE_STATUS: {
-        mavlink_fence_status_t fenceStatus;
-        mavlink_msg_fence_status_decode(&message, &fenceStatus);
-        qDebug() << "Mavlink fence status received:" << fenceStatus.breach_status;
-
-        if (fenceStatus.breach_status == 1) {
-            // Handle geofence breach
-            _geoFenceManager->handleGeofenceBreach();
-        } else if (fenceStatus.breach_status == 0) {
-            // Handle geofence reentry
-            _geoFenceManager->handleGeofenceReentry();
         }
-        break;
-    }
-    
+
+        switch (message.msgid) {
+        qDebug()<<"Mavlink message received" ;
+        case MAVLINK_MSG_ID_FENCE_STATUS: {
+            mavlink_fence_status_t fenceStatus;
+            mavlink_msg_fence_status_decode(&message, &fenceStatus);
+            qDebug() << "Mavlink fence status received:" << fenceStatus.breach_status;
+
+            if (fenceStatus.breach_status == 1) {
+                // Handle geofence breach
+                _geoFenceManager->handleGeofenceBreach();
+            } else if (fenceStatus.breach_status == 0) {
+                // Handle geofence reentry
+               _geoFenceManager->handleGeofenceReentry();
+            }
+            break;
+        }
+        
     case MAVLINK_MSG_ID_HOME_POSITION:
         _handleHomePosition(message);
         break;

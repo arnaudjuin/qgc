@@ -395,17 +395,16 @@ Item {
                                   }
                               }
                           
-    
-            // Add the mission item visuals to the map
             Repeater {
                 model: _missionController.visualItems
                 delegate: MissionItemMapVisual {
                     map:         editorMap
-                    opacity:     1
+                    opacity:     index === 0 ? 0 : 1 // Set opacity to 0 for the first item
                     interactive: true
                     vehicle:     _planMasterController.controllerVehicle
-
-                    onClicked:(sequenceNumber) => { _missionController.setCurrentPlanViewSeqNum(sequenceNumber, false) }
+                    onClicked: (sequenceNumber) => {
+                        _missionController.setCurrentPlanViewSeqNum(sequenceNumber, false);
+                    }
                 }
             }
 
@@ -432,6 +431,7 @@ Item {
                 model: _missionController.incompleteComplexItemLines
 
                 delegate: MapPolyline {
+                    visible: index > 0  // Only render items from the second segment onwards
                     path:       [ object.coordinate1, object.coordinate2 ]
                     line.width: 1
                     line.color: "red"

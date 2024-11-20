@@ -65,7 +65,7 @@ Item {
             line.width: 3
             line.color: "#be781c"                           // Hack, can't get palette to work in here
             z:          QGroundControl.zOrderWaypointLines
-            path:       _missionController.waypointPath.length > 1 ? _missionController.waypointPath.slice(0) : [] // Skip the first waypoint
+            path:       _missionController.waypointPath.length > 0 ? _missionController.waypointPath.slice(1) : [] // Skip the first waypoint
         }
     }
 }

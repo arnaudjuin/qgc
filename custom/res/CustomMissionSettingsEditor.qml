@@ -115,11 +115,11 @@ Rectangle {
             }
             
         }
-                  FactTextField {
-                    id: factSpeed
-                    fact:               _missionController.visualItems.get(_missionController.visualItems.count - 2).speedSection.flightSpeed
-                    Layout.fillWidth:   true
-                }
+            FactTextField {
+            id: factSpeed
+            fact:               _missionController.visualItems.get(_missionController.visualItems.count - 2).speedSection.flightSpeed
+            Layout.fillWidth:   true
+        }
         FactTextField {
             id: factFlightSpeed
             fact:               missionItem.speedSection.flightSpeed
