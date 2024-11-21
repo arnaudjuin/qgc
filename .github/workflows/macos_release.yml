@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feat/geofenceSpray
+      - feat/CIMac
       - 'Stable*'
     tags:
       - 'v*'
