@@ -132,9 +132,9 @@ void GeoFenceManager::_sendComplete(bool error)
     emit sendComplete(error);
 }
 void GeoFenceManager::handleGeofenceReentry() {
-//    AppSettings* appSettings = qgcApp()->toolbox()->settingsManager()->appSettings();
+    AppSettings* appSettings = qgcApp()->toolbox()->settingsManager()->appSettings();
 
-    if (!_nozzlesTurnedOff || !_breachOccurred) {
+    if (!_breachOccurred ) {
         qDebug() << "Nozzles are already on or no breach occurred. No action taken.";
         return;
     }
@@ -152,39 +152,27 @@ void GeoFenceManager::handleGeofenceReentry() {
     // Retrieve current position
     QGeoCoordinate currentPosition = vehicle->coordinate();
 
-/*     // Loop through flight path coordinates with coordType
-    for (const CoordInfo_t& coordInfo : _rgFlightPathCoordInfo) {
-        if (coordInfo.coordType == CoordTypeInterior || coordInfo.coordType == CoordTypeSurveyEntry) {
-                qDebug() << "Drone inside polygon at waypoint coordType:" << coordInfo.coordType;
-                    const int servo_nozzle = 8;
-                    const int servo_pump = 7;
+    const int servo_nozzle = 8;
+    const int servo_pump = 7;
 
-                    float nozzle_pwm_value_on = appSettings->offlineEditingAscentSpeed()->rawValue().toDouble();
-                    float pump_pwm_value_on = appSettings->offlineEditingHoverSpeed()->rawValue().toDouble();
+    float nozzle_pwm_value_on = appSettings->offlineEditingAscentSpeed()->rawValue().toDouble();
+    float pump_pwm_value_on = appSettings->offlineEditingHoverSpeed()->rawValue().toDouble();
 
-                    if (nozzle_pwm_value_on < 1000 || nozzle_pwm_value_on > 2000 ||
-                        pump_pwm_value_on < 1000 || pump_pwm_value_on > 2000) {
-                        qWarning() << "Invalid PWM values. No action taken.";
-                        return;
-                    }
-
-                    // Send MAVLink commands to activate nozzles and pump
-                     vehicle->sendMavCommand(
-                        1, MAV_CMD_DO_SET_SERVO, true, servo_nozzle, nozzle_pwm_value_on);
-                    vehicle->sendMavCommand(
-                        1, MAV_CMD_DO_SET_SERVO, true, servo_pump, pump_pwm_value_on);
-                return;
+    //Send MAVLink commands to activate nozzles and pump
+    vehicle->sendMavCommand(
+        1, MAV_CMD_DO_SET_SERVO, true, servo_nozzle, nozzle_pwm_value_on);
+                for (int i=0; i<100; i++) {
+            qDebug() << "Pause";
         }
-    } */
-
-    qWarning() << "Drone not inside a relevant polygon waypoint. No action taken.";
+    vehicle->sendMavCommand(
+        1, MAV_CMD_DO_SET_SERVO, true, servo_pump, pump_pwm_value_on);
+    _breachOccurred=  false;
 }
 
 
 
-
 void GeoFenceManager::handleGeofenceBreach() {
-    if (_nozzlesTurnedOff) {
+    if (_breachOccurred) {
         qDebug() << "Geofence breach already handled. No action taken.";
         return;
     }
@@ -201,18 +189,16 @@ void GeoFenceManager::handleGeofenceBreach() {
     if (vehicle) {
         vehicle->sendMavCommand(
             1, MAV_CMD_DO_SET_SERVO, true, servo_nozzle, pwm_value_off);
-
-        vehicle->sendMavCommand(
-            1, MAV_CMD_DO_SET_SERVO, true, servo_pump, pwm_value_off);
-
-        //Qt.createQmlObject('import QtQuick 2.0; Timer { interval: 2000; running: true; repeat: false; onTriggered:vehicle->sendMavCommand(1, MAV_CMD_DO_SET_SERVO, true, servo_pump, pwm_value_off); }', parent, 'timer');    
+        for (int i=0; i<100; i++) {
+            qDebug() << "Pause";
+        }
+            vehicle->sendMavCommand(
+            1,MAV_CMD_DO_SET_SERVO, true, servo_pump, pwm_value_off);
         qDebug() << "Spray nozzles and pump turned off.";
     } else {
         qWarning() << "No active vehicle. Unable to send MAVLink command.";
     }
-
-    _nozzlesTurnedOff = true;  // Ensure it only executes once
-    _breachOccurred = true;    // Mark that the vehicle breached the geofence
+    _breachOccurred = true;  // Ensure it only executes once
 }
 
 
@@ -284,4 +270,7 @@ void GeoFenceManager::_planManagerLoadComplete(bool removeAllRequested)
 bool GeoFenceManager::supported(void) const
 {
     return (_vehicle->capabilityBits() & MAV_PROTOCOL_CAPABILITY_MISSION_FENCE) && (_vehicle->maxProtoVersion() >= 200);
+}
+void GeoFenceManager::resetBreach(void) {
+    _breachOccurred = false;
 }
