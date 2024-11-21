@@ -626,20 +626,21 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
 
         switch (message.msgid) {
         qDebug()<<"Mavlink message received" ;
-        case MAVLINK_MSG_ID_FENCE_STATUS: {
-            mavlink_fence_status_t fenceStatus;
-            mavlink_msg_fence_status_decode(&message, &fenceStatus);
-            qDebug() << "Mavlink fence status received:" << fenceStatus.breach_status;
+    case MAVLINK_MSG_ID_FENCE_STATUS: {
+        mavlink_fence_status_t fenceStatus;
+        mavlink_msg_fence_status_decode(&message, &fenceStatus);
 
-            if (fenceStatus.breach_status == 1) {
-                // Handle geofence breach
-                _geoFenceManager->handleGeofenceBreach();
-            } else if (fenceStatus.breach_status == 0) {
-                // Handle geofence reentry
-               _geoFenceManager->handleGeofenceReentry();
-            }
-            break;
+        qDebug() << "MAVLINK_MSG_ID_FENCE_STATUS received. Breach status:" << fenceStatus.breach_status;
+
+        if (fenceStatus.breach_status == 1) {
+            // Handle geofence breaches for multiple geofences
+            _geoFenceManager->handleGeofenceBreach();
+        } else if (fenceStatus.breach_status == 0) {
+            // Handle geofence reentries for multiple geofences
+            _geoFenceManager->handleGeofenceReentry();
         }
+        break;
+    }
         
     case MAVLINK_MSG_ID_HOME_POSITION:
         _handleHomePosition(message);
@@ -4396,7 +4397,9 @@ void Vehicle::_handleFenceStatus(const mavlink_message_t& message)
 }
 void Vehicle::updateFlightDistance(double distance)
 {
+        qDebug() << "Incoming distance increment:" << distance;
     _flightDistanceFact.setRawValue(_flightDistanceFact.rawValue().toDouble() + distance);
+    
 }
 
 void Vehicle::sendParamMapRC(const QString& paramName, double scale, double centerValue, int tuningID, double minValue, double maxValue)

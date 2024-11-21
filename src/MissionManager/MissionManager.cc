@@ -246,10 +246,11 @@ void MissionManager::_updateMissionIndex(int index)
         _currentMissionIndex = index;
         emit currentIndexChanged(_currentMissionIndex);
     }
+       
 
     // Check if the mission is complete
     if (_currentMissionIndex == _missionItems.count() - 1) {
-        qCDebug(MissionManagerLog) << "Mission complete. Clearing mission.";
+        qDebug() << "Mission complete. Clearing mission.";
 
         // Clear the mission automatically upon completion
         removeAll(); // Clear all mission items locally
@@ -270,7 +271,6 @@ void MissionManager::_updateMissionIndex(int index)
                     &messageOut,
                     &missionClearAll
                 );
-
                 _vehicle->sendMessageOnLinkThreadSafe(sharedLink.get(), messageOut);
                 qCDebug(MissionManagerLog) << "MAVLink MISSION_CLEAR_ALL sent to vehicle.";
             } else {

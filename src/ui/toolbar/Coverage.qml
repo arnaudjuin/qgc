@@ -78,14 +78,16 @@ Item {
 
             function getActualCoverage() {
                 console.log("QGroundControl.corePlugin.adjustedFootprintSide " + QGroundControl.corePlugin.adjustedFootprintSide )
-                console.log("_activeVehicle.flightDistance.value: " + _activeVehicle.flightDistance.value);
+                console.log("_actalue: " + _activeVehicle.flightDistance.value);
                 console.log("fact: " + factVazaoOffline.fact.value);
                 let vazao = 0;
                 if (factVazaoOffline.fact.value === 1700) vazao = 30;
                 if (factVazaoOffline.fact.value === 1500) vazao = 20;
                 if (factVazaoOffline.fact.value === 1300) vazao = 10;
                 // Replace the hardcoded width (6) with the actual width if needed
-                return ((_activeVehicle.flightDistance.value * QGroundControl.corePlugin.adjustedFootprintSide ? QGroundControl.corePlugin.adjustedFootprintSide : 0) / 10000) * vazao;
+                return (((_activeVehicle.flightDistance.value) / 10000) * vazao) > 0.01 
+                ? ((_activeVehicle.flightDistance.value) * vazao) 
+                : 0;            
             }
 
             /*QGCLabel {
