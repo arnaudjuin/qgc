@@ -592,22 +592,26 @@ Rectangle {
                     });
                 }
             }
-            KMLOrSHPFileDialog {
+           KMLOrSHPFileDialog {
                 id: kmlOrSHPLoadDialog
                 title: qsTr("Select Polygon File")
 
                 onAcceptedForLoad: file => {
-                    var currentIndex = _missionController.visualItems.count;
-                    polygonItem = _missionController.visualItems.get(currentIndex - 1);
-                    if (!isTraced)
-                        insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
-                    polygonItem = _missionController.visualItems.get(currentIndex);
-                    polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
-                    mapFitFunctions.fitMapViewportToMissionItems();
+                    insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
+                    var currentIndex = _missionController.visualItems.count - 1; 
+                    var polygonItem = _missionController.visualItems.get(currentIndex);
+
+                    if (polygonItem && polygonItem.surveyAreaPolygon) {
+                        polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
+                        mapFitFunctions.fitMapViewportToMissionItems();
+                    } else {
+                        console.log("Erro: Polígono não está definido corretamente.");
+                    }
+
                     close();
                 }
             }
-
+            
         }
 
         // Row for additional mission buttons

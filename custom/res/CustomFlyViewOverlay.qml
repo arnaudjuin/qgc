@@ -337,7 +337,7 @@ Rectangle {
     Rectangle {
         id: panel
         width: 180
-        height: 190
+        height: 200
         anchors.top: header.bottom
         anchors.left: header.left
         color: "#60ffffff" // Cinza meio transparente
