@@ -77,9 +77,6 @@ Item {
             }
 
             function getActualCoverage() {
-                console.log("QGroundControl.corePlugin.adjustedFootprintSide " + QGroundControl.corePlugin.adjustedFootprintSide )
-                console.log("_actalue: " + _activeVehicle.flightDistance.value);
-                console.log("fact: " + factVazaoOffline.fact.value);
                 let vazao = 0;
                 if (factVazaoOffline.fact.value === 1700) vazao = 30;
                 if (factVazaoOffline.fact.value === 1500) vazao = 20;

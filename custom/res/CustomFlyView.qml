@@ -102,6 +102,7 @@ Item {
         }
 
         FlyViewCustomLayer {
+            missionController:    _missionController
             id:                 customOverlay
             anchors.fill:       widgetLayer
             z:                  _fullItemZorder + 2
