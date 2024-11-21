@@ -82,7 +82,7 @@ Item {
 
     Timer {
         id: nozzleTimer
-        interval: 1000
+        interval: 2000
         repeat: false
         onTriggered: {
             _activeVehicle.sendCommand(1, 183, true, 8, QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value);
@@ -90,10 +90,12 @@ Item {
     }
 
     function sendPlayCommandWithDelay() {
-        console.log( QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value)
-        console.log( QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value)
+        console.log("AscentSpeed" + QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value);
+        console.log("Hover Speed" +  QGroundControl.settingsManager.appSettings.offlineEditingHoverSpeed.value);
+        console.log("Descent Speed", QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value);
         // Enviar o primeiro comando imediatamente
         _activeVehicle.sendCommand(1, 183, true, 7, QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value);
+        _missionController.setVelocidadeConfigurada(QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value);
 
         // Criar e iniciar o timer para o segundo comando
         nozzleTimer.start();

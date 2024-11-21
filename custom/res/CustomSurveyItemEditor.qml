@@ -265,6 +265,7 @@ TransectStyleComplexItemEditor {
                         }
                         _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true) 
                         factVazaoOffline.fact.value = pwmValue;
+                        QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value = velocidade;
                     }
                     property bool selected: selectedButton === 0
                 }
@@ -319,7 +320,8 @@ TransectStyleComplexItemEditor {
                         }
 
                         factVazaoOffline.fact.value = pwmValue;
-                        _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true) 
+                        _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true);
+                        QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value = velocidade;
 
                     }
                     property bool selected: selectedButton === 1
@@ -372,7 +374,8 @@ TransectStyleComplexItemEditor {
                         } else {
                             console.error("Erro: _missionController não está definido.");
                         }
-                        _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true) 
+                        _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true) ;
+                        QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value = velocidade;
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 2
