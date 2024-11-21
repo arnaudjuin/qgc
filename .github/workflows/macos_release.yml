@@ -60,6 +60,7 @@ jobs:
           brew install cmake ninja ccache geographiclib SDL2 exiv2 expat zlib shapelib pkgconfig create-dmg
         # pkgconf
  
+    
       - name: Install Gstreamer
         run: |
           wget --quiet https://gstreamer.freedesktop.org/data/pkg/osx/${{ env.GST_VERSION }}/gstreamer-1.0-devel-${{ env.GST_VERSION }}-universal.pkg
