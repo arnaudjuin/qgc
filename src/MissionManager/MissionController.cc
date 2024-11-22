@@ -525,12 +525,11 @@ VisualMissionItem* MissionController::insertCancelROIMissionItem(int visualItemI
     return simpleItem;
 }
 
-VisualMissionItem* MissionController::insertComplexMissionItem(QString itemName, QGeoCoordinate mapCenterCoordinate, int visualItemIndex, bool makeCurrentItem)
+VisualMissionItem* MissionController::insertComplexMissionItem(QString itemName, QGeoCoordinate mapCenterCoordinate, int visualItemIndex, bool makeCurrentItem, QString kmlFile)
 {
     ComplexMissionItem* newItem = nullptr;
-    qDebug()<<"here";
     if (itemName == SurveyComplexItem::name) {
-        newItem = new SurveyComplexItem(_masterController, _flyView, QString() /* kmlFile */);
+        newItem = new SurveyComplexItem(_masterController, _flyView,QString()  /* kmlFile */);
         newItem->setCoordinate(mapCenterCoordinate);
 
         double                              prevAltitude;
@@ -546,9 +545,9 @@ VisualMissionItem* MissionController::insertComplexMissionItem(QString itemName,
     } else if (itemName == VTOLLandingComplexItem::name) {
         newItem = new VTOLLandingComplexItem(_masterController, _flyView);
     } else if (itemName == StructureScanComplexItem::name) {
-        newItem = new StructureScanComplexItem(_masterController, _flyView, QString() /* kmlFile */);
+        newItem = new StructureScanComplexItem(_masterController, _flyView, kmlFile/* kmlFile */);
     } else if (itemName == CorridorScanComplexItem::name) {
-        newItem = new CorridorScanComplexItem(_masterController, _flyView, QString() /* kmlFile */);
+        newItem = new CorridorScanComplexItem(_masterController, _flyView, kmlFile /* kmlFile */);
     } else {
         qWarning() << "Internal error: Unknown complex item:" << itemName;
         return nullptr;
@@ -558,6 +557,7 @@ VisualMissionItem* MissionController::insertComplexMissionItem(QString itemName,
 
     return newItem;
 }
+
 
 VisualMissionItem* MissionController::insertComplexMissionItemFromKMLOrSHP(QString itemName, QString file, int visualItemIndex, bool makeCurrentItem)
 {
