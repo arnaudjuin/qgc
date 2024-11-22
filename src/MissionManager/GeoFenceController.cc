@@ -232,6 +232,8 @@ void GeoFenceController::save(QJsonObject& json)
 
 void GeoFenceController::removeAll(void)
 {    
+    _geoFenceManager->resetBreach();
+
     setBreachReturnPoint(QGeoCoordinate());
     _polygons.clearAndDeleteContents();
     _circles.clearAndDeleteContents();

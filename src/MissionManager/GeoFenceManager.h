@@ -45,6 +45,7 @@ public:
 
     /// Signals removeAllComplete when done
     void removeAll(void);
+    void resetBreach(void);
 
     /// Returns true if polygon fence is currently enabled on this vehicle
     ///     Signal: polygonEnabledChanged

@@ -58,7 +58,7 @@ TransectStyleComplexItemEditor {
             }
 
             QGCLabel {
-                text:       qsTr("Largura de faixa")
+                text:       qsTr("Width")
                 visible:    !forPresets
             }
 
@@ -69,8 +69,8 @@ TransectStyleComplexItemEditor {
 
             QGCSlider {
                 id:                     gridSlider
-                from:           6
-                to:           12
+                from:                      6
+                to:                     100
                 stepSize:               2
                 tickmarksEnabled:       false
                 Layout.fillWidth:       true
@@ -80,6 +80,32 @@ TransectStyleComplexItemEditor {
                 Component.onCompleted:  value = _missionItem.corridorWidth.value
                 live: true
             }
+
+            QGCLabel {
+                text:       qsTr("Spacing")
+                visible:    !forPresets
+            }
+
+             FactTextField {
+                fact:              _missionItem.cameraCalc.adjustedFootprintSide
+                Layout.fillWidth:   true
+            }
+
+            QGCSlider {
+                id:                     gridSliderSpacing
+                from:                   6
+                to:                     12
+                stepSize:               2
+                tickmarksEnabled:       false
+                Layout.fillWidth:       true
+                Layout.columnSpan:      2
+                Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
+                onValueChanged:         {_missionItem.cameraCalc.adjustedFootprintSide.value = value;  /*QGroundControl.corePlugin.showAdjustedFootprint = _missionItem.cameraCalc.adjustedFootprintSide.value*/}
+                Component.onCompleted:  value = _missionItem.cameraCalc.adjustedFootprintSide.value
+                live: true
+            }
+
+           
 
             QGCLabel { text: qsTr("Tamanho da gota") }
             FactTextField {

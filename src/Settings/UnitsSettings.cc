@@ -132,7 +132,7 @@ DECLARE_SETTINGSFACT_NO_FUNC(UnitsSettings, speedUnits)
         metaData->setShortDescription(UnitsSettings::tr("Speed"));
         metaData->setEnumInfo(enumStrings, enumValues);
 
-        SpeedUnits defaultSpeedUnit = SpeedUnitsMetersPerSecond;
+        SpeedUnits defaultSpeedUnit = SpeedUnitsKilometersPerHour;
         switch(QLocale::system().measurementSystem()) {
             case QLocale::MetricSystem: {
                 defaultSpeedUnit = SpeedUnitsKilometersPerHour;
