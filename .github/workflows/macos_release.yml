@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feat/CIMac
+      - feat/CIMac2
       - '*'
     tags:
       - 'v*'
