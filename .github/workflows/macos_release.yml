@@ -57,10 +57,13 @@ jobs:
       - name: Install Dependencies
         run: |
           brew update
-          brew install cmake ninja ccache geographiclib  exiv2 expat zlib shapelib pkgconfig create-dmg
-        # pkgconf
- 
-    
+          brew install cmake ninja ccache geographiclib SDL2 exiv2 expat zlib shapelib pkgconfig create-dmg
+          # Ensure pkgconf is correctly linked
+          brew unlink pkg-config@0.29.2 || true
+          brew link --overwrite pkgconf
+          # Verify correct pkg-config version
+          pkg-config --version
+
       - name: Install Gstreamer
         run: |
           wget --quiet https://gstreamer.freedesktop.org/data/pkg/osx/${{ env.GST_VERSION }}/gstreamer-1.0-devel-${{ env.GST_VERSION }}-universal.pkg
