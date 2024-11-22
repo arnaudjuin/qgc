@@ -24,6 +24,8 @@ TransectStyleComplexItemEditor {
 
     property real   _margin:        ScreenTools.defaultFontPixelWidth / 2
     property var    _missionItem:   missionItem
+    property var    _masterControler:           masterController
+    property var    _missionController:         _masterControler.missionController
 
     Component {
         id: _transectValuesComponent
@@ -177,9 +179,17 @@ TransectStyleComplexItemEditor {
                 }
             }
 
+            Connections {
+                target: _missionController
+                onVelocidadeConfiguradaChanged: {
+                    console.log("Sinal velocidadeConfigurada recebido.");
+                    _missionController.insertSpeedMissionItem(-1, true);
+                }
+            }
 
 
-                            QGCLabel { text: qsTr("Velocidade (Km/H)") }
+
+            QGCLabel { text: qsTr("Velocidade (Km/H)") }
             RowLayout {
                 Layout.fillWidth: true
 
@@ -191,15 +201,25 @@ TransectStyleComplexItemEditor {
                         color: parent.selected ? "lightgrey" : "#ff4800" // Muda a cor de fundo
                         radius: 5
                     }
-                    visible: (gridSlider.value === 6 && vazaoSlider.value === 3) ||
+                    /*visible: (gridSlider.value === 6 && vazaoSlider.value === 3) ||
                             (gridSlider.value === 8 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 10 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
-                            (gridSlider.value === 12 && (vazaoSlider.value === 2 || vazaoSlider.value === 3))
+                            (gridSlider.value === 12 && (vazaoSlider.value === 2 || vazaoSlider.value === 3))*/
                     onClicked: {
                         selectedButton = 0;
                         var pwmValue = 1200;
-                        QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 3.6;
-                        velocidade = 3.6;
+                        velocidade = 1;
+
+
+                        if (_missionController) {
+                            _missionController.setVelocidadeConfigurada(1);
+                            console.log("Velocidade configurada:", velocidade);
+                        } else {
+                            console.error("Erro: _missionController não está definido.");
+                        }
+                        _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true);
+                        QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value = velocidade;
+
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 0
@@ -213,10 +233,10 @@ TransectStyleComplexItemEditor {
                         color: parent.selected ? "lightgrey" : "#ff4800"
                         radius: 5
                     }
-                    visible: (gridSlider.value === 6 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
+                    /*visible: (gridSlider.value === 6 && (vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 8 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
                             (gridSlider.value === 10 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
-                            (gridSlider.value === 12 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3))
+                            (gridSlider.value === 12 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3))*/
                     onClicked: {
                         selectedButton = 1;
                         var pwmValue;
@@ -243,8 +263,19 @@ TransectStyleComplexItemEditor {
                         } else if (gridSlider.value === 12 && vazaoSlider.value === 3) {
                             pwmValue = 1400;
                         }
-                        QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 7.2;
-                        velocidade = 7.2;
+                        velocidade = 2;
+
+                        if (_missionController) {
+                            _missionController.setVelocidadeConfigurada(2);
+                            console.log("Velocidade configurada:", velocidade);
+                        } else {
+                            console.error("Erro: _missionController não está definido.");
+                        }
+                        _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true);
+                        QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value = velocidade;
+
+
+
                         factVazaoOffline.fact.value = pwmValue;
                     }
                     property bool selected: selectedButton === 1
@@ -258,8 +289,8 @@ TransectStyleComplexItemEditor {
                         color: parent.selected ? "lightgrey" : "#ff4800"
                         radius: 5
                     }
-                    visible: (gridSlider.value === 6 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
-                            (gridSlider.value !== 6)
+                    /*visible: (gridSlider.value === 6 && (vazaoSlider.value === 1 || vazaoSlider.value === 2 || vazaoSlider.value === 3)) ||
+                            (gridSlider.value !== 6)*/
                     onClicked: {
                         selectedButton = 2;
                         var pwmValue;
@@ -288,9 +319,19 @@ TransectStyleComplexItemEditor {
                         } else if (gridSlider.value === 12 && vazaoSlider.value === 3) {
                             pwmValue = 1600;
                         }
-                        QGroundControl.settingsManager.appSettings.offlineEditingCruiseSpeed.value = 10.8;
-                        velocidade = 10.8;
+                        velocidade = 3;
                         factVazaoOffline.fact.value = pwmValue;
+
+                        if (_missionController) {
+                            _missionController.setVelocidadeConfigurada(3);
+                            console.log("Velocidade configurada:", velocidade);
+                        } else {
+                            console.error("Erro: _missionController não está definido.");
+                        }
+                        _missionController.setCurrentPlanViewSeqNum(_missionItem.sequenceNumber, true);
+                        QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value = velocidade;
+
+
                     }
                     property bool selected: selectedButton === 2
                 }

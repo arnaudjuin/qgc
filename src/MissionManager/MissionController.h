@@ -131,6 +131,7 @@ public:
     /// @return Newly created item
     Q_INVOKABLE VisualMissionItem* insertSimpleMissionItem(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem = false);
     Q_INVOKABLE VisualMissionItem* insertSimpleMissionItemSpeed(int visualItemIndex, bool makeCurrentItem = false);
+    Q_INVOKABLE VisualMissionItem* insertSimpleMissionItemSpray(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem = false);
 
     /// Add a new takeoff item to the list
     ///     @param coordinate: Coordinate for item

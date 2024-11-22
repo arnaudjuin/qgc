@@ -455,6 +455,28 @@ VisualMissionItem* MissionController::insertSimpleMissionItemSpeed(int visualIte
     return _insertSimpleMissionItemWorkerSpeed(visualItemIndex, makeCurrentItem);
 }
 
+VisualMissionItem* MissionController::insertSimpleMissionItemSpray(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem)
+{
+    qDebug() << "insertSimpleMissionItemSpray called";
+    qDebug() << "Coordinate:" << coordinate;
+    qDebug() << "Visual Item Index:" << visualItemIndex;
+    qDebug() << "Make Current Item:" << makeCurrentItem;
+
+    if (!coordinate.isValid()) {
+        qWarning() << "Invalid coordinate provided. Cannot insert mission item.";
+        return nullptr;
+    }
+
+    auto item = _insertSimpleMissionItemWorker(coordinate, MAV_CMD_USER_1, visualItemIndex, makeCurrentItem);
+    if (item) {
+        qDebug() << "Mission item inserted successfully";
+    } else {
+        qWarning() << "Failed to insert mission item.";
+    }
+    return item;
+}
+
+
 VisualMissionItem* MissionController::insertTakeoffItem(QGeoCoordinate /*coordinate*/, int visualItemIndex, bool makeCurrentItem)
 {
     int sequenceNumber = _nextSequenceNumber();
