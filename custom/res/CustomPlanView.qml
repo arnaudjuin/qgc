@@ -285,11 +285,11 @@ Item {
         _missionController.insertCancelROIMissionItem(nextIndex, true /* makeCurrentItem */)
     }
 
-    function insertComplexItemAfterCurrent(complexItemName) {
+    function insertComplexItemAfterCurrent(complexItemName,kml=null) {
         var nextIndex = _missionController.currentPlanViewVIIndex + 1
         _missionController.insertSimpleMissionItemSpeed(nextIndex, false /* makeCurrentItem */)
         nextIndex = nextIndex + 1 
-        _missionController.insertComplexMissionItem(complexItemName, mapCenter(), nextIndex, true /* makeCurrentItem */)
+        _missionController.insertComplexMissionItem(complexItemName, mapCenter(), nextIndex, true,kml /* makeCurrentItem */)
     }
 
     function insertTakeItemAfterCurrent() {
