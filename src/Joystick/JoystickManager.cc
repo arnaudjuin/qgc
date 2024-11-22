@@ -13,10 +13,7 @@
 
 #include <QQmlEngine>
 
-#ifndef __mobile__
-    #include "JoystickSDL.h"
-    #define __sdljoystick__
-#endif
+
 
 #ifdef __android__
     #include "JoystickAndroid.h"
