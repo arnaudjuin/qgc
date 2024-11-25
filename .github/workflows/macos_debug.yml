@@ -1,86 +1,110 @@
-name: MacOS Release
+name: MacOS
 
 on:
   push:
     branches:
-      - 'master'
-      - 'Stable*'
+      - master
       - 'feat/CIMac2'
     tags:
       - 'v*'
     paths-ignore:
+      - 'android/**'
+      - 'deploy/**'
       - 'docs/**'
   pull_request:
-    branches:
-    - '*'
     paths-ignore:
+      - 'android/**'
+      - 'deploy/**'
       - 'docs/**'
-      - '.github/workflows/**'
-
-defaults:
-  run:
-    shell: bash
-
-env:
-  SOURCE_DIR:   ${{ github.workspace }}
-  QT_VERSION:   6.6.1
-  ARTIFACT:     QGroundControl.dmg
-  BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
+      - '.github/workflows/docs_deploy.yml'
+      - '.github/workflows/android.yml'
+      - '.github/workflows/linux.yml'
+      - '.github/workflows/windows.yml'
 
 jobs:
   build:
-    runs-on:  macos-latest
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        BuildType: [Debug, Release]
+
+    env:
+      ARTIFACT: QGroundControl.dmg
+      QT_VERSION: 6.6.3
+      GST_VERSION: 1.22.12
+
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-tags: true
+          fetch-depth: 0
 
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          create-symlink: true
-          key: ${{ runner.os }}-Release
-          restore-keys: ${{ runner.os }}-Release
-          max-size: "2G"
-          append-timestamp: false
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+      - uses: seanmiddleditch/gha-setup-ninja@v5
 
-      - name: Get all tags for correct version determination
-        working-directory:  ${{ github.workspace }}
+      - name: Install Dependencies
         run: |
-          git fetch --all --tags -f --depth 1
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v3
-        with:
-          version:      ${{ env.QT_VERSION }}
-          aqtversion:   ==3.1.*
-          host:         mac
-          target:       desktop
-          dir:          ${{ runner.temp }}
-          modules:      qtcharts qtlocation qtpositioning qtspeech qt5compat qtmultimedia qtserialport qtimageformats qtshadertools qtconnectivity qtquick3d
-          setup-python: false
-          cache: true
+          brew update
+          brew install cmake ninja ccache geographiclib SDL2
 
       - name: Install Gstreamer
         run: |
-            wget https://gstreamer.freedesktop.org/data/pkg/osx/1.18.6/gstreamer-1.0-devel-1.18.6-x86_64.pkg
-            wget https://gstreamer.freedesktop.org/data/pkg/osx/1.18.6/gstreamer-1.0-1.18.6-x86_64.pkg
-            for package in *.pkg ;
-              do sudo installer -verbose -pkg "$package" -target /
-            done
-      - name: Create build directory
-        run:  mkdir ${{ runner.temp }}/shadow_build_dir
+          wget --quiet https://gstreamer.freedesktop.org/data/pkg/osx/${{ env.GST_VERSION }}/gstreamer-1.0-devel-${{ env.GST_VERSION }}-universal.pkg
+          wget --quiet https://gstreamer.freedesktop.org/data/pkg/osx/${{ env.GST_VERSION }}/gstreamer-1.0-${{ env.GST_VERSION }}-universal.pkg
+          for package in *.pkg ;
+            do sudo installer -verbose -pkg "$package" -target /
+          done
+          echo "PKG_CONFIG_PATH=/Library/Frameworks/GStreamer.framework/lib/pkgconfig:${{ env.PKG_CONFIG_PATH }}" >> "$GITHUB_ENV"
 
-      - name: Set up Python environment
-        run: |
-          python3 -m venv venv
-          source venv/bin/activate
-          python3 -m pip install setuptools wheel py7zr==0.20.*
+      - name: Set Up Cache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ runner.os }}-${{ matrix.BuildType }}
+          restore-keys: ${{ runner.os }}-${{ matrix.BuildType }}
+          max-size: 1G
+          append-timestamp: false
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          aqtversion: ==3.1.*
+          host: mac
+          target: desktop
+          dir: ${{ runner.temp }}
+          modules: qtcharts qtlocation qtpositioning qtspeech qt5compat qtmultimedia qtserialport qtimageformats qtshadertools qtconnectivity qtquick3d qtsensors
+          cache: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+
+      - run: mkdir ${{ runner.temp }}/shadow_build_dir
+
+      - name: Configure
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: ${{ env.QT_ROOT_DIR }}/bin/qt-cmake -S ${{ github.workspace }} -B . -G Ninja
+              -DCMAKE_BUILD_TYPE=${{ matrix.BuildType }}
+              -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+              -DQGC_BUILD_TESTING=${{ matrix.BuildType == 'Debug' && 'ON' || 'OFF' }}
+              -DQGC_STABLE_BUILD=${{ github.ref_type == 'tag' || contains(github.ref, 'Stable') && 'ON' || 'OFF' }}
+
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
-        run:  |
-              export JOBS=$((`sysctl -n hw.ncpu`+1))
-              qmake -r ${SOURCE_DIR}/qgroundcontrol.pro CONFIG+=installer CONFIG+=${BUILD_TYPE}
-              make -j$JOBS
+        run: cmake --build . --target all --config ${{ matrix.BuildType }}
+
+      - name: Create DMG
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: cmake --install . --config ${{ matrix.BuildType }}
+
+      - name: Upload Build File
+        if: matrix.BuildType == 'Release'
+        uses: ./.github/actions/upload
+        with:
+          artifact_name: ${{ env.ARTIFACT }}
+          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          source: 'package'
