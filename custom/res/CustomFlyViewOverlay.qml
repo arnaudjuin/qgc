@@ -47,6 +47,10 @@ Item {
     readonly property real   indicatorValueWidth:   ScreenTools.defaultFontPixelWidth * 7
 
     property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
+    property var    _masterControler:       masterController
+    property var    coordinate:             _activeVehicle.coordinate
+    property var    missionController
+    property int    _currentMissionIndex:   missionController.currentMissionIndex
     property real   _indicatorDiameter:     ScreenTools.defaultFontPixelWidth * 18
     property real   _indicatorsHeight:      ScreenTools.defaultFontPixelHeight
     property var    _sepColor:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(0,0,0,0.5) : Qt.rgba(1,1,1,0.5)
@@ -80,6 +84,20 @@ Item {
         
     }
 
+    function insertSimpleItemAfterCurrentSpray(coordinate) {
+        console.log("insertSimpleItemAfterCurrentSpray called");
+        console.log("Coordinate:", coordinate);
+        var nextIndex = missionController.currentMissionIndex + 1;
+        if (missionController) {
+            console.log("MissionController is available");
+            missionController.insertSimpleMissionItemSpray(coordinate, nextIndex, true /* makeCurrentItem */);
+        } else {
+            console.error("MissionController is not available");
+        }
+    }
+
+
+
     Timer {
         id: nozzleTimer
         interval: 2000
@@ -95,7 +113,7 @@ Item {
         console.log("Descent Speed", QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value);
         // Enviar o primeiro comando imediatamente
         _activeVehicle.sendCommand(1, 183, true, 7, QGroundControl.settingsManager.appSettings.offlineEditingAscentSpeed.value);
-        _missionController.setVelocidadeConfigurada(QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value);
+        missionController.setVelocidadeConfigurada(QGroundControl.settingsManager.appSettings.offlineEditingDescentSpeed.value);
 
         // Criar e iniciar o timer para o segundo comando
         nozzleTimer.start();
@@ -266,6 +284,7 @@ Rectangle {
             onClicked: {
                 guidedActionsController.confirmAction(guidedActionsController.actionEmergencyStop);
                 sendPauseCommandWithDelay();
+                insertSimpleItemAfterCurrentSpray(coordinate);
             }
             background: Rectangle {
                 width: 30

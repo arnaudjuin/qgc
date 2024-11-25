@@ -108,6 +108,7 @@ Item {
             parentToolInsets:   widgetLayer.totalToolInsets
             mapControl:         _mapControl
             visible:            !QGroundControl.videoManager.fullScreen
+            missionController:  _missionController
         }
 
         // Development tool for visualizing the insets for a paticular layer, show if needed

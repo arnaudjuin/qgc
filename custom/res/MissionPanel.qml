@@ -28,8 +28,7 @@ Rectangle {
     }
 
     // Set height based on whether the screen is mobile
-   height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 45 : ScreenTools.defaultFontPixelHeight * 50
-
+    height: ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 45 : ScreenTools.defaultFontPixelHeight * 50
     // Background color and corner radius
     color: qgcPal.windowShadeDark
     radius: _radius
@@ -103,7 +102,40 @@ Rectangle {
             close()
         }
     }
+    KMLOrSHPFileDialog {
+        id: kmlOrSHPLoadDialogCorridor
+        title: qsTr("Select Corridor File")
 
+        onAcceptedForLoad: file => {
+            // Insert the complex mission item (Corridor Scan) if it doesn't already exist
+            insertComplexItemAfterCurrent(_missionController.corridorScanComplexItemName, file);
+
+            // Get the index of the newly inserted visual item
+            var currentIndex = _missionController.visualItems.count;
+
+            // Retrieve the newly created Corridor Scan complex item
+            var corridorItem = _missionController.visualItems.get(currentIndex - 1);
+
+            // Ensure it's a valid Corridor Scan item
+            if (corridorItem && corridorItem.corridorPolyline) {
+                // Disable trace mode
+                corridorItem.corridorPolyline.traceMode = false;
+
+                // Load the KML file into the corridorPolyline
+                corridorItem.corridorPolyline.loadKMLFile(file);
+
+                corridorItem.corridorPolyline.traceMode = false;
+
+
+                console.log("KML file successfully loaded into corridorPolyline");
+            } else {
+                console.error("Failed to retrieve Corridor Scan item or corridorPolyline is undefined");
+            }
+
+            // Close the dialog
+            close();
+        }
+    }
     // Componente de QGCMapPolylines para carregar a função de KML
     QGCMapPolylineVisuals {
         id: mapPolylinesComponent
@@ -286,11 +318,7 @@ Rectangle {
 
                             // If the polygonItem exists, set its camera footprint side value
                             if (polygonItem)
-                            
                                 polygonItem.cameraCalc.adjustedFootprintSide.value = 6;
-
-
-
                             // Check if the polygon's traceMode is enabled
                             if (polygonItem.surveyAreaPolygon.traceMode) {
                                 // If the polygon has fewer than 3 vertices, restore previous vertices
@@ -328,27 +356,32 @@ Rectangle {
         }
 
         Row {
+            //Layout.topMargin: _margin - 2
             visible: bar.currentIndex == 0
             spacing: ScreenTools.defaultFontPixelWidth * 1.5
-        
+            //Layout.leftMargin: _margin + 12
+            // Trace button for Corridor
             QGCButton {
+            
                 width: _rightPanelWidth - (_margin + 3)
                 height: ScreenTools.isMobile ? 28 : 28
                 id: buttonCorridor
-                text: _editCorridor ? "Finalizar" : "Novo Corredor"
+                text: _editCorridor ? "Finalizar" : "Novo Corredor" // Mudança para iniciar novo corredor
                 checked: _editCorridor
                 enabled: !_addWaypointOnClick && !_editTracing
                 background: Rectangle {
-                    color: _editCorridor ? "#FF6666" : "#ffffff"
+                    color: _editCorridor ? "#FF6666" : "#ffffff" // When clicked turns light grey
                     radius: 5  
-                    border.color: "white"
+                    border.color: "white"  
                     anchors.fill: parent  
                 }
                 onClicked: {
-                    console.log("Botão de corredor clicado");
+                    // Toggle the _editCorridor property
                     _editCorridor = !_editCorridor;
+                    // Disable adding waypoints on click
                     _addWaypointOnClick = false;
-        
+
+                    // Iniciar traçado do corredor imediatamente
                     if (_editCorridor) {
                         if (!isTracedCorridor) {
                             console.log("Iniciando traçado do corredor...");
@@ -363,7 +396,7 @@ Rectangle {
                             insertComplexItemAfterCurrent(_missionController.corridorScanComplexItemName);
                             
                             // Atualiza o índice para o último item após a inserção
-                            var currentIndex = _missionController.visualItems.count - 1;
+                            var currentIndex = _missionController.visualItems.count -1;
                             polygonItem = _missionController.visualItems.get(currentIndex);
         
                             // Verifique se o polygonItem foi criado com sucesso
@@ -405,9 +438,6 @@ Rectangle {
                 }
             }
         }
-
-
-
         // Add waypoint button
         Row {
             visible: bar.currentIndex == 0
@@ -597,17 +627,13 @@ Rectangle {
                 title: qsTr("Select Polygon File")
 
                 onAcceptedForLoad: file => {
+ ;
+                    if (!isTraced)
                     insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0]);
-                    var currentIndex = _missionController.visualItems.count - 1; 
-                    var polygonItem = _missionController.visualItems.get(currentIndex);
-
-                    if (polygonItem && polygonItem.surveyAreaPolygon) {
-                        polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
-                        mapFitFunctions.fitMapViewportToMissionItems();
-                    } else {
-                        console.log("Erro: Polígono não está definido corretamente.");
-                    }
-
+                    var currentIndex = _missionController.visualItems.count;
+                    polygonItem = _missionController.visualItems.get(currentIndex -1 )
+                    polygonItem.surveyAreaPolygon.loadKMLOrSHPFile(file);
+                    mapFitFunctions.fitMapViewportToMissionItems();
                     close();
                 }
             }
@@ -846,7 +872,7 @@ Rectangle {
                     width: 60 // Ajuste conforme necessário
                     onClicked: {
                         loadChoice = false;
-                        kmlLoadDialog.openForLoad();
+                        kmlOrSHPLoadDialogCorridor.openForLoad();
                         bar.currentIndex = 0
                     }
                 }

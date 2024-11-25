@@ -54,6 +54,8 @@ CorridorScanComplexItem::CorridorScanComplexItem(PlanMasterController* masterCon
     connect(&_corridorPolyline,     &QGCMapPolyline::isValidChanged,                this, &CorridorScanComplexItem::_updateWizardMode);
     connect(&_corridorPolyline,     &QGCMapPolyline::traceModeChanged,              this, &CorridorScanComplexItem::_updateWizardMode);
 
+    qDebug()<<"KML";
+    qDebug()<<kmlFile;
     if (!kmlFile.isEmpty()) {
         _corridorPolyline.loadKMLFile(kmlFile);
         _corridorPolyline.setDirty(false);
