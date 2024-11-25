@@ -42,7 +42,7 @@ else()
 endif()
 
 include(CMakeDependentOption)
-cmake_dependent_option(QGC_BUILD_TESTING "Enable testing" ON "CMAKE_BUILD_TYPE STREQUAL Debug" OFF)
+cmake_dependent_option(QGC_BUILD_TESTING "Enable testing" OFF "CMAKE_BUILD_TYPE STREQUAL Debug" OFF)
 
 #######################################################
 #               Qt6 Configuration
