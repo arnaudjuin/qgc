@@ -15,6 +15,7 @@ on:
       - 'fix/StableV1'
       - 'teste/GeoFence'
       - 'guilherme/changes'
+      - 'Lucas/Changes'
     tags:
       - 'v*'
     paths-ignore:
