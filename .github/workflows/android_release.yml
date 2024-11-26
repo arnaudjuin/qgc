@@ -1,146 +1,124 @@
-# The 32 and 64 bit version of these actions should be kept in sync
-name: Android 32/64-bit Release
+name: MacOS Release
 
 on:
   push:
     branches:
-      - 'master'
-      - 'Stable*'
-      - 'android*'
-      - 'androidFieldTest'
-      - 'ui/Features'
-      - 'ux/PlanView'
-      - 'ui/MissionItemFix'
-      - 'MergeLG'
-      - 'fix/StableV1'
-      - 'teste/GeoFence'
-      - 'guilherme/changes'
+      - master
+      - 'feat/CIMac2'
     tags:
       - 'v*'
     paths-ignore:
+      - 'android/**'
+      - 'deploy/**'
       - 'docs/**'
   pull_request:
-    branches:
-    - '*'
     paths-ignore:
+      - 'android/**'
+      - 'deploy/**'
       - 'docs/**'
-      - '.github/workflows/**'
-  workflow_dispatch:
-
-defaults:
-  run:
-    shell: bash
-
-env:
-  SOURCE_DIR:   ${{ github.workspace }}
-  QT_VERSION:   6.6.1
-  BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
+      - '.github/workflows/docs_deploy.yml'
+      - '.github/workflows/android.yml'
+      - '.github/workflows/linux.yml'
+      - '.github/workflows/windows.yml'
 
 jobs:
   build:
-    runs-on:  ubuntu-latest
+    runs-on: macos-latest
 
     strategy:
       matrix:
-       include:
-         - architecture: 64bits
-           eabi: arm64-v8a
-           arch: android_arm64_v8a
-           ARTIFACT: CustomQGroundControl64.apk
+        BuildType: [Debug, Release]
+
+    env:
+      ARTIFACT: QGroundControl.dmg
+      QT_VERSION: 6.6.3
+      GST_VERSION: 1.22.12
+
+    defaults:
+      run:
+        shell: bash
 
     steps:
+      # Checkout the repository
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-tags: true
+          fetch-depth: 0
 
-      - run: sudo apt update
+      # Install Ninja build system
+      - uses: seanmiddleditch/gha-setup-ninja@v5
 
-      - name: ccache
+      # Install Dependencies
+      - name: Install Dependencies
+        run: |
+          brew update
+          brew install cmake ninja ccache geographiclib SDL2 || echo "Dependency already installed."
+
+      # Install GStreamer
+      - name: Install Gstreamer
+        run: |
+          wget --quiet https://gstreamer.freedesktop.org/data/pkg/osx/${{ env.GST_VERSION }}/gstreamer-1.0-devel-${{ env.GST_VERSION }}-universal.pkg
+          wget --quiet https://gstreamer.freedesktop.org/data/pkg/osx/${{ env.GST_VERSION }}/gstreamer-1.0-${{ env.GST_VERSION }}-universal.pkg
+          for package in *.pkg ;
+            do sudo installer -verbose -pkg "$package" -target /
+          done
+          echo "PKG_CONFIG_PATH=/Library/Frameworks/GStreamer.framework/lib/pkgconfig:${{ env.PKG_CONFIG_PATH }}" >> "$GITHUB_ENV"
+
+      # Set up ccache for faster builds
+      - name: Set Up Cache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          create-symlink: true
-          key: ${{ runner.os }}-${{ matrix.arch }}-Release
-          restore-keys: ${{ runner.os }}-${{ matrix.arch }}-Release
-          max-size: "2G"
+          key: ${{ runner.os }}-${{ matrix.BuildType }}
+          restore-keys: ${{ runner.os }}-${{ matrix.BuildType }}
+          max-size: 1G
           append-timestamp: false
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
-      - name: Get all tags for correct version determination
-        working-directory:  ${{ github.workspace }}
-        run: |
-          git fetch --all --tags -f --depth 1
-
-      - name: Install Qt6 for Android
-        uses: jurplel/install-qt-action@v3
+      # Install Qt Framework
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
         with:
-          version:      ${{ env.QT_VERSION }}
-          aqtversion:   == 3.1.18
-          host:         linux
-          target:       android
-          arch:         ${{ matrix.arch }}
-          extra:        --autodesktop
-          dir:          ${{ runner.temp }}
-          modules:      qtcharts qtlocation qtpositioning qtspeech qt5compat qtmultimedia qtserialport qtimageformats qtshadertools qtconnectivity qtquick3d
-          setup-python: true
-          cache: true
+          version: ${{ env.QT_VERSION }}
+          aqtversion: ==3.1.*
+          host: mac
+          target: desktop
+          dir: ${{ runner.temp }}
+          modules: qtcharts qtlocation qtpositioning qtspeech qt5compat qtmultimedia qtserialport qtimageformats qtshadertools qtconnectivity qtquick3d qtsensors
+          cache: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
-      - name: Remove Android SDKs to force usage of android-33 only
-        run: |
-            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext5"
-            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext4"
-            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34"
-            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34-ext8"
+      # Create a shadow build directory
+      - run: mkdir ${{ runner.temp }}/shadow_build_dir
 
-      - name: Create build directory
-        run:  mkdir ${{ runner.temp }}/shadow_build_dir
+      # Configure the build
+      - name: Configure
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: ${{ env.QT_ROOT_DIR }}/bin/qt-cmake -S ${{ github.workspace }} -B . -G Ninja
+              -DCMAKE_BUILD_TYPE=${{ matrix.BuildType }}
+              -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+              -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}/shadow_build_dir/package
+              -DQGC_BUILD_TESTING=OFF
+              -DQGC_STABLE_BUILD=${{ github.ref_type == 'tag' || contains(github.ref, 'Stable') && 'ON' || 'OFF' }}
 
-      - name:               Install gstreamer
-        working-directory:  ${{ github.workspace }}
-        run: |
-            wget --quiet https://gstreamer.freedesktop.org/data/pkg/android/1.18.6/gstreamer-1.0-android-universal-1.18.6.tar.xz
-            mkdir gstreamer-1.0-android-universal-1.18.6
-            tar xf gstreamer-1.0-android-universal-1.18.6.tar.xz -C gstreamer-1.0-android-universal-1.18.6
-
-      - name: Update android manifest
-        if: github.ref_name != 'Stable'
-        run: |
-            ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${{ github.ref_name }}
-
+      # Build the project
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
-        env:
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-        run:  |
-            ls /home/runner/work/_temp/Qt/${{ env.QT_VERSION }}
-            qmake -r ${SOURCE_DIR}/qgroundcontrol.pro -spec android-clang CONFIG+=${BUILD_TYPE} CONFIG+=installer ANDROID_ABIS="${{ matrix.eabi }}"
-            make -j2
+        run: cmake --build . --target all --config ${{ matrix.BuildType }}
 
+      # Create the DMG package
+      - name: Create DMG
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: cmake --install . --config ${{ matrix.BuildType }}
 
+      # Debug output to confirm the generated file's location
+      - name: Debug Output Path
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: ls -R
 
-      - name: Save artifact
-        uses: actions/upload-artifact@master
+      # Upload the generated DMG artifact
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.ARTIFACT }}
-          path: ${{ runner.temp }}/shadow_build_dir/package/${{ matrix.ARTIFACT }}
-
-      # - name: Upload build to S3 Bucket
-      #   if:                 github.event_name == 'push'
-      #   working-directory:  ${{ runner.temp }}/shadow_build_dir/package
-      #   run: |
-      #         aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #         aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #         aws s3 cp ${{ matrix.ARTIFACT }} s3://qgroundcontrol/builds/${{ github.ref_name }}/${{ matrix.ARTIFACT }} --region us-west-2 --acl public-read
-
-      # - name: Upload tagged stable build to S3 latest Bucket
-      #   if:                 github.event_name == 'push' && github.ref_type == 'tag'
-      #   working-directory:  ${{ runner.temp }}/shadow_build_dir/package
-      #   run: |
-      #         aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #         aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #         aws s3 cp ${{ matrix.ARTIFACT }} s3://qgroundcontrol/latest/${{ matrix.ARTIFACT }} --region us-west-2 --acl public-read
-      - name: Download artifact
-        uses: actions/download-artifact@master
-        with:
-          name: CustomQGroundControl64.apk  # Replace with the actual artifact name
-
+          name: ${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
