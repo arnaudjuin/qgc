@@ -105,7 +105,6 @@
 #include "RemoteIDManager.h"
 #include "CustomAction.h"
 #include "CustomActionManager.h"
-#include "GlobalSignals/GlobalSignals.h"
 
 #include "CityMapGeometry.h"
 #include "Viewer3DQmlBackend.h"
@@ -175,10 +174,6 @@ static QObject* mavlinkSingletonFactory(QQmlEngine*, QJSEngine*)
     return new QGCMAVLink();
 }
 
-static QObject* globalSignalsSingletonFactory(QQmlEngine*, QJSEngine*)
-{
-    return new GlobalSignals();
-}
 
 static QObject* qgroundcontrolQmlGlobalSingletonFactory(QQmlEngine*, QJSEngine*)
 {
@@ -569,7 +564,6 @@ void QGCApplication::_initCommon()
     qmlRegisterSingletonType<ScreenToolsController>     ("QGroundControl.ScreenToolsController",    1, 0, "ScreenToolsController",  screenToolsControllerSingletonFactory);
     qmlRegisterSingletonType<ShapeFileHelper>           ("QGroundControl.ShapeFileHelper",          1, 0, "ShapeFileHelper",        shapeFileHelperSingletonFactory);
     qmlRegisterSingletonType<ShapeFileHelper>           ("MAVLink",                                 1, 0, "MAVLink",                mavlinkSingletonFactory);
-    qmlRegisterSingletonType<GlobalSignals>("GlobalSignals", 1, 0, "GlobalSignals", globalSignalsSingletonFactory);
 
 
     // Although this should really be in _initForNormalAppBoot putting it here allowws us to create unit tests which pop up more easily
