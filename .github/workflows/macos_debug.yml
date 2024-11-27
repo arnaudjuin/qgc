@@ -39,6 +39,7 @@ jobs:
         shell: bash
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
@@ -46,22 +47,24 @@ jobs:
           fetch-tags: true
           fetch-depth: 0
 
+      # Step 2: Install Ninja
       - uses: seanmiddleditch/gha-setup-ninja@v5
 
+      # Step 3: Install Dependencies
       - name: Install Dependencies
         run: |
           brew update
           brew install cmake ninja ccache geographiclib SDL2
 
-      - name: Install Gstreamer
+      # Step 4: Install GStreamer
+      - name: Install GStreamer
         run: |
           wget --quiet https://gstreamer.freedesktop.org/data/pkg/osx/${{ env.GST_VERSION }}/gstreamer-1.0-devel-${{ env.GST_VERSION }}-universal.pkg
           wget --quiet https://gstreamer.freedesktop.org/data/pkg/osx/${{ env.GST_VERSION }}/gstreamer-1.0-${{ env.GST_VERSION }}-universal.pkg
-          for package in *.pkg ;
-            do sudo installer -verbose -pkg "$package" -target /
-          done
+          for package in *.pkg; do sudo installer -verbose -pkg "$package" -target /; done
           echo "PKG_CONFIG_PATH=/Library/Frameworks/GStreamer.framework/lib/pkgconfig:${{ env.PKG_CONFIG_PATH }}" >> "$GITHUB_ENV"
 
+      # Step 5: Set Up Cache
       - name: Set Up Cache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
@@ -71,6 +74,7 @@ jobs:
           append-timestamp: false
           save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
+      # Step 6: Install Qt
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
@@ -82,26 +86,47 @@ jobs:
           modules: qtcharts qtlocation qtpositioning qtspeech qt5compat qtmultimedia qtserialport qtimageformats qtshadertools qtconnectivity qtquick3d qtsensors
           cache: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
+      # Step 7: Create Shadow Build Directory
       - run: mkdir ${{ runner.temp }}/shadow_build_dir
 
+      # Step 8: Configure the Build
       - name: Configure
         working-directory: ${{ runner.temp }}/shadow_build_dir
-        run: ${{ env.QT_ROOT_DIR }}/bin/qt-cmake -S ${{ github.workspace }} -B . -G Ninja
-              -DCMAKE_BUILD_TYPE=${{ matrix.BuildType }}
-              -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
-              -DQGC_BUILD_TESTING=OFF
+        run: ${{ env.QT_ROOT_DIR }}/bin/qt-cmake -S ${{ github.workspace }} -B . -G Ninja \
+              -DCMAKE_BUILD_TYPE=${{ matrix.BuildType }} \
+              -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
+              -DQGC_BUILD_TESTING=OFF \
               -DQGC_STABLE_BUILD=${{ github.ref_type == 'tag' || contains(github.ref, 'Stable') && 'ON' || 'OFF' }}
 
+      # Step 9: Build
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
         run: cmake --build . --target all --config ${{ matrix.BuildType }}
 
+      # Step 10: Install and Create DMG
       - name: Create DMG
         working-directory: ${{ runner.temp }}/shadow_build_dir
         run: cmake --install . --config ${{ matrix.BuildType }}
 
+      # Step 11: Debug Artifact Location
+      - name: Debug Artifact Location
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: |
+          echo "Checking package directory contents:"
+          find . -name "*.dmg" || echo "No DMG file found"
+
+      # Step 12: Upload Artifact
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.ARTIFACT }}
           path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
+
+      # Step 13: Final Check for Errors
+      - name: Verify Artifact Upload
+        if: always()
+        run: |
+          if [ ! -f ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }} ]; then
+            echo "Error: DMG file not found after build and install."
+            exit 1
+          fi
