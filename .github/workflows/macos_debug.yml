@@ -120,13 +120,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.ARTIFACT }}
-          path: ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir//${{ env.ARTIFACT }}
 
       # Step 13: Final Check for Errors
       - name: Verify Artifact Upload
         if: always()
         run: |
-          if [ ! -f ${{ runner.temp }}/shadow_build_dir/package/${{ env.ARTIFACT }} ]; then
+          if [ ! -f ${{ runner.temp }}/shadow_build_dir//${{ env.ARTIFACT }} ]; then
             echo "Error: DMG file not found after build and install."
             exit 1
           fi
