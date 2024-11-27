@@ -110,23 +110,23 @@ jobs:
 
       # Step 11: Debug Artifact Location
       - name: Debug Artifact Location
-        working-directory: ${{ runner.temp }}/shadow_build_dir
+        working-directory: ${{ runner.temp }}/shadow_build_dir/staging
         run: |
           echo "Checking package directory contents:"
           find . -name "*.dmg" || echo "No DMG file found"
 
       # Step 12: Upload Artifact
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT }}
-          path: ${{ runner.temp }}/shadow_build_dir//${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/shadow_build_dir/staging/${{ env.ARTIFACT }}
 
       # Step 13: Final Check for Errors
       - name: Verify Artifact Upload
         if: always()
         run: |
-          if [ ! -f ${{ runner.temp }}/shadow_build_dir//${{ env.ARTIFACT }} ]; then
+          if [ ! -f ${{ runner.temp }}/shadow_build_dir/staging/${{ env.ARTIFACT }} ]; then
             echo "Error: DMG file not found after build and install."
             exit 1
           fi
