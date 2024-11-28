@@ -54,7 +54,7 @@ jobs:
       - name: Install Dependencies
         run: |
           brew update
-          brew install cmake ninja ccache geographiclib SDL2
+          brew install cmake ninja ccache geographiclib SDL2 dmgbuild
           echo "Dependency installation complete."
 
       # Step 4: Install GStreamer
@@ -65,18 +65,7 @@ jobs:
           for package in *.pkg; do sudo installer -verbose -pkg "$package" -target /; done
           echo "PKG_CONFIG_PATH=/Library/Frameworks/GStreamer.framework/lib/pkgconfig:${{ env.PKG_CONFIG_PATH }}" >> "$GITHUB_ENV"
 
-      # Step 5: Handle Missing Libraries
-      - name: Check for Missing Libraries
-        run: |
-          echo "Checking for missing dependencies..."
-          if [ ! -f "/../../g_macosxi_64/opt_prod/lib/libmimerapi.dylib" ]; then
-            echo "Warning: libmimerapi.dylib not found for macOS x64."
-          fi
-          if [ ! -f "/../../g_macosarm_64/opt_beta/lib/libmimerapi.dylib" ]; then
-            echo "Warning: libmimerapi.dylib not found for macOS ARM64."
-          fi
-
-      # Step 6: Install Qt
+      # Step 5: Install Qt
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
@@ -88,7 +77,7 @@ jobs:
           modules: qtcharts qtlocation qtpositioning qtspeech qt5compat qtmultimedia qtserialport qtimageformats qtshadertools qtconnectivity qtquick3d qtsensors
           cache: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
-      # Step 7: Configure Build
+      # Step 6: Configure Build
       - name: Configure Build
         run: |
           mkdir -p ${{ runner.temp }}/shadow_build_dir
@@ -97,31 +86,35 @@ jobs:
             -B ${{ runner.temp }}/shadow_build_dir \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=${{ matrix.BuildType }} \
-            -DCMAKE_OSX_ARCHITECTURES="x86_64" \
+            -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
             -DQGC_BUILD_TESTING=OFF \
             -DQGC_STABLE_BUILD=${{ github.ref_type == 'tag' || contains(github.ref, 'Stable') && 'ON' || 'OFF' }}
 
-      # Step 8: Build
+      # Step 7: Build
       - name: Build
         run: |
           cmake --build ${{ runner.temp }}/shadow_build_dir --config ${{ matrix.BuildType }}
 
-      # Step 9: Create DMG
-      - name: Create DMG
+      # Step 8: Create DMG
+      - name: Create DMG with dmgbuild
         run: |
-          cmake --install ${{ runner.temp }}/shadow_build_dir --config ${{ matrix.BuildType }}
+          mkdir -p ${{ runner.temp }}/dmg_content
+          cp -R ${{ runner.temp }}/shadow_build_dir/MyApp.app ${{ runner.temp }}/dmg_content/
+          dmgbuild \
+            -s $GITHUB_WORKSPACE/.github/workflows/dmgsettings.py \
+            "MyApp" \
+            ${{ runner.temp }}/shadow_build_dir/${{ env.ARTIFACT }}
 
-      # Step 10: Verify Artifacts
-      - name: Verify Artifacts
+      # Step 9: Verify Artifacts
+      - name: Verify DMG
         run: |
           echo "Verifying DMG creation..."
-          find ${{ runner.temp }}/shadow_build_dir -name "*.dmg" || echo "No DMG file found."
+          ls -lh ${{ runner.temp }}/shadow_build_dir/${{ env.ARTIFACT }}
 
-      # Step 11: Upload Artifacts
+      # Step 10: Upload DMG Artifact
       - name: Upload DMG Artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.ARTIFACT }}
           path: |
-            ${{ runner.temp }}/shadow_build_dir/*.dmg
-
+            ${{ runner.temp }}/shadow_build_dir/${{ env.ARTIFACT }}
