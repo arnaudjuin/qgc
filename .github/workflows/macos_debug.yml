@@ -97,7 +97,7 @@ jobs:
             -B ${{ runner.temp }}/shadow_build_dir \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=${{ matrix.BuildType }} \
-            -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
+            -DCMAKE_OSX_ARCHITECTURES="x86_64" \
             -DQGC_BUILD_TESTING=OFF \
             -DQGC_STABLE_BUILD=${{ github.ref_type == 'tag' || contains(github.ref, 'Stable') && 'ON' || 'OFF' }}
 
