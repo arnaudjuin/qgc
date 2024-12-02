@@ -462,29 +462,24 @@ Rectangle {
                     id: switchBomb
                     width: 25
                     height: 18
+                
                     onCheckedChanged: {
-                        if (switchBomb.checked) {
-                            var pwmValue = bomba.value === 1 ? 1200 : (bomba.value === 2 ? 1400 : 1600);
-                            //console.log("Switch ligado. Enviando PWM " + pwmValue + ".");
-                            _activeVehicle.sendCommand(
-                                1,      // component
-                                183,    // command
-                                true,   // confirmation
-                                7,      // param1
-                                pwmValue // param2
-                            );
-                        } else {
-                            //console.log("Switch desligado. Enviando para Bomba PWM 1051.");
-                            _activeVehicle.sendCommand(
-                                1,      // component
-                                183,    // command
-                                true,   // confirmation
-                                7,      // param1
-                                1100    // param2
-                            );
-                        }
+                        var pwmValue = switchBomb.checked ? 1900 : 1100; // Define PWM com base no estado do switch
+                
+                        // Envia o comando MAVLink para o veículo
+                        _activeVehicle.sendCommand(
+                            1,          // component
+                            183,        // command (MAV_CMD_DO_SET_SERVO)
+                            true,       // confirmation
+                            9,          // param1 (canal ou identificador)
+                            pwmValue    // param2 (valor PWM)
+                        );
+                
+                        // Log para depuração
+                        console.log("Switch " + (switchBomb.checked ? "ligado" : "desligado") + ". Enviando PWM " + pwmValue + ".");
                     }
                 }
+                
 
                 /*Item {
                     width: 35
@@ -602,27 +597,37 @@ Rectangle {
                     spacing: 2
                     QGCSlider {
                         id: bomba
-                        from: 1
-                        to: 3
-                        stepSize: 1
+                        from: 1              // Valor mínimo do slider
+                        to: 4                // Valor máximo do slider
+                        stepSize: 1          // Incremento de 1 (1, 2, 3, 4)
                         snapMode: QGCSlider.SnapAlways
                         Layout.fillWidth: true
                         Layout.preferredHeight: 18
                         live: true
+
                         onValueChanged: {
                             if (switchBomb.checked) {
-                                var pwmValue = bomba.value === 1 ? 1200 : (bomba.value === 2 ? 1400 : 1600);
-                                //console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
+                                // Mapeamento de valores do slider para PWM
+                                var pwmValue = bomba.value === 1 ? 1200
+                                              : bomba.value === 2 ? 1300
+                                              : bomba.value === 3 ? 1400
+                                              : 1900; // Caso o valor seja 4
+
+                                // Envia o comando MAVLink para o veículo
                                 _activeVehicle.sendCommand(
-                                    1,      // component
-                                    183,    // command
-                                    true,   // confirmation
-                                    7,      // param1
-                                    pwmValue // param2
+                                    1,          
+                                    183,       
+                                    true,       
+                                    7,          
+                                    pwmValue    
                                 );
+
+                                // Log para depuração
+                                console.log("Slider mudou. Enviando PWM " + pwmValue + ".");
                             }
                         }
                     }
+
 
                     Rectangle {
                         width: 35
@@ -633,7 +638,10 @@ Rectangle {
                         radius: 5
 
                         Label {
-                            text: bomba.value === 1 ? "Baixa" : bomba.value === 2 ? "Média" : "Alta"
+                            text: bomba.value === 1 ? "Baixa" 
+                            : bomba.value === 2 ? "Média" 
+                            : bomba.value === 3 ? "Alta"
+                            : "TUDO"
                             anchors.centerIn: parent
                             color: "#333333"
                             font.pixelSize: 10

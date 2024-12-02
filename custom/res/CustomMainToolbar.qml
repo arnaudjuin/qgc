@@ -159,57 +159,62 @@ Rectangle {
         }
 
         // Círculo de progresso da missão
+        // Círculo de progresso da missão
         Canvas {
             id: missionProgressCircle
             width: 40
             height: 40
             anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenterOffset: -100
-            visible: _activeVehicle && missionActive && missionProgress < 1.0 // O círculo de missão será visível apenas quando a missão estiver ativa
+            anchors.horizontalCenterOffset: -50
+            visible: true // Sempre visível para testes
 
-            onPaint: {
-                if (_activeVehicle && missionActive && missionProgress < 1.0) {
-                    var ctx = getContext("2d");
-                    ctx.clearRect(0, 0, width, height);
+            property real missionProgress: 0.0 // Progresso inicial (0.0 a 1.0)
+            property int totalWaypoints: _missionController.missionItemCount
+            property int currentWaypoint: _missionController.currentMissionIndex
 
-                    // Círculo de fundo (cinza)
-                    ctx.beginPath();
-                    ctx.arc(width / 2, height / 2, width / 2 - 5, 0, 2 * Math.PI, false);
-                    ctx.lineWidth = 5;
-                    ctx.strokeStyle = "#e0e0e0";
-                    ctx.stroke();
-
-                    // Círculo de progresso da missão (azul)
-                    ctx.beginPath();
-                    ctx.arc(width / 2, height / 2, width / 2 - 5, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * missionProgress, false);
-                    ctx.lineWidth = 5;
-                    ctx.strokeStyle = "#2196F3"; // Azul para diferenciar da barra de carregamento
-                    ctx.stroke();
-                }
-            }
-
-            Timer {
-                interval: 16 // Atualiza aproximadamente 60 vezes por segundo
-                running: true
-                repeat: true
-                onTriggered: {
-                    if (_activeVehicle && missionProgress >= 1.0) {
-                        missionProgressCircle.visible = false; // Esconde o círculo ao concluir a missão
-                    } else {
+            // Atualiza o progresso da missão com base nos waypoints
+            Connections {
+                target: _missionController
+                onCurrentMissionIndexChanged: {
+                    if (totalWaypoints > 0) {
+                        missionProgress = currentWaypoint / totalWaypoints;
+                        console.log("Progresso da missão: " + Math.round(missionProgress * 100) + "%");
                         missionProgressCircle.requestPaint();
                     }
                 }
             }
 
-            // Texto opcional para exibir percentual da missão dentro do círculo
+            onPaint: {
+                var ctx = getContext("2d");
+                ctx.clearRect(0, 0, width, height);
+
+                // Fundo cinza
+                ctx.beginPath();
+                ctx.arc(width / 2, height / 2, width / 2 - 5, 0, 2 * Math.PI, false);
+                ctx.lineWidth = 8;
+                ctx.strokeStyle = "#e0e0e0";
+                ctx.stroke();
+
+                // Progresso azul
+                ctx.beginPath();
+                ctx.arc(width / 2, height / 2, width / 2 - 5, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * missionProgress, false);
+                ctx.lineWidth = 8;
+                ctx.strokeStyle = "#2196F3";
+                ctx.stroke();
+            }
+
+            // Texto para exibir o percentual
             QGCLabel {
                 anchors.centerIn: parent
                 text: Math.round(missionProgress * 100) + "%"
                 color: "#2196F3"
                 font.bold: true
-                visible: missionActive && missionProgress < 1.0 // O texto desaparece quando a missão é concluída
             }
         }
+
+
+
+        
 
         QGCButton {
             id:                 disconnectButton

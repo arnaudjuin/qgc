@@ -692,179 +692,192 @@ ApplicationWindow {
     }
 
    //-------------------------------------------------------------------------
-       //-- Critical Vehicle Message Popup
+    //-- Critical Vehicle Message Popup
 
+    // Adicionando o contador
+        Item {
+            id: resetLogic
+            property int resetCount: 0 // Contador de resets
+        
+            function handleReset(message) {
+                console.log("Mensagem recebida: " + message);
+        
+                // Exibe o popup sempre que a mensagem de erro for recebida
+                simplePopup.visible = true;
+                simplePopupLabel.text = message.includes("Direito")
+                    ? "Atuador Direito Desarmado"
+                    : "Atuador Esquerdo Desarmado";
+        
+                if (resetCount < 2) {
+                    // Resets automáticos nas duas primeiras vezes
+                    console.log("Reset automático (" + (resetCount + 1) + "/2)");
+                    sendRelayReset();
+                    resetButton.visible = false; // Esconde o botão
+                    progressCircle.progress = 0; // Reseta o progresso
+                    progressCircle.visible = true; // Mostra o círculo
+                    loadingTimer.start(); // Inicia o timer do progresso
+                } else {
+                    // Terceira vez, botão habilitado e círculo escondido
+                    console.log("Reset manual necessário.");
+                    progressCircle.visible = false; // Esconde o círculo de carregamento
+                    resetButton.visible = true; // Exibe o botão
+                }
+        
+                resetCount++;
+            }
+        }
+
+        // Função para tratar mensagens
         function showCriticalVehicleMessage(message) {
-        console.log("Mensagem recebida: " + message);
+            console.log("Mensagem recebida: " + message);
 
-        if (message === "Atuador desarmado - Lado Direito") {
-            sendPauseCommandWithDelay();
-            _activeVehicle.flightMode = "Hold";
-            simplePopup.visible = true;
-            simplePopupLabel.text = "Atuador Direito Desarmado"; 
-
-        } else if (message === "Atuador desarmado - Lado Esquerdo") {
-            sendPauseCommandWithDelay();
-            _activeVehicle.flightMode = "Hold";
-            simplePopup.visible = true;
-            simplePopupLabel.text = "Atuador Esquerdo Desarmado"; 
-
-        } else if (message === "Atuador OK - Lado Direito" || message === "Atuador OK - Lado Esquerdo") {
-            simplePopup.visible = false;
-        } else if (message === "FOI CARAI") {
-            sendPauseCommandWithDelay();
-            _activeVehicle.flightMode = "Hold";
-        }
-
-        // Lidar com outras mensagens críticas
-        indicatorPopup.close();
-        if (criticalVehicleMessagePopup.visible || QGroundControl.videoManager.fullScreen) {
-            criticalVehicleMessagePopup.dropMessageIndicatorOnClose = true;
-        } else {
-            criticalVehicleMessagePopup.criticalVehicleMessage = message;
-            criticalVehicleMessagePopup.dropMessageIndicatorOnClose = false;
-            //criticalVehicleMessagePopup.open();
-        }
-    }
-
-  Rectangle {
-    id: simplePopup
-    visible: false
-    width: 400
-    height: 200
-    color: "#f4f4f4" // Fundo claro para aparência moderna
-    border.color: "#333333" // Borda cinza-escuro
-    border.width: 2
-    radius: 8
-    anchors.centerIn: parent
-
-    // Botão de fechar no canto superior direito
-    QGCButton {
-        id: closeButton
-        text: "✖" // Ícone de fechar
-        width: 30
-        height: 30
-        font.pointSize: 14
-        font.bold: true
-        background: Rectangle {
-            color: "#d41111" // Vermelho claro para destaque
-            radius: 15
-        }
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.margins: 10
-        onClicked: {
-            simplePopup.visible = false;
-        }
-    }
-
-    Column {
-        anchors.fill: parent
-        anchors.margins: 15
-        spacing: 20
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        // Título do Popup
-        QGCLabel {
-            id: simplePopupLabel
-            text: "Atuador Esquerdo Desarmado"
-            font.pointSize: 16
-            font.bold: true
-            color: "#333333" // Cinza-escuro para o título
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        // Mensagem explicativa
-        QGCLabel {
-            text: "Favor verificar o Rover e desobstruir a rota."
-            font.pointSize: 11
-            color: "#555555" // Cinza suave para o texto
-            wrapMode: Text.WordWrap
-            horizontalAlignment: Text.AlignHCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
-        // Círculo de progresso do carregamento
-        Canvas {
-            id: progressCircle
-            width: 80
-            height: 80
-            anchors.horizontalCenter: parent.horizontalCenter
-            visible: false // Inicialmente invisível
-
-            property real progress: 0 // Progresso de 0 a 1
-
-            onPaint: {
-                var ctx = getContext("2d");
-                ctx.clearRect(0, 0, width, height);
-
-                // Círculo de fundo (cinza)
-                ctx.beginPath();
-                ctx.arc(width / 2, height / 2, width / 2 - 5, 0, 2 * Math.PI, false);
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = "#e0e0e0";
-                ctx.stroke();
-
-                // Círculo de progresso de carregamento (verde)
-                ctx.beginPath();
-                ctx.arc(width / 2, height / 2, width / 2 - 5, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * progress, false);
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = "#4CAF50";
-                ctx.stroke();
+            if (message === "Atuador desarmado - Lado Direito" || message === "Atuador desarmado - Lado Esquerdo") {
+                sendPauseCommandWithDelay();
+                _activeVehicle.flightMode = "Hold";
+                resetLogic.handleReset(message);
+            } else if (message === "Atuador OK - Lado Direito" || message === "Atuador OK - Lado Esquerdo") {
+                simplePopup.visible = false;
+            } else if (message === "FOI CARAI") {
+                sendPauseCommandWithDelay();
+                _activeVehicle.flightMode = "Hold";
             }
 
-            Timer {
-                id: loadingTimer
-                interval: 75 // Atualiza a cada 100ms (10 fps)
-                running: false
-                repeat: true
-                onTriggered: {
-                    progressCircle.progress += 0.01; // Incrementa progresso
-                    progressCircle.requestPaint(); // Redesenha o círculo
-                    if (progressCircle.progress >= 1) {
-                        loadingTimer.stop(); // Para o timer após 10 segundos
-                        progressCircle.visible = false; // Esconde a roda de carregamento
-                        resetButton.visible = true; // Reexibe o botão
-                    }
+            indicatorPopup.close();
+            if (criticalVehicleMessagePopup.visible || QGroundControl.videoManager.fullScreen) {
+                criticalVehicleMessagePopup.dropMessageIndicatorOnClose = true;
+            } else {
+                criticalVehicleMessagePopup.criticalVehicleMessage = message;
+                criticalVehicleMessagePopup.dropMessageIndicatorOnClose = false;
+            }
+        }
+
+        // Atualização no popup
+        Rectangle {
+            id: simplePopup
+            visible: false
+            width: 400
+            height: 200
+            color: "#f4f4f4"
+            border.color: "#333333"
+            border.width: 2
+            radius: 8
+            anchors.centerIn: parent
+
+            QGCButton {
+                id: closeButton
+                text: "✖"
+                width: 30
+                height: 30
+                font.pointSize: 14
+                font.bold: true
+                background: Rectangle {
+                    color: "#d41111"
+                    radius: 15
+                }
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.margins: 10
+                onClicked: {
+                    simplePopup.visible = false;
                 }
             }
 
-            QGCLabel {
-                anchors.centerIn: parent
-                text: Math.round(progressCircle.progress * 100) + "%"
-                color: "#4CAF50"
-                font.bold: true
-                visible: true
+            Column {
+                anchors.fill: parent
+                anchors.margins: 15
+                spacing: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                QGCLabel {
+                    id: simplePopupLabel
+                    text: "Atuador Esquerdo Desarmado"
+                    font.pointSize: 16
+                    font.bold: true
+                    color: "#333333"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                QGCLabel {
+                    text: "Favor verificar o Rover e desobstruir a rota."
+                    font.pointSize: 11
+                    color: "#555555"
+                    wrapMode: Text.WordWrap
+                    horizontalAlignment: Text.AlignHCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                Canvas {
+                    id: progressCircle
+                    width: 80
+                    height: 80
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    visible: false
+
+                    property real progress: 0
+
+                    onPaint: {
+                        var ctx = getContext("2d");
+                        ctx.clearRect(0, 0, width, height);
+
+                        ctx.beginPath();
+                        ctx.arc(width / 2, height / 2, width / 2 - 5, 0, 2 * Math.PI, false);
+                        ctx.lineWidth = 5;
+                        ctx.strokeStyle = "#e0e0e0";
+                        ctx.stroke();
+
+                        ctx.beginPath();
+                        ctx.arc(width / 2, height / 2, width / 2 - 5, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * progress, false);
+                        ctx.lineWidth = 5;
+                        ctx.strokeStyle = "#4CAF50";
+                        ctx.stroke();
+                    }
+
+                    Timer {
+                        id: loadingTimer
+                        interval: 75
+                        running: false
+                        repeat: true
+                        onTriggered: {
+                            progressCircle.progress += 0.01;
+                            progressCircle.requestPaint();
+                            if (progressCircle.progress >= 1) {
+                                loadingTimer.stop();
+                                progressCircle.visible = false;
+                            }
+                        }
+                    }
+
+                    QGCLabel {
+                        anchors.centerIn: parent
+                        text: Math.round(progressCircle.progress * 100) + "%"
+                        color: "#4CAF50"
+                        font.bold: true
+                        visible: true
+                    }
+                }
+
+                QGCButton {
+                    id: resetButton
+                    text: "Resetar o Rover"
+                    width: 140
+                    height: 35
+                    visible: contador >= 2
+                    font.pointSize: 11
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    background: Rectangle {
+                        color: "#ff4800"
+                        radius: 10
+                    }
+                    onClicked: {
+                        sendRelayReset();
+                        resetButton.visible = false;
+                        progressCircle.progress = 0;
+                        progressCircle.visible = true;
+                        loadingTimer.start();
+                    }
+                }
             }
         }
-
-        // Linha com botão de ação
-        QGCButton {
-            id: resetButton
-            text: "Resetar o Rover"
-            width: 140
-            height: 35
-            font.pointSize: 11
-            anchors.horizontalCenter: parent.horizontalCenter
-            background: Rectangle {
-                color: "#ff4800" // Laranja para o botão
-                radius: 10
-            }
-            onClicked: {
-                sendRelayReset();
-                resetButton.visible = false; // Esconde o botão
-                progressCircle.progress = 0; // Reseta o progresso
-                progressCircle.visible = true; // Mostra o círculo
-                loadingTimer.start(); // Inicia o timer de 10 segundos
-            }
-        }
-    }
-}
-
-
-
-
-
 
 
 
