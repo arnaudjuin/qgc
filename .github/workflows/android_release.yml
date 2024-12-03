@@ -14,7 +14,7 @@ on:
       - 'MergeLG'
       - 'fix/StableV1'
       - 'teste/GeoFence'
-      - 'guilherme/changes'
+      - 'guilherme/changes3'
       - 'Lucas/Changes'
     tags:
       - 'v*'
