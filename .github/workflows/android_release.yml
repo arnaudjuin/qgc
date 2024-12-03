@@ -39,85 +39,74 @@ env:
 
 jobs:
   build:
-    runs-on:  ubuntu-latest
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-       include:
-         - architecture: 64bits
-           eabi: arm64-v8a
-           arch: android_arm64_v8a
-           ARTIFACT: CustomQGroundControl64.apk
+        BuildType: [Release]
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      ARTIFACT: QGroundControl.apk
+      QT_VERSION: 6.6.3
+      GST_VERSION: 1.22.12
+      QT_ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/deploy/android/android_release.keystore
+      QT_ANDROID_KEYSTORE_ALIAS: QGCAndroidKeyStore
+      QT_ANDROID_KEYSTORE_STORE_PASS: "test"
+      QT_ANDROID_KEYSTORE_KEY_PASS: "test"
+      QT_ANDROID_ABIS: ${{ matrix.BuildType == 'Release' && 'armeabi-v7a;arm64-v8a' || 'arm64-v8a' }}
 
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          android: 'false'
+        continue-on-error: true
+
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-tags: true
+          fetch-depth: 0
 
-      - run: sudo apt update
+      - uses: seanmiddleditch/gha-setup-ninja@v5
 
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+      - name: Install CCache
+        run: |
+          wget --quiet https://github.com/ccache/ccache/releases/download/v4.10.2/ccache-4.10.2-linux-x86_64.tar.xz
+          tar -xvf ccache-*-linux-x86_64.tar.xz
+          cd ccache-*-linux-x86_64
+          sudo make install
+      - name: Install Qt for Android
+        uses: ./.github/actions/qt-android
         with:
-          create-symlink: true
-          key: ${{ runner.os }}-${{ matrix.arch }}-Release
-          restore-keys: ${{ runner.os }}-${{ matrix.arch }}-Release
-          max-size: "2G"
-          append-timestamp: false
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+          host: linux
+          arch: gcc_64
+          version: ${{ env.QT_VERSION }}
+          abis: ${{ env.QT_ANDROID_ABIS }}
 
-      - name: Get all tags for correct version determination
-        working-directory:  ${{ github.workspace }}
-        run: |
-          git fetch --all --tags -f --depth 1
+      - run: mkdir ${{ runner.temp }}/shadow_build_dir
 
-      - name: Install Qt6 for Android
-        uses: jurplel/install-qt-action@v3
-        with:
-          version:      ${{ env.QT_VERSION }}
-          aqtversion:   == 3.1.18
-          host:         linux
-          target:       android
-          arch:         ${{ matrix.arch }}
-          extra:        --autodesktop
-          dir:          ${{ runner.temp }}
-          modules:      qtcharts qtlocation qtpositioning qtspeech qt5compat qtmultimedia qtserialport qtimageformats qtshadertools qtconnectivity qtquick3d
-          setup-python: true
-          cache: true
-
-      - name: Remove Android SDKs to force usage of android-33 only
-        run: |
-            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext5"
-            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext4"
-            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34"
-            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34-ext8"
-
-      - name: Create build directory
-        run:  mkdir ${{ runner.temp }}/shadow_build_dir
-
-      - name:               Install gstreamer
-        working-directory:  ${{ github.workspace }}
-        run: |
-            wget --quiet https://gstreamer.freedesktop.org/data/pkg/android/1.18.6/gstreamer-1.0-android-universal-1.18.6.tar.xz
-            mkdir gstreamer-1.0-android-universal-1.18.6
-            tar xf gstreamer-1.0-android-universal-1.18.6.tar.xz -C gstreamer-1.0-android-universal-1.18.6
-
-      - name: Update android manifest
-        if: github.ref_name != 'Stable'
-        run: |
-            ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${{ github.ref_name }}
+      - name: Configure
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: ${{ env.QT_ROOT_DIR }}/bin/qt-cmake -S ${{ github.workspace }} -B . -G Ninja
+              -DCMAKE_BUILD_TYPE=${{ matrix.BuildType }}
+              -DQT_ANDROID_ABIS="${{ env.QT_ANDROID_ABIS }}"
+              -DQT_ANDROID_BUILD_ALL_ABIS=OFF
+              -DQT_HOST_PATH="${{ env.QT_ROOT_DIR }}/../gcc_64"
+              -DQT_ANDROID_SIGN_APK=${{ github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && 'ON' || 'OFF' }}
+              -DQT_DEBUG_FIND_PACKAGE=ON
+              -DQGC_STABLE_BUILD=${{ github.ref_type == 'tag' || contains(github.ref, 'Stable') && 'ON' || 'OFF' }}
 
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
-        env:
-          ANDROID_KEYSTORE_PASSWORD: "test"
-        run:  |
-            ls /home/runner/work/_temp/Qt/${{ env.QT_VERSION }}
-            qmake -r ${SOURCE_DIR}/qgroundcontrol.pro -spec android-clang CONFIG+=${BUILD_TYPE} CONFIG+=installer ANDROID_ABIS="${{ matrix.eabi }}"
-            make -j2
+        run: cmake --build . --target all --config ${{ matrix.BuildType }}
 
-
+      - run: cp ${{ runner.temp }}/shadow_build_dir/android-build/*.apk ${{ runner.temp }}/shadow_build_dir/${{ env.ARTIFACT }}
 
       - name: Save artifact
         uses: actions/upload-artifact@master
